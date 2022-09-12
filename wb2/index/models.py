@@ -1,4 +1,5 @@
 from calendar import c
+from datetime import date
 from pyexpat import model
 from tkinter import CASCADE
 from django.db import models
@@ -9,8 +10,12 @@ from django.contrib.auth.models import AbstractUser
 
 class SystemUsers(AbstractUser):
     USER_TYPE = (
-        ('',''),
-    )
+        ('Admin','Admin'),
+        ('Teller','Teller'),
+        ('Supervisor','Supervisor'),
+        ('Manager','Manager'),
+        ('Meter Reader','Meter Reader'),
+    )   
     midname = models.CharField(max_length=20, blank=True)
     lastname = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
@@ -83,3 +88,24 @@ class ConsumerInfo(models.Model):
     penaltyflag = models.BooleanField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
+
+class Penalties(models.Model):
+    penalty = models.IntegerField()
+
+class Discounts(models.Model):
+    discount = models.IntegerField()
+
+
+class Transactions(models.Model):
+    TRANS_TYPE = (
+        ('','')
+    )
+    date = models.DateField()
+    acctID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE, default='')
+    transType = models.CharField(max_length=20, choices=TRANS_TYPE)
+    meterReading = models.IntegerField()
+    ratescode = models.ForeignKey(Rates, on_delete= models.CASCADE, default='')
+    penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE, default='')
+    discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE, default='')
+    payment = models.IntegerField()
+    processedBy = models.ForeignKey(SystemUsers, on_delete=models.CASCADE, default='')
