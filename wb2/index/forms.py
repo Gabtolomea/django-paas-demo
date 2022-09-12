@@ -13,7 +13,7 @@ class CustomUserForm(UserCreationForm):
         fields = (
             'username',
             'email',
-            "u_type",
+            "usertype",
             'is_staff',
             'password1',
             'password2'
