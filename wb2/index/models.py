@@ -94,7 +94,6 @@ class Penalties(models.Model):
 class Discounts(models.Model):
     discount = models.IntegerField()
 
-
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('j','j'),

@@ -17,4 +17,24 @@ from .models import *
 
 def landingpage(request):
     context = {}
-    return render(request, 'index.html',context)
+    return render(request, 'index.html', context)
+
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Logged in')
+            return redirect('home')
+        else:
+            messages.error(request, "Invalid Username or Password")
+
+    return render(request, 'login.html')
+
+def home(request):
+    
