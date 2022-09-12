@@ -32,7 +32,6 @@ class Rates(models.Model):
 class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
 
-
 class BarangayRecord(models.Model):
     B_RecordID = models.IntegerField()
     barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE, default='')
