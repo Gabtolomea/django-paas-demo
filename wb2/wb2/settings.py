@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'index'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'wb2.urls'
+AUTH_USER_MODEL = 'index.SystemUsers'
 
 TEMPLATES = [
     {
@@ -75,8 +77,12 @@ WSGI_APPLICATION = 'wb2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'wb2',
+        'USER': 'root',
+        'PASSWORD': 'jazfer',
+        'HOST': 'localhost',
+        'PORT': '3307'
     }
 }
 
