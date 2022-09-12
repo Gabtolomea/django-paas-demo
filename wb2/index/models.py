@@ -1,4 +1,6 @@
+from calendar import c
 from pyexpat import model
+from tkinter import CASCADE
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
@@ -22,9 +24,13 @@ class Rates(models.Model):
     ratePenalty = models.IntegerField()
     ratePenaltyFreq = models.IntegerField()
 
+class Barangays(models.Model):
+    barangay = models.CharField(max_length=20, blank=True)
+
+
 class BarangayRecord(models.Model):
     B_RecordID = models.IntegerField()
-    barangaycode = models.IntegerField()
+    barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE, default='')
     year = models.IntegerField()
     total_due_jan = models.IntegerField()
     total_paid_jan = models.IntegerField()
@@ -63,6 +69,17 @@ class BarangayRecord(models.Model):
     total_paid_dec = models.IntegerField()
     total_usage_dec = models.IntegerField()
 
+class Status(models.Model):
+    status = models.CharField(max_length=20, blank=True)
 
-
-
+class ConsumerInfo(models.Model):
+    meternumber = models.IntegerField()
+    firstname = models.CharField(max_length=20, blank=True)
+    middlename = models.CharField(max_length=20, blank=True)
+    lastname = models.CharField(max_length=20, blank=True)
+    barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE, default='')
+    initialmeterreading = models.IntegerField()
+    statuscode = models.ForeignKey(Status, on_delete=models.CASCADE, default='')
+    penaltyflag = models.BooleanField()
+    stopmeterflag = models.BooleanField()
+    deleteflag = models.BooleanField()
