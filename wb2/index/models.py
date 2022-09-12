@@ -97,7 +97,7 @@ class Discounts(models.Model):
 
 class Transactions(models.Model):
     TRANS_TYPE = (
-        ('','')
+        ('j','j'),
     )
     date = models.DateField()
     acctID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE, default='')

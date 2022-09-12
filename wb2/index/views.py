@@ -11,7 +11,6 @@ from django.template.loader import render_to_string
 
 from wb2 import settings
 from .forms import *
-from .tokens import generate_token
 from .decorators import *
 from .models import *
 
