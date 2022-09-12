@@ -29,7 +29,8 @@ ul.loginform li{
     width: 250px;
     margin-bottom: 20px;
 }
-ul.loginform li input{
+ul.loginform li input,
+ul.loginform li button{
     width: 250px;
     text-align: center;
     padding: 10px 0px;
@@ -37,7 +38,7 @@ ul.loginform li input{
     background-color: #ccf9ff;
     margin-top: 20px; 
 }
-ul.loginform li input[type="button"]{
+ul.loginform li button{
     background-color: #eba016;
     color: #fff;
 }
