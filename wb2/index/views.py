@@ -34,7 +34,7 @@ def login(request):
         else:
             messages.error(request, "Invalid Username or Password")
 
-    return render(request, 'login.html')
+    return render(request, 'login2.0.html')
 
 def home(request):
-    
+    return render(request, 'home.html')
