@@ -23,21 +23,112 @@ mydb = mysql.connector.connect(
     database="lgu_ginatilan_db"
 )
 def landingpage(request):
-    tablenames = ['accountinfo','accountrecord','barangay_record','consumerinfo','gettotalbill','meterreadingmodification_table','oldconsumerinfo','payment_history','ratestable','revenuecode','systemuser','yearly_records']
+    tablenames = [
+        'accountinfo',
+        'accountrecord',
+        'barangay_record',
+        'consumerinfo',
+        'gettotalbill',
+        'meterreadingmodification_table',
+        'oldconsumerinfo',
+        'payment_history',
+        'ratestable',
+        'revenuecode',
+        'systemuser',
+        'yearly_records'
+    ]
+
+    columnnames = [
+        'accountinfoid',
+        'firstname',
+        'middlename',
+        'lastname',
+        'address',
+        'barangay',
+        'meternumber',
+        'initial_meter_reading',
+        'rateid',
+        'status',
+        'duedate',
+        'consumerid_id',
+        'penalty_flag',
+        'deleted_flag',
+        'stop_meter_flag',
+
+    ]
+
+
+    accountinfoid=[],
+    firstname=[],
+    middlename=[],
+    lastname=[],
+    address=[],
+    barangay=[],
+    meternumber=[],
+    initial_meter_reading=[],
+    rateid=[],
+    status=[],
+    duedate=[],
+    consumerid_id=[],
+    penalty_flag=[],
+    deleted_flag=[],
+    stop_meter_flag=[],
+
 
     mycursor = mydb.cursor()
-
-    mycursor.execute("SELECT * FROM accountinfo")
-
-    myresult = mycursor.fetchall()
-    accountinfoid = []
-    for x in myresult:
-        accountinfoid.append(x[0])
+    columnname = ""
     for t in tablenames:
         tablename = t
+        mycursor.execute("SELECT "+ columnname +" FROM "+tablename)
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            accountinfoid.append(x[0])
 
-    context = {
-        'accountinfoid':accountinfoid,
+
+    accountinfo = [
+        accountinfoid,
+        firstname,
+        middlename,
+        lastname,
+        address,
+        barangay,
+        meternumber,
+        initial_meter_reading,
+        rateid,
+        status,
+        duedate,
+        consumerid_id,
+        penalty_flag,
+        deleted_flag,
+        stop_meter_flag
+    ]
+    """
+    accountrecord
+    barangay_record
+    consumerinfo
+    gettotalbill
+    meterreadingmodification_table
+    oldconsumerinfo
+    payment_history
+    ratestable
+    revenuecode
+    systemuser
+    yearly_records"""
+
+    context = {    
+        'accountinfo':accountinfo,
+        
+        #'accountrecord':accountrecord,
+        #'barangay_record':barangay_record,
+        #'consumerinfo':consumerinfo,
+        #'gettotalbill':gettotalbill,
+        #'meterreadingmodification_table':meterreadingmodification_table,
+        #'oldconsumerinfo':oldconsumerinfo,
+        #'payment_history':payment_history,
+        #'ratestable':ratestable,
+        #'revenuecode':revenuecode,
+        #'systemuser':systemuser,
+        #'yearly_records':yearly_records,
     }
 
     return render(request, 'home.html', context)
