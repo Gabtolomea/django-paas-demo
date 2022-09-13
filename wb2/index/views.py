@@ -38,18 +38,70 @@ def landingpage(request):
         'yearly_records'
     ]
 
-    mycursor = mydb.cursor()
+    columnnames = [
+        'accountinfoid',
+        'firstname',
+        'middlename',
+        'lastname',
+        'address',
+        'barangay',
+        'meternumber',
+        'initial_meter_reading',
+        'rateid',
+        'status',
+        'duedate',
+        'consumerid_id',
+        'penalty_flag',
+        'deleted_flag',
+        'stop_meter_flag',
 
+    ]
+
+
+    accountinfoid=[],
+    firstname=[],
+    middlename=[],
+    lastname=[],
+    address=[],
+    barangay=[],
+    meternumber=[],
+    initial_meter_reading=[],
+    rateid=[],
+    status=[],
+    duedate=[],
+    consumerid_id=[],
+    penalty_flag=[],
+    deleted_flag=[],
+    stop_meter_flag=[],
+
+
+    mycursor = mydb.cursor()
+    columnname = ""
     for t in tablenames:
         tablename = t
         mycursor.execute("SELECT "+ columnname +" FROM "+tablename)
         myresult = mycursor.fetchall()
-        accountinfoid = []
         for x in myresult:
             accountinfoid.append(x[0])
 
 
-    accountinfo = [accountinfoid]
+    accountinfo = [
+        accountinfoid,
+        firstname,
+        middlename,
+        lastname,
+        address,
+        barangay,
+        meternumber,
+        initial_meter_reading,
+        rateid,
+        status,
+        duedate,
+        consumerid_id,
+        penalty_flag,
+        deleted_flag,
+        stop_meter_flag
+    ]
     """
     accountrecord
     barangay_record
