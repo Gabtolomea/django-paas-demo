@@ -143,7 +143,6 @@
     bill_nov
     totalbill_nov
     paidamt_nov
-    paidamt_nov
     datepaid_nov
     dateposted_nov
     postedby_nov
