@@ -1,29 +1,104 @@
-
-
-{% load static %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">  
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login page</title>
-    <link rel="stylesheet" href="{% static 'style.css'%}">
-    
+    <title>Log In Page</title>
+    <link rel="stylesheet" type="text/css" href="login.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+    <style>
+
+        html{
+            background-image: linear-gradient(white,#63CDD7);
+            height: 100%;
+            font-family: 'Poppins',sans-serif;
+        }
+        body{
+            margin: 10%;
+            background: transparent;
+        }
+        .log-in{
+            margin:0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .meter{
+            margin: 25px 0 0 0;
+            width: 100%;
+            height: 50px;
+            color: rgb(238, 226, 226);
+            font-size: 18px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.438);
+            border-radius: 8px;
+            background: rgba(105, 105, 105, 0);
+            margin-top: 40px;
+            outline: none;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .pass{
+            margin: 25px 0 0 0;
+            width: 100%;
+            height: 50px;
+            color: rgb(238, 226, 226);
+            font-size: 18px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.438);
+            border-radius: 8px;
+            background: rgba(105, 105, 105, 0);
+            margin-top: 40px;
+            outline: none;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .FP{
+            text-align: right;
+            padding-right: 60px;
+            
+        
+        }
+        
+        
+    </style>
 </head>
-    <body>
-        <form class="form" action="login" method="POST">
-            {% csrf_token %}
-            <ul class="loginform">
-                <li><h2>Log In Here</h2></li>
-                <li>Please enter your credentials</li>
-                <li><input type="text" name="username" placeholder="User ID"></li>
-                <li><input type="password" name="Password" placeholder="Password"></li>
-                <li><button type="submit">Sign In</button></li>
-                <li><a href="forgetpassword">Forget Password?</a></li>  
-            </ul>
-        </form>   
-    </body>
-       
+<body>
+    <div class="container">
+        <div class="wrapper shadow" style=" margin: 10% auto !important; border-radius: 40px;  max-width: 440px; padding: 40px 0; background: #63CDD7;">
+            <div class="log-in" style="padding-right: 15px">
+                <center><h1 style="font-size: 32px;  color:white">Login</h1>
+                   <h3 style="font-size: 24px; color:white">Enter User Credentials </h3>
+                </center>
+            </div>
+            <center>
+                    <div class="form-group m-2 w-75">
+                        <input type="text" style="border-radius: 20px;" class="form-control" placeholder="User ID">
+                    </div>
+    
+                    <div class="form-group m-2 w-75">
+                        <input type="password" style="border-radius: 20px;" class="form-control"  placeholder="Password">
+                    </div>
+                    
+                    <div class="form-group m-2 w-75"   > 
+                        <button style="background-color:#0093B7; color:white;  border-radius:25px; width: 100%;" type="button" class="btn ">Sign In</button style>
+                    </div>
+                    <div class="FP ">
+                        <a href="forgetpassword.html" style="color: #0093B7;">Forget Password?</a> 
+                    </div>
+            </center>
+
+        </div>
+        
+    </div>
+    
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+
+</body>
 </html>
