@@ -1,0 +1,17 @@
+"accountinfo"
+    accountinfoid
+    firstname
+    middlename
+    lastname
+    address
+    barangay
+    meternumber
+    initial_meter_reading
+    rateid
+    status
+    duedate
+    consumerid_id
+    penalty_flag
+    deleted_flag
+    stop_meter_flag
+
