@@ -15,7 +15,7 @@ header {
     position: absolute;
     left: 95.14%;
     right: 3.15%;
-    top: 50px;
+    top: 13px;
     bottom: 50px;
     color: #63CDD7;
 
@@ -24,7 +24,7 @@ header {
     position: absolute;
     left: 91.25%;
     right: 7.23%;
-    top: 50px;
+    top: 13px;
     bottom: 50px;
     color: #63CDD7; 
 }
@@ -32,10 +32,39 @@ header {
     position: absolute;
     left: 87.15%;
     right: 11.11%;
-    top: 50px;
+    top: 13px;
     bottom: 50px;
     color: #63CDD7;
 
+}
+li{
+    margin-bottom: 40px;
+    margin-left: 120px;
+    color:#E6ECEB;
+    font-weight: bold;
+    margin-top: 24px;
+    font-size: medium;
+ 
+}
+ul{
+    margin-top: 10px;
+    margin-left:-27px;
+}
+span{
+    padding-left: 20px;
+    font-size: 20px;
+    font-weight:700;
+}
+.dev{
+    color:#E6ECEB;
+    font-weight: bold;
+    margin-left: 120px;
+    margin-top: 100px;
+    font-size:20px;
+}
+p{
+    font-size:40px;
+    margin-left: -13px;
 }
 
 .sidebar{
@@ -46,307 +75,13 @@ header {
     background: #0093B7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-.developer{
-    position: absolute;
-    left: 125px;
-    right: 10px;
-    top: 15%;
-    bottom: 50px;
-    color: #E6ECEB;
-    
-}
-.devword{
-    position: absolute;
-    width: 240px;
-    height: 48px;
-    left: 89px;
-    top: 210px;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 800;
-    font-size: 40px;
-    line-height: 48px;
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.billing{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 38.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.billword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 305px;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
 
 
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.metereading{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 44.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.meterword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 360px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.useracc{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 50.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.userword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 415px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.report{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 56.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.reportword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 465px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-
-}
-.approval{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 62.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.approveword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 520px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.userman{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 68.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.usersword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 573px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.usercre{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 74.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.usercreword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 627px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
-}
-.rates{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 80.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.rateword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 680px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
-}
-.accset{
-    position: absolute;
-    left: 20.33%;
-    right: 94.24%;
-    top: 86.73%;
-    bottom: 65.34%;
-    align-items: center;
-    color: #E6ECEB;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.accsetword{
-    position: absolute;
-    width: 75px;
-    height: 36px;
-    left: 140px;
-    top: 730px;
-    text-align: center;
-
-    font-family: 'Arial';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
-}
 .toggle-button {
     position: absolute;
     width: 50px;
     height: 50px;
-    top: 30px;
+    top: 6px;
     left: 30px;
     /*  transform: translate(-22px, -20px);*/
     transition: .25s;
@@ -458,16 +193,91 @@ header {
 
 @media(max-width: 720px) {
     header {
-        font-size: 10px;
+        font-size: 5px;
     }
     .sidebar {
-        width: 100px;
+        width: 200px;
+        height: 100%;
     }
     .developer{
-        left: 10px;
+        left: 30px;
     }
     .devword{
-        font-size: 10px;
-        left: 10px;
+        font-size: 20px;
+        left: 40px;
+        top: 200px;
     }
+    .billing{
+        left:10.53%;
+    }
+    .billword{
+        left:60px;
+        font-size: 16px;
+        top: 240px;
+    }
+    .metereading{
+        left:10.53%;
+    }
+    .meterword{
+        left:60px;
+        font-size: 16px;
+        top: 280px;
+    }
+    .useracc{
+        left:10.53%;
+    }
+    .userword{
+        left:60px;
+        font-size: 16px;
+        top: 325px;
+    }
+    .report{
+        left:10.53%;
+    }
+    .reportword{
+        left:50px;
+        font-size: 16px;
+        top: 360px;
+    }
+    .approval{
+        left:10.53%;
+    }
+    .approveword{
+        left:60px;
+        font-size: 16px;
+        top: 400px;
+    }
+    .userman{
+        left:10.53%;
+    }
+    .usersword{
+        left:65px;
+        font-size: 16px;
+        top: 450px;
+    }
+    .usercre{
+        left:10.53%;
+    }
+    .usercreword{
+        left:65px;
+        font-size: 16px;
+        top:490px;
+    }
+    .rates{
+        left:10.53%;
+    }
+    .rateword{
+        left:65px;
+        font-size: 16px;
+        top:530px;
+    }
+    .accset{
+        left:10.53%;
+    }
+    .accsetword{
+        left:65px;
+        font-size: 16px;
+        top:570px;
+    }
+
 }
