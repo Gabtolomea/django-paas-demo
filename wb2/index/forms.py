@@ -1,11 +1,12 @@
 
+from dataclasses import fields
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import *
 
 
-class CustomUserForm(UserCreationForm):
+class SystemUserForm(UserCreationForm):
     password1: forms.Field(label='Password')
     password2: forms.Field(label='Confirm Password')
     class Meta:
@@ -20,7 +21,31 @@ class CustomUserForm(UserCreationForm):
             'firstname',
             'midname',
             'lastname',
-            'profilepic'            
+            'profilepic',
+            'mobilenum',
+            'authorizedapprover'
+
         )
+
+# class RatesForm(ModelForm):
+#     class Meta:
+#         model = Rates
+#         fields = (
+#             'minReading',
+#             'minReadingCharge',
+#             'rateAfterMin',
+#             'ratePenalty',
+#             'ratePenaltyFreq'
+#         )
+
+# class BarangayRecordForm(ModelForm):
+#     model = BarangayRecord
+#     field = (
+#         'B_RecordID',
+#         'barangaycode',
+#         'year',
+#     )
+
+        
 
 
