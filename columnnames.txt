@@ -1,0 +1,26 @@
+"yearly_records"
+    year
+    total_due_ytd
+    total_paid_ytd
+    total_usage
+    total_due_january
+    total_paid_january
+    usage_january
+    total_due_february
+    total_paid_february
+    usage_february
+    total_due_march
+    total_paid_march
+    usage_march
+    total_due_april
+    total_paid_april
+    usage_april
+    total_due_may
+    total_paid_may
+    usage_may
+    total_due_june
+    total_paid_june
+    usage_june
+    total_due_july
+    total_paid_july
+    usage_july
