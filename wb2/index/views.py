@@ -1013,7 +1013,6 @@ def landingpage(request):
         ratepenaltyfrequency,
         paymentchedday,
     ]
-
     revenuecode = [
         revid,
         application_fee,
@@ -1107,10 +1106,11 @@ def landingpage(request):
         yearly_records,
     ]
     mycursor = mydb.cursor()
-    columnname = ""
-    for t in tablenames:
-        tablename = t
-        mycursor.execute("SELECT " + columnname + " FROM "+tablename)
+    c = 0
+
+    for t in range(tablenames.count):
+        tablename = tablenames[t]
+        mycursor.execute("SELECT " + columnnames[c] + " FROM "+tablename)
         myresult = mycursor.fetchall()
         for x in myresult:
             accountinfoid.append(x[0])
