@@ -1,7 +1,9 @@
 html{
     background-image: linear-gradient(white,#63CDD7);
-    height: 100%;
     font-family: 'Poppins',sans-serif;
+    height: auto;
+    min-height: 100%;
+
 }
 body{
     margin: 10%;
