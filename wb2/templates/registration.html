@@ -14,7 +14,7 @@
 	<body>
 		<section id="registration-page">
 			<form action="" class="signup-form">
-
+				{% csrf_token %}
 				<div class="container-fluid">
 					<div class="wrapper m-4">
 						<div class="form-header">
@@ -23,6 +23,8 @@
 						<div class="row form-group w-100 m-auto">
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">First Name</label>
+								{{form.firstname}}
+
 								<input type="text" placholder="" class="form-control">
 							</div>
 
