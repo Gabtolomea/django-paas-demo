@@ -38,12 +38,25 @@ def landingpage(request):
         "'systemuser'",
         "'yearly_records'"
     ]
+    tablenames2 = [
+        "accountinfo",
+        "accountrecord",
+        "barangay_record",
+        "consumerinfo",
+        "gettotalbill",
+        "oldconsumerinfo",
+        "payment_history",
+        "ratestable",
+        "revenuecode",
+        "systemuser",
+        "yearly_records"
+    ]
     columnnames = [
-        "'accountinfoid'",
-        "'firstname'",
-        "'middlename'",
-        "'lastname'",
-        "'address'",
+        "accountinfoid",
+        "firstname",
+        "middlename",
+        "lastname",
+        "address",
         'barangay',
         'meternumber',
         'initial_meter_reading',
@@ -71,7 +84,7 @@ def landingpage(request):
         'datepaid_jan',
         'dateposted_jan',
         'postedby_jan',
-        'txtrefnum_jan',
+        'txrefnum_jan',
         'ior_jan',
         'reading_feb',
         'reading_date_feb',
@@ -84,7 +97,7 @@ def landingpage(request):
         'datepaid_feb',
         'dateposted_feb',
         'postedby_feb',
-        'txtrefnum_feb',
+        'txrefnum_feb',
         'ior_feb',
         'reading_mar',
         'reading_date_mar',
@@ -97,7 +110,7 @@ def landingpage(request):
         'datepaid_mar',
         'dateposted_mar',
         'postedby_mar',
-        'txtrefnum_mar',
+        'txrefnum_mar',
         'ior_mar',
         'reading_apr',
         'reading_postedby_apr',
@@ -109,7 +122,7 @@ def landingpage(request):
         'datepaid_apr',
         'dateposted_apr',
         'postedby_apr',
-        'txtrefnum_apr',
+        'txrefnum_apr',
         'ior_apr',
         'reading_may',
         'reading_date_may',
@@ -122,6 +135,7 @@ def landingpage(request):
         'datepaid_may',
         'dateposted_may',
         'postedby_may',
+        'txrefnum_may',
         'ior_may',
         'reading_jun',
         'reading_date_jun',
@@ -134,7 +148,7 @@ def landingpage(request):
         'datepaid_jun',
         'dateposted_jun',
         'postedby_jun',
-        'txtrefnum_jun',
+        'txrefnum_jun',
         'ior_jun',
         'reading_jul',
         'reading_date_jul',
@@ -147,7 +161,7 @@ def landingpage(request):
         'datepaid_jul',
         'dateposted_jul',
         'postedby_jul',
-        'txtrefnum_jul',
+        'txrefnum_jul',
         'ior_jul',
         'reading_aug',
         'reading_date_aug',
@@ -160,7 +174,7 @@ def landingpage(request):
         'datepaid_aug',
         'dateposted_aug',
         'postedby_aug',
-        'txtrefnum_aug',
+        'txrefnum_aug',
         'ior_aug',
         'reading_sept',
         'reading_date_sept',
@@ -175,7 +189,7 @@ def landingpage(request):
         'datepaid_sept',
         'dateposted_sept',
         'postedby_sept',
-        'txtrefnum_sept',
+        'txrefnum_sept',
         'ior_sept',
         'reading_oct',
         'reading_date_oct',
@@ -188,7 +202,7 @@ def landingpage(request):
         'datepaid_oct',
         'dateposted_oct',
         'postedby_oct',
-        'txtrefnum_oct',
+        'txrefnum_oct',
         'ior_oct',
         'reading_nov',
         'reading_date_nov',
@@ -201,7 +215,7 @@ def landingpage(request):
         'datepaid_nov',
         'dateposted_nov',
         'postedby_nov',
-        'txtrefnum_nov',
+        'txrefnum_nov',
         'ior_apr',
         'reading_dec',
         'reading_date_dec',
@@ -214,7 +228,7 @@ def landingpage(request):
         'datepaid_dec',
         'dateposted_dec',
         'postedby_dec',
-        'txtrefnum_dec',
+        'txrefnum_dec',
         'ior_dec',
         'barangay_val',
         'barangay_name',
@@ -413,7 +427,7 @@ def landingpage(request):
     datepaid_jan = []
     dateposted_jan = []
     postedby_jan = []
-    txtrefnum_jan = []
+    txrefnum_jan = []
     ior_jan = []
     reading_feb = []
     reading_date_feb = []
@@ -426,7 +440,7 @@ def landingpage(request):
     datepaid_feb = []
     dateposted_feb = []
     postedby_feb = []
-    txtrefnum_feb = []
+    txrefnum_feb = []
     ior_feb = []
     reading_mar = []
     reading_date_mar = []
@@ -439,7 +453,7 @@ def landingpage(request):
     datepaid_mar = []
     dateposted_mar = []
     postedby_mar = []
-    txtrefnum_mar = []
+    txrefnum_mar = []
     ior_mar = []
     reading_apr = []
     reading_postedby_apr = []
@@ -451,7 +465,7 @@ def landingpage(request):
     datepaid_apr = []
     dateposted_apr = []
     postedby_apr = []
-    txtrefnum_apr = []
+    txrefnum_apr = []
     ior_apr = []
     reading_may = []
     reading_date_may = []
@@ -464,6 +478,7 @@ def landingpage(request):
     datepaid_may = []
     dateposted_may = []
     postedby_may = []
+    txrefnum_may = []
     ior_may = []
     reading_jun = []
     reading_date_jun = []
@@ -476,7 +491,7 @@ def landingpage(request):
     datepaid_jun = []
     dateposted_jun = []
     postedby_jun = []
-    txtrefnum_jun = []
+    txrefnum_jun = []
     ior_jun = []
     reading_jul = []
     reading_date_jul = []
@@ -489,7 +504,7 @@ def landingpage(request):
     datepaid_jul = []
     dateposted_jul = []
     postedby_jul = []
-    txtrefnum_jul = []
+    txrefnum_jul = []
     ior_jul = []
     reading_aug = []
     reading_date_aug = []
@@ -502,7 +517,7 @@ def landingpage(request):
     datepaid_aug = []
     dateposted_aug = []
     postedby_aug = []
-    txtrefnum_aug = []
+    txrefnum_aug = []
     ior_aug = []
     reading_sept = []
     reading_date_sept = []
@@ -517,7 +532,7 @@ def landingpage(request):
     datepaid_sept = []
     dateposted_sept = []
     postedby_sept = []
-    txtrefnum_sept = []
+    txrefnum_sept = []
     ior_sept = []
     reading_oct = []
     reading_date_oct = []
@@ -530,7 +545,7 @@ def landingpage(request):
     datepaid_oct = []
     dateposted_oct = []
     postedby_oct = []
-    txtrefnum_oct = []
+    txrefnum_oct = []
     ior_oct = []
     reading_nov = []
     reading_date_nov = []
@@ -543,7 +558,7 @@ def landingpage(request):
     datepaid_nov = []
     dateposted_nov = []
     postedby_nov = []
-    txtrefnum_nov = []
+    txrefnum_nov = []
     ior_apr = []
     reading_dec = []
     reading_date_dec = []
@@ -556,7 +571,7 @@ def landingpage(request):
     datepaid_dec = []
     dateposted_dec = []
     postedby_dec = []
-    txtrefnum_dec = []
+    txrefnum_dec = []
     ior_dec = []
 
     barangay_val=[]
@@ -764,7 +779,7 @@ def landingpage(request):
         datepaid_jan,
         dateposted_jan,
         postedby_jan,
-        txtrefnum_jan,
+        txrefnum_jan,
         ior_jan,
         reading_feb,
         reading_date_feb,
@@ -777,7 +792,7 @@ def landingpage(request):
         datepaid_feb,
         dateposted_feb,
         postedby_feb,
-        txtrefnum_feb,
+        txrefnum_feb,
         ior_feb,
         reading_mar,
         reading_date_mar,
@@ -790,7 +805,7 @@ def landingpage(request):
         datepaid_mar,
         dateposted_mar,
         postedby_mar,
-        txtrefnum_mar,
+        txrefnum_mar,
         ior_mar,
         reading_apr,
         reading_postedby_apr,
@@ -802,7 +817,7 @@ def landingpage(request):
         datepaid_apr,
         dateposted_apr,
         postedby_apr,
-        txtrefnum_apr,
+        txrefnum_apr,
         ior_apr,
         reading_may,
         reading_date_may,
@@ -815,6 +830,7 @@ def landingpage(request):
         datepaid_may,
         dateposted_may,
         postedby_may,
+        txrefnum_may,
         ior_may,
         reading_jun,
         reading_date_jun,
@@ -827,7 +843,7 @@ def landingpage(request):
         datepaid_jun,
         dateposted_jun,
         postedby_jun,
-        txtrefnum_jun,
+        txrefnum_jun,
         ior_jun,
         reading_jul,
         reading_date_jul,
@@ -840,7 +856,7 @@ def landingpage(request):
         datepaid_jul,
         dateposted_jul,
         postedby_jul,
-        txtrefnum_jul,
+        txrefnum_jul,
         ior_jul,
         reading_aug,
         reading_date_aug,
@@ -853,7 +869,7 @@ def landingpage(request):
         datepaid_aug,
         dateposted_aug,
         postedby_aug,
-        txtrefnum_aug,
+        txrefnum_aug,
         ior_aug,
         reading_sept,
         reading_date_sept,
@@ -868,7 +884,7 @@ def landingpage(request):
         datepaid_sept,
         dateposted_sept,
         postedby_sept,
-        txtrefnum_sept,
+        txrefnum_sept,
         ior_sept,
         reading_oct,
         reading_date_oct,
@@ -881,7 +897,7 @@ def landingpage(request):
         datepaid_oct,
         dateposted_oct,
         postedby_oct,
-        txtrefnum_oct,
+        txrefnum_oct,
         ior_oct,
         reading_nov,
         reading_date_nov,
@@ -894,7 +910,7 @@ def landingpage(request):
         datepaid_nov,
         dateposted_nov,
         postedby_nov,
-        txtrefnum_nov,
+        txrefnum_nov,
         ior_apr,
         reading_dec,
         reading_date_dec,
@@ -907,7 +923,7 @@ def landingpage(request):
         datepaid_dec,
         dateposted_dec,
         postedby_dec,
-        txtrefnum_dec,
+        txrefnum_dec,
         ior_dec,
     ]
     barangay_record = [
@@ -1106,14 +1122,14 @@ def landingpage(request):
 
     cols = 0
     for t in range(len(tablenames)):
-        tablename = tablenames[t]
-        mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = "+tablename+";")
+        tablename = tablenames2[t]
+        mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = "+tablenames[t]+";")
         count = mycursor.fetchone()[0]
         print(count)
         for c in range(count):
-            mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablename)
+            mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablename+";")
             myresult = mycursor.fetchall()
-            print(columnnames[c])
+            print(columnnames[cols])
             cols+=1
 
     
