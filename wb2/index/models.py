@@ -22,6 +22,8 @@ class SystemUsers(AbstractUser):
     mobilenum = models.CharField(max_length=20, blank=True)
     usertype = models.CharField(max_length=20, choices=USER_TYPE)
     profilepic = models.ImageField(blank=True, null=True)
+    mobilenum = models.CharField(max_length=20, blank=True)
+    authorizedapprover = models.CharField(max_length=20, blank=True)
 
 class Rates(models.Model):
     minReading = models.IntegerField()
