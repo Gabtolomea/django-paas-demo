@@ -1155,9 +1155,6 @@ def login(request):
 def home(request):
     return render(request, 'home.html')
 
-def userreg(request):
-    return render(request, 'registration.html')
-
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -1167,5 +1164,8 @@ def user_creation(request):
 
             return redirect('login')
 
-    context = {'form':form, 'errors':form.errors}
+    context = {
+        'form':form, 
+        'errors':form.errors,
+    }
     return render(request, 'registration.html', context)

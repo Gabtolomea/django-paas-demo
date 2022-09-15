@@ -13,7 +13,7 @@
 
 	<body>
 		<section id="registration-page">
-			<form action="" class="signup-form">
+			<form action="user_creation" class="signup-form" method="POST">
 				{% csrf_token %}
 				<div class="container-fluid">
 					<div class="wrapper m-4">
@@ -23,7 +23,7 @@
 						<div class="row form-group w-100 m-auto">
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">First Name</label>
-								{{form.firstname}}
+								{{form.username}}
 
 								<input type="text" placholder="" class="form-control">
 							</div>
