@@ -1089,8 +1089,6 @@ def landingpage(request):
         yr_total_due_december, 
         yr_total_paid_december,
         yr_usage_december,
-
-
     ]
     alltables = [
         accountinfo, 
@@ -1109,14 +1107,15 @@ def landingpage(request):
 
     for t in range(len(tablenames)):
         tablename = tablenames[t]
-        print(type(tablename))
-        mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE table_name = "+tablenames[t])
+        mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = "+tablenames[t]+";")
         count = mycursor.fetchone()[0]
         print(count)
+        mycursor.close()
         for c in range(count):
             mycursor.execute("SELECT " + columnnames[c] + " FROM "+tablename)
             myresult = mycursor.fetchall()
             print(columnnames[c])
+            mycursor.close()
 
     
 
