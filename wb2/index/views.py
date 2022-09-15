@@ -31,7 +31,6 @@ def landingpage(request):
         'barangay_record',
         'consumerinfo',
         'gettotalbill',
-        'meterreadingmodification_table',
         'oldconsumerinfo',
         'payment_history',
         'ratestable',
@@ -1107,14 +1106,17 @@ def landingpage(request):
         yearly_records,
     ]
     mycursor = mydb.cursor()
-    c = 0
 
-    for t in range(tablenames.count):
+    for t in range(len(tablenames)):
         tablename = tablenames[t]
-        mycursor.execute("SELECT " + columnnames[c] + " FROM "+tablename)
-        myresult = mycursor.fetchall()
-        for x in myresult:
-            accountinfoid.append(x[0])
+        print("tablename: "+tablename)
+        mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE table_name = accountinfo;")
+        count = mycursor.fetchall()
+        print(count)
+        for c in count:
+            mycursor.execute("SELECT " + columnnames[c] + " FROM "+tablename)
+            myresult = mycursor.fetchall()
+            print(columnnames[c])
 
     
 
@@ -1150,7 +1152,7 @@ def login(request):
         else:
             messages.error(request, "Invalid Username or Password")
 
-    return render(request, 'login2.0.html')
+    return render(request, 'login.html')
 
 def home(request):
     return render(request, 'home.html')
