@@ -300,6 +300,84 @@ def landingpage(request):
         'accountinfoid',
         'meternumber',
         'year',
+        'rt_id',
+        'minimumreading',
+        'minimumreading_charge',
+        'rateafterminimum',
+        'ratepenalty',
+        'ratepenaltyfrequency',
+        'paymentchedday',
+        'revid',
+        'application_fee',
+        'mayors_permit',
+        'gravel_excavation',
+        'asphalted_road',
+        'cemented_road',
+        'additional_fee_pipe_of_20_lineal_feet',
+        'residentialservice_per_month',
+        'commercialservice_per_month',
+        'residentialservice_excess_per_cubicmeter',
+        'commercialservice_per_cubicmeter',
+        'drilling_from_mainline',
+        'reinstallation_fee',
+        'tapping_fee',
+        'repair_fee',
+        'transfer_fee',
+        'three_month_penalty',
+        'disconnection_after',
+        'send_disconnection_notice_after',
+        'fix_amount_penalty',
+        'penalty_after',
+        'percentage_penalty',
+        'userid',
+        'password',
+        'su_firstname',
+        'su_middlename',
+        'su_mobilenumber',
+        'su_lastname',
+        'su_emailaddress',
+        'usertype',
+        'su_profilepic',
+        'approver_flag',
+        'yr_year',
+        'yr_total_paid_ytd', 
+        'yr_total_usage', 
+        'yr_total_due_january',
+        'yr_total_paid_january',
+        'yr_usage_january',
+        'yr_total_due_february', 
+        'yr_total_paid_february',
+        'yr_usage_february', 
+        'yr_total_due_march', 
+        'yr_total_paid_march', 
+        'yr_usage_march', 
+        'yr_total_due_april', 
+        'yr_total_paid_april', 
+        'yr_usage_april', 
+        'yr_total_due_may', 
+        'yr_total_paid_may', 
+        'yr_usage_may', 
+        'yr_total_due_june', 
+        'yr_total_paid_june', 
+        'yr_usage_june', 
+        'yr_total_due_july', 
+        'yr_total_paid_july', 
+        'yr_usage_july', 
+        'yr_total_due_august', 
+        'yr_total_paid_august', 
+        'yr_usage_august', 
+        'yr_total_due_september', 
+        'yr_total_paid_september', 
+        'yr_usage_september',
+        'yr_total_due_october', 
+        'yr_total_paid_october', 
+        'yr_usage_october', 
+        'yr_total_due_november', 
+        'yr_total_paid_november', 
+        'yr_usage_november', 
+        'yr_total_due_december', 
+        'yr_total_paid_december',
+        'yr_usage_december',
 
     ]
 
@@ -569,6 +647,88 @@ def landingpage(request):
     pay_hist_accountinfoid=[]
     pay_hist_meternumber=[]
     pay_hist_year=[]
+
+    rt_id=[]
+    minimumreading=[]
+    minimumreading_charge=[]
+    rateafterminimum=[]
+    ratepenalty=[]
+    ratepenaltyfrequency=[]
+    paymentchedday=[]
+
+    revid=[]
+    application_fee=[]
+    mayors_permit=[]
+    gravel_excavation=[]
+    asphalted_road=[]
+    cemented_road=[]
+    additional_fee_pipe_of_20_lineal_feet=[]
+    residentialservice_per_month=[]
+    commercialservice_per_month=[]
+    residentialservice_excess_per_cubicmeter=[]
+    commercialservice_per_cubicmeter=[]
+    drilling_from_mainline=[]
+    reinstallation_fee=[]
+    tapping_fee=[]
+    repair_fee=[]
+    transfer_fee=[]
+    three_month_penalty=[]
+    disconnection_after=[]
+    send_disconnection_notice_after=[]
+    fix_amount_penalty=[]
+    penalty_after=[]
+    percentage_penalty=[]
+
+    userid=[]
+    password=[]
+    su_firstname=[]
+    su_middlename=[]
+    su_mobilenumber=[]
+    su_lastname=[]
+    su_emailaddress=[]
+    usertype=[]
+    su_profilepic=[]
+    approver_flag=[]
+
+    yr_year=[]
+    yr_total_paid_ytd=[]
+    yr_total_usage=[]
+    yr_total_due_january=[]
+    yr_total_paid_january=[]
+    yr_usage_january=[]
+    yr_total_due_february =[]
+    yr_total_paid_february=[]
+    yr_usage_february =[]
+    yr_total_due_march =[]
+    yr_total_paid_march =[]
+    yr_usage_march=[] 
+    yr_total_due_april =[]
+    yr_total_paid_april =[]
+    yr_usage_april =[]
+    yr_total_due_may =[]
+    yr_total_paid_may =[]
+    yr_usage_may =[]
+    yr_total_due_june=[] 
+    yr_total_paid_june =[]
+    yr_usage_june =[]
+    yr_total_due_july =[]
+    yr_total_paid_july =[]
+    yr_usage_july =[]
+    yr_total_due_august =[]
+    yr_total_paid_august =[]
+    yr_usage_august =[]
+    yr_total_due_september =[]
+    yr_total_paid_september =[]
+    yr_usage_september =[]
+    yr_total_due_october =[]
+    yr_total_paid_october =[]
+    yr_usage_october =[]
+    yr_total_due_november =[]
+    yr_total_paid_november =[]
+    yr_usage_november=[]
+    yr_total_due_december =[]
+    yr_total_paid_december=[]
+    yr_usage_december=[]
 
     accountinfo = [
         accountinfoid,
@@ -844,11 +1004,95 @@ def landingpage(request):
         pay_hist_meternumber,
         pay_hist_year,
     ]
-    """
-    ratestable
-    revenuecode
-    systemuser
-    yearly_records"""
+    ratestable = [
+        rt_id,
+        minimumreading,
+        minimumreading_charge,
+        rateafterminimum,
+        ratepenalty,
+        ratepenaltyfrequency,
+        paymentchedday,
+    ]
+
+    revenuecode = [
+        revid,
+        application_fee,
+        mayors_permit,
+        gravel_excavation,
+        asphalted_road,
+        cemented_road,
+        additional_fee_pipe_of_20_lineal_feet,
+        residentialservice_per_month,
+        commercialservice_per_month,
+        residentialservice_excess_per_cubicmeter,
+        commercialservice_per_cubicmeter,
+        drilling_from_mainline,
+        reinstallation_fee,
+        tapping_fee,
+        repair_fee,
+        transfer_fee,
+        three_month_penalty,
+        disconnection_after,
+        send_disconnection_notice_after,
+        fix_amount_penalty,
+        penalty_after,
+        percentage_penalty,
+    ]
+    systemuser = [
+        userid,
+        password,
+        su_firstname,
+        su_middlename,
+        su_mobilenumber,
+        su_lastname,
+        su_emailaddress,
+        usertype,
+        su_profilepic,
+        approver_flag
+    ]
+    yearly_records =[
+        yr_year,
+        yr_total_paid_ytd, 
+        yr_total_usage, 
+        yr_total_due_january,
+        yr_total_paid_january,
+        yr_usage_january,
+        yr_total_due_february, 
+        yr_total_paid_february,
+        yr_usage_february, 
+        yr_total_due_march, 
+        yr_total_paid_march, 
+        yr_usage_march, 
+        yr_total_due_april, 
+        yr_total_paid_april, 
+        yr_usage_april, 
+        yr_total_due_may, 
+        yr_total_paid_may, 
+        yr_usage_may, 
+        yr_total_due_june, 
+        yr_total_paid_june, 
+        yr_usage_june, 
+        yr_total_due_july, 
+        yr_total_paid_july, 
+        yr_usage_july, 
+        yr_total_due_august, 
+        yr_total_paid_august, 
+        yr_usage_august, 
+        yr_total_due_september, 
+        yr_total_paid_september, 
+        yr_usage_september, 
+        yr_total_due_october, 
+        yr_total_paid_october, 
+        yr_usage_october, 
+        yr_total_due_november, 
+        yr_total_paid_november, 
+        yr_usage_november, 
+        yr_total_due_december, 
+        yr_total_paid_december,
+        yr_usage_december,
+
+
+    ]
     alltables = [
         accountinfo, 
         accountrecord,
@@ -857,10 +1101,10 @@ def landingpage(request):
         gettotalbill,
         oldconsumerinfo,
         payment_history,
-        #ratestable,
-        #revenuecode,
-        #systemuser,
-        #yearly_records,
+        ratestable,
+        revenuecode,
+        systemuser,
+        yearly_records,
     ]
     mycursor = mydb.cursor()
     columnname = ""
