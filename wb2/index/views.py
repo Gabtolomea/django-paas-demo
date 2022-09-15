@@ -186,8 +186,6 @@ def landingpage(request):
         'bill_sept',
         'totalbill_sept',
         'paidamt_sept',
-        'totalbill_sept',
-        'paidamt_sept',
         'datepaid_sept',
         'dateposted_sept',
         'postedby_sept',
