@@ -1,0 +1,11 @@
+"payment_history"
+    id
+    amount
+    date
+    or_number
+    time
+    postedby
+    consumer
+    accountinfoid
+    meternumber
+    year
