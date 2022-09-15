@@ -3,6 +3,7 @@ from calendar import c
 from datetime import date
 from pyexpat import model
 from tkinter import CASCADE
+from urllib import request
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
@@ -10,18 +11,15 @@ from django.contrib.auth.models import AbstractUser
 
 
 class SystemUsers(AbstractUser):
-    USER_TYPE = (
-        ('Admin','Admin'),
-        ('Teller','Teller'),
-        ('Supervisor','Supervisor'),
-        ('Manager','Manager'),
-        ('Meter Reader','Meter Reader'),
-    )
+    is_admin = models.BooleanField()
+    is_teller = models.BooleanField()
+    is_supervisor = models.BooleanField()
+    is_manager = models.BooleanField()
+    is_meter = models.BooleanField()
     firstname = models.CharField(max_length=20, blank=True)
     midname = models.CharField(max_length=20, blank=True)
     lastname = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    usertype = models.CharField(max_length=20, choices=USER_TYPE)
     profilepic = models.ImageField(blank=True, null=True)
     mobilenum = models.CharField(max_length=20, blank=True)
     authorizedapprover = models.CharField(max_length=20, blank=True)

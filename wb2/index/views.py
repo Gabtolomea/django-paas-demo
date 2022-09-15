@@ -1160,11 +1160,11 @@ def user_creation(request):
     if request.method == "POST":
         form = SystemUserForm(request.POST)
         if request.method == 'POST':
-            admin = request.POST['admin']
-            teller = request.POST['teller']
-            supervisor = request.POST['supervisor']
-            manager = request.POST['manager']
-            meter = request.POST['meter']
+            is_admin = request.POST['admin']
+            is_teller = request.POST['teller']
+            is_supervisor = request.POST['supervisor']
+            is_manager = request.POST['manager']
+            is_meter = request.POST['meter']
         if form.is_valid():
             form.save()
 
