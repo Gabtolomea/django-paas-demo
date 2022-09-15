@@ -17,6 +17,7 @@ class SystemUsers(AbstractUser):
         ('Manager','Manager'),
         ('Meter Reader','Meter Reader'),
     )
+    firstname = models.CharField(max_length=20, blank=True)
     midname = models.CharField(max_length=20, blank=True)
     lastname = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)

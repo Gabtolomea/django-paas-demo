@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -1157,4 +1158,13 @@ def home(request):
 def userreg(request):
     return render(request, 'registration.html')
 
+def user_creation(request):
+    form = SystemUserForm()
+    if request.method == "POST":
+        form = SystemUserForm(request.POST)
+        if form.is_valid():
+            form.save()
 
+    return redirect('login')
+
+context
