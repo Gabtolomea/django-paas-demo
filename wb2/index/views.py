@@ -23,6 +23,877 @@ mydb = mysql.connector.connect(
     password="yjh434ctuG@-@",
     database="lgu_ginatilan_db"
 )
+<<<<<<< HEAD
+
+
+def landingpage(request):
+    tablenames = [
+        'accountinfo',
+        'accountrecord',
+        'barangay_record',
+        'consumerinfo',
+        'gettotalbill',
+        'meterreadingmodification_table',
+        'oldconsumerinfo',
+        'payment_history',
+        'ratestable',
+        'revenuecode',
+        'systemuser',
+        'yearly_records'
+    ]
+
+    columnnames = [
+        'accountinfoid',
+        'firstname',
+        'middlename',
+        'lastname',
+        'address',
+        'barangay',
+        'meternumber',
+        'initial_meter_reading',
+        'rateid',
+        'status',
+        'duedate',
+        'consumerid_id',
+        'penalty_flag',
+        'deleted_flag',
+        'stop_meter_flag',
+        'accountid',
+        'rateid',
+        'prevyeardue',
+        'excesspayment',
+        'commulative_bill',
+        'year',
+        'reading_jan',
+        'reading_date_jan',
+        'reading_postedby_jan',
+        'usage_jan',
+        'penalty_jan',
+        'bill_jan',
+        'totalbill_jan',
+        'paidamt_jan',
+        'datepaid_jan',
+        'dateposted_jan',
+        'postedby_jan',
+        'txtrefnum_jan',
+        'ior_jan',
+        'reading_feb',
+        'reading_date_feb',
+        'reading_postedby_feb',
+        'usage_feb',
+        'penalty_feb',
+        'bill_feb',
+        'totalbill_feb',
+        'paidamt_feb',
+        'datepaid_feb',
+        'dateposted_feb',
+        'postedby_feb',
+        'txtrefnum_feb',
+        'ior_feb',
+        'reading_mar',
+        'reading_date_mar',
+        'reading_postedby_mar',
+        'usage_mar',
+        'penalty_mar',
+        'bill_mar',
+        'totalbill_mar',
+        'paidamt_mar',
+        'datepaid_mar',
+        'dateposted_mar',
+        'postedby_mar',
+        'txtrefnum_mar',
+        'ior_mar',
+        'reading_apr',
+        'reading_postedby_apr',
+        'usage_apr',
+        'penalty_apr',
+        'bill_apr',
+        'totalbill_apr',
+        'paidamt_apr',
+        'datepaid_apr',
+        'dateposted_apr',
+        'postedby_apr',
+        'txtrefnum_apr',
+        'ior_apr',
+        'reading_may',
+        'reading_date_may',
+        'reading_postedby_may',
+        'usage_may',
+        'penalty_may',
+        'bill_may',
+        'totalbill_may',
+        'paidamt_may',
+        'datepaid_may',
+        'dateposted_may',
+        'postedby_may',
+        'ior_may',
+        'reading_jun',
+        'reading_date_jun',
+        'reading_postedby_jun',
+        'usage_jun',
+        'penalty_jun',
+        'bill_jun',
+        'totalbill_jun',
+        'paidamt_jun',
+        'datepaid_jun',
+        'dateposted_jun',
+        'postedby_jun',
+        'txtrefnum_jun',
+        'ior_jun',
+        'reading_jul',
+        'reading_date_jul',
+        'reading_postedby_jul',
+        'usage_jul',
+        'penalty_jul',
+        'bill_jul',
+        'totalbill_jul',
+        'paidamt_jul',
+        'datepaid_jul',
+        'dateposted_jul',
+        'postedby_jul',
+        'txtrefnum_jul',
+        'ior_jul',
+        'reading_aug',
+        'reading_date_aug',
+        'reading_postedby_aug',
+        'usage_aug',
+        'penalty_aug',
+        'bill_aug',
+        'totalbill_aug',
+        'paidamt_aug',
+        'datepaid_aug',
+        'dateposted_aug',
+        'postedby_aug',
+        'txtrefnum_aug',
+        'ior_aug',
+        'reading_sept',
+        'reading_date_sept',
+        'reading_postedby_sept',
+        'usage_sept',
+        'penalty_sept',
+        'bill_sept',
+        'totalbill_sept',
+        'paidamt_sept',
+        'totalbill_sept',
+        'paidamt_sept',
+        'datepaid_sept',
+        'dateposted_sept',
+        'postedby_sept',
+        'txtrefnum_sept',
+        'ior_sept',
+        'reading_oct',
+        'reading_date_oct',
+        'reading_postedby_oct',
+        'usage_oct',
+        'penalty_oct',
+        'bill_oct',
+        'totalbill_oct',
+        'paidamt_oct',
+        'datepaid_oct',
+        'dateposted_oct',
+        'postedby_oct',
+        'txtrefnum_oct',
+        'ior_oct',
+        'reading_nov',
+        'reading_date_nov',
+        'reading_postedby_nov',
+        'usage_nov',
+        'penalty_nov',
+        'bill_nov',
+        'totalbill_nov',
+        'paidamt_nov',
+        'datepaid_nov',
+        'dateposted_nov',
+        'postedby_nov',
+        'txtrefnum_nov',
+        'ior_apr',
+        'reading_dec',
+        'reading_date_dec',
+        'reading_postedby_dec',
+        'usage_dec',
+        'penalty_dec',
+        'bill_dec',
+        'totalbill_dec',
+        'paidamt_dec',
+        'datepaid_dec',
+        'dateposted_dec',
+        'postedby_dec',
+        'txtrefnum_dec',
+        'ior_dec',
+        'barangay_val',
+        'barangay_name',
+        'year',
+        'total_due_ytd',
+        'total_paid_ytd',
+        'total_usage',
+        'total_due_january',
+        'total_paid_january',
+        'usage_january',
+        'total_due_february',
+        'total_paid_february',
+        'usage_february',
+        'total_due_march',
+        'total_paid_march',
+        'usage_march',
+        'total_due_april',
+        'total_paid_april',
+        'usage_april',
+        'total_due_may',
+        'total_paid_may',
+        'usage_may',
+        'total_due_june',
+        'total_paid_june',
+        'usage_june',
+        'total_due_july',
+        'total_paid_july',
+        'usage_july',
+        'total_due_august',
+        'total_paid_august',
+        'usage_august',
+        'total_due_september',
+        'total_paid_september',
+        'usage_september',
+        'total_due_october',
+        'total_paid_october',
+        'usage_october',
+        'total_due_november',
+        'total_paid_november',
+        'usage_november',
+        'total_due_december',
+        'total_paid_december',
+        'usage_december',
+        'consumerid',
+        'firstname',
+        'middlename',
+        'birthday',
+        'mobilenumber',
+        'mobilenumber2',
+        'emailaddress',
+        'homeaddress',
+        'sex',
+        'installcount',
+        'profilepic',
+        'barangay',
+        'sitio',
+        'oldconsumerid',
+        'deleted_flag',
+        'bill_id',
+        'con_id',
+        'currentdue',
+        'rateid',
+        'paid',
+        'current_reading',
+        'reading_date',
+        'previous_reading',
+        'consumption',
+        'con_id',
+        'firstname',
+        'middlename',
+        'lastname',
+        'con_category',
+        'meternumber',
+        'address',
+        'id',
+        'amount',
+        'date',
+        'or_number',
+        'time',
+        'postedby',
+        'consumer',
+        'accountinfoid',
+        'meternumber',
+        'year',
+
+    ]
+
+    accountinfoid = [],
+    firstname = [],
+    middlename = [],
+    lastname = [],
+    address = [],
+    barangay = [],
+    meternumber = [],
+    initial_meter_reading = [],
+    acc_info_rateid = [],
+    status = [],
+    duedate = [],
+    consumerid_id = [],
+    penalty_flag = [],
+    deleted_flag = [],
+    stop_meter_flag = [],
+
+    accountid = []
+    acc_rec_rateid = []
+    prevyeardue = []
+    excesspayment = []
+    commulative_bill = []
+    year = []
+    reading_jan = []
+    reading_date_jan = []
+    reading_postedby_jan = []
+    usage_jan = []
+    penalty_jan = []
+    bill_jan = []
+    totalbill_jan = []
+    paidamt_jan = []
+    datepaid_jan = []
+    dateposted_jan = []
+    postedby_jan = []
+    txtrefnum_jan = []
+    ior_jan = []
+    reading_feb = []
+    reading_date_feb = []
+    reading_postedby_feb = []
+    usage_feb = []
+    penalty_feb = []
+    bill_feb = []
+    totalbill_feb = []
+    paidamt_feb = []
+    datepaid_feb = []
+    dateposted_feb = []
+    postedby_feb = []
+    txtrefnum_feb = []
+    ior_feb = []
+    reading_mar = []
+    reading_date_mar = []
+    reading_postedby_mar = []
+    usage_mar = []
+    penalty_mar = []
+    bill_mar = []
+    totalbill_mar = []
+    paidamt_mar = []
+    datepaid_mar = []
+    dateposted_mar = []
+    postedby_mar = []
+    txtrefnum_mar = []
+    ior_mar = []
+    reading_apr = []
+    reading_postedby_apr = []
+    usage_apr = []
+    penalty_apr = []
+    bill_apr = []
+    totalbill_apr = []
+    paidamt_apr = []
+    datepaid_apr = []
+    dateposted_apr = []
+    postedby_apr = []
+    txtrefnum_apr = []
+    ior_apr = []
+    reading_may = []
+    reading_date_may = []
+    reading_postedby_may = []
+    usage_may = []
+    penalty_may = []
+    bill_may = []
+    totalbill_may = []
+    paidamt_may = []
+    datepaid_may = []
+    dateposted_may = []
+    postedby_may = []
+    ior_may = []
+    reading_jun = []
+    reading_date_jun = []
+    reading_postedby_jun = []
+    usage_jun = []
+    penalty_jun = []
+    bill_jun = []
+    totalbill_jun = []
+    paidamt_jun = []
+    datepaid_jun = []
+    dateposted_jun = []
+    postedby_jun = []
+    txtrefnum_jun = []
+    ior_jun = []
+    reading_jul = []
+    reading_date_jul = []
+    reading_postedby_jul = []
+    usage_jul = []
+    penalty_jul = []
+    bill_jul = []
+    totalbill_jul = []
+    paidamt_jul = []
+    datepaid_jul = []
+    dateposted_jul = []
+    postedby_jul = []
+    txtrefnum_jul = []
+    ior_jul = []
+    reading_aug = []
+    reading_date_aug = []
+    reading_postedby_aug = []
+    usage_aug = []
+    penalty_aug = []
+    bill_aug = []
+    totalbill_aug = []
+    paidamt_aug = []
+    datepaid_aug = []
+    dateposted_aug = []
+    postedby_aug = []
+    txtrefnum_aug = []
+    ior_aug = []
+    reading_sept = []
+    reading_date_sept = []
+    reading_postedby_sept = []
+    usage_sept = []
+    penalty_sept = []
+    bill_sept = []
+    totalbill_sept = []
+    paidamt_sept = []
+    totalbill_sept = []
+    paidamt_sept = []
+    datepaid_sept = []
+    dateposted_sept = []
+    postedby_sept = []
+    txtrefnum_sept = []
+    ior_sept = []
+    reading_oct = []
+    reading_date_oct = []
+    reading_postedby_oct = []
+    usage_oct = []
+    penalty_oct = []
+    bill_oct = []
+    totalbill_oct = []
+    paidamt_oct = []
+    datepaid_oct = []
+    dateposted_oct = []
+    postedby_oct = []
+    txtrefnum_oct = []
+    ior_oct = []
+    reading_nov = []
+    reading_date_nov = []
+    reading_postedby_nov = []
+    usage_nov = []
+    penalty_nov = []
+    bill_nov = []
+    totalbill_nov = []
+    paidamt_nov = []
+    datepaid_nov = []
+    dateposted_nov = []
+    postedby_nov = []
+    txtrefnum_nov = []
+    ior_apr = []
+    reading_dec = []
+    reading_date_dec = []
+    reading_postedby_dec = []
+    usage_dec = []
+    penalty_dec = []
+    bill_dec = []
+    totalbill_dec = []
+    paidamt_dec = []
+    datepaid_dec = []
+    dateposted_dec = []
+    postedby_dec = []
+    txtrefnum_dec = []
+    ior_dec = []
+
+    barangay_val=[]
+    barangay_name=[]
+    brgy_rec_year=[]
+    total_due_ytd=[]
+    total_paid_ytd=[]
+    total_usage=[]
+    total_due_january=[]
+    total_paid_january=[]
+    usage_january=[]
+    total_due_february=[]
+    total_paid_february=[]
+    usage_february=[]
+    total_due_march=[]
+    total_paid_march=[]
+    usage_march=[]
+    total_due_april=[]
+    total_paid_april=[]
+    usage_april=[]
+    total_due_may=[]
+    total_paid_may=[]
+    usage_may=[]
+    total_due_june=[]
+    total_paid_june=[]
+    usage_june=[]
+    total_due_july=[]
+    total_paid_july=[]
+    usage_july=[]
+    total_due_august=[]
+    total_paid_august=[]
+    usage_august=[]
+    total_due_september=[]
+    total_paid_september=[]
+    usage_september=[]
+    total_due_october=[]
+    total_paid_october=[]
+    usage_october=[]
+    total_due_november=[]
+    total_paid_november=[]
+    usage_november=[]
+    total_due_december=[]
+    total_paid_december=[]
+    usage_december=[]
+
+    consumerid=[]
+    cons_info_firstname=[]
+    cons_info_middlename=[]
+    cons_info_birthday=[]
+    mobilenumber=[]
+    mobilenumber2=[]
+    emailaddress=[]
+    homeaddress=[]
+    sex=[]
+    installcount=[]
+    profilepic=[]
+    cons_info_barangay=[]
+    sitio=[]
+    oldconsumerid=[]
+    cons_info_deleted_flag=[]
+
+    bill_id=[]
+    con_id=[]
+    currentdue=[]
+    rateid=[]
+    paid=[]
+    current_reading=[]
+    reading_date=[]
+    previous_reading=[]
+    consumption=[]
+
+    old_con_id=[]
+    old_firstname=[]
+    old_middlename=[]
+    old_lastname=[]
+    con_category=[]
+    old_meternumber=[]
+    old_address=[]
+    
+    pay_hist_id=[]
+    amount=[]
+    pay_hist_date=[]
+    or_number=[]
+    time=[]
+    postedby=[]
+    consumer=[]
+    pay_hist_accountinfoid=[]
+    pay_hist_meternumber=[]
+    pay_hist_year=[]
+
+    accountinfo = [
+        accountinfoid,
+        firstname,
+        middlename,
+        lastname,
+        address,
+        barangay,
+        meternumber,
+        initial_meter_reading,
+        acc_info_rateid,
+        status,
+        duedate,
+        consumerid_id,
+        penalty_flag,
+        deleted_flag,
+        stop_meter_flag
+    ]
+    accountrecord = [
+        accountid,
+        acc_rec_rateid,
+        prevyeardue,
+        excesspayment,
+        commulative_bill,
+        year,
+        reading_jan,
+        reading_date_jan,
+        reading_postedby_jan,
+        usage_jan,
+        penalty_jan,
+        bill_jan,
+        totalbill_jan,
+        paidamt_jan,
+        datepaid_jan,
+        dateposted_jan,
+        postedby_jan,
+        txtrefnum_jan,
+        ior_jan,
+        reading_feb,
+        reading_date_feb,
+        reading_postedby_feb,
+        usage_feb,
+        penalty_feb,
+        bill_feb,
+        totalbill_feb,
+        paidamt_feb,
+        datepaid_feb,
+        dateposted_feb,
+        postedby_feb,
+        txtrefnum_feb,
+        ior_feb,
+        reading_mar,
+        reading_date_mar,
+        reading_postedby_mar,
+        usage_mar,
+        penalty_mar,
+        bill_mar,
+        totalbill_mar,
+        paidamt_mar,
+        datepaid_mar,
+        dateposted_mar,
+        postedby_mar,
+        txtrefnum_mar,
+        ior_mar,
+        reading_apr,
+        reading_postedby_apr,
+        usage_apr,
+        penalty_apr,
+        bill_apr,
+        totalbill_apr,
+        paidamt_apr,
+        datepaid_apr,
+        dateposted_apr,
+        postedby_apr,
+        txtrefnum_apr,
+        ior_apr,
+        reading_may,
+        reading_date_may,
+        reading_postedby_may,
+        usage_may,
+        penalty_may,
+        bill_may,
+        totalbill_may,
+        paidamt_may,
+        datepaid_may,
+        dateposted_may,
+        postedby_may,
+        ior_may,
+        reading_jun,
+        reading_date_jun,
+        reading_postedby_jun,
+        usage_jun,
+        penalty_jun,
+        bill_jun,
+        totalbill_jun,
+        paidamt_jun,
+        datepaid_jun,
+        dateposted_jun,
+        postedby_jun,
+        txtrefnum_jun,
+        ior_jun,
+        reading_jul,
+        reading_date_jul,
+        reading_postedby_jul,
+        usage_jul,
+        penalty_jul,
+        bill_jul,
+        totalbill_jul,
+        paidamt_jul,
+        datepaid_jul,
+        dateposted_jul,
+        postedby_jul,
+        txtrefnum_jul,
+        ior_jul,
+        reading_aug,
+        reading_date_aug,
+        reading_postedby_aug,
+        usage_aug,
+        penalty_aug,
+        bill_aug,
+        totalbill_aug,
+        paidamt_aug,
+        datepaid_aug,
+        dateposted_aug,
+        postedby_aug,
+        txtrefnum_aug,
+        ior_aug,
+        reading_sept,
+        reading_date_sept,
+        reading_postedby_sept,
+        usage_sept,
+        penalty_sept,
+        bill_sept,
+        totalbill_sept,
+        paidamt_sept,
+        totalbill_sept,
+        paidamt_sept,
+        datepaid_sept,
+        dateposted_sept,
+        postedby_sept,
+        txtrefnum_sept,
+        ior_sept,
+        reading_oct,
+        reading_date_oct,
+        reading_postedby_oct,
+        usage_oct,
+        penalty_oct,
+        bill_oct,
+        totalbill_oct,
+        paidamt_oct,
+        datepaid_oct,
+        dateposted_oct,
+        postedby_oct,
+        txtrefnum_oct,
+        ior_oct,
+        reading_nov,
+        reading_date_nov,
+        reading_postedby_nov,
+        usage_nov,
+        penalty_nov,
+        bill_nov,
+        totalbill_nov,
+        paidamt_nov,
+        datepaid_nov,
+        dateposted_nov,
+        postedby_nov,
+        txtrefnum_nov,
+        ior_apr,
+        reading_dec,
+        reading_date_dec,
+        reading_postedby_dec,
+        usage_dec,
+        penalty_dec,
+        bill_dec,
+        totalbill_dec,
+        paidamt_dec,
+        datepaid_dec,
+        dateposted_dec,
+        postedby_dec,
+        txtrefnum_dec,
+        ior_dec,
+    ]
+    barangay_record = [
+        barangay_val,
+        barangay_name,
+        brgy_rec_year,
+        total_due_ytd,
+        total_paid_ytd,
+        total_usage,
+        total_due_january,
+        total_paid_january,
+        usage_january,
+        total_due_february,
+        total_paid_february,
+        usage_february,
+        total_due_march,
+        total_paid_march,
+        usage_march,
+        total_due_april,
+        total_paid_april,
+        usage_april,
+        total_due_may,
+        total_paid_may,
+        usage_may,
+        total_due_june,
+        total_paid_june,
+        usage_june,
+        total_due_july,
+        total_paid_july,
+        usage_july,
+        total_due_august,
+        total_paid_august,
+        usage_august,
+        total_due_september,
+        total_paid_september,
+        usage_september,
+        total_due_october,
+        total_paid_october,
+        usage_october,
+        total_due_november,
+        total_paid_november,
+        usage_november,
+        total_due_december,
+        total_paid_december,
+        usage_december,
+    ]
+    consumerinfo = [
+        consumerid,
+        cons_info_firstname,
+        cons_info_middlename,
+        cons_info_birthday,
+        mobilenumber,
+        mobilenumber2,
+        emailaddress,
+        homeaddress,
+        sex,
+        installcount,
+        profilepic,
+        cons_info_barangay,
+        sitio,
+        oldconsumerid,
+        cons_info_deleted_flag,
+    ]
+    gettotalbill = [
+        bill_id,
+        con_id,
+        currentdue,
+        rateid,
+        paid,
+        current_reading,
+        reading_date,
+        previous_reading,
+        consumption,
+    ]
+    oldconsumerinfo = [
+        old_con_id,
+        old_firstname,
+        old_middlename,
+        old_lastname,
+        con_category,
+        old_meternumber,
+        old_address,
+    ]
+    payment_history = [
+        pay_hist_id,
+        amount,
+        pay_hist_date,
+        or_number,
+        time,
+        postedby,
+        consumer,
+        pay_hist_accountinfoid,
+        pay_hist_meternumber,
+        pay_hist_year,
+    ]
+    """
+    ratestable
+    revenuecode
+    systemuser
+    yearly_records"""
+    alltables = [
+        accountinfo, 
+        accountrecord,
+        barangay_record,
+        consumerinfo,
+        gettotalbill,
+        oldconsumerinfo,
+        payment_history,
+        #ratestable,
+        #revenuecode,
+        #systemuser,
+        #yearly_records,
+    ]
+    mycursor = mydb.cursor()
+    columnname = ""
+    for t in tablenames:
+        tablename = t
+        mycursor.execute("SELECT " + columnname + " FROM "+tablename)
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            accountinfoid.append(x[0])
+
+    
+
+    context = {
+        'accountinfo': accountinfo,
+
+        # 'accountrecord':accountrecord,
+        # 'barangay_record':barangay_record,
+        # 'consumerinfo':consumerinfo,
+        # 'gettotalbill':gettotalbill,
+        # 'meterreadingmodification_table':meterreadingmodification_table,
+        # 'oldconsumerinfo':oldconsumerinfo,
+        # 'payment_history':payment_history,
+        # 'ratestable':ratestable,
+        # 'revenuecode':revenuecode,
+        # 'systemuser':systemuser,
+        # 'yearly_records':yearly_records,
+    }
+
+    return render(request, 'home.html', context)
+=======
 
 def landingpage(request):
     tablenames = [
@@ -38,6 +909,7 @@ def landingpage(request):
         "systemuser",
         "yearly_records"
     ]
+>>>>>>> bb0004584fe6b307408e8392fe5081f23d4f89dc
 
     columnnames = [
         'accountinfoid',
@@ -1152,8 +2024,11 @@ def login(request):
 
     return render(request, 'login.html')
 
+
 def home(request):
     return render(request, 'home.html')
+<<<<<<< HEAD
+=======
 
 def user_creation(request):
     form = SystemUserForm()
@@ -1175,3 +2050,4 @@ def user_creation(request):
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
+>>>>>>> bb0004584fe6b307408e8392fe5081f23d4f89dc

@@ -1,0 +1,10 @@
+"systemuser"
+    userid
+    password
+    firstname
+    middlename
+    lastname
+    emailaddress
+    usertype
+    profilepic
+    approver_flag
