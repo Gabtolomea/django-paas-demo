@@ -161,3 +161,22 @@
     postedby_dec
     txtrefnum_dec
     ior_dec
+    ===========
+    consumer_id
+    amountpaid_str_apr
+    amountpaid_str_aug
+    amountpaid_str_dec
+    amountpaid_str_feb
+    amountpaid_str_jan
+    amountpaid_str_jul
+    amountpaid_str_jun
+    amountpaid_str_mar
+    amountpaid_str_may
+    amountpaid_str_nov
+    amountpaid_str_oct
+    amountpaid_str_sept
+    accountinfoid
+    amountopaid_history
+    datepaid_history
+    or_number_history
+    previous_reading
