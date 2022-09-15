@@ -114,6 +114,7 @@ def landingpage(request):
         'txrefnum_mar',
         'ior_mar',
         'reading_apr',
+        'reading_date_apr',
         'reading_postedby_apr',
         'usage_apr',
         'penalty_apr',
@@ -1123,8 +1124,10 @@ def landingpage(request):
 
     cols = 0
     for t in range(len(tablenames)):
+        count = 0
         tablename = tablenames2[t]
         mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = "+tablenames[t]+";")
+        print(tablenames[t])
         count = mycursor.fetchone()[0]
         print(count)
         for c in range(count):
