@@ -1,0 +1,10 @@
+"gettotalbill"
+    bill_id
+    con_id
+    currentdue
+    rateid
+    paid
+    current_reading
+    reading_date
+    previous_reading
+    consumption
