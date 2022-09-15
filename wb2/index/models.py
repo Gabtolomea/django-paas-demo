@@ -11,11 +11,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 class SystemUsers(AbstractUser):
-    is_admin = models.BooleanField()
-    is_teller = models.BooleanField()
-    is_supervisor = models.BooleanField()
-    is_manager = models.BooleanField()
-    is_meter = models.BooleanField()
+    is_admin = models.BooleanField(default=False)
+    is_teller = models.BooleanField(default=False)
+    is_supervisor = models.BooleanField(default=False)
+    is_manager = models.BooleanField(default=False)
+    is_meter = models.BooleanField(default=False)
     firstname = models.CharField(max_length=20, blank=True)
     midname = models.CharField(max_length=20, blank=True)
     lastname = models.CharField(max_length=20, blank=True)

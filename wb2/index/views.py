@@ -1,4 +1,5 @@
 from multiprocessing import context
+from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -1165,10 +1166,18 @@ def user_creation(request):
             is_supervisor = request.POST['supervisor']
             is_manager = request.POST['manager']
             is_meter = request.POST['meter']
-        if form.is_valid():
-            form.save()
+            if form.is_valid():
+                form.save()
 
-            return redirect('login')
+                user = SystemUsers.objects.get(username=form.cleaned_data.get('username'))
+                user.is_admin = is_admin
+                user.is_teller = is_teller
+                user.is_supervisor = is_supervisor
+                user.is_manager = is_manager
+                user.is_meter = is_meter
+                user.save()
+
+                return redirect('login')
 
     context = {
         'form':form, 
