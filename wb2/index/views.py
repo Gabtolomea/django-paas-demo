@@ -26,17 +26,17 @@ mydb = mysql.connector.connect(
 
 def landingpage(request):
     tablenames = [
-        'accountinfo',
-        'accountrecord',
-        'barangay_record',
-        'consumerinfo',
-        'gettotalbill',
-        'oldconsumerinfo',
-        'payment_history',
-        'ratestable',
-        'revenuecode',
-        'systemuser',
-        'yearly_records'
+        "accountinfo",
+        "accountrecord",
+        "barangay_record",
+        "consumerinfo",
+        "gettotalbill",
+        "oldconsumerinfo",
+        "payment_history",
+        "ratestable",
+        "revenuecode",
+        "systemuser",
+        "yearly_records"
     ]
 
     columnnames = [
@@ -1109,11 +1109,11 @@ def landingpage(request):
 
     for t in range(len(tablenames)):
         tablename = tablenames[t]
-        print("tablename: "+tablename)
-        mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE table_name = accountinfo;")
-        count = mycursor.fetchall()
+        print(type(tablename))
+        mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE table_name = "+tablenames[t])
+        count = mycursor.fetchone()[0]
         print(count)
-        for c in count:
+        for c in range(count):
             mycursor.execute("SELECT " + columnnames[c] + " FROM "+tablename)
             myresult = mycursor.fetchall()
             print(columnnames[c])
@@ -1121,7 +1121,6 @@ def landingpage(request):
     
 
     context = {
-        'accountinfo': accountinfo,
 
         # 'accountrecord':accountrecord,
         # 'barangay_record':barangay_record,
