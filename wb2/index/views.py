@@ -1154,4 +1154,7 @@ def login(request):
 def home(request):
     return render(request, 'home.html')
 
+def userreg(request):
+    return render(request, 'registration.html')
+
 
