@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import *
 
-"""
+
 class CustomUserForm(UserCreationForm):
     password1: forms.Field(label='Password')
     password2: forms.Field(label='Confirm Password')
@@ -13,9 +13,14 @@ class CustomUserForm(UserCreationForm):
         fields = (
             'username',
             'email',
-            "usertype",
             'is_staff',
             'password1',
-            'password2'
+            'password2',
+            "usertype",
+            'firstname',
+            'midname',
+            'lastname',
+            'profilepic'            
         )
-"""
+
+
