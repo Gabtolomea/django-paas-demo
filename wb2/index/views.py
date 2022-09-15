@@ -39,7 +39,7 @@ def landingpage(request):
         "'yearly_records'"
     ]
     columnnames = [
-        "accountinfoid",
+        "accountinfoid"
         "firstname",
         "middlename",
         "lastname",
