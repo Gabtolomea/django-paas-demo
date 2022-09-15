@@ -231,6 +231,25 @@ def landingpage(request):
         'postedby_dec',
         'txrefnum_dec',
         'ior_dec',
+        'consumerid_id',
+        'amountpaid_str_apr',
+        'amountpaid_str_aug',
+        'amountpaid_str_dec',
+        'amountpaid_str_feb',
+        'amountpaid_str_jan',
+        'amountpaid_str_jul',
+        'amountpaid_str_jun',
+        'amountpaid_str_mar',
+        'amountpaid_str_may',
+        'amountpaid_str_nov',
+        'amountpaid_str_oct',
+        'amountpaid_str_sept',
+        'accountinfoid',
+        'amountpaid_history',
+        'datepaid_history',
+        'postedby_history',
+        'or_number_history',
+        'previous_reading',
         'barangay_val',
         'barangay_name',
         'year',
@@ -276,6 +295,7 @@ def landingpage(request):
         'consumerid',
         'firstname',
         'middlename',
+        'lastname',
         'birthday',
         'mobilenumber',
         'mobilenumber2',
@@ -314,24 +334,24 @@ def landingpage(request):
         'accountinfoid',
         'meternumber',
         'year',
-        'rt_id',
+        'rateid',
         'minimumreading',
         'minimumreading_charge',
         'rateafterminimum',
         'ratepenalty',
         'ratepenaltyfrequency',
         'paymentchedday',
-        'revid',
+        'id',
         'application_fee',
         'mayors_permit',
         'gravel_excavation',
         'asphalted_road',
         'cemented_road',
-        'additional_fee_pipe_of_20_lineal_feet',
+        'additionalfee_pipe_of_20_lineal_feet',
         'residentialservice_per_month',
         'commercialservice_per_month',
         'residentialservice_excess_per_cubicmeter',
-        'commercialservice_per_cubicmeter',
+        'commercialservice_excess_per_cubicmeter',
         'drilling_from_mainline',
         'reinstallation_fee',
         'tapping_fee',
@@ -345,53 +365,53 @@ def landingpage(request):
         'percentage_penalty',
         'userid',
         'password',
-        'su_firstname',
-        'su_middlename',
-        'su_mobilenumber',
-        'su_lastname',
-        'su_emailaddress',
+        'firstname',
+        'middlename',
+        'mobilenumber',
+        'lastname',
+        'emailaddress',
         'usertype',
-        'su_profilepic',
+        'profilepic',
         'approver_flag',
-        'yr_year',
-        'yr_total_paid_ytd', 
-        'yr_total_usage', 
-        'yr_total_due_january',
-        'yr_total_paid_january',
-        'yr_usage_january',
-        'yr_total_due_february', 
-        'yr_total_paid_february',
-        'yr_usage_february', 
-        'yr_total_due_march', 
-        'yr_total_paid_march', 
-        'yr_usage_march', 
-        'yr_total_due_april', 
-        'yr_total_paid_april', 
-        'yr_usage_april', 
-        'yr_total_due_may', 
-        'yr_total_paid_may', 
-        'yr_usage_may', 
-        'yr_total_due_june', 
-        'yr_total_paid_june', 
-        'yr_usage_june', 
-        'yr_total_due_july', 
-        'yr_total_paid_july', 
-        'yr_usage_july', 
-        'yr_total_due_august', 
-        'yr_total_paid_august', 
-        'yr_usage_august', 
-        'yr_total_due_september', 
-        'yr_total_paid_september', 
-        'yr_usage_september',
-        'yr_total_due_october', 
-        'yr_total_paid_october', 
-        'yr_usage_october', 
-        'yr_total_due_november', 
-        'yr_total_paid_november', 
-        'yr_usage_november', 
-        'yr_total_due_december', 
-        'yr_total_paid_december',
-        'yr_usage_december',
+        'year',
+        'total_paid_ytd', 
+        'total_usage', 
+        'total_due_january',
+        'total_paid_january',
+        'usage_january',
+        'total_due_february', 
+        'total_paid_february',
+        'usage_february', 
+        'total_due_march', 
+        'total_paid_march', 
+        'usage_march', 
+        'total_due_april', 
+        'total_paid_april', 
+        'usage_april', 
+        'total_due_may', 
+        'total_paid_may', 
+        'usage_may', 
+        'total_due_june', 
+        'total_paid_june', 
+        'usage_june', 
+        'total_due_july', 
+        'total_paid_july', 
+        'usage_july', 
+        'total_due_august', 
+        'total_paid_august', 
+        'usage_august', 
+        'total_due_september', 
+        'total_paid_september', 
+        'usage_september',
+        'total_due_october', 
+        'total_paid_october', 
+        'usage_october', 
+        'total_due_november', 
+        'total_paid_november', 
+        'usage_november', 
+        'total_due_december', 
+        'total_paid_december',
+        'usage_december',
 
     ]
 
@@ -457,6 +477,7 @@ def landingpage(request):
     txrefnum_mar = []
     ior_mar = []
     reading_apr = []
+    reading_date_apr = []
     reading_postedby_apr = []
     usage_apr = []
     penalty_apr = []
@@ -528,8 +549,6 @@ def landingpage(request):
     bill_sept = []
     totalbill_sept = []
     paidamt_sept = []
-    totalbill_sept = []
-    paidamt_sept = []
     datepaid_sept = []
     dateposted_sept = []
     postedby_sept = []
@@ -574,6 +593,25 @@ def landingpage(request):
     postedby_dec = []
     txrefnum_dec = []
     ior_dec = []
+    consumerid_id = []
+    amountpaid_str_apr = []
+    amountpaid_str_aug = []
+    amountpaid_str_dec = []
+    amountpaid_str_feb = []
+    amountpaid_str_jan = []
+    amountpaid_str_jul = []
+    amountpaid_str_jun = []
+    amountpaid_str_mar = []
+    amountpaid_str_may = []
+    amountpaid_str_nov = []
+    amountpaid_str_oct = []
+    amountpaid_str_sept = []
+    acc_rec_accountinfoid = []
+    amountpaid_history = []
+    datepaid_history = []
+    postedby_history = []
+    or_number_history = []
+    acc_rec_previous_reading = []
 
     barangay_val=[]
     barangay_name=[]
@@ -621,6 +659,7 @@ def landingpage(request):
     consumerid=[]
     cons_info_firstname=[]
     cons_info_middlename=[]
+    cons_info_lastname=[]
     cons_info_birthday=[]
     mobilenumber=[]
     mobilenumber2=[]
@@ -809,6 +848,7 @@ def landingpage(request):
         txrefnum_mar,
         ior_mar,
         reading_apr,
+        reading_date_apr,
         reading_postedby_apr,
         usage_apr,
         penalty_apr,
@@ -880,8 +920,6 @@ def landingpage(request):
         bill_sept,
         totalbill_sept,
         paidamt_sept,
-        totalbill_sept,
-        paidamt_sept,
         datepaid_sept,
         dateposted_sept,
         postedby_sept,
@@ -926,6 +964,25 @@ def landingpage(request):
         postedby_dec,
         txrefnum_dec,
         ior_dec,
+        consumerid_id,
+        amountpaid_str_apr,
+        amountpaid_str_aug,
+        amountpaid_str_dec,
+        amountpaid_str_feb,
+        amountpaid_str_jan,
+        amountpaid_str_jul,
+        amountpaid_str_jun,
+        amountpaid_str_mar,
+        amountpaid_str_may,
+        amountpaid_str_nov,
+        amountpaid_str_oct,
+        amountpaid_str_sept,
+        acc_rec_accountinfoid,
+        amountpaid_history,
+        datepaid_history,
+        postedby_history,
+        or_number_history,
+        acc_rec_previous_reading,
     ]
     barangay_record = [
         barangay_val,
@@ -975,6 +1032,7 @@ def landingpage(request):
         consumerid,
         cons_info_firstname,
         cons_info_middlename,
+        cons_info_lastname,
         cons_info_birthday,
         mobilenumber,
         mobilenumber2,
@@ -1130,10 +1188,11 @@ def landingpage(request):
         count = mycursor.fetchone()[0]
         print(count)
         for c in range(count):
-            mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablename+";")
-            myresult = mycursor.fetchall()
-            print(columnnames[cols])
-            cols+=1
+            if t < len(tablenames):
+                mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablename+";")
+                myresult = mycursor.fetchall()
+                print(columnnames[cols])
+                cols+=1
 
     
 
