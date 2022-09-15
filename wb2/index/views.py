@@ -17,14 +17,15 @@ from .forms import *
 from .decorators import *
 from .models import *
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="yjh434ctuG@-@",
-    database="lgu_ginatilan_db"
-)
+
 
 def landingpage(request):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="yjh434ctuG@-@",
+        database="lgu_ginatilan_db"
+    )
     tablenames = [
         "'accountinfo'",
         "'accountrecord'",
