@@ -40,8 +40,8 @@
 	</style>
 	<body>
 		<section id="registration-page">
-			<form action="" class="signup-form">
-
+			<form action="user_creation" class="signup-form" method="POST">
+				{% csrf_token %}
 				<div class="container-fluid">
 					<div class="wrapper m-4">
 						<div class="form-header">
@@ -49,30 +49,31 @@
 						</div>
 						<div class="row form-group w-100 m-auto">
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-								<label for="">First Name</label>
-								<input type="text" placholder="" class="form-control">
+								<label for="">First Name</label>			
+								{{form.firstname}}								
 							</div>
 
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">Middle Name</label>
-								<input type="email" class="form-control">
+								{{form.midname}}
 							</div>
 
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">Last Name</label>
-								<input type="email" class="form-control">
+								{{form.lastname}}
 							</div>
 					
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">Mobile Number</label>
-								<input type="tel" name="txtPhone" class="form-control">
+								{{form.mobilenum}}
 							</div>
 								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 									<label for="">Email</label>
-									<input type="email" class="form-control">
+									{{form.email}}
 								</div>
 								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 									<label for="">User ID</label>
+
 									<input type="user" class="form-control">
 								</div>
 						</div>
@@ -80,15 +81,19 @@
 						<div class="row form-group w-100 m-auto">
 							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 								<label for="">Password</label>
-								<input type="email" class="form-control">
+								{{form.password1}}
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 								<label for="">Confirm Password</label>
-								<input type="email" class="form-control">
+								{{form.password2}}
 							</div>
 						</div>
+<<<<<<< HEAD
 				
 						<div class="wrapper">
+=======
+						<div class="name">
+>>>>>>> bb0004584fe6b307408e8392fe5081f23d4f89dc
 							<h3>Type of User</h3>
 						
 							<input type="checkbox" id="admin" name="admin" value="Admin">
@@ -109,11 +114,11 @@
 						<div class="approver">
 							<div class="col-">
 								<label for="">Authorized Approver</label>
-								<input type="email" class="form-control">
+								{{form.authorizedapprover}}
 							</div>
 							<div class="mb-3">
 								<label for="formFile" class="form-label">Profile Picture</label>
-								<input class="form-control" type="file" id="formFile">
+								{{form.profilepic}}
 							</div>
 						</div>
 							<div class="submit">
