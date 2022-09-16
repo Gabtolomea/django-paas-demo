@@ -1,0 +1,17 @@
+"consumerinfo"
+    consumerid
+    firstname
+    middlename
+    birthday
+    mobilenumber
+    mobilenumber2
+    emailaddress
+    homeaddress
+    sex
+    installcount
+    profilepic
+    barangay
+    sitio
+    oldconsumerid
+    deleted_flag
+    

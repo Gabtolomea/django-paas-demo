@@ -1,0 +1,10 @@
+"meterreadingmodification"
+    reading
+    month
+    date
+    meternumber
+    name
+    accountinfoid
+    postedby
+    id
+    year
