@@ -35,7 +35,7 @@ class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
 
 class BarangayRecord(models.Model):
-    B_RecordID = models.IntegerField()
+    barangay_val = models.CharField(primary_key=True, max_length=10,)
     barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     year = models.IntegerField()
     total_due_jan = models.IntegerField()
