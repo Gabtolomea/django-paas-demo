@@ -78,6 +78,7 @@ class Status(models.Model):
     status = models.CharField(max_length=20, blank=True)
 
 class ConsumerInfo(models.Model):
+    consumer_id = models.CharField(primary_key=True, max_length=20)
     meternumber = models.IntegerField()
     firstname = models.CharField(max_length=20, blank=True)
     middlename = models.CharField(max_length=20, blank=True)

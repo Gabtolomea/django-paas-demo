@@ -1179,7 +1179,7 @@ def porter_in(request):
                 alltables[t][c].append(x[0])
             col+=1
     
-    current_table = rearrange('barangay_record')
+    current_table = rearrange('barangay_record')#change string parameter to desired table name reference in tablenames above
     porter_out(current_table)
     return render(request, "home.html")
 
