@@ -1186,12 +1186,13 @@ def landingpage(request):
     for t in range(len(tablenames)):
         mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = "+tablenames[t]+";")
         for c in range(mycursor.fetchone()[0]):
-            mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablenames[t]+";")
+            mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablenames2[t]+";")
             alltables[t][c]=mycursor.fetchall()
             cols+=1
     
 
     context = {
+        'alltables',alltables
         # 'accountrecord':accountrecord,
         # 'barangay_record':barangay_record,
         # 'consumerinfo':consumerinfo,
