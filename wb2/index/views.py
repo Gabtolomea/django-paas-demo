@@ -374,6 +374,7 @@ def landingpage(request):
         'profilepic',
         'approver_flag',
         'year',
+        'total_due_ytd',
         'total_paid_ytd', 
         'total_usage', 
         'total_due_january',
@@ -745,6 +746,7 @@ def landingpage(request):
     approver_flag=[]
 
     yr_year=[]
+    total_due_ytd=[]
     yr_total_paid_ytd=[]
     yr_total_usage=[]
     yr_total_due_january=[]
@@ -1125,6 +1127,7 @@ def landingpage(request):
     ]
     yearly_records =[
         yr_year,
+        total_due_ytd,
         yr_total_paid_ytd, 
         yr_total_usage, 
         yr_total_due_january,
@@ -1181,23 +1184,14 @@ def landingpage(request):
 
     cols = 0
     for t in range(len(tablenames)):
-        count = 0
-        tablename = tablenames2[t]
         mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = "+tablenames[t]+";")
-        print(tablenames[t])
-        count = mycursor.fetchone()[0]
-        print(count)
-        for c in range(count):
-            if t < len(tablenames):
-                mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablename+";")
-                myresult = mycursor.fetchall()
-                print(columnnames[cols])
-                cols+=1
-
+        for c in range(mycursor.fetchone()[0]):
+            mycursor.execute("SELECT " + columnnames[cols] + " FROM "+tablenames[t]+";")
+            alltables[t][c]=mycursor.fetchall()
+            cols+=1
     
 
     context = {
-
         # 'accountrecord':accountrecord,
         # 'barangay_record':barangay_record,
         # 'consumerinfo':consumerinfo,
