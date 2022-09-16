@@ -1256,3 +1256,8 @@ def user_creation(request):
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+
