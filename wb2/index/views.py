@@ -1192,6 +1192,7 @@ def landingpage(request):
     
 
     context = {
+        'alltables',alltables
         # 'accountrecord':accountrecord,
         # 'barangay_record':barangay_record,
         # 'consumerinfo':consumerinfo,
