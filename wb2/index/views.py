@@ -17,6 +17,7 @@ from .forms import *
 from .decorators import *
 from .models import *
 
+<<<<<<< HEAD
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -26,6 +27,17 @@ mydb = mysql.connector.connect(
 
 
 def landingpage(request):
+=======
+
+
+def landingpage(request):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="yjh434ctuG@-@",
+        database="lgu_ginatilan_db"
+    )
+>>>>>>> e95558786a135c5bbeaf98cee8863d269d599045
     tablenames = [
         "accountinfo",
         "accountrecord",

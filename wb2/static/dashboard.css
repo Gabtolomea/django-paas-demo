@@ -57,6 +57,10 @@ ul{
     font-size: 20px;
     font-weight:700;
 }
+.online_water{
+    padding-left: 100px;
+    color:white
+}
 .dev{
     color:#E6ECEB;
     font-weight: bold;
