@@ -1,6 +1,7 @@
 
 from dataclasses import fields
 import email
+from logging import PlaceHolder
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -14,7 +15,7 @@ class SystemUserForm(UserCreationForm):
                                 (attrs={'class': 'form-control'
                                         }))
     midname = forms.CharField(widget=forms.TextInput
-                              (attrs={'class': 'form-control'
+                              (attrs={'class': 'form-control',
                                       }))
 
     lastname = forms.CharField(widget=forms.TextInput
