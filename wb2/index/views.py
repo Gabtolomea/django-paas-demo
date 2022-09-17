@@ -10,7 +10,7 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 
-import mysql.connector
+
 
 from wb2 import settings
 from .forms import *
@@ -20,11 +20,11 @@ from .models import *
 
 def landingpage(request):
     mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="yjh434ctuG@-@",
-        database="lgu_ginatilan_db"
-    )
+    host="localhost",
+    user="root",
+    password="yjh434ctuG@-@",
+    database="lgu_ginatilan_db"
+)
 
     tablenames = [
         "accountinfo",
@@ -39,7 +39,6 @@ def landingpage(request):
         "systemuser",
         "yearly_records"
     ]
-
     columnnames = [
         'accountinfoid',
         'firstname',
@@ -1157,7 +1156,10 @@ def login(request):
 
 def home(request):
     return render(request, 'home.html')
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6c9d49ebc6f75586a06d55d3bbf781283b629255
 
 def user_creation(request):
     form = SystemUserForm()
