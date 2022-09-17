@@ -20,9 +20,8 @@ from .dataporter import *
 def lp(request):
     porter()
     return render(request, "home.html")
-<<<<<<< Updated upstream
+
 def signin(request):
-=======
 
 def rearrange(var):
     arr = []
