@@ -1239,8 +1239,7 @@ def porter_out(table):
         b_rec.total_paid_dec = i[40]
         b_rec.total_usage_dec = i[41]
         b_rec.save()
-<<<<<<< HEAD
-=======
+
 
 #------------------JAZZY<3----------------------#
 
@@ -1288,8 +1287,8 @@ def porter_out(table):
 
 #-----------------------------------#
 
->>>>>>> origin/jazzy
-        
+
+
 def login(request):
     if request.method == "POST":
         username = request.POST['username']
