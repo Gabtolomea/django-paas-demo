@@ -11,20 +11,21 @@ from django.contrib.auth.models import AbstractUser
 
 
 class SystemUsers(AbstractUser):
+    password = models.BinaryField(max_length=450)
+    username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
-    is_meter = models.BooleanField(default=False)
-    firstname = models.CharField(max_length=20, blank=True)
-    midname = models.CharField(max_length=20, blank=True)
-    lastname = models.CharField(max_length=20, blank=True)
+    is_reader = models.BooleanField(default=False)
+    mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
     profilepic = models.ImageField(blank=True, null=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    authorizedapprover = models.CharField(max_length=20, blank=True)
+    authorizedapprover = models.CharField(max_length=20, default='0')
 
 class Rates(models.Model):
+    rateid = models.CharField(primary_key=True, max_length=20)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
