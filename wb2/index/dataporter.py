@@ -17,7 +17,7 @@ tablenames = [
     "yearly_records"
 ]
 alltables = [
-    accountinfo, 
+    accountinfo,
     accountrecord,
     barangay_record,
     consumerinfo,
@@ -31,18 +31,18 @@ alltables = [
 ]
 
 sorted_tables = []
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="yjh434ctuG@-@",
-    database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# mydb = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="yjh434ctuG@-@",
+#     database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 
 def porter():
     porter_in()
     porter_out(sorted_tables)
-    
+
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
