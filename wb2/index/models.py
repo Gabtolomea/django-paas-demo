@@ -86,6 +86,7 @@ class ConsumerInfo(models.Model):
     lastname = models.CharField(max_length=20, blank=True)
     barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     initialmeterreading = models.IntegerField()
+    rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
     statuscode = models.ForeignKey(Status, on_delete=models.CASCADE)
     penaltyflag = models.BooleanField()
     stopmeterflag = models.BooleanField()
