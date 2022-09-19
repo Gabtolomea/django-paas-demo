@@ -68,18 +68,43 @@ def rearrange(var):
         arr.append(inner)
 
     sorted_tables.append(arr)
-
+con_info = ConsumerInfo()
 b_rec = BarangayRecord()
 sys_user = SystemUsers()
 rt = Rates()
+b = Barangays()
+
+bar = [
+    'Anao',
+    
+]
+def barangays():
+
+    b.barangay = i
 def porter_out(tables):
+
+    for i in tables[3]:
+        con_info.consumer_id = i[0]
+        con_info.firstname = i[1]
+        con_info.middlename = i[3]
+        con_info.lastname = i[2]
+        con_info.barangaycode = i[12]
+        
+    for i in tables[0]:
+        con_info.meternumber = i[5]
+        con_info.initialmeterreading = i[6]
+        con_info.rateid = i[7]
+        con_info.statuscode = i[8]
+        con_info.penaltyflag = i[11]
+        con_info.stopmeterflag = i[12]
+        con_info.deleteflag = i[14]
+
     for i in tables[2]:
         b_rec_out(i)
     for i in tables[7]:
         rt_out(i)
     for i in tables[9]:
         sys_user_out(i)
-
 
 
 def sys_user_out(i):
