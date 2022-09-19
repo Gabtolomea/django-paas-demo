@@ -16,7 +16,7 @@ from .decorators import *
 from .models import *
 from .dataporter import *
 def lp(request):
-    porter()
+    # porter()
     return render(request, "home.html")
 @unauthenticated_user
 def signin(request):

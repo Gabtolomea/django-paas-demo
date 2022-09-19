@@ -68,6 +68,7 @@ con_info = ConsumerInfo()
 b_rec = BarangayRecord()
 sys_user = SystemUsers()
 rt = Rates()
+trans = Transactions()
 bar = [
     'Anao',
     'Cagsing',
@@ -84,13 +85,11 @@ bar = [
     'Salamanca',
     'San Roque'
 ]
-def barangays():
+def porter_out(tables):
     for i in bar:
         b = Barangays()
         b.barangay = i
         b.save()
-def porter_out(tables):
-    barangays()
     for i in tables[2]:
         b_rec_out(i)
     for i in tables[7]:
@@ -111,6 +110,16 @@ def porter_out(tables):
         con_info.stopmeterflag = tables[0][i][12]
         con_info.deleteflag = tables[0][i][14]
         con_info.save()
+    for i in range(len(tables[6])):
+        trans.transactionid = tables[6][i][0]
+        trans.date = tables[6][i][2]
+        arr = tables[6][i][7].split("-")
+        trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
+        trans.transType = 'Payment'
+        trans.payment = tables[6][i][1]
+        trans.processedBy = tables[6][i][5]
+        trans.save()
+
 def sys_user_out(i):
     sys_user.username = i[0]
     sys_user.password = i[1]
