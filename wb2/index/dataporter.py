@@ -43,7 +43,6 @@ def porter():
     porter_in()
     porter_out(sorted_tables)
     
-
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -55,8 +54,6 @@ def porter_in():
                 alltables[t][c].append(x[0])
             col+=1
         rearrange(tablenames[t])
-    
-    
 
 def rearrange(var):
     arr = []
