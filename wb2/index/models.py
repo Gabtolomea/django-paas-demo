@@ -3,6 +3,7 @@ from calendar import c
 from datetime import date
 from pyexpat import model
 from tkinter import CASCADE
+from urllib import request
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
@@ -10,23 +11,21 @@ from django.contrib.auth.models import AbstractUser
 
 
 class SystemUsers(AbstractUser):
-    USER_TYPE = (
-        ('Admin','Admin'),
-        ('Teller','Teller'),
-        ('Supervisor','Supervisor'),
-        ('Manager','Manager'),
-        ('Meter Reader','Meter Reader'),
-    )
-    firstname = models.CharField(max_length=20, blank=True)
-    midname = models.CharField(max_length=20, blank=True)
-    lastname = models.CharField(max_length=20, blank=True)
+    password = models.BinaryField(max_length=450)
+    username = models.CharField(primary_key=True, max_length=20)
+    is_admin = models.BooleanField(default=False)
+    is_teller = models.BooleanField(default=False)
+    is_supervisor = models.BooleanField(default=False)
+    is_manager = models.BooleanField(default=False)
+    is_reader = models.BooleanField(default=False)
+    mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    usertype = models.CharField(max_length=20, choices=USER_TYPE)
     profilepic = models.ImageField(blank=True, null=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    authorizedapprover = models.CharField(max_length=20, blank=True)
+    authorizedapprover = models.CharField(max_length=20, default='0')
 
 class Rates(models.Model):
+    rateid = models.CharField(primary_key=True, max_length=20)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
@@ -37,8 +36,7 @@ class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
 
 class BarangayRecord(models.Model):
-    B_RecordID = models.IntegerField()
-    barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE)
+    barangay_val = models.CharField(primary_key=True, max_length=10,)
     year = models.IntegerField()
     total_due_jan = models.IntegerField()
     total_paid_jan = models.IntegerField()
@@ -81,6 +79,7 @@ class Status(models.Model):
     status = models.CharField(max_length=20, blank=True)
 
 class ConsumerInfo(models.Model):
+    consumer_id = models.CharField(primary_key=True, max_length=20)
     meternumber = models.IntegerField()
     firstname = models.CharField(max_length=20, blank=True)
     middlename = models.CharField(max_length=20, blank=True)

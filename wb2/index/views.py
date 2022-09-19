@@ -1,4 +1,5 @@
-from multiprocessing import context
+
+from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -9,13 +10,13 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
-
-
+import base64
 
 from wb2 import settings
 from .forms import *
 from .decorators import *
 from .models import *
+<<<<<<< HEAD
 
 
 def landingpage(request):
@@ -1138,18 +1139,30 @@ def landingpage(request):
     return render(request, 'home.html', context)
 
 def login(request):
+=======
+from .dataporter import *
+def lp(request):
+    porter()
+    return render(request, "home.html")
+def signin(request):
+>>>>>>> 8e90d5cbe678a8f0d5e3eb74397250621010426a
     if request.method == "POST":
-        username = request.POST['username']
+        u = request.POST['username']
         password = request.POST['password']
 
-        user = authenticate(username=username, password=password)
-
+        user = SystemUsers.objects.get(username = u)
+        passAscii = password.encode("ascii")
+        p = base64.b64encode(passAscii)
+        print(p)
         if user is not None:
-            login(request, user)
-            messages.success(request, 'Logged in')
-            return redirect('home')
+            if user.password == p:
+                login(request,user)
+                messages.success(request, 'Logged in')
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Invalid Password")
         else:
-            messages.error(request, "Invalid Username or Password")
+            messages.error(request, "Invalid Username")
 
     return render(request, 'login.html')
 
@@ -1166,18 +1179,31 @@ def user_creation(request):
     if request.method == "POST":
         form = SystemUserForm(request.POST)
         if request.method == 'POST':
-            admin = request.POST['admin']
-            teller = request.POST['teller']
-            supervisor = request.POST['supervisor']
-            manager = request.POST['manager']
-            meter = request.POST['meter']
-        if form.is_valid():
-            form.save()
+            is_admin = request.POST['admin']
+            is_teller = request.POST['teller']
+            is_supervisor = request.POST['supervisor']
+            is_manager = request.POST['manager']
+            is_meter = request.POST['meter']
+            if form.is_valid():
+                form.save()
 
-            return redirect('login')
+                user = SystemUsers.objects.get(username=form.cleaned_data.get('username'))
+                user.is_admin = is_admin
+                user.is_teller = is_teller
+                user.is_supervisor = is_supervisor
+                user.is_manager = is_manager
+                user.is_meter = is_meter
+                user.save()
+
+                return redirect('login')
 
     context = {
         'form':form, 
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+
