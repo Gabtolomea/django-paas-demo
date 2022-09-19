@@ -16,7 +16,7 @@
 <body>
     <header>
         {% for message in messages %}
-        <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+        <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible" style="position: absolute; z-index: 10000; left: 45%;"
             <strong>{{message.tags|title}}!</strong> {{message}}
             <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
         </div>
