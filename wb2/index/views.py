@@ -20,6 +20,8 @@ from .dataporter import *
 def lp(request):
     porter()
     return render(request, "home.html")
+
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -41,6 +43,11 @@ def signin(request):
 
     return render(request, 'login.html')
 
+@login_required(login_url='login')
+def signout(request):
+    logout(request)
+    messages.success(request, 'Logout successful')
+    return redirect('login')
 
 def home(request):
     return render(request, 'home.html')
