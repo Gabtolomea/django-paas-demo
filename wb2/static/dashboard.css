@@ -10,7 +10,7 @@ header {
     font-size: 20px;
     margin: auto;
     left: 0;
-    z-index: 1;
+    z-index: 1;x
     height: 70px;
 }
 .header_toggle{
@@ -216,16 +216,20 @@ p{
     opacity: 1;
     transition: all 0.75s ease;
 }
-
+.main_content{
+    padding-left: 420px;
+}
 
 
 
 @media(max-width: 720px) {
     .sidebar {
-       width: 0 !important;
+       width: 0;
        transition :all 1s ease !important;
        opacity: 0 !important;
-
+    }
+    .main_content{
+        padding-left: 20px;
     }
     .mobile_header_font{
         font-size: 25px;
