@@ -3,6 +3,12 @@ import mysql.connector
 from .models import *
 from .colnames import *
 
+from datetime import datetime
+
+column = "2010-02-01"
+formatted_date = datetime.strptime(column, "%Y-%m-%d")
+
+
 tablenames = [
     "accountinfo",
     "accountrecord",
@@ -76,13 +82,20 @@ b = Barangays()
 
 bar = [
     'Anao',
-    
+
 ]
 def barangays():
-
-    b.barangay = i
+    for i in bar:
+        b.barangay = i
+        b.save()
 def porter_out(tables):
 
+    for i in tables[2]:
+        b_rec_out(i)
+    for i in tables[7]:
+        rt_out(i)
+    for i in tables[9]:
+        sys_user_out(i)
     for i in tables[3]:
         con_info.consumer_id = i[0]
         con_info.firstname = i[1]
@@ -99,12 +112,6 @@ def porter_out(tables):
         con_info.stopmeterflag = i[12]
         con_info.deleteflag = i[14]
 
-    for i in tables[2]:
-        b_rec_out(i)
-    for i in tables[7]:
-        rt_out(i)
-    for i in tables[9]:
-        sys_user_out(i)
 
 
 def sys_user_out(i):
