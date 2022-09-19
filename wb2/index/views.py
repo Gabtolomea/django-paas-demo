@@ -18,6 +18,7 @@ from .decorators import *
 from .models import *
 
 
+<<<<<<< HEAD
 def landingpage(request):
     mydb = mysql.connector.connect(
     host="localhost",
@@ -25,6 +26,16 @@ def landingpage(request):
     password="yjh434ctuG@-@",
     database="lgu_ginatilan_db"
 )
+=======
+
+def landingpage(request):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="yjh434ctuG@-@",
+        database="lgu_ginatilan_db"
+    )
+>>>>>>> 43f208cc09e5841976607eec0c334635f82c3e83
     tablenames = [
         "accountinfo",
         "accountrecord",
@@ -38,6 +49,10 @@ def landingpage(request):
         "systemuser",
         "yearly_records"
     ]
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43f208cc09e5841976607eec0c334635f82c3e83
     columnnames = [
         'accountinfoid',
         'firstname',
@@ -1155,6 +1170,10 @@ def login(request):
 
 def home(request):
     return render(request, 'home.html')
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43f208cc09e5841976607eec0c334635f82c3e83
 
 def user_creation(request):
     form = SystemUserForm()
