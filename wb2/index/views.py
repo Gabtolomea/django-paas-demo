@@ -19,6 +19,10 @@ from .models import *
 <<<<<<< HEAD
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b7592ea120b267f320cc477af7a29085ae9962c9
 def landingpage(request):
     mydb = mysql.connector.connect(
     host="localhost",
@@ -26,7 +30,20 @@ def landingpage(request):
     password="yjh434ctuG@-@",
     database="lgu_ginatilan_db"
 )
+<<<<<<< HEAD
 
+=======
+=======
+
+def landingpage(request):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="yjh434ctuG@-@",
+        database="lgu_ginatilan_db"
+    )
+>>>>>>> 43f208cc09e5841976607eec0c334635f82c3e83
+>>>>>>> b7592ea120b267f320cc477af7a29085ae9962c9
     tablenames = [
         "accountinfo",
         "accountrecord",
@@ -40,6 +57,13 @@ def landingpage(request):
         "systemuser",
         "yearly_records"
     ]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43f208cc09e5841976607eec0c334635f82c3e83
+>>>>>>> b7592ea120b267f320cc477af7a29085ae9962c9
     columnnames = [
         'accountinfoid',
         'firstname',
@@ -1170,9 +1194,15 @@ def signin(request):
 def home(request):
     return render(request, 'home.html')
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 6c9d49ebc6f75586a06d55d3bbf781283b629255
+=======
+=======
+
+>>>>>>> 43f208cc09e5841976607eec0c334635f82c3e83
+>>>>>>> b7592ea120b267f320cc477af7a29085ae9962c9
 
 def user_creation(request):
     form = SystemUserForm()
