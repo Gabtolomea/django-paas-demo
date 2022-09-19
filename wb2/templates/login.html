@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 {%load static%}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,7 +10,9 @@
     <title>Log In Page</title>
     <link rel="stylesheet" type="text/css" href="{% static 'login.css'%}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
 </head>
+
 <body>
     <form action="" method="POST">
         {% csrf_token %}
@@ -26,9 +29,11 @@
                     <div class="form-group m-2 w-75">
                         <input type="username" name="username" style="border-radius: 20px;" class="form-control" placeholder="User ID">
                     </div>
+
                     <div class="form-group m-2 w-75">
                         <input type="password" name="password" style="border-radius: 20px;" class="form-control" placeholder="Password">
                     </div>
+
                     <div class="form-group m-2 w-75">
                         <button style="background-color:#0093B7; color:white;  border-radius:25px; width: 100%;"
                             type="submit" class="btn ">Sign In</button style>
@@ -38,9 +43,9 @@
                     </div>
                     
                     {% for message in messages %}
-                    <div class="alert alert-{{message.tags}} alert-dismissible">
-                        <strong>{{message.tags}}!</strong> {{message}}
-                        <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{{message.tags}}); text-decoration: none;" aria-label="close">&times;</a>
+                    <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+                        <strong>{{message.tags|title}}!</strong> {{message}}
+                        <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
                     </div>
                     {% endfor %}
                 </center>

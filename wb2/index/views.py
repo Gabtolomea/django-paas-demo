@@ -26,7 +26,6 @@ def signin(request):
         pkval = SystemUsers.objects.filter(username = u)
         passAscii = password.encode("ascii")
         p = base64.b64encode(passAscii)
-        print(p)
         if pkval.exists():
             user = SystemUsers.objects.get(username = u)
             if user.password == p:
@@ -71,4 +70,7 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 def dashboard(request):
+    return render(request, 'dashboard.html')
+
+def ledger(request):
     return render(request, 'dashboard.html')
