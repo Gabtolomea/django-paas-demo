@@ -76,8 +76,21 @@ b = Barangays()
 
 bar = [
     'Anao',
-    
+    'Cagsing',
+    'Calabawan',
+    'Cambagte',
+    'Campisong',
+    'Cañorong',
+    'Guiwanon',
+    'Looc',
+    'Malatbo',
+    'Mangaco',
+    'Palanas',
+    'Poblacion',
+    'Salamanca',
+    'San Roque'
 ]
+
 def barangays():
 
     b.barangay = i
