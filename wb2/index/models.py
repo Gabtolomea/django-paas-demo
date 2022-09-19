@@ -1,15 +1,11 @@
-
 from calendar import c
 from datetime import date
 from pyexpat import model
 from tkinter import CASCADE
 from urllib import request
 from django.db import models
-
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
-
-
 class SystemUsers(AbstractUser):
     password = models.BinaryField(max_length=450)
     username = models.CharField(primary_key=True, max_length=20)
@@ -23,7 +19,6 @@ class SystemUsers(AbstractUser):
     profilepic = models.ImageField(blank=True, null=True)
     mobilenum = models.CharField(max_length=20, blank=True)
     authorizedapprover = models.CharField(max_length=20, default='0')
-
 class Rates(models.Model):
     rateid = models.CharField(primary_key=True, max_length=20)
     minReading = models.IntegerField()
@@ -31,10 +26,8 @@ class Rates(models.Model):
     rateAfterMin = models.IntegerField()
     ratePenalty = models.IntegerField()
     ratePenaltyFreq = models.IntegerField()
-
 class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
-
 class BarangayRecord(models.Model):
     barangay_val = models.CharField(primary_key=True, max_length=10,)
     year = models.IntegerField()
@@ -74,30 +67,23 @@ class BarangayRecord(models.Model):
     total_due_dec = models.IntegerField()
     total_paid_dec = models.IntegerField()
     total_usage_dec = models.IntegerField()
-
-class Status(models.Model):
-    status = models.CharField(max_length=20, blank=True)
-
 class ConsumerInfo(models.Model):
     consumer_id = models.CharField(primary_key=True, max_length=20)
-    meternumber = models.IntegerField()
-    firstname = models.CharField(max_length=20, blank=True)
-    middlename = models.CharField(max_length=20, blank=True)
-    lastname = models.CharField(max_length=20, blank=True)
+    meternumber = models.CharField(max_length=20, blank=True, null=True)
+    firstname = models.CharField(max_length=50, blank=True)
+    lastname = models.CharField(max_length=50, blank=True)
+    middlename = models.CharField(max_length=50, blank=True)
     barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
-    statuscode = models.ForeignKey(Status, on_delete=models.CASCADE)
+    status = models.IntegerField()
     penaltyflag = models.BooleanField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
-
 class Penalties(models.Model):
     penalty = models.IntegerField()
-
 class Discounts(models.Model):
     discount = models.IntegerField()
-
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('j','j'),

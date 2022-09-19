@@ -1,8 +1,6 @@
-
 import mysql.connector
 from .models import *
 from .colnames import *
-
 tablenames = [
     "accountinfo",
     "accountrecord",
@@ -29,7 +27,6 @@ alltables = [
     systemuser,
     yearly_records,
 ]
-
 sorted_tables = []
 mydb = mysql.connector.connect(
     host="localhost",
@@ -38,8 +35,9 @@ mydb = mysql.connector.connect(
     database="lgu_ginatilan_db"
 )
 mycursor = mydb.cursor()
-
 def porter():
+    # r = Rates.objects.get(rateid = str(1))
+    # print(r)
     porter_in()
     porter_out(sorted_tables)
     
@@ -54,7 +52,6 @@ def porter_in():
                 alltables[t][c].append(x[0])
             col+=1
         rearrange(tablenames[t])
-
 def rearrange(var):
     arr = []
     mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = '"+var+"';")
@@ -66,14 +63,11 @@ def rearrange(var):
         for c in range(cols):
             inner.append(globals()[var][c][r])
         arr.append(inner)
-
     sorted_tables.append(arr)
 con_info = ConsumerInfo()
 b_rec = BarangayRecord()
 sys_user = SystemUsers()
 rt = Rates()
-b = Barangays()
-
 bar = [
     'Anao',
     'Cagsing',
@@ -90,36 +84,33 @@ bar = [
     'Salamanca',
     'San Roque'
 ]
-
 def barangays():
-
-    b.barangay = i
+    for i in bar:
+        b = Barangays()
+        b.barangay = i
+        b.save()
 def porter_out(tables):
-
-    for i in tables[3]:
-        con_info.consumer_id = i[0]
-        con_info.firstname = i[1]
-        con_info.middlename = i[3]
-        con_info.lastname = i[2]
-        con_info.barangaycode = i[12]
-        
-    for i in tables[0]:
-        con_info.meternumber = i[5]
-        con_info.initialmeterreading = i[6]
-        con_info.rateid = i[7]
-        con_info.statuscode = i[8]
-        con_info.penaltyflag = i[11]
-        con_info.stopmeterflag = i[12]
-        con_info.deleteflag = i[14]
-
+    barangays()
     for i in tables[2]:
         b_rec_out(i)
     for i in tables[7]:
         rt_out(i)
     for i in tables[9]:
         sys_user_out(i)
-
-
+    for i in range(len(tables[3])):
+        con_info.consumer_id = tables[3][i][0]
+        con_info.firstname = tables[3][i][1]
+        con_info.lastname = tables[3][i][2]
+        con_info.middlename = tables[3][i][3]
+        con_info.barangaycode = Barangays.objects.get(id=tables[3][i][12])
+        con_info.meternumber = tables[0][i][5]
+        con_info.initialmeterreading = tables[0][i][6]
+        con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
+        con_info.status = tables[0][i][8]
+        con_info.penaltyflag = tables[0][i][11]
+        con_info.stopmeterflag = tables[0][i][12]
+        con_info.deleteflag = tables[0][i][14]
+        con_info.save()
 def sys_user_out(i):
     sys_user.username = i[0]
     sys_user.password = i[1]
@@ -131,7 +122,6 @@ def sys_user_out(i):
     sys_user.profilepic = i[8]
     sys_user.authorizedapprover = i[9]
     sys_user.save()
-
 def rt_out(i):
     rt.rateid = i[0]
     rt.minReading = i[1]
@@ -140,7 +130,6 @@ def rt_out(i):
     rt.ratePenalty = i[4]
     rt.ratePenaltyFreq = i[5]
     rt.save()
-
 def b_rec_out(i):
     b_rec.barangay_val = i[0]
     b_rec.year = i[2]

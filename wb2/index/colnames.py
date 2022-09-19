@@ -1,8 +1,6 @@
-
 columnnames = [
     "accountinfoid",
     "firstname",
-    "middlename",
     "lastname",
     "address",
     'barangay',
@@ -14,6 +12,7 @@ columnnames = [
     'consumerid_id',
     'penalty_flag',
     'deleted_flag',
+    "middlename",
     'stop_meter_flag',
     'accountid',
     'rateid',
@@ -240,8 +239,8 @@ columnnames = [
     'usage_december',
     'consumerid',
     'firstname',
-    'middlename',
     'lastname',
+    'middlename',
     'birthday',
     'mobilenumber',
     'mobilenumber2',
@@ -359,9 +358,7 @@ columnnames = [
     'total_due_december', 
     'total_paid_december',
     'usage_december',
-
 ]
-
 accountinfoid = []
 firstname = []
 middlename = []
@@ -377,7 +374,6 @@ consumerid_id = []
 penalty_flag = []
 deleted_flag = []
 stop_meter_flag = []
-
 accountid = []
 acc_rec_rateid = []
 prevyeardue = []
@@ -559,7 +555,6 @@ datepaid_history = []
 postedby_history = []
 or_number_history = []
 acc_rec_previous_reading = []
-
 barangay_val=[]
 barangay_name=[]
 brgy_rec_year=[]
@@ -602,7 +597,6 @@ usage_november=[]
 total_due_december=[]
 total_paid_december=[]
 usage_december=[]
-
 consumerid=[]
 cons_info_firstname=[]
 cons_info_middlename=[]
@@ -619,7 +613,6 @@ cons_info_barangay=[]
 sitio=[]
 oldconsumerid=[]
 cons_info_deleted_flag=[]
-
 bill_id=[]
 con_id=[]
 currentdue=[]
@@ -629,7 +622,6 @@ current_reading=[]
 reading_date=[]
 previous_reading=[]
 consumption=[]
-
 old_con_id=[]
 old_firstname=[]
 old_middlename=[]
@@ -637,7 +629,6 @@ old_lastname=[]
 con_category=[]
 old_meternumber=[]
 old_address=[]
-
 pay_hist_id=[]
 amount=[]
 pay_hist_date=[]
@@ -648,7 +639,6 @@ consumer=[]
 pay_hist_accountinfoid=[]
 pay_hist_meternumber=[]
 pay_hist_year=[]
-
 rt_id=[]
 minimumreading=[]
 minimumreading_charge=[]
@@ -656,7 +646,6 @@ rateafterminimum=[]
 ratepenalty=[]
 ratepenaltyfrequency=[]
 paymentchedday=[]
-
 revid=[]
 application_fee=[]
 mayors_permit=[]
@@ -679,7 +668,6 @@ send_disconnection_notice_after=[]
 fix_amount_penalty=[]
 penalty_after=[]
 percentage_penalty=[]
-
 userid=[]
 password=[]
 su_firstname=[]
@@ -690,7 +678,6 @@ su_emailaddress=[]
 usertype=[]
 su_profilepic=[]
 approver_flag=[]
-
 yr_year=[]
 total_due_ytd=[]
 yr_total_paid_ytd=[]
@@ -731,11 +718,9 @@ yr_usage_november=[]
 yr_total_due_december =[]
 yr_total_paid_december=[]
 yr_usage_december=[]
-
 accountinfo = [
     accountinfoid,
     firstname,
-    middlename,
     lastname,
     address,
     barangay,
@@ -747,6 +732,7 @@ accountinfo = [
     consumerid_id,
     penalty_flag,
     deleted_flag,
+    middlename,
     stop_meter_flag
 ]
 accountrecord = [
@@ -979,8 +965,8 @@ barangay_record = [
 consumerinfo = [
     consumerid,
     cons_info_firstname,
-    cons_info_middlename,
     cons_info_lastname,
+    cons_info_middlename,
     cons_info_birthday,
     mobilenumber,
     mobilenumber2,

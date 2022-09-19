@@ -1,4 +1,3 @@
-
 from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -11,7 +10,6 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 import base64
-
 from wb2 import settings
 from .forms import *
 from .decorators import *
@@ -20,13 +18,11 @@ from .dataporter import *
 def lp(request):
     porter()
     return render(request, "home.html")
-
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-
         pkval = SystemUsers.objects.filter(username = u)
         passAscii = password.encode("ascii")
         p = base64.b64encode(passAscii)
@@ -41,18 +37,14 @@ def signin(request):
                 messages.error(request, "Invalid Password")
         else:
             messages.error(request, "Invalid Username")
-
     return render(request, 'login.html')
-
 @login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
-
 def home(request):
     return render(request, 'home.html')
-
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -65,7 +57,6 @@ def user_creation(request):
             is_meter = request.POST['meter']
             if form.is_valid():
                 form.save()
-
                 user = SystemUsers.objects.get(username=form.cleaned_data.get('username'))
                 user.is_admin = is_admin
                 user.is_teller = is_teller
@@ -73,14 +64,11 @@ def user_creation(request):
                 user.is_manager = is_manager
                 user.is_meter = is_meter
                 user.save()
-
                 return redirect('login')
-
     context = {
         'form':form, 
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
-
 def dashboard(request):
     return render(request, 'dashboard.html')
