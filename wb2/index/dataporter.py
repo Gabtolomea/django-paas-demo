@@ -87,16 +87,16 @@ bar = [
 ]
 usage_rec = usage_record()
 def porter_out(tables):
-    for i in bar:
-        b = Barangays()
-        b.barangay = i
-        b.save()
-    for i in tables[2]:
-        b_rec_out(i)
-    for i in tables[7]:
-        rt_out(i)
-    for i in tables[9]:
-        sys_user_out(i)
+    # for i in bar:
+    #     b = Barangays()
+    #     b.barangay = i
+    #     b.save()
+    # for i in tables[2]:
+    #     b_rec_out(i)
+    # for i in tables[7]:
+    #     rt_out(i)
+    # for i in tables[9]:
+    #     sys_user_out(i)
 
     for i in range(len(tables[3])):
         con_info.consumer_id = tables[3][i][0]
@@ -121,6 +121,11 @@ def porter_out(tables):
         trans.payment = tables[6][i][1]
         trans.processedBy = tables[6][i][5]
         trans.save()
+
+    #    ''' usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[6])
+    #         wala rani
+    #    '''
+
 
     for i in tables[1]:
         usage_rec.accountid =	i[1-1]
@@ -285,23 +290,23 @@ def porter_out(tables):
         usage_rec.postedby_dec	=i[160-1]
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
-        arr = i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
-        usage_rec.amountpaid_str_apr=	i[164-1]
-        usage_rec.amountpaid_str_aug	= i[165-1]
-        usage_rec.amountpaid_str_dec	= i[166-1]
-        usage_rec.amountpaid_str_feb	= i[167-1]
-        usage_rec.amountpaid_str_jan	= i[168-1]
-        usage_rec.amountpaid_str_jul	= i[169-1]
-        usage_rec.amountpaid_str_jun	= i[170-1]
-        usage_rec.amountpaid_str_mar	= i[171-1]
-        usage_rec.amountpaid_str_may	= i[172-1]
-        usage_rec.amountpaid_str_nov=	i[173-1]
-        usage_rec.amountpaid_str_oct	= i[174-1]
-        usage_rec.amountpaid_str_sept	=i[175-1]
+        arr= i[175].split('-')
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
+        usage_rec.amountpaid_str_apr =	i[164-1]
+        usage_rec.amountpaid_str_aug = i[165-1]
+        usage_rec.amountpaid_str_dec = i[166-1]
+        usage_rec.amountpaid_str_feb = i[167-1]
+        usage_rec.amountpaid_str_jan = i[168-1]
+        usage_rec.amountpaid_str_jul = i[169-1]
+        usage_rec.amountpaid_str_jun = i[170-1]
+        usage_rec.amountpaid_str_mar = i[171-1]
+        usage_rec.amountpaid_str_may = i[172-1]
+        usage_rec.amountpaid_str_nov = i[173-1]
+        usage_rec.amountpaid_str_oct = i[174-1]
+        usage_rec.amountpaid_str_sept = i[175-1]
         usage_rec.accountinfoid = i[176-1]
         usage_rec.amountpaid_history =i [177-1]
-        usage_rec.datepaid_history =i[179-1]
+        usage_rec.datepaid_history = i[179-1]
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
