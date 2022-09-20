@@ -16,6 +16,12 @@
 
 <body>
     <header>
+        <!-- {% for message in messages %}
+        <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+            <strong>{{message.tags|title}}!</strong> {{message}}
+            <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
+        </div>
+        {% endfor %} -->
             <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
                 <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px;" >
                         <a href="#" style="text-decoration: none; padding: 10px;" >
