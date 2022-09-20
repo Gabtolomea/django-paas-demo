@@ -15,8 +15,10 @@ from .forms import *
 from .decorators import *
 from .models import *
 from .dataporter import *
+from .ledger import *
+
 def lp(request):
-    # porter()
+    porter()
     return render(request, "home.html")
 @unauthenticated_user
 def signin(request):
@@ -65,12 +67,11 @@ def user_creation(request):
                 user.save()
                 return redirect('login')
     context = {
-        'form':form,
+        'form':form, 
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
 def dashboard(request):
     return render(request, 'dashboard.html')
-
-def ledger(request):
-    return render(request, 'dashboard.html')
+# def ledger(request):
+#     GenerateGeneralLedger(request)
