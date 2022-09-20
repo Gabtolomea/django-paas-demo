@@ -10,7 +10,7 @@ header {
     font-size: 20px;
     margin: auto;
     left: 0;
-    z-index: 1;x
+    z-index: 1;
     height: 70px;
 }
 .header_toggle{
@@ -230,6 +230,9 @@ p{
     }
     .main_content{
         padding-left: 20px;
+        width: 0; 
+        transition :all 1s ease !important;
+        opacity: 0 !important;
     }
     .mobile_header_font{
         font-size: 25px;
