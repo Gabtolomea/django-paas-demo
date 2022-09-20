@@ -39,7 +39,7 @@ def porter():
     # r = Rates.objects.get(rateid = str(1))
     # print(r)
     porter_in()
-    # porter_out(sorted_tables)
+    porter_out(sorted_tables)
     
 def porter_in():
     col = 0
