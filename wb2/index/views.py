@@ -16,7 +16,7 @@ from .decorators import *
 from .models import *
 from .dataporter import *
 def lp(request):
-    porter()
+    # porter()
     return render(request, "home.html")
 @unauthenticated_user
 def signin(request):
@@ -65,7 +65,7 @@ def user_creation(request):
                 user.save()
                 return redirect('login')
     context = {
-        'form':form, 
+        'form':form,
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
