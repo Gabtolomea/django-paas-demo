@@ -87,16 +87,16 @@ bar = [
 ]
 usage_rec = usage_record()
 def porter_out(tables):
-    for i in bar:
-        b = Barangays()
-        b.barangay = i
-        b.save()
-    for i in tables[2]:
-        b_rec_out(i)
-    for i in tables[7]:
-        rt_out(i)
-    for i in tables[9]:
-        sys_user_out(i)
+    # for i in bar:
+    #     b = Barangays()
+    #     b.barangay = i
+    #     b.save()
+    # for i in tables[2]:
+    #     b_rec_out(i)
+    # for i in tables[7]:
+    #     rt_out(i)
+    # for i in tables[9]:
+    #     sys_user_out(i)
 
     for i in range(len(tables[3])):
         con_info.consumer_id = tables[3][i][0]
@@ -290,6 +290,7 @@ def porter_out(tables):
         usage_rec.postedby_dec	=i[160-1]
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
+        arr= i[175].split('-')
         usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
         usage_rec.amountpaid_str_apr =	i[164-1]
         usage_rec.amountpaid_str_aug = i[165-1]
@@ -308,6 +309,7 @@ def porter_out(tables):
         usage_rec.datepaid_history = i[179-1]
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
+        usage_rec.save()
 
 def sys_user_out(i):
     sys_user.username = i[0]
