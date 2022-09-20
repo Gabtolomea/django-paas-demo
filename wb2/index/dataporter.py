@@ -39,7 +39,7 @@ def porter():
     # r = Rates.objects.get(rateid = str(1))
     # print(r)
     porter_in()
-    # porter_out(sorted_tables)
+    porter_out(sorted_tables)
     
 def porter_in():
     col = 0
@@ -98,6 +98,31 @@ def porter_out(tables):
     for i in tables[9]:
         sys_user_out(i)
 
+    for i in range(len(tables[3])):
+        con_info.consumer_id = tables[3][i][0]
+        con_info.firstname = tables[3][i][1]
+        con_info.lastname = tables[3][i][2]
+        con_info.middlename = tables[3][i][3]
+        con_info.barangaycode = Barangays.objects.get(id=tables[3][i][12])
+        con_info.meternumber = tables[0][i][5]
+        con_info.initialmeterreading = tables[0][i][6]
+        con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
+        con_info.status = tables[0][i][8]
+        con_info.penaltyflag = tables[0][i][11]
+        con_info.stopmeterflag = tables[0][i][12]
+        con_info.deleteflag = tables[0][i][14]
+        con_info.save()
+    for i in range(len(tables[6])):
+        trans.transactionid = tables[6][i][0]
+        trans.date = tables[6][i][2]
+        arr = tables[6][i][7].split("-")
+        trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
+        trans.transType = 'Payment'
+        trans.payment = tables[6][i][1]
+        trans.processedBy = tables[6][i][5]
+        trans.save()
+
+
     for i in tables[1]:
         usage_rec.accountid = i[0]
         usage_rec.rateid = i[1]
@@ -105,7 +130,7 @@ def porter_out(tables):
         usage_rec.excesspayment = i[3]
         usage_rec.commulative_bill = i[4]
         usage_rec.year = i[5]
-        usage_rec.consumerid = i[6]
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[6])
         usage_rec.accountinfoid = i[7]
         usage_rec.amountpaid_history = i[8]
         usage_rec.datepaid_history = i[9]
@@ -292,30 +317,6 @@ def porter_out(tables):
         usage_rec.txrefnum_dec = i[178]
         usage_rec.ior_dec = i[179]
         usage_rec.amountpaid_str_dec = i[180]
-
-    for i in range(len(tables[3])):
-        con_info.consumer_id = tables[3][i][0]
-        con_info.firstname = tables[3][i][1]
-        con_info.lastname = tables[3][i][2]
-        con_info.middlename = tables[3][i][3]
-        con_info.barangaycode = Barangays.objects.get(id=tables[3][i][12])
-        con_info.meternumber = tables[0][i][5]
-        con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
-        con_info.status = tables[0][i][8]
-        con_info.penaltyflag = tables[0][i][11]
-        con_info.stopmeterflag = tables[0][i][12]
-        con_info.deleteflag = tables[0][i][14]
-        con_info.save()
-    for i in range(len(tables[6])):
-        trans.transactionid = tables[6][i][0]
-        trans.date = tables[6][i][2]
-        arr = tables[6][i][7].split("-")
-        trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
-        trans.transType = 'Payment'
-        trans.payment = tables[6][i][1]
-        trans.processedBy = tables[6][i][5]
-        trans.save()
 
 def sys_user_out(i):
     sys_user.username = i[0]
