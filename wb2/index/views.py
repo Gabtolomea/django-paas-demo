@@ -71,6 +71,5 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 def dashboard(request):
     return render(request, 'dashboard.html')
-
 def ledger(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'ledger.html')
