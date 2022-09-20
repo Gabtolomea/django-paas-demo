@@ -122,11 +122,6 @@ def porter_out(tables):
         trans.processedBy = tables[6][i][5]
         trans.save()
 
-    #    ''' usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[6])
-    #         wala rani
-    #    '''
-
-
     for i in tables[1]:
         usage_rec.accountid =	i[1-1]
         usage_rec.rateid = i[2-1]
@@ -290,7 +285,8 @@ def porter_out(tables):
         usage_rec.postedby_dec	=i[160-1]
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
+        arr = i[175].split('-')
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
         usage_rec.amountpaid_str_apr=	i[164-1]
         usage_rec.amountpaid_str_aug	= i[165-1]
         usage_rec.amountpaid_str_dec	= i[166-1]
@@ -308,6 +304,7 @@ def porter_out(tables):
         usage_rec.datepaid_history =i[179-1]
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
+        usage_rec.save()
 
 def sys_user_out(i):
     sys_user.username = i[0]
