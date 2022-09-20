@@ -124,20 +124,22 @@ def porter_out(tables):
 
 
     for i in tables[1]:
+        
         usage_rec.accountid = i[0]
         usage_rec.rateid = i[1]
         usage_rec.prevyeardue = i[2]
         usage_rec.excesspayment = i[3]
         usage_rec.commulative_bill = i[4]
         usage_rec.year = i[5]
+        print(i[6])
         usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[6])
-        usage_rec.accountinfoid = i[7]
-        usage_rec.amountpaid_history = i[8]
-        usage_rec.datepaid_history = i[9]
-        usage_rec.postedby_history = i[10]
-        usage_rec.or_number_history = i[11]
-        usage_rec.previous_reading = i[12]
-        usage_rec.reading_jan = i[13]
+        usage_rec.accountinfoid = i[175]
+        usage_rec.amountpaid_history = i[176]
+        usage_rec.datepaid_history = i[177]
+        usage_rec.postedby_history = i[178]
+        usage_rec.or_number_history = i[179]
+        usage_rec.previous_reading = i[180]
+        usage_rec.reading_jan = i[6]
         usage_rec.reading_date_jan = i[14]
         usage_rec.reading_postedby_jan = i[15]
         usage_rec.usage_jan = i[16]
