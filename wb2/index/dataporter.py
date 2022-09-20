@@ -249,12 +249,12 @@ usage_rec = usage_record()
     #     usage_rec.postedby_sept = i[121-1]
     #     usage_rec.txrefnum_sept = i[122-1]
     #     usage_rec.ior_sept = i[123-1]
-    #     usage_rec.reading_oct	= i[124-1]
-    #     usage_rec.reading_date_oct = i[125-1]
-    #     usage_rec.reading_postedby_oct = i[126-1]
-    #     usage_rec.usage_oct = i[127-1]
-    #     usage_rec.penalty_oct = i[128-1]
-    #     usage_rec.bill_oct = i[129-1]
+        # usage_rec.reading_oct	= i[124-1]
+        # usage_rec.reading_date_oct = i[125-1]
+        # usage_rec.reading_postedby_oct = i[126-1]
+        # usage_rec.usage_oct = i[127-1]
+        # usage_rec.penalty_oct = i[128-1]
+        # usage_rec.bill_oct = i[129-1]
     #     usage_rec.totalbill_oct = i[130-1]
     #     usage_rec.paidamt_oct	= i[131-1]
     #     usage_rec.datepaid_oct = i[132-1]
@@ -321,31 +321,138 @@ def billing_out():
         if date_str!=" ":
             jan.date = datetime.strptime(date_str, '%Y-%m-%d')
         jan.bill = u.bill_jan
-        jan.transType = 'Billing'
-        jan.save()
-        jan = Transactions()
-        jan.acctID = u.consumerid
-        jan.ratescode = u.rateid
-        jan.meterReading = u.reading_jan
-        date_str = u.reading_date_jan
-        if date_str!=" ":
-            jan.date = datetime.strptime(date_str, '%Y-%m-%d')
-        jan.payment = u.paidamt_jan
-        jan.transType = 'Payment'
-        jan.save()
+        print(jan.bill)
+        # jan.transType = 'Billing'
+        # jan.save()
+        # jan = Transactions()
+        # jan.acctID = u.consumerid
+        # jan.ratescode = u.rateid
+        # jan.meterReading = u.reading_jan
+        # date_str = u.reading_date_jan
+        # if date_str!=" ":
+        #     jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # jan.payment = u.paidamt_jan
+        # jan.transType = 'Payment'
+        # jan.save()
 
         
-        feb = Transactions()
-        feb.acctID = u.consumerid
-        feb.ratescode = u.rateid
-        feb.meterReading = u.reading_feb
-        date_str = u.reading_date_feb
-        if date_str!=" ":
-            feb.date = datetime.strptime(date_str, '%Y-%m-%d')
-        feb.bill = u.bill_feb
-        feb.payment = u.paidamt_feb
-        feb.save()
+    #     feb = Transactions()
+    #     feb.acctID = u.consumerid
+    #     feb.ratescode = u.rateid
+    #     feb.meterReading = u.reading_feb
+    #     date_str = u.reading_date_feb
+    #     if date_str!=" ":
+    #         feb.date = datetime.strptime(date_str, '%Y-%m-%d')
+    #     feb.bill = u.bill_feb
+    #     feb.payment = u.paidamt_feb
+    #     feb.save()
+    # #By Charlieeee---------------------------
+    #     mar = Transactions()
+    #     mar.acctID = u.consumerid
+    #     mar.ratescode = u.rateid
+    #     mar.meterReading = u.reading_mar
+    #     date_str = u.reading_date_mar
+    #     if date_str!=" ":
+    #         mar.date = datetime.strptime(date_str, '%Y-%m-%d')
+    #     mar.bill = u.bill_mar
+    #     mar.payment = u.paidamt_mar
+    #     mar.save()
+
+    #     apr = Transactions()
+    #     apr.acctID = u.consumerid
+    #     apr.ratescode = u.rateid
+    #     apr.meterReading = u.reading_apr
+    #     date_str = u.reading_date_apr
+    #     if date_str!=" ":
+    #         apr.date = datetime.strptime(date_str, '%Y-%m-%d')
+    #     apr.bill = u.bill_apr
+    #     apr.payment = u.paidamt_apr
+    #     apr.save()
         
+        # may = Transactions()
+        # may.acctID = u.consumerid
+        # may.ratescode = u.rateid
+        # may.meterReading = u.reading_may
+        # date_str = u.reading_date_may
+        # if date_str!=" ":
+        #     may.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # may.bill = u.bill_may
+        # may.payment = u.paidamt_may
+        # may.save()
+
+
+        # jun = Transactions()
+        # jun.acctID = u.consumerid
+        # jun.ratescode = u.rateid
+        # jun.meterReading = u.reading_jun
+        # date_str = u.reading_date_jun
+        # if date_str!=" ":
+        #     jun.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # jun.bill = u.bill_jun
+        # jun.payment = u.paidamt_jun
+        # jun.save()
+        
+        
+       
+
+        # jul = Transactions()
+        # jul.acctID = u.consumerid
+        # jul.ratescode = u.rateid
+        # jul.meterReading = u.reading_jul
+        # date_str = u.reading_date_jul
+        # if date_str!=" ":
+        #     jul.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # jul.bill = u.bill_jul
+        # jul.payment = u.paidamt_jul
+        # jul.save()
+
+        # sept = Transactions()
+        # sept.acctID = u.consumerid
+        # sept.ratescode = u.rateid
+        # sept.meterReading = u.reading_sept
+        # date_str = u.reading_date_sept
+        # if date_str!=" ":
+        #     sept.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # sept.bill = u.bill_sept
+        # sept.payment = u.paidamt_sept
+        # sept.save()
+
+
+        # oct = Transactions()
+        # oct.acctID = u.consumerid
+        # oct.ratescode = u.rateid
+        # oct.meterReading = u.reading_oct
+        # date_str = u.reading_date_oct
+        # if date_str!=" ":
+        #     oct.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # oct.bill = u.bill_oct
+        # oct.payment = u.paidamt_oct
+        # oct.save()    
+
+        # nov = Transactions()
+        # nov.acctID = u.consumerid
+        # nov.ratescode = u.rateid
+        # nov.meterReading = u.reading_nov
+        # date_str = u.reading_date_nov
+        # if date_str!=" ":
+        #     nov.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # nov.bill = u.bill_nov
+        # nov.payment = u.paidamt_nov
+        # nov.save()
+
+        # dec = Transactions()
+        # dec.acctID = u.consumerid
+        # dec.ratescode = u.rateid
+        # dec.meterReading = u.reading_dec
+        # date_str = u.reading_date_dec
+        # if date_str!=" ":
+        #     dec.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # dec.bill = u.bill_dec
+        # dec.payment = u.paidamt_dec
+        # dec.save()
+
+
+
             
     
 
