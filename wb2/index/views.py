@@ -18,7 +18,7 @@ from .dataporter import *
 from .ledger import *
 
 def lp(request):
-    #porter()
+    porter()
     return render(request, "home.html")
 @unauthenticated_user
 def signin(request):
