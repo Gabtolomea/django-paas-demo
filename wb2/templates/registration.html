@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
@@ -9,8 +8,10 @@
 		<link rel="stylesheet" type="text/css" href="/wb2/static/style.css" />
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
 			integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
 	</head>
 	<style>
+
 		html{
 			height: 100%;
 		}
@@ -51,6 +52,8 @@
 	<body>
 		<section id="registration-page">
 			<form action=""class="signup-form">
+				{% csrf_token %}
+
 				<div class="container">
 					<div class=" shadow wrapper m-4">
 						<div class="form-header">
@@ -61,14 +64,16 @@
 								<label for="">First Name*</label>
 								{{form.firstname}}
 							</div>
+
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">Middle Name*</label>
 								{{form.midname}}
 							</div>
+
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">Last Name*</label>
 								{{form.lastname}}
-							</div>
+														</div>
 					
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 								<label for="">Mobile Number*</label>
@@ -101,12 +106,16 @@
 						
 							<input type="checkbox" id="admin" name="admin" value="Admin">
 							<label for="admin">ADMIN</label><br>
+
 							<input type="checkbox" id="teller" name="teller" value="Teller">
 							<label for="teller">TELLER</label><br>
+
 							<input type="checkbox" id="supervisor" name="supervisor" value="Supervisor">
 							<label for="supervisor">SUPERVISOR</label><br>
+
 							<input type="checkbox" id="manager" name="manager" value="Manager">
 							<label for="manager">MANAGER</label><br>
+
 							<input type="checkbox" id="meter" name="meter" value="Meter">
 							<label for="meter">METER READER</label><br>
 							</div>
