@@ -137,7 +137,7 @@ usage_rec = usage_record()
     #     usage_rec.reading_postedby_jan =	i[9-1]
     #     usage_rec.usage_jan =	i[10-1]
     #     usage_rec.penalty_jan	= i[11-1]
-    #     usage_rec.bill_jan = i[12-1-1]
+    #     usage_rec.bill_jan = i[12-1]
     #     usage_rec.totalbill_jan =	i[13-1]
     #     usage_rec.paidamt_jan = i[14-1]
     #     usage_rec.datepaid_jan = i[15-1]
@@ -313,27 +313,29 @@ usage_rec = usage_record()
 def billing_out():
     u_rec = usage_record.objects.all()
     for u in u_rec:
-        jan = Transactions()
-        jan.acctID = u.consumerid
-        jan.ratescode = u.rateid
-        jan.meterReading = u.reading_jan
-        date_str = u.reading_date_jan
-        if date_str!=" ":
-            jan.date = datetime.strptime(date_str, '%Y-%m-%d')
-        jan.bill = u.bill_jan
-        print(jan.bill)
-        jan.transType = 'Billing'
-        jan.save()
-        jan = Transactions()
-        jan.acctID = u.consumerid
-        jan.ratescode = u.rateid
-        jan.meterReading = u.reading_jan
-        date_str = u.reading_date_jan
-        if date_str!=" ":
-            jan.date = datetime.strptime(date_str, '%Y-%m-%d')
-        jan.payment = u.paidamt_jan
-        jan.transType = 'Payment'
-        jan.save()
+        if u.totalbill_jan != 0:
+            jan = Transactions()
+            jan.acctID = u.consumerid
+            jan.ratescode = u.rateid
+            jan.meterReading = u.reading_jan
+            date_str = u.reading_date_jan
+            if date_str!=" ":
+                jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jan.bill = u.totalbill_jan
+            jan.transType = 'Billing'
+            jan.save()
+            jan = Transactions()
+            jan.acctID = u.consumerid
+            jan.ratescode = u.rateid
+            jan.meterReading = u.reading_jan
+            date_str = u.reading_date_jan
+            if date_str!=" ":
+                jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jan.payment = u.paidamt_jan
+            jan.transType = 'Payment'
+            jan.save()
+        else:
+            print(u.totalbill_jan)
 
         
         # feb = Transactions()
