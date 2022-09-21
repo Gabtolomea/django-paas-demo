@@ -1,3 +1,4 @@
+from email import errors
 from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -10,12 +11,13 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 import base64
-from wb2 import settings
+from wb2.wb2 import settings
 from .forms import *
 from .decorators import *
 from .models import *
 from .dataporter import *
 from .ledger import *
+from .tokens import generate_token
 
 def lp(request):
     porter()
@@ -73,5 +75,48 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 def dashboard(request):
     return render(request, 'dashboard.html')
+
+
+
+def forgetpassword (request):
+    if request.method == "POST":
+        u_email = request.POST['email']
+        user = SystemUsers.objects.get(email = u_email)
+        user.is_active = False
+        user.save()
+
+        current_site = get_current_site(request)
+        email_subject = "Confirm your Email"
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = generate_token.make_token(user)
+        message = render_to_string('email_verif.html',{
+                'name': user.first_name,
+                'domain': current_site.domain,
+                'uid': uid,
+                'token': token
+            })
+            print(f"http://{current_site.domain}/activate/{uid}/{token}")
+            email = EmailMessage(
+                email_subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [user.email],
+            )
+            email.fail_silently = True
+            email.send()
+            messages.success(request, 'Please verify your account by clicking the link in your email: '+u_email)
+            
+            return redirect('signin')
+            
+    context = {'email':email,'errors': errors}
+    return render(request,'forgetpassword.html',context)
+    
+
+
+
+
+
+
+
 # def ledger(request):
 #     GenerateGeneralLedger(request)
