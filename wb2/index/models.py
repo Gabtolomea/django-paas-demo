@@ -96,6 +96,7 @@ class Transactions(models.Model):
     acctID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
     transType = models.CharField(max_length=20, choices=TRANS_TYPE)
     meterReading = models.IntegerField(blank=True, null=True)
+    usage = models.IntegerField(blank=True, null=True)
     ratescode = models.CharField(max_length=20, blank=True, null=True)
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)

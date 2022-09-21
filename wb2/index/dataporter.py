@@ -44,7 +44,8 @@ def porter():
     # print(r)
     # porter_in()
     # porter_out(sorted_tables)
-    billing_out()
+    # billing_out()
+    print("halo i am under da watur please help me ahuhuhuhu")
     
 def porter_in():
     col = 0
@@ -91,7 +92,7 @@ bar = [
     'San Roque'
 ]
 usage_rec = usage_record()
-# def porter_out(tables):
+def porter_out(tables):
     # for i in bar:
     #     b = Barangays()
     #     b.barangay = i
@@ -102,29 +103,29 @@ usage_rec = usage_record()
     #     rt_out(i)
     # for i in tables[9]:
     #     sys_user_out(i)
-    # for i in range(len(tables[3])):
-    #     con_info.consumer_id = tables[3][i][0]
-    #     con_info.firstname = tables[3][i][1]
-    #     con_info.lastname = tables[3][i][2]
-    #     con_info.middlename = tables[3][i][3]
-    #     con_info.barangaycode = Barangays.objects.get(id=tables[3][i][12])
-    #     con_info.meternumber = tables[0][i][5]
-    #     con_info.initialmeterreading = tables[0][i][6]
-    #     con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
-    #     con_info.status = tables[0][i][8]
-    #     con_info.penaltyflag = tables[0][i][11]
-    #     con_info.stopmeterflag = tables[0][i][12]
-    #     con_info.deleteflag = tables[0][i][14]
-    #     con_info.save()
-    # for i in range(len(tables[6])):
-    #     trans.transactionid = tables[6][i][0]
-    #     trans.date = tables[6][i][2]
-    #     arr = tables[6][i][7].split("-")
-    #     trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
-    #     trans.transType = 'Payment'
-    #     trans.payment = tables[6][i][1]
-    #     trans.processedBy = tables[6][i][5]
-    #     trans.save()
+    for i in range(len(tables[3])):
+        con_info.consumer_id = tables[3][i][0]
+        con_info.firstname = tables[3][i][1]
+        con_info.lastname = tables[3][i][2]
+        con_info.middlename = tables[3][i][3]
+        con_info.barangaycode = Barangays.objects.get(id=tables[3][i][12])
+        con_info.meternumber = tables[0][i][5]
+        con_info.initialmeterreading = tables[0][i][6]
+        con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
+        con_info.status = tables[0][i][8]
+        con_info.penaltyflag = tables[0][i][11]
+        con_info.stopmeterflag = tables[0][i][12]
+        con_info.deleteflag = tables[0][i][14]
+        con_info.save()
+    for i in range(len(tables[6])):
+        trans.transactionid = tables[6][i][0]
+        trans.date = tables[6][i][2]
+        arr = tables[6][i][7].split("-")
+        trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
+        trans.transType = 'Payment'
+        trans.payment = tables[6][i][1]
+        trans.processedBy = tables[6][i][5]
+        trans.save()
     # for i in tables[1]:
     #     usage_rec.accountid =	i[1-1]
     #     usage_rec.rateid = i[2-1]
@@ -319,24 +320,14 @@ def billing_out():
             jan.ratescode = u.rateid
             jan.meterReading = u.reading_jan
             date_str = u.reading_date_jan
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jan.payment = 0
             jan.bill = u.totalbill_jan
+            jan.payment = 0
             jan.transType = 'Billing'
+            jan.usage = u.usage_jan
             jan.save()
-            jan = Transactions()
-            jan.acctID = u.consumerid
-            jan.ratescode = u.rateid
-            jan.meterReading = u.reading_jan
-            date_str = u.reading_date_jan
-            if date_str!=" ":
-                jan.date = datetime.strptime(date_str, '%Y-%m-%d')
-            jan.payment = u.paidamt_jan
-            jan.transType = 'Payment'
-            jan.save()
-        else:
-            print(u.totalbill_jan)
-
 
         if u.totalbill_feb != 0:
             feb = Transactions()
@@ -344,24 +335,13 @@ def billing_out():
             feb.ratescode = u.rateid
             feb.meterReading = u.reading_feb
             date_str = u.reading_date_feb
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 feb.date = datetime.strptime(date_str, '%Y-%m-%d')
             feb.bill = u.totalbill_feb
+            feb.payment = 0
             feb.transType = 'Billing'
+            feb.usage = u.usage_feb
             feb.save()
-            feb = Transactions()
-            feb.acctID = u.consumerid
-            feb.ratescode = u.rateid
-            feb.meterReading = u.reading_feb
-            date_str = u.reading_date_feb
-            if date_str!=" ":
-                feb.date = datetime.strptime(date_str, '%Y-%m-%d')
-            feb.payment = u.paidamt_feb
-            feb.transType = 'Payment'
-            feb.save()
-        else:
-            print(u.totalbill_feb)
-
 
         if u.totalbill_mar != 0:
             mar = Transactions()
@@ -369,24 +349,13 @@ def billing_out():
             mar.ratescode = u.rateid
             mar.meterReading = u.reading_mar
             date_str = u.reading_date_mar
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 mar.date = datetime.strptime(date_str, '%Y-%m-%d')
             mar.bill = u.totalbill_mar
+            mar.payment = 0
             mar.transType = 'Billing'
+            mar.usage = u.usage_mar
             mar.save()
-            mar = Transactions()
-            mar.acctID = u.consumerid
-            mar.ratescode = u.rateid
-            mar.meterReading = u.reading_mar
-            date_str = u.reading_date_mar
-            if date_str!=" ":
-                mar.date = datetime.strptime(date_str, '%Y-%m-%d')
-            mar.payment = u.paidamt_mar
-            mar.transType = 'Payment'
-            mar.save()
-        else:
-            print(u.totalbill_mar)
-
         
         if u.totalbill_apr != 0:
             apr = Transactions()
@@ -394,24 +363,13 @@ def billing_out():
             apr.ratescode = u.rateid
             apr.meterReading = u.reading_apr
             date_str = u.reading_date_apr
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 apr.date = datetime.strptime(date_str, '%Y-%m-%d')
             apr.bill = u.totalbill_apr
+            apr.payment = 0
             apr.transType = 'Billing'
+            apr.usage = u.usage_apr
             apr.save()
-            apr = Transactions()
-            apr.acctID = u.consumerid
-            apr.ratescode = u.rateid
-            apr.meterReading = u.reading_apr
-            date_str = u.reading_date_apr
-            if date_str!=" ":
-                apr.date = datetime.strptime(date_str, '%Y-%m-%d')
-            apr.payment = u.paidamt_apr
-            apr.transType = 'Payment'
-            apr.save()
-        else:
-            print(u.totalbill_apr)
-
 
         if u.totalbill_may != 0:
             may = Transactions()
@@ -419,24 +377,13 @@ def billing_out():
             may.ratescode = u.rateid
             may.meterReading = u.reading_may
             date_str = u.reading_date_may
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 may.date = datetime.strptime(date_str, '%Y-%m-%d')
             may.bill = u.totalbill_may
+            may.payment = 0
             may.transType = 'Billing'
+            may.usage = u.usage_may
             may.save()
-            may = Transactions()
-            may.acctID = u.consumerid
-            may.ratescode = u.rateid
-            may.meterReading = u.reading_may
-            date_str = u.reading_date_may
-            if date_str!=" ":
-                may.date = datetime.strptime(date_str, '%Y-%m-%d')
-            may.payment = u.paidamt_may
-            may.transType = 'Payment'
-            may.save()
-        else:
-            print(u.totalbill_may)
-
 
         if u.totalbill_jun != 0:
             jun = Transactions()
@@ -444,24 +391,13 @@ def billing_out():
             jun.ratescode = u.rateid
             jun.meterReading = u.reading_jun
             date_str = u.reading_date_jun
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 jun.date = datetime.strptime(date_str, '%Y-%m-%d')
             jun.bill = u.totalbill_jun
+            jun.payment = 0
             jun.transType = 'Billing'
+            jun.usage = u.usage_jun
             jun.save()
-            jun = Transactions()
-            jun.acctID = u.consumerid
-            jun.ratescode = u.rateid
-            jun.meterReading = u.reading_jun
-            date_str = u.reading_date_jun
-            if date_str!=" ":
-                jun.date = datetime.strptime(date_str, '%Y-%m-%d')
-            jun.payment = u.paidamt_jun
-            jun.transType = 'Payment'
-            jun.save()
-        else:
-            print(u.totalbill_jun)
-
 
         if u.totalbill_jul != 0:
             jul = Transactions()
@@ -469,24 +405,13 @@ def billing_out():
             jul.ratescode = u.rateid
             jul.meterReading = u.reading_jul
             date_str = u.reading_date_jul
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 jul.date = datetime.strptime(date_str, '%Y-%m-%d')
             jul.bill = u.totalbill_jul
+            jul.payment = 0
             jul.transType = 'Billing'
+            jul.usage = u.usage_jul
             jul.save()
-            jul = Transactions()
-            jul.acctID = u.consumerid
-            jul.ratescode = u.rateid
-            jul.meterReading = u.reading_jul
-            date_str = u.reading_date_jul
-            if date_str!=" ":
-                jul.date = datetime.strptime(date_str, '%Y-%m-%d')
-            jul.payment = u.paidamt_jul
-            jul.transType = 'Payment'
-            jul.save()
-        else:
-            print(u.totalbill_jul)
-
 
         if u.totalbill_aug != 0:
             aug = Transactions()
@@ -494,24 +419,13 @@ def billing_out():
             aug.ratescode = u.rateid
             aug.meterReading = u.reading_aug
             date_str = u.reading_date_aug
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 aug.date = datetime.strptime(date_str, '%Y-%m-%d')
             aug.bill = u.totalbill_aug
+            aug.payment = 0
             aug.transType = 'Billing'
+            aug.usage = u.usage_aug
             aug.save()
-            aug = Transactions()
-            aug.acctID = u.consumerid
-            aug.ratescode = u.rateid
-            aug.meterReading = u.reading_aug
-            date_str = u.reading_date_aug
-            if date_str!=" ":
-                aug.date = datetime.strptime(date_str, '%Y-%m-%d')
-            aug.payment = u.paidamt_aug
-            aug.transType = 'Payment'
-            aug.save()
-        else:
-            print(u.totalbill_aug)
-        
 
         if u.totalbill_sept != 0:
             sept = Transactions()
@@ -519,23 +433,13 @@ def billing_out():
             sept.ratescode = u.rateid
             sept.meterReading = u.reading_sept
             date_str = u.reading_date_sept
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 sept.date = datetime.strptime(date_str, '%Y-%m-%d')
             sept.bill = u.totalbill_sept
+            sept.payment = 0
             sept.transType = 'Billing'
+            sept.usage = u.usage_sept
             sept.save()
-            sept = Transactions()
-            sept.acctID = u.consumerid
-            sept.ratescode = u.rateid
-            sept.meterReading = u.reading_sept
-            date_str = u.reading_date_sept
-            if date_str!=" ":
-                sept.date = datetime.strptime(date_str, '%Y-%m-%d')
-            sept.payment = u.paidamt_sept
-            sept.transType = 'Payment'
-            sept.save()
-        else:
-            print(u.totalbill_sept)
 
 
         if u.totalbill_oct != 0:
@@ -544,23 +448,13 @@ def billing_out():
             oct.ratescode = u.rateid
             oct.meterReading = u.reading_oct
             date_str = u.reading_date_oct
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 oct.date = datetime.strptime(date_str, '%Y-%m-%d')
             oct.bill = u.totalbill_oct
+            oct.payment = 0
             oct.transType = 'Billing'
+            oct.usage = u.usage_oct
             oct.save()
-            oct = Transactions()
-            oct.acctID = u.consumerid
-            oct.ratescode = u.rateid
-            oct.meterReading = u.reading_oct
-            date_str = u.reading_date_oct
-            if date_str!=" ":
-                oct.date = datetime.strptime(date_str, '%Y-%m-%d')
-            oct.payment = u.paidamt_oct
-            oct.transType = 'Payment'
-            oct.save()
-        else:
-            print(u.totalbill_oct)
         
         
         if u.totalbill_nov != 0:
@@ -569,49 +463,27 @@ def billing_out():
             nov.ratescode = u.rateid
             nov.meterReading = u.reading_nov
             date_str = u.reading_date_nov
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 nov.date = datetime.strptime(date_str, '%Y-%m-%d')
             nov.bill = u.totalbill_nov
+            nov.payment = 0
             nov.transType = 'Billing'
+            nov.usage = u.usage_nov
             nov.save()
-            nov = Transactions()
-            nov.acctID = u.consumerid
-            nov.ratescode = u.rateid
-            nov.meterReading = u.reading_nov
-            date_str = u.reading_date_nov
-            if date_str!=" ":
-                nov.date = datetime.strptime(date_str, '%Y-%m-%d')
-            nov.payment = u.paidamt_nov
-            nov.transType = 'Payment'
-            nov.save()
-        else:
-            print(u.totalbill_nov)
-
-            
+        
         if u.totalbill_dec != 0:
             dec = Transactions()
             dec.acctID = u.consumerid
             dec.ratescode = u.rateid
             dec.meterReading = u.reading_dec
             date_str = u.reading_date_dec
-            if date_str!=" ":
+            if date_str!=" " and date_str!="":
                 dec.date = datetime.strptime(date_str, '%Y-%m-%d')
             dec.bill = u.totalbill_dec
+            dec.payment = 0
             dec.transType = 'Billing'
+            dec.usage = u.usage_dec
             dec.save()
-            dec = Transactions()
-            dec.acctID = u.consumerid
-            dec.ratescode = u.rateid
-            dec.meterReading = u.reading_dec
-            date_str = u.reading_date_dec
-            if date_str!=" ":
-                dec.date = datetime.strptime(date_str, '%Y-%m-%d')
-            dec.payment = u.paidamt_dec
-            dec.transType = 'Payment'
-            dec.save()
-        else:
-            print(u.totalbill_dec)
-
     
 
 def sys_user_out(i):
