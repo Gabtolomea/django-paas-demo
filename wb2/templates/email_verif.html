@@ -1,6 +1,6 @@
 {% autoescape off %} 
 Welcome
 {{ name }}!!
- Please confirm your email by clicking on the following link. Confirmation Link: 
+ If you've lost your password or wish to reset it, use the lin to get started. Rest Your Password:
  
  http://{{domain}}{% url 'activate' uidb64=uid token=token %}{% endautoescape %}

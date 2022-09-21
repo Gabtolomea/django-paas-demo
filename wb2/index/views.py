@@ -81,7 +81,8 @@ def dashboard(request):
 def forgetpassword (request):
     if request.method == "POST":
         u_email = request.POST['email']
-        user = SystemUsers.objects.get(email = u_email)
+    if  SystemUsers.objects.filter(email = email).excesit():
+        user = SystemUsers.objects.get(email = email)
         user.is_active = False
         user.save()
 
@@ -95,18 +96,18 @@ def forgetpassword (request):
                 'uid': uid,
                 'token': token
             })
-            print(f"http://{current_site.domain}/activate/{uid}/{token}")
-            email = EmailMessage(
+        print(f"http://{current_site.domain}/activate/{uid}/{token}")
+        email = EmailMessage(
                 email_subject,
                 message,
                 settings.EMAIL_HOST_USER,
                 [user.email],
             )
-            email.fail_silently = True
-            email.send()
-            messages.success(request, 'Please verify your account by clicking the link in your email: '+u_email)
+        email.fail_silently = True
+        email.send()
+        messages.success(request, 'Please verify your account by clicking the link in your email: '+u_email)
             
-            return redirect('signin')
+        return redirect('signin')
             
     context = {'email':email,'errors': errors}
     return render(request,'forgetpassword.html',context)
