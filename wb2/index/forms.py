@@ -44,6 +44,7 @@ class SystemUserForm(UserCreationForm):
                                   (attrs={'class': 'form-control'
                                           }))
 
+    
     class Meta:
         model = SystemUsers
         fields = (
@@ -52,7 +53,6 @@ class SystemUserForm(UserCreationForm):
             'is_staff',
             'password1',
             'password2',
-            "usertype",
             'firstname',
             'midname',
             'lastname',

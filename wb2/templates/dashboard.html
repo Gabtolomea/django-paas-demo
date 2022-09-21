@@ -1,19 +1,15 @@
+
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="/waterbilling2.0/wb2/static/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
     <!-- CSS only -->
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <style>
-        body{
-            background: #E6ECEB;
-        }
-    </style>
     <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
     <header>
             <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
@@ -30,19 +26,18 @@
                     <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span style="color: #63CDD7;">STATION</span></span>
                 </div>
                 <div class="mobile_header_nav col-sm-3 col-md-3 col-lg-3" style="text-align: right; padding: 10px;">
-            
+
                     <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
                         <i class="fa-solid fa-bell"></i>
                     </a>
                     <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
                         <i class="fa-solid fa-magnifying-glass-plus"></i>
-                    </a>  
+                    </a>
                     <a href="" style="color:#0093B7; text-decoration: none ;padding:0 5%">
                         <i class="fa-solid fa-right-from-bracket"></i>
-                    </a> 
-
-                </div>    
-            </div>     
+                    </a>
+                </div>
+            </div>
     </header>
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
         <div class="dev">
@@ -50,6 +45,7 @@
                 <p>Developer</p>
         </div>
         <ul class="list-unstyled" style=" margin-top: 30px; margin-left: -72px; ">
+            
             <li class="side_nav_li">
                 <a href="/" style="color: white; text-decoration: none;">
                     <i class="fa-solid fa-money-bill-wave fa-2x"></i>
@@ -61,10 +57,10 @@
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span class="sidenav_text">Meter Reading</span>
                 </a>
-                
+
             </li>
             <li class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none"> 
+                <a href="/" style="color: white; text-decoration: none">
                   <i class="fa-solid fa-user fa-2x"></i>
                     <span class="sidenav_text">User Accounts</span>
                 </a>
@@ -79,25 +75,25 @@
                 <a href="/" style="color: white; text-decoration: none">
                     <i class="fa-solid fa-thumbs-up fa-2x"></i>
                     <span class="sidenav_text">Approve Application</span>
-                </a>  
+                </a>
             </li>
             <li class="side_nav_li">
                 <a href="/" style="color: white; text-decoration: none">
                      <i class="fa-solid fa-user-group fa-2x"></i>
                     <span class="sidenav_text">Users Management</span>
-                </a> 
+                </a>
             </li>
             <li class="side_nav_li">
                 <a href="/" style="color: white; text-decoration: none">
                     <i class="fa-solid fa-user-plus fa-2x"></i>
                     <span class="sidenav_text">User Creation</span>
-                </a>  
+                </a>
             </li>
             <li class="side_nav_li">
                 <a href="/" style="color: white; text-decoration: none">
                     <i class="fa-solid fa-book fa-2x"></i>
                     <span class="sidenav_text">Rates Management</span>
-                </a>    
+                </a>
             </li>
             <li class="side_nav_li">
                 <a href="/" style="color: white; text-decoration: none">
@@ -107,8 +103,70 @@
             </li>
         </ul>
     </div>
-    <div class="container-fluid main_content" style="padding-top: 70px;" id="main_content">
-        <p>content</p> 
+    <div class="container-fluid main_content" style="padding-top:87px; padding-left: 417px; white-space: nowrap;" id="main_content">
+        <div class="container-fluid p-0">
+            <div class="table_responsive">
+                <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead class="wb_thead">
+                        <tr class="header">
+                            <th scope="col" style="white-space: nowrap">Account ID</th>
+                            <th scope="col" style="white-space: nowrap">Name</th>
+                            <th scope="col" style="white-space: nowrap">Meter Number</th>
+                            <th scope="col">Current Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody class="wb_tbody">
+                        <tr>
+                            <td>-</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row w-100 m-auto">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <button type="button" class="btn btn-wb-back">Back</button>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
+                <button type="button" class="btn btn-wb-copy">Get a Copy</button>
+            </div>
+        </div>
+        <h1 class="mb-3 text-center">List of Billing Ledger</h1>
+        <div class="container-fluid p-0">
+            <div class="table-responsive">
+                <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead class="wb_thead">
+                        <tr>
+                            <th style="white-space: nowrap">Date</th>
+                            <th style="white-space: nowrap">Previous</th>
+                            <th style="white-space: nowrap">Current Reading</th>
+                            <th style="white-space: nowrap">Cubic Meter Used</th>
+                            <th style="white-space: nowrap">Amount Billed</th>
+                            <th style="white-space: nowrap">Payment</th>
+                            <th style="white-space: nowrap">Processed By</th>
+                            <th style="white-space: nowrap">Transaction ID</th>
+                            <th style="white-space: nowrap">Current Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody class="wb_tbody">
+                        <tr>
+                            <td>-</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>  
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script>
@@ -124,11 +182,12 @@
             document.getElementById("side_nav").style.width = "400px";
             document.getElementById("first_toggle").style.display = "inline";
             document.getElementById("second_toggle").style.display = "none";
-            document.getElementById("side_nav").style.transition = "all 1 ease";
+            document.getElementById("side_nav").style.transition = "all 1s ease";
             document.getElementById("side_nav").style.opacity = "1";
-            document.getElementById("main_content").style.paddingLeft = "420px";
-        } 
+            document.getElementById("main_content").style.paddingLeft= "420px";
+        }
     </script>
 </body>
 
 </html>
+

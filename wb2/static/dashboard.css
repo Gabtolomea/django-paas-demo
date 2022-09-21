@@ -1,8 +1,12 @@
-
+html {
+    height: 100%;
+}
 body {
     font-family: Arial;
+    height: auto;
+    background-color: #E6ECEB !important;
+    color: #ffffff;
 }
-
 header {
     position: absolute;
     background-color: #262222;
@@ -13,6 +17,7 @@ header {
     z-index: 1;
     height: 70px;
 }
+
 .header_toggle{
     background: transparent;
     border: 0 !important;
@@ -20,13 +25,13 @@ header {
     color: #63CDD7;
 }
 
-button#first_toggle:hover{ 
+button#first_toggle:hover{
     background: #63CDD7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
 
-button#second _toggle:hover{ 
+button#second_toggle:hover{
     background: #63CDD7 !important;
     color: #ffffff !important;
     border-radius: 5px;
@@ -49,7 +54,104 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     right: 7.23%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7; 
+    color: #63CDD7;
+}
+.search{
+    position: absolute;
+    left: 87.15%;
+    right: 11.11%;
+    top: 13px;
+    bottom: 50px;
+    color: #63CDD7;
+
+}
+.side_nav_li{
+    padding:15px 0 15px 120px;
+    color:#E6ECEB;
+    font-weight: bold;
+    font-size: medium;
+    white-space: nowrap;
+}
+li.side_nav_li:hover {
+    background: #a0c5cf;
+}
+ul{
+    margin-top: 10px;
+    margin-left:-27px;
+}
+.sidenav_text{
+    padding-left: 20px;
+    font-size: 20px;
+    font-weight:700;
+}
+.online_water{
+    padding-left: 100px;
+    color:white
+}
+.dev{
+    color:#E6ECEB;
+    font-weight: bold;
+    margin-left: 120px;
+    margin-top: 100px;
+    font-size:20px;
+}
+p{
+    font-size:40px;
+    margin-left: -13px;
+}
+
+
+body {
+    font-family: Arial;
+}
+
+header {
+    position: absolute;
+    background-color: #262222;
+    width: 100%;
+    font-size: 20px;
+    margin: auto;
+    left: 0;
+    z-index: 1;
+    height: 70px;
+}
+.header_toggle{
+    background: transparent;
+    border: 0 !important;
+    padding: 0 10px !important;
+    color: #63CDD7;
+}
+
+button#first_toggle:hover{
+    background: #63CDD7 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
+}
+
+button#second _toggle:hover{
+    background: #63CDD7 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
+}
+i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.fa-right-from-bracket:hover{
+    color: white;
+}
+.logout{
+    position: absolute;
+    left: 95.14%;
+    right: 3.15%;
+    top: 13px;
+    bottom: 50px;
+    color: #63CDD7;
+
+}
+.notif{
+    position: absolute;
+    left: 91.25%;
+    right: 7.23%;
+    top: 13px;
+    bottom: 50px;
+    color: #63CDD7;
 }
 .search{
     position: absolute;
@@ -112,7 +214,6 @@ p{
     height: 50px;
     top: 6px;
     left: 30px;
-    /*  transform: translate(-22px, -20px);*/
     transition: .25s;
     z-index: 15;
     margin-right: 50px;
@@ -162,18 +263,6 @@ p{
     top: 32px;
 }
 
-@keyframes push {
-    50% {
-        top: 2px;
-        left: 2px;
-    }
-
-    100% {
-        top: 10px;
-        left: 10px;
-    }
-}
-
 .button-open {
     top: 10px;
     left: 10px;
@@ -195,9 +284,8 @@ p{
     transform: rotate(-45deg) translate(8px, -7px);
     transition: .5s;
 }
-
 .nav {
-    height: 70px;
+    height: 70px; 
     margin-left: 60px;
     background-color: #ccc;
     opacity: 0;
@@ -208,7 +296,6 @@ p{
     -ms-transition: all 0.75s ease;
     transition: all 0.75s ease;
 }
-
 .menu-open {
     width: calc(100% - 60px);
     margin-left: 60px;
@@ -219,7 +306,44 @@ p{
 .main_content{
     padding-left: 420px;
 }
+.btn-wb-back{
+    background: #091d36!important;
+    color: white !important;
+    font-weight: 500 !important;
+}
 
+button.btn.btn-wb-back:hover {
+    background: #3a4e7a !important;
+    color: white !important;
+}
+
+.btn-wb-copy{
+    background: #0093B7 !important; 
+    color: white !important; 
+    font-weight: 500 !important;
+}
+
+button.btn.btn-wb-copy:hover {
+    background: #a0c5cf !important;
+}
+
+.mb-3{
+    font-size: 40px;
+}
+
+.wb_tbody{
+    background-color: white;
+}
+
+.wb_thead{
+    background-color: #63CDD7;
+    text-align: center;
+    color: white;
+}
+
+.table {
+    font-family: Arial; 
+}
 
 
 @media(max-width: 720px) {
@@ -229,18 +353,17 @@ p{
        opacity: 0 !important;
     }
     .main_content{
-        padding-left: 20px;
-        width: 0; 
+        padding-left: 20px !important;
         transition :all 1s ease !important;
-        opacity: 0 !important;
     }
     .mobile_header_font{
         font-size: 25px;
     }
     .mobile_header_nav{
         display: none;
-    }   
+    }
     i.fa.fa-bars {
         font-size: 24px;
     }
 }
+
