@@ -99,9 +99,9 @@ class Transactions(models.Model):
     ratescode = models.CharField(max_length=20, blank=True, null=True)
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
-    bill = models.FloatField()
-    payment = models.FloatField()
-    processedBy = models.CharField(max_length=50)
+    bill = models.FloatField(null=True)
+    payment = models.FloatField(null=True)
+    processedBy = models.CharField(max_length=50, null=True)
 
 
 class usage_record(models.Model):
