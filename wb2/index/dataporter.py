@@ -336,16 +336,17 @@ def billing_out():
         jan.save()
 
         
-        feb = Transactions()
-        feb.acctID = u.consumerid
-        feb.ratescode = u.rateid
-        feb.meterReading = u.reading_feb
-        date_str = u.reading_date_feb
-        if date_str!=" ":
-            feb.date = datetime.strptime(date_str, '%Y-%m-%d')
-        feb.bill = u.bill_feb
-        feb.payment = u.paidamt_feb
-        feb.save()
+        # feb = Transactions()
+        # feb.acctID = u.consumerid
+        # feb.ratescode = u.rateid
+        # feb.meterReading = u.reading_feb
+        # date_str = u.reading_date_feb
+        # if date_str!=" ":
+        #     feb.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # feb.bill = u.bill_feb
+        # feb.payment = u.paidamt_feb
+        # feb.save()
+
     # #By Charlieeee---------------------------
     #     mar = Transactions()
     #     mar.acctID = u.consumerid
@@ -358,16 +359,18 @@ def billing_out():
     #     mar.payment = u.paidamt_mar
     #     mar.save()
 
-    #     apr = Transactions()
-    #     apr.acctID = u.consumerid
-    #     apr.ratescode = u.rateid
-    #     apr.meterReading = u.reading_apr
-    #     date_str = u.reading_date_apr
-    #     if date_str!=" ":
-    #         apr.date = datetime.strptime(date_str, '%Y-%m-%d')
-    #     apr.bill = u.bill_apr
-    #     apr.payment = u.paidamt_apr
-    #     apr.save()
+
+        # apr = Transactions()
+        # apr.acctID = u.consumerid
+        # apr.ratescode = u.rateid
+        # apr.meterReading = u.reading_apr
+        # date_str = u.reading_date_apr
+        # if date_str!=" ":
+        #     apr.date = datetime.strptime(date_str, '%Y-%m-%d')
+        # apr.bill = u.bill_apr
+        # apr.payment = u.paidamt_apr
+        # apr.save()
+
         
         # may = Transactions()
         # may.acctID = u.consumerid
