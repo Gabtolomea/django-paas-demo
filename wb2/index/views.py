@@ -15,6 +15,8 @@ from .forms import *
 from .decorators import *
 from .models import *
 from .dataporter import *
+from .ledger import *
+
 def lp(request):
     porter()
     return render(request, "home.html")
@@ -71,6 +73,5 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 def dashboard(request):
     return render(request, 'dashboard.html')
-
-def ledger(request):
-    return render(request, 'dashboard.html')
+# def ledger(request):
+#     GenerateGeneralLedger(request)

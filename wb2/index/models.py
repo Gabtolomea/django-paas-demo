@@ -80,6 +80,7 @@ class ConsumerInfo(models.Model):
     penaltyflag = models.BooleanField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
+    # current_bal = models.IntegerField()
 class Penalties(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty = models.IntegerField()
@@ -90,14 +91,15 @@ class Transactions(models.Model):
         ('Billing','Billing'),
         ('Payment','Payment'),
     )
-    transactionid = models.IntegerField(primary_key=True)
-    date = models.DateField()
+    transactionid = models.AutoField(primary_key=True)
+    date = models.DateField(null=True, blank=True)
     acctID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
     transType = models.CharField(max_length=20, choices=TRANS_TYPE)
     meterReading = models.IntegerField(blank=True, null=True)
     ratescode = models.CharField(max_length=20, blank=True, null=True)
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
+    bill = models.FloatField()
     payment = models.FloatField()
     processedBy = models.CharField(max_length=50)
 
