@@ -28,18 +28,18 @@ alltables = [
     yearly_records,
 ]
 sorted_tables = []
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="yjh434ctuG@-@",
-    database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# mydb = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="yjh434ctuG@-@",
+#     database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 def porter():
-    # r = Rates.objects.get(rateid = str(1))
-    # print(r)
-    porter_in()
-    porter_out(sorted_tables)
+    r = Rates.objects.get(rateid = str(1))
+    print(r)
+    # porter_in()
+    # porter_out(sorted_tables)
     
 def porter_in():
     col = 0
