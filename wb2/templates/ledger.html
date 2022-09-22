@@ -109,19 +109,18 @@
 					<th style="white-space: nowrap">Payment</th>
 					<th style="white-space: nowrap">Processed By</th>
 					<th style="white-space: nowrap">Transaction ID</th>
+					<th style="white-space: nowrap">Rate ID</th>
 					<th style="white-space: nowrap">Current Balance</th>
 					
 				</tr>
 			</thead>
 			<tbody>
 				{% for t in table reversed %}
-				<tr>
-					
-				{% for i in t %}
-					<td>{{i}}</td>
-					
-				{% endfor %}
-				</tr>
+					<tr>
+					{% for i in t %}
+						<td>{{i}}</td>
+					{% endfor %}
+					</tr>
 				{% endfor %}
 			</tbody>
 		</table>

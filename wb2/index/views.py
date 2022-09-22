@@ -111,6 +111,7 @@ def ledger(request, id):
     pbs = []
     ids = []
     bals = []
+    rateids = []
     table = []
     if ConsumerInfo.objects.filter(pk = id).exists():
         user = ConsumerInfo.objects.get(pk = id)
@@ -144,12 +145,17 @@ def ledger(request, id):
                 pb = ''
             else:
                 pb = asc_trans[i].processedBy
+            if asc_trans[i].ratescode is None:
+                rate = ''
+            else:
+                rate = asc_trans[i].ratescode
+            rateids.append(rate)
             readings.append(cur)
             usages.append(usage)
             bills.append(bill)
             payments.append(asc_trans[i].payment)
             pbs.append(pb)
-            ids.append(asc_trans[i].transactionid)
+            ids.append(asc_trans[i].or_number)
             
             if asc_trans[i].transType == 'Billing':
                 bal+=bill
@@ -168,6 +174,7 @@ def ledger(request, id):
                 payments[i],
                 pbs[i],
                 ids[i],
+                rateids[i],
                 bals[i],
             ]
             table.append(arr)
