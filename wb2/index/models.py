@@ -17,8 +17,7 @@ class SystemUsers(AbstractUser):
     mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
     profilepic = models.ImageField(blank=True, null=True)
-    mobilenum = models.CharField(max_length=20, blank=True)
-    authorizedapprover = models.CharField(max_length=20, default='0')
+    authorizedapprover = models.CharField(max_length=20)
 class Rates(models.Model):
     rateid = models.CharField(primary_key=True, max_length=20)
     minReading = models.IntegerField()
