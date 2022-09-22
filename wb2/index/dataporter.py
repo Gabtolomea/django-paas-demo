@@ -125,6 +125,7 @@ def porter_out(tables):
         trans.transType = 'Payment'
         trans.payment = tables[6][i][1]
         trans.processedBy = tables[6][i][5]
+        trans.or_number = tables[6][i][3]
         trans.save()
     for i in tables[1]:
         usage_rec.accountid =	i[1-1]
