@@ -53,6 +53,10 @@ def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
         form = SystemUserForm(request.POST)
+        username = form.cleaned_data.get('username')
+        raw_password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=raw_password)
+        login(request, user)
         if form.is_valid():
             form.save()
             return redirect('dashboard')
