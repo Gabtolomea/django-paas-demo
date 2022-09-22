@@ -17,8 +17,7 @@ class SystemUsers(AbstractUser):
     mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
     profilepic = models.ImageField(blank=True, null=True)
-    mobilenum = models.CharField(max_length=20, blank=True)
-    authorizedapprover = models.CharField(max_length=20, default='0')
+    authorizedapprover = models.CharField(max_length=20)
 class Rates(models.Model):
     rateid = models.CharField(primary_key=True, max_length=20)
     minReading = models.IntegerField()
@@ -96,6 +95,7 @@ class Transactions(models.Model):
     acctID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
     transType = models.CharField(max_length=20, choices=TRANS_TYPE)
     meterReading = models.IntegerField(blank=True, null=True)
+    usage = models.IntegerField(blank=True, null=True)
     ratescode = models.CharField(max_length=20, blank=True, null=True)
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)

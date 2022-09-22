@@ -82,10 +82,10 @@
 				</tr>
 			</thead>
 			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td>{{user.consumer_id}}</td>
+				<td>{{user.firstname}} {{user.middlename}} {{user.lastname}}</td>
+				<td>{{user.meternumber}}</td>
+				<td>{{bal}}</td>
 			</tr>
 		</table>
 	</div>
@@ -113,74 +113,16 @@
 				</tr>
 			</thead>
 			<tbody>
+				{% for t in table reversed %}
 				<tr>
-					<td>-</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+					
+				{% for i in t %}
+					<td>{{i}}</td>
+					
+				{% endfor %}
 				</tr>
-
+				{% endfor %}
 			</tbody>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
 		</table>
 	</div>
 
