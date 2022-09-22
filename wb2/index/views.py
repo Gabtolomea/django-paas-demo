@@ -11,7 +11,7 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 import base64
-from wb2.wb2 import settings
+from wb2 import settings
 from .forms import *
 from .decorators import *
 from .models import *
