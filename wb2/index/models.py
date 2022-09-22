@@ -102,7 +102,7 @@ class Transactions(models.Model):
     bill = models.FloatField(null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
-    
+    or_number = models.CharField(max_length=100)
 
 
 class usage_record(models.Model):
