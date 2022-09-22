@@ -1,4 +1,3 @@
-
 from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -11,25 +10,26 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 import base64
-
 from wb2 import settings
 from .forms import *
 from .decorators import *
 from .models import *
 from .dataporter import *
+from .ledger import *
+
 def lp(request):
-    # porter()
+    #porter()
     return render(request, "home.html")
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-
-        user = SystemUsers.objects.get(username = u)
+        pkval = SystemUsers.objects.filter(username = u)
         passAscii = password.encode("ascii")
         p = base64.b64encode(passAscii)
-        print(p)
-        if user is not None:
+        if pkval.exists():
+            user = SystemUsers.objects.get(username = u)
             if user.password == p:
                 login(request,user)
                 messages.success(request, 'Logged in')
@@ -38,10 +38,12 @@ def signin(request):
                 messages.error(request, "Invalid Password")
         else:
             messages.error(request, "Invalid Username")
-
     return render(request, 'login.html')
-
-
+@login_required(login_url='login')
+def signout(request):
+    logout(request)
+    messages.success(request, 'Logout successful')
+    return redirect('login')
 def home(request):
     return render(request, 'home.html')
 def user_creation(request):
@@ -56,7 +58,6 @@ def user_creation(request):
             is_meter = request.POST['meter']
             if form.is_valid():
                 form.save()
-
                 user = SystemUsers.objects.get(username=form.cleaned_data.get('username'))
                 user.is_admin = is_admin
                 user.is_teller = is_teller
@@ -64,16 +65,13 @@ def user_creation(request):
                 user.is_manager = is_manager
                 user.is_meter = is_meter
                 user.save()
-
                 return redirect('login')
-
     context = {
-        'form':form,
+        'form':form, 
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
-
 def dashboard(request):
     return render(request, 'dashboard.html')
-
-
+# def ledger(request):
+#     GenerateGeneralLedger(request)
