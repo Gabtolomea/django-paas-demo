@@ -52,14 +52,46 @@ def home(request):
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
+        print(request.POST)
         form = SystemUserForm(request.POST)
+        username = request.POST['username']
+        firstname = request.POST['firstname']
+        midname = request.POST['midname']
+        lastname = request.POST['lastname']
+        mobilenum = request.POST['mobilenum']
+        email = request.POST['email']
+        password2 = request.POST['password2']
+        is_admin = request.POST['is_admin'] == 'on'
+        is_teller = request.POST['is_teller'] == 'on'
+        is_admin = request.POST['is_admin'] == 'on'
+        is_supervisor = request.POST['is_supervisor'] == 'on'
+        is_manager = request.POST['is_manager'] == 'on'
+        is_reader = request.POST['is_reader'] == 'on'
+        authorizedapprover = request.POST['authorizedapprover']
+        profilepic = request.POST['profilepic']
         if form.is_valid():
-            form.save()
+            user = SystemUsers()
+            passAscii = password2.encode("ascii")
+            p = base64.b64encode(passAscii)
+            user.password = p
+            user.username = username
+            user.first_name = firstname
+            user.mid_name = midname
+            user.last_name = lastname
+            user.mobilenum = mobilenum
+            user.email = email
+            user.is_admin = is_admin
+            user.is_teller = is_teller
+            user.is_admin = is_admin
+            user.is_supervisor = is_supervisor
+            user.is_manager = is_manager
+            user.is_reader = is_reader
+            user.authorizedapprover = authorizedapprover
+            user.profilepic = profilepic
+            user.save()
             return redirect('dashboard')
-        else:
-            print(form.errors)
     context = {
-        'form':form, 
+        'form':form,
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
@@ -148,36 +180,36 @@ def ledger(request, id):
 def forgetpassword (request):
     if request.method == "POST":
         u_email = request.POST['email']
-    if  SystemUsers.objects.filter(email = email).excesit():
-        user = SystemUsers.objects.get(email = email)
-        user.is_active = False
-        user.save()
+        if  SystemUsers.objects.filter(email = u_email).exists():
+            user = SystemUsers.objects.get(email = u_email)
+            user.is_active = False
+            user.save()
 
-        current_site = get_current_site(request)
-        email_subject = "Confirm your Email"
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = generate_token.make_token(user)
-        message = render_to_string('email_verif.html',{
-                'name': user.first_name,
-                'domain': current_site.domain,
-                'uid': uid,
-                'token': token
-            })
-        print(f"http://{current_site.domain}/activate/{uid}/{token}")
-        email = EmailMessage(
-                email_subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                [user.email],
-            )
-        email.fail_silently = True
-        email.send()
-        messages.success(request, 'Please verify your account by clicking the link in your email: '+u_email)
+            current_site = get_current_site(request)
+            email_subject = "Confirm your Email"
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = generate_token.make_token(user)
+            message = render_to_string('email_verif.html',{
+                    'name': user.first_name,
+                    'domain': current_site.domain,
+                    'uid': uid,
+                    'token': token
+                })
+            print(f"http://{current_site.domain}/activate/{uid}/{token}")
+            email = EmailMessage(
+                    email_subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                )
+            email.fail_silently = True
+            email.send()
+            messages.success(request, 'Please verify your account by clicking the link in your email: '+str(u_email))
+                
+            return redirect('login')
             
-        return redirect('signin')
-            
-    context = {'email':email,'errors': errors}
-    return render(request,'forgetpassword.html',context)
+        context = {'email':email,'errors': errors}
+    return render(request,'forgetpassword.html')
     
 
 

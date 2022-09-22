@@ -7,7 +7,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class SystemUsers(AbstractUser):
-    password = models.BinaryField(max_length=450)
+    password = models.BinaryField(max_length=450, blank=True)
     username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
@@ -102,6 +102,7 @@ class Transactions(models.Model):
     bill = models.FloatField(null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
+    
 
 
 class usage_record(models.Model):
