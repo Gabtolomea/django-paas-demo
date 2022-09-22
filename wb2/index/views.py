@@ -96,7 +96,11 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    user = request.user
+    context = {
+        'user':user
+    }
+    return render(request, 'dashboard.html',context)
 def ledger(request, id):
     dates = []
     prevs = []

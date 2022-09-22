@@ -40,12 +40,12 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 def porter():
-    r = Rates.objects.get(rateid = str(1))
-    print(r)
+    # r = Rates.objects.get(rateid = str(1))
+    # print(r)
     porter_in()
     porter_out(sorted_tables)
     billing_out()
-    # print("halo i am under da watur please help me ahuhuhuhu")
+    print("anong kailangan kong gawin upang malaman mo?")
     
 def porter_in():
     col = 0
