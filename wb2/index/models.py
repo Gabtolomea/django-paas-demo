@@ -104,7 +104,6 @@ class Transactions(models.Model):
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
 
-
 class usage_record(models.Model):
     #generate date
     current_date =  date.today()
