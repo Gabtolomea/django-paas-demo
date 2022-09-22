@@ -53,22 +53,11 @@ def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
         form = SystemUserForm(request.POST)
-        if request.method == 'POST':
-            is_admin = request.POST['admin']
-            is_teller = request.POST['teller']
-            is_supervisor = request.POST['supervisor']
-            is_manager = request.POST['manager']
-            is_meter = request.POST['meter']
-            if form.is_valid():
-                form.save()
-                user = SystemUsers.objects.get(username=form.cleaned_data.get('username'))
-                user.is_admin = is_admin
-                user.is_teller = is_teller
-                user.is_supervisor = is_supervisor
-                user.is_manager = is_manager
-                user.is_meter = is_meter
-                user.save()
-                return redirect('login')
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+        else:
+            print(form.errors)
     context = {
         'form':form, 
         'errors':form.errors,
