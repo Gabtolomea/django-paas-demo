@@ -1,7 +1,9 @@
 from calendar import c
 from datetime import date
+import email
 from pyexpat import model
 from tkinter import CASCADE
+from turtle import setx
 from urllib import request
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -70,18 +72,25 @@ class BarangayRecord(models.Model):
 
 #Consumer Creation
 class ConsumerInfo(models.Model):
-    consumer_id = models.CharField(primary_key=True, max_length=20)
+    consumer_id = models.IntegerField(primary_key=True)
     meternumber = models.CharField(max_length=20, blank=True, null=True)
     firstname = models.CharField(max_length=50, blank=True)
     lastname = models.CharField(max_length=50, blank=True)
     middlename = models.CharField(max_length=50, blank=True)
-    barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE)
+    homeaddress = models.CharField(max_length=50, blank=True)
+    installation_address = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
     status = models.IntegerField()
     penaltyflag = models.BooleanField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
+    mobilenum = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(max_length=100,null=True, blank=True)
+    birthdate = models.DateField(null=True, blank=True)
+    sex = models.CharField(max_length=6,null=True, blank=True)
+    sitio = models.EmailField(max_length=100,null=True, blank=True)
+    picture = models.ImageField(null=True, blank=True)
     # current_bal = models.IntegerField()
 class Penalties(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)

@@ -104,11 +104,12 @@ def porter_out(tables):
     for i in tables[9]:
         sys_user_out(i)
     for i in range(len(tables[3])):
-        con_info.consumer_id = tables[3][i][0]
+        con_info.consumer_id = int(tables[3][i][0])
         con_info.firstname = tables[3][i][1]
         con_info.lastname = tables[3][i][2]
         con_info.middlename = tables[3][i][3]
-        con_info.barangaycode = Barangays.objects.get(id=tables[3][i][12])
+        con_info.installation_address = Barangays.objects.get(id=tables[3][i][12])
+        con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
         con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])

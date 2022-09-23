@@ -36,13 +36,14 @@
 		<button type="button" class="btn btn-wb-copy">Get a Copy</button>
 	</div>
 </div>
-<h1 class="mb-3 text-center">List of Billing Ledger</h1>
+<h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 
 				<tr>
+					<th style="min-width: 100px;">Transaction ID</th>
 					<th style="min-width: 100px;">Date</th>
 					<th style="min-width: 100px;">Previous</th>
 					<th style="min-width: 100px;">Current Reading</th>
@@ -51,20 +52,28 @@
 					<th style="min-width: 110px;">Amount Billed</th>
 					<th style="min-width: 100px;">Payment</th>
 					<th style="min-width: 100px;">Processed By</th>
-					<th style="min-width: 110px;">Transaction ID</th>
+					<th style="min-width: 110px;">OR Number</th>
 					<th style="min-width: 100px;">Current Balance</th>
+					<th style="min-width: 100px;">Action</th>
 				</tr>
 			</thead>
 
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
-				{% for key, value in t.items %}
 				<tr>
-					{% for i in value %}
-					<td class="{{key}}">{{i}}</td>
-					{% endfor %}
+					<td class="{{t.style}}">{{t.transid}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{i}}</td>
 				</tr>
-				{% endfor %}
 				{% endfor %}
 
 			</tbody>
