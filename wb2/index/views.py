@@ -207,16 +207,13 @@ def forgetpassword (request):
             
         context = {'email':email,'errors': errors}
     return render(request,'forgetpassword.html')
-<<<<<<< HEAD
+
 #______________________-------------------______________________#
-=======
     
 
 def meterreading(request):
     us = ConsumerInfo.objects.all()           
     return render(request,"meterreading.html",{'u':us})
-
->>>>>>> ryla
 
 def consumercreation (request):
     form = ConsumerCreationForm()
