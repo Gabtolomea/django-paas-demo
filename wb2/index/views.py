@@ -132,7 +132,6 @@ def ledger(request, id):
                     prev = ''
                 else:
                     prev = asc_trans[i-1].meterReading
-            
             if asc_trans[i].meterReading is None:
                 cur = ''
             else:
