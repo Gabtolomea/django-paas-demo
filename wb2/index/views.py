@@ -103,18 +103,23 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html',context)
 def ledger(request, id):
-    dates = []
-    prevs = []
-    readings = []
-    usages = []
-    bills = []
-    payments = []
-    pbs = []
-    ids = []
-    bals = []
-    rateids = []
     table = []
-    colors = []
+    class ledgerclass():
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style):
+            self.transid = transid
+            self.date = date
+            self.prev = prev
+            self.reading = reading
+            self.usage = usage
+            self.bill = bill
+            self.payment = payment
+            self.pb = pb
+            self.ornum = ornum
+            self.bal = bal
+            self.rateid = rateid
+            self.style = style
+        def id(self):
+            return self.transid
     if ConsumerInfo.objects.filter(pk = id).exists():
         u = ConsumerInfo.objects.get(pk = id)
         trans = Transactions.objects.filter(acctID = u.consumer_id)
@@ -128,7 +133,6 @@ def ledger(request, id):
                     prev = ''
                 else:
                     prev = asc_trans[i-1].meterReading
-            
             if asc_trans[i].meterReading is None:
                 cur = ''
             else:
@@ -149,45 +153,21 @@ def ledger(request, id):
                 rate = ''
             else:
                 rate = asc_trans[i].ratescode
-            dates.append(asc_trans[i].date)
-            prevs.append(prev)
-            rateids.append(rate)
-            readings.append(cur)
-            usages.append(usage)
-            bills.append(bill)
-            payments.append(asc_trans[i].payment)
-            pbs.append(pb)
-            ids.append(asc_trans[i].or_number)
-            
             if asc_trans[i].transType == 'Billing':
-                color = 'table-default'
+                style = ''
             else:
-                color = 'text-success table-success'
-            colors.append(color)
-            
+                style = 'text-success table-success'
             if asc_trans[i].transType == 'Billing':
                 bal+=bill
-            else:
+            elif asc_trans[i].transType == 'Payment':
                 bal=bal-asc_trans[i].payment
-            bals.append(math.ceil(bal*100)/100)
-        
-        
-        for i in range(len(asc_trans)):
-            arr = {
-                colors[i]:
-                [dates[i],
-                prevs[i],
-                readings[i],
-                usages[i],
-                rateids[i],
-                bills[i],
-                payments[i],
-                pbs[i],
-                ids[i],
-                bals[i],]
-            }
-            table.append(arr)
-
+            date = asc_trans[i].date
+            payment = asc_trans[i].payment
+            ornum = asc_trans[i].or_number
+            transid = asc_trans[i].transactionid
+            bal = math.ceil(bal*100)/100
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
+            table.append(new_row)
     context = {
         'u':u,
         'table':table,
