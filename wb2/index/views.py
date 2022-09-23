@@ -111,14 +111,15 @@ def ledger(request, id):
     pbs = []
     ids = []
     bals = []
+    rateids = []
     table = []
+    colors = []
     if ConsumerInfo.objects.filter(pk = id).exists():
-        user = ConsumerInfo.objects.get(pk = id)
-        trans = Transactions.objects.filter(acctID = user.consumer_id)
+        u = ConsumerInfo.objects.get(pk = id)
+        trans = Transactions.objects.filter(acctID = u.consumer_id)
         asc_trans = trans.order_by('date')
         bal = 0
         for i in range(len(asc_trans)):
-            dates.append(asc_trans[i].date)
             if i == 0:
                 prev = 0
             else:
@@ -126,7 +127,6 @@ def ledger(request, id):
                     prev = ''
                 else:
                     prev = asc_trans[i-1].meterReading
-            prevs.append(prev)
             
             if asc_trans[i].meterReading is None:
                 cur = ''
@@ -144,12 +144,25 @@ def ledger(request, id):
                 pb = ''
             else:
                 pb = asc_trans[i].processedBy
+            if asc_trans[i].ratescode is None:
+                rate = ''
+            else:
+                rate = asc_trans[i].ratescode
+            dates.append(asc_trans[i].date)
+            prevs.append(prev)
+            rateids.append(rate)
             readings.append(cur)
             usages.append(usage)
             bills.append(bill)
             payments.append(asc_trans[i].payment)
             pbs.append(pb)
-            ids.append(asc_trans[i].transactionid)
+            ids.append(asc_trans[i].or_number)
+            
+            if asc_trans[i].transType == 'Billing':
+                color = 'table-default'
+            else:
+                color = 'text-success table-success'
+            colors.append(color)
             
             if asc_trans[i].transType == 'Billing':
                 bal+=bill
@@ -159,21 +172,23 @@ def ledger(request, id):
         
         
         for i in range(len(asc_trans)):
-            arr = [
-                dates[i],
+            arr = {
+                colors[i]:
+                [dates[i],
                 prevs[i],
                 readings[i],
                 usages[i],
+                rateids[i],
                 bills[i],
                 payments[i],
                 pbs[i],
                 ids[i],
-                bals[i],
-            ]
+                bals[i],]
+            }
             table.append(arr)
 
     context = {
-        'user':user,
+        'u':u,
         'table':table,
         'bal':math.ceil(bal*100)/100
     }

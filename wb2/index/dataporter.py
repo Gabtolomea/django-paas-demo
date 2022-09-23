@@ -40,8 +40,6 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 def porter():
-    # # r = Rates.objects.get(rateid = str(1))
-    # # print(r)
     porter_in()
     porter_out(sorted_tables)
     billing_out()
@@ -291,7 +289,7 @@ def porter_out(tables):
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
         usage_rec.amountpaid_str_apr =	i[164-1]
         usage_rec.amountpaid_str_aug = i[165-1]
         usage_rec.amountpaid_str_dec = i[166-1]
