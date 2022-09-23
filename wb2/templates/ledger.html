@@ -54,7 +54,6 @@
 					<th style="min-width: 100px;">Processed By</th>
 					<th style="min-width: 110px;">OR Number</th>
 					<th style="min-width: 100px;">Current Balance</th>
-					<th style="min-width: 100px;">Action</th>
 				</tr>
 			</thead>
 
@@ -62,17 +61,16 @@
 				{% for t in table reversed %}
 				<tr>
 					<td class="{{t.style}}">{{t.transid}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
+					<td class="{{t.style}}">{{t.date}}</td>
+					<td class="{{t.style}}">{{t.prev}}</td>
+					<td class="{{t.style}}">{{t.reading}}</td>
+					<td class="{{t.style}}">{{t.usage}}</td>
+					<td class="{{t.style}}">{{t.rateid}}</td>
+					<td class="{{t.style}}">{{t.bill}}</td>
+					<td class="{{t.style}}">{{t.payment}}</td>
+					<td class="{{t.style}}">{{t.pb}}</td>
+					<td class="{{t.style}}">{{t.ornum}}</td>
+					<td class="{{t.style}}">{{t.bal}}</td>
 				</tr>
 				{% endfor %}
 

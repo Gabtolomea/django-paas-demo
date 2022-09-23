@@ -120,7 +120,6 @@ def ledger(request, id):
         def id(self):
             return self.transid
     if ConsumerInfo.objects.filter(pk = id).exists():
-        l = ledgerclass()
         u = ConsumerInfo.objects.get(pk = id)
         trans = Transactions.objects.filter(acctID = u.consumer_id)
         asc_trans = trans.order_by('date')
@@ -167,9 +166,8 @@ def ledger(request, id):
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rateid, style)
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
             table.append(new_row)
-    print(table)
     context = {
         'u':u,
         'table':table,
