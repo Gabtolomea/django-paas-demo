@@ -232,5 +232,8 @@ def forgetpassword (request):
     
 
 
+def consumercreation (request):
 
 
+
+    return render(request)

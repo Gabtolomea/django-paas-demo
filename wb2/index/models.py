@@ -66,6 +66,9 @@ class BarangayRecord(models.Model):
     total_due_dec = models.IntegerField()
     total_paid_dec = models.IntegerField()
     total_usage_dec = models.IntegerField()
+
+
+#Consumer Creation
 class ConsumerInfo(models.Model):
     consumer_id = models.CharField(primary_key=True, max_length=20)
     meternumber = models.CharField(max_length=20, blank=True, null=True)

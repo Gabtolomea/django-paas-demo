@@ -46,6 +46,14 @@ class SystemUserForm(UserCreationForm):
             'authorizedapprover',
         )
 
+class ConsumerCreationForm(ModelForm):
+    firstname = forms.CharField(widget=forms.TextInput)
+    lastname = forms
+
+
+
+
+
 # class RatesForm(ModelForm):
 #     class Meta:
 #         model = Rates
