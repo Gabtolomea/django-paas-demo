@@ -89,7 +89,7 @@ class ConsumerInfo(models.Model):
     email = models.EmailField(max_length=100,null=True, blank=True)
     birthdate = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=6,null=True, blank=True)
-    sitio = models.EmailField(max_length=100,null=True, blank=True)
+    sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     # current_bal = models.IntegerField()
 class Penalties(models.Model):

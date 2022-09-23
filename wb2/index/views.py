@@ -173,6 +173,7 @@ def ledger(request, id):
     return render(request, 'ledger.html', context)
 
 def forgetpassword (request):
+
     if request.method == "POST":
         u_email = request.POST['email']
         if  SystemUsers.objects.filter(email = u_email).exists():
@@ -205,11 +206,45 @@ def forgetpassword (request):
             
         context = {'email':email,'errors': errors}
     return render(request,'forgetpassword.html')
-    
-
+#______________________-------------------______________________#
 
 def consumercreation (request):
-
-
-
-    return render(request)
+    form = ConsumerCreationForm()
+    if request.method == "POST":
+        print(request.POST)
+        form = ConsumerCreationForm(request.POST)
+        firstname  = request.POST['firstname']
+        middlename = request.POST['middlename']
+        lastname = request.POST['lastname']
+        mobilenum = request.POST['mobilenum']
+        email = request.POST['email']
+        birthdate = request.POST['birthdate']
+        sex = request.POST['sex']
+        sitio = request.POST['sitio'] 
+        homeaddress = request.POST['homeaddress']
+        picture = request.POST['picture']
+        meternumber = request.POST['meternumber']
+        initialmeterreading = request.POST['initialmeterreading']
+        installation_address = request.POST['installation']
+        rateid = request.POST['rateid']
+        if form.is_valid():
+            cr = ConsumerInfo
+            cr.firstname = firstname
+            cr.middlename = middlename
+            cr.lastname = lastname
+            cr.mobilenum = mobilenum
+            cr.email = email
+            cr.birthdate = birthdate
+            cr.sex = sex
+            cr.sitio = sitio
+            cr.homeaddress = homeaddress
+            cr.picture = picture 
+            cr.meternumber = meternumber
+            cr.initialmeterreading = initialmeterreading
+            cr.installation_address = installation_address
+            cr.rateid = rateid
+    context = {
+        'form':form,
+        'errors':form.errors,
+    }
+    return render(request, 'consumercreation.html',context)

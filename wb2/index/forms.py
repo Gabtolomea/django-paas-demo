@@ -1,6 +1,7 @@
 
 from dataclasses import fields
 import email
+from fileinput import FileInput
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -47,11 +48,51 @@ class SystemUserForm(UserCreationForm):
         )
 
 class ConsumerCreationForm(ModelForm):
+    CHOICES = (
+        (
+            "MALE", "MALE"
+            "FEMALE", "FEMALE"
+        )
+    )
+
     firstname = forms.CharField(widget=forms.TextInput)
-    lastname = forms
+    middlename = forms.CharField(widget = forms.TextInput)
+    lastname = forms.CharField(widget=forms.TextInput)
+    mobilenum = forms.CharField(widget=forms.TextInput)
+    email = forms.EmailField(widget=forms.EmailInput)
+    birthdate = forms.DateField(widget=forms.DateInput)
+    sex = forms.ChoiceField(widget=forms.Select)
+    sitio = forms.CharField(widget=forms.TextInput)
+    homeaddress = forms.CharField(widget=forms.TextInput)
+    picture = forms.ImageField(widget=FileInput)
+    meternumber = forms.CharField(widget=forms.TextInput)
+    initialmeterreading = forms.IntegerField(widget=forms.NumberInput)
+    installation_address = forms.ModelChoiceField(queryset=Barangays.objects.all())
+    rateid = forms.ModelChoiceField(queryset=Rates.objects.all())
 
-
-
+    class Meta():
+        model = ConsumerInfo
+        fields = (
+            'consumer_id',
+            'meternumber',
+            'firstname',
+            'lastname',
+            'middlename',
+            'homeaddress',
+            'installation_address',
+            'initialmeterreading',
+            'rateid',
+            'status',
+            'penaltyflag',
+            'stopmeterflag',
+            'deleteflag',
+            'mobilenum',
+            'email',
+            'birthdate',
+            'sex',
+            'sitio',
+            'picture'
+        )
 
 
 # class RatesForm(ModelForm):
