@@ -213,7 +213,10 @@ def forgetpassword (request):
     
 
 def meterreading(request):
-    us = ConsumerInfo.objects.all()           
-    return render(request,"meterreading.html",{'u':us})
+    meterred = ConsumerInfo.objects.all()
+    context = {
+        'meter':meterred,
+    }           
+    return render(request,"meterreading.html",context)
 
 
