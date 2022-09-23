@@ -1,3 +1,4 @@
+from dis import dis
 from email import errors
 from os import system
 from django.contrib import messages
@@ -231,6 +232,31 @@ def forgetpassword (request):
     return render(request,'forgetpassword.html')
     
 
+def meterreading(request):
+    acc_id =[]
+    lastname = []
+    firstname = []
+    middlename = []
+    meternumber = []
+    address = []
+    reading = []
+    u = ConsumerInfo()
+    dis = u.order_by('consumer_id')
 
+    acc_id = disS.consumber_id
+    lastname [i] = dis.lastname
+    firstname [i] = dis.firstname
+    middlename [3] = dis.middname
+    meternumber [4] = dis.meternumber
+    address [5] = dis.barangaycode
+    reading [6]
+
+
+
+
+
+
+
+    return render(request,'meterreading.html')
 
 
