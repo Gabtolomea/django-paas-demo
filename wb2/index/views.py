@@ -213,30 +213,7 @@ def forgetpassword (request):
     
 
 def meterreading(request):
-    acc_id =[]
-    lastname = []
-    firstname = []
-    middlename = []
-    meternumber = []
-    address = []
-    reading = []
-    u = ConsumerInfo()
-    dis = u.order_by('consumer_id')
-
-    acc_id = disS.consumber_id
-    lastname [i] = dis.lastname
-    firstname [i] = dis.firstname
-    middlename [3] = dis.middname
-    meternumber [4] = dis.meternumber
-    address [5] = dis.barangaycode
-    reading [6]
-
-
-
-
-
-
-
-    return render(request,'meterreading.html')
+    us = ConsumerInfo.objects.all()           
+    return render(request,"meterreading.html",{'u':us})
 
 
