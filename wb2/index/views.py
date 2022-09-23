@@ -101,6 +101,16 @@ def dashboard(request):
         'user':user
     }
     return render(request, 'dashboard.html',context)
+def n_int(var):
+    if var is None:
+        return 0
+    else:
+        return var
+def n_str(var):
+    if var is None:
+        return ''
+    else:
+        return var
 def ledger(request, id):
     table = []
     class ledgerclass():
@@ -125,40 +135,25 @@ def ledger(request, id):
         asc_trans = trans.order_by('date')
         bal = 0
         for i in range(len(asc_trans)):
+            p = 0
             if i == 0:
                 prev = 0
-            else:
-                if asc_trans[i-1].meterReading is None:
-                    prev = ''
-                else:
-                    prev = asc_trans[i-1].meterReading
-            if asc_trans[i].meterReading is None:
-                cur = ''
-            else:
-                cur = asc_trans[i].meterReading
-            if asc_trans[i].usage is None:
-                usage = ''
-            else:
+            if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
-            if asc_trans[i].bill is None:
-                bill = ''
-            else:
                 bill = asc_trans[i].bill
-            if asc_trans[i].processedBy is None:
-                pb = ''
-            else:
-                pb = asc_trans[i].processedBy
-            if asc_trans[i].ratescode is None:
-                rate = ''
-            else:
                 rate = asc_trans[i].ratescode
-            if asc_trans[i].transType == 'Billing':
+                cur = asc_trans[i].meterReading
                 style = ''
-            else:
-                style = 'text-success table-success'
-            if asc_trans[i].transType == 'Billing':
+                pb = ''
                 bal+=bill
             elif asc_trans[i].transType == 'Payment':
+                usage = ''
+                bill = ''
+                rate = ''
+                prev = 0
+                cur = 0
+                style = 'success'
+                pb = asc_trans[i].processedBy
                 bal=bal-asc_trans[i].payment
             date = asc_trans[i].date
             payment = asc_trans[i].payment
@@ -167,14 +162,15 @@ def ledger(request, id):
             bal = math.ceil(bal*100)/100
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
             table.append(new_row)
+            if i < len(asc_trans)-1:
+                if asc_trans[i+1].transType == 'Billing':
+                    prev = cur
     context = {
         'u':u,
         'table':table,
         'bal':math.ceil(bal*100)/100
     }
     return render(request, 'ledger.html', context)
-
-
 
 def forgetpassword (request):
     if request.method == "POST":
