@@ -1,0 +1,39 @@
+ 
+
+
+
+{% block meterreading %}
+<h1>Meter Reading</h1>
+<div>
+	<div>
+		<table>
+			<thead>
+
+				<tr>
+					<th>Account ID</th>
+					<th>Name</th>
+					<th>Meter Number</th>
+					<th>Address</th>
+					<!-- <th style="min-width: 110px;">Input Reading</th>
+					 -->
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for u in us %}
+				<tr>
+					<td>{{u.consumer_id}}</td>
+					<td>{{u.lastname}}, {{u.firstname}} {{u.middlename}}</td>
+					<td>{{u.meternumber}}</td>
+					<!-- <td>{{u.initial_address}}</td> -->
+					<!-- <td class="{{t.style}}">{{t.usage}}</td> -->
+					
+				</tr>
+				{% endfor %}
+
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock meterreading %}
