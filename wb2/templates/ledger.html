@@ -39,7 +39,7 @@
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
-		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+		<table id="dtBasicExample" class="table table-bordered table-hover table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 
 				<tr>
@@ -54,28 +54,25 @@
 					<th style="min-width: 100px;">Processed By</th>
 					<th style="min-width: 110px;">OR Number</th>
 					<th style="min-width: 100px;">Current Balance</th>
-					<th style="min-width: 100px;">Action</th>
 				</tr>
 			</thead>
 
 			<tbody class="wb_tbody">
-				{% for t in table reversed %}
+				{% for t in table %}
 				<tr>
-					<td class="{{t.style}}">{{t.transid}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
-					<td class="{{t.style}}">{{i}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.transid}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.date}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.prev}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.reading}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.usage}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.rateid}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.bill}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.payment}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.pb}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.ornum}}</td>
+					<td class="table-{{t.style}} text-{{t.style}}">{{t.bal}}</td>
 				</tr>
 				{% endfor %}
-
 			</tbody>
 		</table>
 	</div>
