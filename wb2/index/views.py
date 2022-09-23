@@ -101,16 +101,6 @@ def dashboard(request):
         'user':user
     }
     return render(request, 'dashboard.html',context)
-def n_int(var):
-    if var is None:
-        return 0
-    else:
-        return var
-def n_str(var):
-    if var is None:
-        return ''
-    else:
-        return var
 def ledger(request, id):
     table = []
     class ledgerclass():
@@ -143,6 +133,7 @@ def ledger(request, id):
                 bill = asc_trans[i].bill
                 rate = asc_trans[i].ratescode
                 cur = asc_trans[i].meterReading
+                current = cur
                 style = ''
                 pb = ''
                 bal+=bill
@@ -150,9 +141,9 @@ def ledger(request, id):
                 usage = ''
                 bill = ''
                 rate = ''
-                prev = 0
-                cur = 0
-                style = 'success'
+                prev = ''
+                cur = ''
+                style = 'text-success table-success'
                 pb = asc_trans[i].processedBy
                 bal=bal-asc_trans[i].payment
             date = asc_trans[i].date
@@ -163,8 +154,12 @@ def ledger(request, id):
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
-                if asc_trans[i+1].transType == 'Billing':
-                    prev = cur
+                if asc_trans[i+1].transType == 'Payment':
+                    p = cur
+                else:
+                    p = p + current
+            prev = p
+
     context = {
         'u':u,
         'table':table,
