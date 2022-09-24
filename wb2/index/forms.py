@@ -4,62 +4,46 @@ import email
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+
 from .models import *
 
 
 class SystemUserForm(UserCreationForm):
-    password1: forms.Field(label='Password')
-    password2: forms.Field(label='Confirm Password')
-    firstname = forms.CharField(widget=forms.TextInput
-                                (attrs={'class': 'form-control'
-                                        }))
-    midname = forms.CharField(widget=forms.TextInput
-                              (attrs={'class': 'form-control'
-                                      }))
-
-    lastname = forms.CharField(widget=forms.TextInput
-                               (attrs={'class': 'form-control'
-                                       }))
-
-    mobilenum = forms.IntegerField(widget=forms.TextInput
-                                   (attrs={'class': 'form-control'
-                                           }))
-
-    email = forms.CharField(widget=forms.TextInput
-                            (attrs={'class': 'form-control'
-                                    }))
-
-    password1 = forms.CharField(widget=forms.PasswordInput
-                                (attrs={'class': 'form-control'
-                                        }))
-
-    password2 = forms.CharField(widget=forms.PasswordInput
-                                (attrs={'class': 'form-control'
-                                        }))
-    authorizedapprover = forms.CharField(widget=forms.TextInput
-                                         (attrs={'class': 'form-control'
-                                                 }))
-
-    profilepic = forms.ImageField(widget=forms.FileInput
-                                  (attrs={'class': 'form-control'
-                                          }))
-
-    
+    CHOICES =(
+        ("0", "Approver for Inbound Application"),
+        ("1", "Non Approver"),
+        ("2", "Supervisor"),
+        ("3", "Engineer's Office"),
+        ("4", "Mayor's Office"),
+    )
+    password1 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    firstname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    midname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    lastname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    profilepic = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
+    authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
     class Meta:
         model = SystemUsers
         fields = (
-            'username',
-            'email',
-            'is_staff',
             'password1',
             'password2',
+            'username',
+            'email',
             'firstname',
-            'midname',
             'lastname',
-            'profilepic',
+            'is_admin',
+            'is_teller',
+            'is_supervisor',
+            'is_manager',
+            'is_reader',
+            'midname',
             'mobilenum',
-            'authorizedapprover'
-
+            'profilepic',
+            'authorizedapprover',
         )
 
 # class RatesForm(ModelForm):

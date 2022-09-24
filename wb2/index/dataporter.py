@@ -1,6 +1,10 @@
 import mysql.connector
 from .models import *
 from .colnames import *
+from datetime import datetime
+
+
+
 tablenames = [
     "accountinfo",
     "accountrecord",
@@ -36,10 +40,17 @@ sorted_tables = []
 # )
 # mycursor = mydb.cursor()
 def porter():
+<<<<<<< HEAD
     r = Rates.objects.get(rateid = str(1))
     print(r)
     # porter_in()
     # porter_out(sorted_tables)
+=======
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    print("anong kailangan kong gawin upang malaman mo?")
+>>>>>>> 19f5ff2f91d22e2ba5931942686d8263a9f3cee8
     
 def porter_in():
     col = 0
@@ -87,23 +98,23 @@ bar = [
 ]
 usage_rec = usage_record()
 def porter_out(tables):
-    # for i in bar:
-    #     b = Barangays()
-    #     b.barangay = i
-    #     b.save()
-    # for i in tables[2]:
-    #     b_rec_out(i)
-    # for i in tables[7]:
-    #     rt_out(i)
-    # for i in tables[9]:
-    #     sys_user_out(i)
-
+    for i in bar:
+        b = Barangays()
+        b.barangay = i
+        b.save()
+    for i in tables[2]:
+        b_rec_out(i)
+    for i in tables[7]:
+        rt_out(i)
+    for i in tables[9]:
+        sys_user_out(i)
     for i in range(len(tables[3])):
-        con_info.consumer_id = tables[3][i][0]
+        con_info.consumer_id = int(tables[3][i][0])
         con_info.firstname = tables[3][i][1]
         con_info.lastname = tables[3][i][2]
         con_info.middlename = tables[3][i][3]
-        con_info.barangaycode = Barangays.objects.get(id=tables[3][i][12])
+        con_info.installation_address = Barangays.objects.get(id=tables[3][i][12])
+        con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
         con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
@@ -120,13 +131,8 @@ def porter_out(tables):
         trans.transType = 'Payment'
         trans.payment = tables[6][i][1]
         trans.processedBy = tables[6][i][5]
+        trans.or_number = tables[6][i][3]
         trans.save()
-
-    #    ''' usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[6])
-    #         wala rani
-    #    '''
-
-
     for i in tables[1]:
         usage_rec.accountid =	i[1-1]
         usage_rec.rateid = i[2-1]
@@ -139,7 +145,7 @@ def porter_out(tables):
         usage_rec.reading_postedby_jan =	i[9-1]
         usage_rec.usage_jan =	i[10-1]
         usage_rec.penalty_jan	= i[11-1]
-        usage_rec.bill_jan = i[12-1-1]
+        usage_rec.bill_jan = i[12-1]
         usage_rec.totalbill_jan =	i[13-1]
         usage_rec.paidamt_jan = i[14-1]
         usage_rec.datepaid_jan = i[15-1]
@@ -291,7 +297,7 @@ def porter_out(tables):
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
         usage_rec.amountpaid_str_apr =	i[164-1]
         usage_rec.amountpaid_str_aug = i[165-1]
         usage_rec.amountpaid_str_dec = i[166-1]
@@ -310,6 +316,182 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
+
+
+def billing_out():
+    u_rec = usage_record.objects.all()
+    for u in u_rec:
+        if u.totalbill_jan != 0:
+            jan = Transactions()
+            jan.acctID = u.consumerid
+            jan.ratescode = u.rateid
+            jan.meterReading = u.reading_jan
+            date_str = u.reading_date_jan
+            if date_str!=" " and date_str!="":
+                jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jan.payment = 0
+            jan.bill = u.totalbill_jan
+            jan.payment = 0
+            jan.transType = 'Billing'
+            jan.usage = u.usage_jan
+            jan.save()
+
+        if u.totalbill_feb != 0:
+            feb = Transactions()
+            feb.acctID = u.consumerid
+            feb.ratescode = u.rateid
+            feb.meterReading = u.reading_feb
+            date_str = u.reading_date_feb
+            if date_str!=" " and date_str!="":
+                feb.date = datetime.strptime(date_str, '%Y-%m-%d')
+            feb.bill = u.totalbill_feb
+            feb.payment = 0
+            feb.transType = 'Billing'
+            feb.usage = u.usage_feb
+            feb.save()
+
+        if u.totalbill_mar != 0:
+            mar = Transactions()
+            mar.acctID = u.consumerid
+            mar.ratescode = u.rateid
+            mar.meterReading = u.reading_mar
+            date_str = u.reading_date_mar
+            if date_str!=" " and date_str!="":
+                mar.date = datetime.strptime(date_str, '%Y-%m-%d')
+            mar.bill = u.totalbill_mar
+            mar.payment = 0
+            mar.transType = 'Billing'
+            mar.usage = u.usage_mar
+            mar.save()
+        
+        if u.totalbill_apr != 0:
+            apr = Transactions()
+            apr.acctID = u.consumerid
+            apr.ratescode = u.rateid
+            apr.meterReading = u.reading_apr
+            date_str = u.reading_date_apr
+            if date_str!=" " and date_str!="":
+                apr.date = datetime.strptime(date_str, '%Y-%m-%d')
+            apr.bill = u.totalbill_apr
+            apr.payment = 0
+            apr.transType = 'Billing'
+            apr.usage = u.usage_apr
+            apr.save()
+
+        if u.totalbill_may != 0:
+            may = Transactions()
+            may.acctID = u.consumerid
+            may.ratescode = u.rateid
+            may.meterReading = u.reading_may
+            date_str = u.reading_date_may
+            if date_str!=" " and date_str!="":
+                may.date = datetime.strptime(date_str, '%Y-%m-%d')
+            may.bill = u.totalbill_may
+            may.payment = 0
+            may.transType = 'Billing'
+            may.usage = u.usage_may
+            may.save()
+
+        if u.totalbill_jun != 0:
+            jun = Transactions()
+            jun.acctID = u.consumerid
+            jun.ratescode = u.rateid
+            jun.meterReading = u.reading_jun
+            date_str = u.reading_date_jun
+            if date_str!=" " and date_str!="":
+                jun.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jun.bill = u.totalbill_jun
+            jun.payment = 0
+            jun.transType = 'Billing'
+            jun.usage = u.usage_jun
+            jun.save()
+
+        if u.totalbill_jul != 0:
+            jul = Transactions()
+            jul.acctID = u.consumerid
+            jul.ratescode = u.rateid
+            jul.meterReading = u.reading_jul
+            date_str = u.reading_date_jul
+            if date_str!=" " and date_str!="":
+                jul.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jul.bill = u.totalbill_jul
+            jul.payment = 0
+            jul.transType = 'Billing'
+            jul.usage = u.usage_jul
+            jul.save()
+
+        if u.totalbill_aug != 0:
+            aug = Transactions()
+            aug.acctID = u.consumerid
+            aug.ratescode = u.rateid
+            aug.meterReading = u.reading_aug
+            date_str = u.reading_date_aug
+            if date_str!=" " and date_str!="":
+                aug.date = datetime.strptime(date_str, '%Y-%m-%d')
+            aug.bill = u.totalbill_aug
+            aug.payment = 0
+            aug.transType = 'Billing'
+            aug.usage = u.usage_aug
+            aug.save()
+
+        if u.totalbill_sept != 0:
+            sept = Transactions()
+            sept.acctID = u.consumerid
+            sept.ratescode = u.rateid
+            sept.meterReading = u.reading_sept
+            date_str = u.reading_date_sept
+            if date_str!=" " and date_str!="":
+                sept.date = datetime.strptime(date_str, '%Y-%m-%d')
+            sept.bill = u.totalbill_sept
+            sept.payment = 0
+            sept.transType = 'Billing'
+            sept.usage = u.usage_sept
+            sept.save()
+
+
+        if u.totalbill_oct != 0:
+            oct = Transactions()
+            oct.acctID = u.consumerid
+            oct.ratescode = u.rateid
+            oct.meterReading = u.reading_oct
+            date_str = u.reading_date_oct
+            if date_str!=" " and date_str!="":
+                oct.date = datetime.strptime(date_str, '%Y-%m-%d')
+            oct.bill = u.totalbill_oct
+            oct.payment = 0
+            oct.transType = 'Billing'
+            oct.usage = u.usage_oct
+            oct.save()
+        
+        
+        if u.totalbill_nov != 0:
+            nov = Transactions()
+            nov.acctID = u.consumerid
+            nov.ratescode = u.rateid
+            nov.meterReading = u.reading_nov
+            date_str = u.reading_date_nov
+            if date_str!=" " and date_str!="":
+                nov.date = datetime.strptime(date_str, '%Y-%m-%d')
+            nov.bill = u.totalbill_nov
+            nov.payment = 0
+            nov.transType = 'Billing'
+            nov.usage = u.usage_nov
+            nov.save()
+        
+        if u.totalbill_dec != 0:
+            dec = Transactions()
+            dec.acctID = u.consumerid
+            dec.ratescode = u.rateid
+            dec.meterReading = u.reading_dec
+            date_str = u.reading_date_dec
+            if date_str!=" " and date_str!="":
+                dec.date = datetime.strptime(date_str, '%Y-%m-%d')
+            dec.bill = u.totalbill_dec
+            dec.payment = 0
+            dec.transType = 'Billing'
+            dec.usage = u.usage_dec
+            dec.save()
+    
 
 def sys_user_out(i):
     sys_user.username = i[0]
@@ -370,3 +552,5 @@ def b_rec_out(i):
     b_rec.total_paid_dec = i[40]
     b_rec.total_usage_dec = i[41]
     b_rec.save()
+
+    #

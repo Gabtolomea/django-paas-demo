@@ -1,191 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
+ 
+{% extends 'dashboard.html' %}
+{% load static %}
 
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Billing Ledger</title>
-	
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
-</head>
-<style>
-	html {
-		height: 100%;
-	}
-
-	body {
-		height: auto;
-		background-image: linear-gradient(white, #63CDD7);
-	}
-
-	.container {
-		font-family: Arial;
-		color: #ffffff;
-
-	}
-
-	.header {
-		color: white;
-	}
-
-	.table {
-		font-family: Arial;
-		background-color: #63CDD7;
-		text-align: center;
-	}
-
-	h1 {
-		text-align: center;
-	}
-
-	a {
-		text-decoration: none;
-		display: inline-block;
-		padding: 8px 16px;
-	}
-
-	a:hover {
-		background-color: #ddd;
-		color: black;
-	}
-
-	.back {
-		background-color: #f1f1f1;
-		color: black;
-	}
-
-	.copy {
-		background-color: #04AA6D;
-		color: white;
-		margin-left: 2px;
-	}
-
-	.row {
-
-		float: right;
-
-	}
-</style>
-
-<body>
-	<div class="container-fluid p-0">
-		<table class="table table-bordered">
-			<thead>
-				<tr class="header">
-					<th scope="col" style="white-space: nowrap">Account ID</th>
-					<th scope="col" style="white-space: nowrap">Name</th>
-					<th scope="col" style="white-space: nowrap">Meter Number</th>
-					<th scope="col">Current Balance</th>
-				</tr>
-			</thead>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table>
-	</div>
-	<button type="button" class="btn btn-primary">Back</button>
-	<div class="row">
-		<div class="col-md-12 bg-light text-left">
-			<button type="button" class="btn btn-primary">Get a Copy</button>
-		</div>
-	</div>
-	<h1 class="mb-3">List of Billing Ledger</h1>
-
-	<div class="container">
+{% block ledger %}
+<div class="container-fluid p-0">
+	<div class="table_responsive">
 		<table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-			<thead>
-				<tr>
-					<th style="white-space: nowrap">Date</th>
-					<th style="white-space: nowrap">Previous</th>
-					<th style="white-space: nowrap">Current Reading</th>
-					<th style="white-space: nowrap">Cubic Meter Used</th>
-					<th style="white-space: nowrap">Amount Billed</th>
-					<th style="white-space: nowrap">Payment</th>
-					<th style="white-space: nowrap">Processed By</th>
-					<th style="white-space: nowrap">Transaction ID</th>
-					<th style="white-space: nowrap">Current Balance</th>
-					
+			<thead class="wb_thead">
+
+				<tr class="header">
+					<th scope="col" style="min-width:110px">Account ID</th>
+					<th scope="col" style="min-width:120px">Name</th>
+					<th scope="col" style="min-width:100px">Meter Number</th>
+					<th scope="col" style="min-width:100px">Current Balance</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td>-</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
 
+			<tbody class="wb_tbody">
+				<tr>
+					<td>{{u.consumer_id}}</td>
+					<td>{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<td>{{u.meternumber}}</td>
+					<td>{{bal}}</td>
+				</tr>
 			</tbody>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			</tr>
 		</table>
 	</div>
+</div>
+<div class="row w-100 m-auto">
+	<div class="col-lg-6 col-md-6 col-sm-6">
+		<button type="button" class="btn btn-wb-back">Back</button>
+	</div>
+	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
+		<button type="button" class="btn btn-wb-copy">Get a Copy</button>
+	</div>
+</div>
+<h1 class="mb-3 text-center">Account Ledger</h1>
+<div class="container-fluid p-0">
+	<div class="table-responsive">
+		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+			<thead class="wb_thead">
 
-</body>
+				<tr>
+					<th style="min-width: 100px;">Transaction ID</th>
+					<th style="min-width: 100px;">Date</th>
+					<th style="min-width: 100px;">Previous</th>
+					<th style="min-width: 100px;">Current Reading</th>
+					<th style="min-width: 110px;">Cubic Meter Used</th>
+					<th style="min-width: 110px;">Rate ID</th>
+					<th style="min-width: 110px;">Amount Billed</th>
+					<th style="min-width: 100px;">Payment</th>
+					<th style="min-width: 100px;">Processed By</th>
+					<th style="min-width: 110px;">OR Number</th>
+					<th style="min-width: 100px;">Current Balance</th>
+				</tr>
+			</thead>
 
-</html>
+			<tbody class="wb_tbody">
+				{% for t in table reversed %}
+				<tr>
+					<td class="{{t.style}}">{{t.transid}}</td>
+					<td class="{{t.style}}">{{t.date}}</td>
+					<td class="{{t.style}}">{{t.prev}}</td>
+					<td class="{{t.style}}">{{t.reading}}</td>
+					<td class="{{t.style}}">{{t.usage}}</td>
+					<td class="{{t.style}}">{{t.rateid}}</td>
+					<td class="{{t.style}}">{{t.bill}}</td>
+					<td class="{{t.style}}">{{t.payment}}</td>
+					<td class="{{t.style}}">{{t.pb}}</td>
+					<td class="{{t.style}}">{{t.ornum}}</td>
+					<td class="{{t.style}}">{{t.bal}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock ledger %}
