@@ -21,6 +21,7 @@ from .ledger import *
 import math
 from .tokens import generate_token
 
+
 def lp(request):
     porter()
     return render(request, "home.html")
@@ -209,37 +210,36 @@ def forgetpassword (request):
             return redirect('login')
             
         context = {'email':email,'errors': errors}
-    return render(request,'forgetpassword.html')
+    return render(request,'forgetpassword.html',context)
     
 
 def meterreading(request):
-        meterred = ConsumerInfo.objects.all()
-        # table = []
-        # [meterred.consumer_id,
-        #       meterred.lastname,
-        #       meterred.firstname,
-        #       meterred.middlename,
-        #       meterred.meternumber,
-        #       meterred.installation_address]
-        # for i in range(len(meterred)):
-        #         acct_id = meterred[i].consumer_id
-        #         lname = meterred[i].lastname
-        #         fname = meterred[i].firstname
-        #         mname = meterred[i].middlename
-        #         mn    = meterred[i].meternumber
-        #         home  = meterred[i].initial_address
-        # table.append(meterred.consumer_id,
-        #       meterred.lastname,
-        #       meterred.firstname,
-        #       meterred.middlename,
-        #       meterred.meternumber,
-        #       meterred.installation_address)
-        # table.append(acct_id,lname,fname,mname,mn,home)
-        context = {
-            "meter": meterred,
-            # "table": table
-        }
+    meterred = ConsumerInfo.objects.all()
+    # table = [meterred.consumer_id,
+    #           meterred.lastname,
+    #           meterred.firstname,
+    #           meterred.middlename,
+    #           meterred.meternumber,
+    #           meterred.installation_address]
+    # # for i in range(len(meterred)):
+    # #             acct_id = meterred[i].consumer_id
+    # #             lname = meterred[i].lastname
+    # #             fname = meterred[i].firstname
+    # #             mname = meterred[i].middlename
+    # #             mn    = meterred[i].meternumber
+    # #             home  = meterred[i].initial_address
+    # table.append(meterred.consumer_id,
+    #           meterred.lastname,
+    #           meterred.firstname,
+    #           meterred.middlename,
+    #           meterred.meternumber,
+    #           meterred.installation_address)
+    # # table.append(acct_id,lname,fname,mname,mn,home)
+    # context = {
+    #         "meter": meterred,
+    #         # "table": table
+    #     }
 
-        return render(request,"meterreading.html",context)
+    return render(request,'meterreading.html',{'m': meterred})
 
 
