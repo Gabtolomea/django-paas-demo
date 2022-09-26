@@ -22,14 +22,14 @@ class SystemUsers(AbstractUser):
     authorizedapprover = models.CharField(max_length=20)
 class Rates(models.Model):
     rateid = models.CharField(primary_key=True, max_length=20)
-    rateType = models.CharField(max_length=20, blank=True, null=True)
+    connectionType = models.CharField(max_length=20, blank=True, null=True)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
     ratePenalty = models.IntegerField()
     ratePenaltyFreq = models.IntegerField()
     def __str__(self) -> str:
-        return self.rateType
+        return self.connectionType
 
 class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
