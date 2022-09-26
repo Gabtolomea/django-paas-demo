@@ -49,26 +49,25 @@ class SystemUserForm(UserCreationForm):
 
 class ConsumerCreationForm(ModelForm):
     CHOICES = (
-        (
-            "MALE", "MALE"
-            "FEMALE", "FEMALE"
-        )
+        ("MALE", "MALE"),
+        ("FEMALE", "FEMALE"),
     )
+    
 
-    firstname = forms.CharField(widget=forms.TextInput)
-    middlename = forms.CharField(widget = forms.TextInput)
-    lastname = forms.CharField(widget=forms.TextInput)
-    mobilenum = forms.CharField(widget=forms.TextInput)
-    email = forms.EmailField(widget=forms.EmailInput)
-    birthdate = forms.DateField(widget=forms.DateInput)
-    sex = forms.ChoiceField(widget=forms.Select, choices=CHOICES)
-    sitio = forms.CharField(widget=forms.TextInput)
-    homeaddress = forms.CharField(widget=forms.TextInput)
-    picture = forms.ImageField(widget=forms.FileInput)
-    meternumber = forms.CharField(widget=forms.TextInput)
-    initialmeterreading = forms.IntegerField(widget=forms.NumberInput)
-    installation_address = forms.ModelChoiceField(queryset=Barangays.objects.all())
-    rateid = forms.ModelChoiceField(queryset=Rates.objects.all())
+    firstname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    middlename = forms.CharField(widget = forms.TextInput(attrs={'class': 'form-control'}))
+    lastname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}))
+    sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=CHOICES)
+    sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+    meternumber = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
+    installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Barangays.objects.all())
+    rateid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Rates.objects.all())
 
     class Meta():
         model = ConsumerInfo
