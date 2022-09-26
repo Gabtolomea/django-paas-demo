@@ -216,8 +216,8 @@ def password_rest_form(request):
 
 
 def meterreading(request):
-    meterred = ConsumerInfo.objects.all
-    return render(request,'meterreading.html',{'m': meterred})
+    meterred = ConsumerInfo.objects.all()
+    return render(request,'meterreading.html',{'meterred': meterred})
 
 
 

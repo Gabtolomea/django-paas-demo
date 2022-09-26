@@ -29,6 +29,8 @@ class Rates(models.Model):
     ratePenaltyFreq = models.IntegerField()
 class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
+    def __str__(self) -> str:
+        return self.barangay
 class BarangayRecord(models.Model):
     barangay_val = models.CharField(primary_key=True, max_length=10,)
     year = models.IntegerField()
