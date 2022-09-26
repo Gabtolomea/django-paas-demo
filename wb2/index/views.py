@@ -21,6 +21,12 @@ from .ledger import *
 import math
 from .tokens import generate_token
 
+# creating PDF using reportlab
+# import io
+# from django.http import FileResponse
+# from reportlab.pdfgen import canvas
+
+
 def lp(request):
     porter()
     return render(request, "home.html")
