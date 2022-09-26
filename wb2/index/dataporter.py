@@ -19,7 +19,7 @@ tablenames = [
     "yearly_records"
 ]
 alltables = [
-    accountinfo, 
+    accountinfo,
     accountrecord,
     barangay_record,
     consumerinfo,
@@ -31,7 +31,11 @@ alltables = [
     systemuser,
     yearly_records,
 ]
+
 sorted_tables = []
+
+# sorted_tables = []
+
 # mydb = mysql.connector.connect(
 #     host="localhost",
 #     user="root",
@@ -40,20 +44,14 @@ sorted_tables = []
 # )
 # mycursor = mydb.cursor()
 def porter():
-<<<<<<< HEAD
-    r = Rates.objects.get(rateid = str(1))
-    print(r)
-    # porter_in()
-    # porter_out(sorted_tables)
-=======
+
     # r = Rates.objects.get(rateid = str(1))
     # print(r)
     # porter_in()
     # porter_out(sorted_tables)
     # billing_out()
     print("halo i am under da watur please help me ahuhuhuhu")
->>>>>>> b46e8d0d86f8db285c7cb0c8cb50a3e1a5e17066
-    
+
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -297,7 +295,7 @@ def porter_out(tables):
     #     usage_rec.txrefnum_dec=	i[161-1]
     #     usage_rec.ior_dec	=i[162-1]
     #     arr= i[175].split('-')
-    #     usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
+    #     usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])
     #     usage_rec.amountpaid_str_apr =	i[164-1]
     #     usage_rec.amountpaid_str_aug = i[165-1]
     #     usage_rec.amountpaid_str_dec = i[166-1]
@@ -363,7 +361,7 @@ def billing_out():
             mar.transType = 'Billing'
             mar.usage = u.usage_mar
             mar.save()
-        
+
         if u.totalbill_apr != 0:
             apr = Transactions()
             apr.acctID = u.consumerid
@@ -462,8 +460,8 @@ def billing_out():
             oct.transType = 'Billing'
             oct.usage = u.usage_oct
             oct.save()
-        
-        
+
+
         if u.totalbill_nov != 0:
             nov = Transactions()
             nov.acctID = u.consumerid
@@ -477,7 +475,7 @@ def billing_out():
             nov.transType = 'Billing'
             nov.usage = u.usage_nov
             nov.save()
-        
+
         if u.totalbill_dec != 0:
             dec = Transactions()
             dec.acctID = u.consumerid
@@ -491,7 +489,7 @@ def billing_out():
             dec.transType = 'Billing'
             dec.usage = u.usage_dec
             dec.save()
-    
+
 
 def sys_user_out(i):
     sys_user.username = i[0]
