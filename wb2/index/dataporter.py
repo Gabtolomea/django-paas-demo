@@ -2,7 +2,7 @@ import mysql.connector
 from .models import *
 from .colnames import *
 from datetime import datetime
-
+import math
 
 tablenames = [
     "accountinfo",
@@ -30,20 +30,18 @@ alltables = [
     systemuser,
     yearly_records,
 ]
-# sorted_tables = []
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="yjh434ctuG@-@",
-#     database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+sorted_tables = []
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="yjh434ctuG@-@",
+    database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 def porter():
-    # r = Rates.objects.get(rateid = str(1))
-    # print(r)
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
     print("anong kailangan kong gawin upang malaman mo?")
     
 def porter_in():
@@ -486,6 +484,20 @@ def billing_out():
             dec.usage = u.usage_dec
             dec.save()
     
+def balance():
+    for i in ConsumerInfo.objects.all():
+        user = ConsumerInfo.objects.get(consumerid = i.id)
+        trans = Transactions.objects.filter(acctID = i.id)
+        asc_trans = trans.order_by('date')
+        bal = 0
+        for i in range(len(asc_trans)):
+            if asc_trans[i].transType == 'Billing':
+                bal+=asc_trans[i].bill
+            elif asc_trans[i].transType == 'Payment':
+                bal=bal-asc_trans[i].payment
+            bal = math.ceil(bal*100)/100
+        user.current_bal = bal
+        user.save()
 
 def sys_user_out(i):
     sys_user.username = i[0]
@@ -499,15 +511,22 @@ def sys_user_out(i):
     sys_user.authorizedapprover = i[9]
     sys_user.save()
 def rt_out(i):
-    rt.rateid = i[0]
+    rt.rate_id = i[0]
     rt.minReading = i[1]
     rt.minReadingCharge = i[2]
     rt.rateAfterMin = i[3]
     rt.ratePenalty = i[4]
     rt.ratePenaltyFreq = i[5]
+    if i[0] == 1:
+        rt.connectionType = 'Residential'
+    else:
+        rt.connectionType = 'Commercial'
+    rt.added_by = None
     rt.save()
 def b_rec_out(i):
-    b_rec.barangay_val = i[0]
+    b_rec.barangayrec_id = i[0]
+    arr = i[0].split('-')
+    b_rec.barangaycode = Barangays.objects.get(id=int(arr[0]))
     b_rec.year = i[2]
     b_rec.total_due_jan = i[6]
     b_rec.total_paid_jan = i[7]
