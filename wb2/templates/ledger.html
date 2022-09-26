@@ -39,7 +39,7 @@
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
-		<table id="dtBasicExample" class="table table-bordered table-hover table-sm" cellspacing="0" width="100%">
+		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 
 				<tr>
@@ -58,19 +58,19 @@
 			</thead>
 
 			<tbody class="wb_tbody">
-				{% for t in table %}
+				{% for t in table reversed %}
 				<tr>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.transid}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.date}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.prev}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.reading}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.usage}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.rateid}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.bill}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.payment}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.pb}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.ornum}}</td>
-					<td class="table-{{t.style}} text-{{t.style}}">{{t.bal}}</td>
+					<td class="{{t.style}}">{{t.transid}}</td>
+					<td class="{{t.style}}">{{t.date}}</td>
+					<td class="{{t.style}}">{{t.prev}}</td>
+					<td class="{{t.style}}">{{t.reading}}</td>
+					<td class="{{t.style}}">{{t.usage}}</td>
+					<td class="{{t.style}}">{{t.rateid}}</td>
+					<td class="{{t.style}}">{{t.bill}}</td>
+					<td class="{{t.style}}">{{t.payment}}</td>
+					<td class="{{t.style}}">{{t.pb}}</td>
+					<td class="{{t.style}}">{{t.ornum}}</td>
+					<td class="{{t.style}}">{{t.bal}}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
