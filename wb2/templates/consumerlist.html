@@ -1,0 +1,35 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+{% block consumer_list %}
+<h1 class="mb-3 text-center">Consumer List</h1>
+    <div class="container-fluid p-0">
+        <div class="table-responsive">
+            <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                <thead class="wb_thead">
+                        
+                    <tr>
+                        <th style="min-width: 100px;">Account ID</th>                        
+                        <th style="min-width: 100px;">Meter Number</th>
+                        <th style="min-width: 100px;">Name</th>
+                        <th style="min-width: 100px;">Address</th>
+                        <th style="min-width: 100px;">Total Balance</th>
+
+                    </tr>
+                </thead>
+                    
+                    <tbody class="wb_tbody">
+                        {% for con in cons_list %}
+                        
+                        <tr>
+                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.consumer_id}}</a></td>
+                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.meternumber}}</a></td>
+                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</a></td>
+                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.installation_address}}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+{% endblock consumer_list %}
+

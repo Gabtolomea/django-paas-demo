@@ -220,6 +220,11 @@ def meterreading(request):
     return render(request,'meterreading.html',{'meterred': meterred})
 
 
+def consumer_list(request):
+    cons_list = ConsumerInfo.objects.all()
+    return render(request,'consumerlist.html',{'cons_list': cons_list})
+
+
 
 def consumercreation (request):
     form = ConsumerCreationForm()
