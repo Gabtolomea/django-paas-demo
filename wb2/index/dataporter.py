@@ -40,8 +40,6 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 def porter():
-    # r = Rates.objects.get(rateid = str(1))
-    # print(r)
     porter_in()
     porter_out(sorted_tables)
     billing_out()
