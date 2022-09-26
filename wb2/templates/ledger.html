@@ -83,10 +83,10 @@
 				</tr>
 			</thead>
 			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td>{{user.consumer_id}}</td>
+				<td>{{user.firstname}} {{user.middlename}} {{user.lastname}}</td>
+				<td>{{user.meternumber}}</td>
+				<td>{{bal}}</td>
 			</tr>
 		</table>
 	</div>
@@ -111,79 +111,21 @@
 					<th style="white-space: nowrap">Processed By</th>
 					<th style="white-space: nowrap">Transaction ID</th>
 					<th style="white-space: nowrap">Current Balance</th>
-					
+
 				</tr>
 			</thead>
 			<tbody>
+				{% for t in table reversed %}
 				<tr>
-					<td>-</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
 
+				{% for i in t %}
+					<td>{{i}}</td>
+
+				{% endfor %}
+				</tr>
+				{% endfor %}
 			</tbody>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>-</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			</tr>
+
 		</table>
 	</div>
 

@@ -27,6 +27,7 @@
     <form action="" method="POST">
         {% csrf_token %}
         <div class="container">
+
             <div class="wrapper shadow"
                 style=" margin: 10% auto !important; border-radius: 40px;  max-width: 440px; padding: 40px 0; background: #63CDD7;">
                 <div class="log-in" style="padding-right: 15px">
@@ -49,7 +50,7 @@
                             type="submit" class="btn ">Sign In</button style>
                     </div>
                     <div class="FP ">
-                        <a href="{% url 'reset_password'%}" style="color: #0093B7;">Forgot Password?</a>
+                        <a href="{% url 'forgetpassword'%}" style="color: #0093B7;">Forgot Password?</a>
                     </div>
 
                     {% for message in messages %}

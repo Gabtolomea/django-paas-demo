@@ -7,7 +7,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class SystemUsers(AbstractUser):
-    password = models.BinaryField(max_length=450)
+    password = models.BinaryField(max_length=450, blank=True)
     username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
@@ -17,8 +17,7 @@ class SystemUsers(AbstractUser):
     mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
     profilepic = models.ImageField(blank=True, null=True)
-    mobilenum = models.CharField(max_length=20, blank=True)
-    authorizedapprover = models.CharField(max_length=20, default='0')
+    authorizedapprover = models.CharField(max_length=20)
 class Rates(models.Model):
     rateid = models.CharField(primary_key=True, max_length=20)
     minReading = models.IntegerField()
@@ -80,6 +79,7 @@ class ConsumerInfo(models.Model):
     penaltyflag = models.BooleanField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
+    # current_bal = models.IntegerField()
 class Penalties(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty = models.IntegerField()
@@ -90,16 +90,19 @@ class Transactions(models.Model):
         ('Billing','Billing'),
         ('Payment','Payment'),
     )
-    transactionid = models.IntegerField(primary_key=True)
-    date = models.DateField()
+    transactionid = models.AutoField(primary_key=True)
+    date = models.DateField(null=True, blank=True)
     acctID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
     transType = models.CharField(max_length=20, choices=TRANS_TYPE)
     meterReading = models.IntegerField(blank=True, null=True)
+    usage = models.IntegerField(blank=True, null=True)
     ratescode = models.CharField(max_length=20, blank=True, null=True)
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
-    payment = models.FloatField()
-    processedBy = models.CharField(max_length=50)
+    bill = models.FloatField(null=True)
+    payment = models.FloatField(null=True)
+    processedBy = models.CharField(max_length=50, null=True)
+    
 
 
 class usage_record(models.Model):

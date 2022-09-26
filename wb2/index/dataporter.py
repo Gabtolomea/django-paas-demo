@@ -1,6 +1,10 @@
 import mysql.connector
 from .models import *
 from .colnames import *
+from datetime import datetime
+
+
+
 tablenames = [
     "accountinfo",
     "accountrecord",
@@ -36,10 +40,19 @@ sorted_tables = []
 # )
 # mycursor = mydb.cursor()
 def porter():
+<<<<<<< HEAD
     r = Rates.objects.get(rateid = str(1))
     print(r)
     # porter_in()
     # porter_out(sorted_tables)
+=======
+    # r = Rates.objects.get(rateid = str(1))
+    # print(r)
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    print("halo i am under da watur please help me ahuhuhuhu")
+>>>>>>> b46e8d0d86f8db285c7cb0c8cb50a3e1a5e17066
     
 def porter_in():
     col = 0
@@ -97,7 +110,6 @@ def porter_out(tables):
     #     rt_out(i)
     # for i in tables[9]:
     #     sys_user_out(i)
-
     for i in range(len(tables[3])):
         con_info.consumer_id = tables[3][i][0]
         con_info.firstname = tables[3][i][1]
@@ -121,195 +133,365 @@ def porter_out(tables):
         trans.payment = tables[6][i][1]
         trans.processedBy = tables[6][i][5]
         trans.save()
+    # for i in tables[1]:
+    #     usage_rec.accountid =	i[1-1]
+    #     usage_rec.rateid = i[2-1]
+    #     usage_rec.prevyeardue = i[3-1]
+    #     usage_rec.excesspayment = i[4-1]
+    #     usage_rec.commulative_bill = i[5-1]
+    #     usage_rec.year = i[6-1]
+    #     usage_rec.reading_jan = i[7-1]
+    #     usage_rec.reading_date_jan = i[8-1]
+    #     usage_rec.reading_postedby_jan =	i[9-1]
+    #     usage_rec.usage_jan =	i[10-1]
+    #     usage_rec.penalty_jan	= i[11-1]
+    #     usage_rec.bill_jan = i[12-1]
+    #     usage_rec.totalbill_jan =	i[13-1]
+    #     usage_rec.paidamt_jan = i[14-1]
+    #     usage_rec.datepaid_jan = i[15-1]
+    #     usage_rec.dateposted_jan = i[16-1]
+    #     usage_rec.postedby_jan = i[17-1]
+    #     usage_rec.txrefnum_jan = i[18-1]
+    #     usage_rec.ior_jan	= i[19-1]
+    #     usage_rec.reading_feb = i[20-1]
+    #     usage_rec.reading_date_feb = i[21-1]
+    #     usage_rec.reading_postedby_feb = i[22-1]
+    #     usage_rec.usage_feb = i[23-1]
+    #     usage_rec.penalty_feb	= i[24-1]
+    #     usage_rec.bill_feb = i[25-1]
+    #     usage_rec.totalbill_feb = i[26-1]
+    #     usage_rec.paidamt_feb = i[27-1]
+    #     usage_rec.datepaid_feb =i [28-1]
+    #     usage_rec.dateposted_feb =i [29-1]
+    #     usage_rec.postedby_feb =i [30-1]
+    #     usage_rec.txrefnum_feb =i [31-1]
+    #     usage_rec.ior_feb = i[32-1]
+    #     usage_rec.reading_mar = i[33-1]
+    #     usage_rec.reading_date_mar = i[34-1]
+    #     usage_rec.reading_postedby_mar = i[35-1]
+    #     usage_rec.usage_mar = i[36-1]
+    #     usage_rec.penalty_mar = i[37-1]
+    #     usage_rec.bill_mar = i[38-1]
+    #     usage_rec.totalbill_mar = i[39-1]
+    #     usage_rec.paidamt_mar = i[40-1]
+    #     usage_rec.datepaid_mar = i[41-1]
+    #     usage_rec.dateposted_mar = i[42-1]
+    #     usage_rec.postedby_mar = i[43-1]
+    #     usage_rec.txrefnum_mar = i[44-1]
+    #     usage_rec.ior_mar = i[45-1]
+    #     usage_rec.reading_apr	= i[46-1]
+    #     usage_rec.reading_date_apr = i[47-1]
+    #     usage_rec.reading_postedby_apr = i[48-1]
+    #     usage_rec.usage_apr = i[49-1]
+    #     usage_rec.penalty_apr = i[50-1]
+    #     usage_rec.bill_apr = i[51-1]
+    #     usage_rec.totalbill_apr = i[52-1]
+    #     usage_rec.paidamt_apr	= i[53-1]
+    #     usage_rec.datepaid_apr = i[54-1]
+    #     usage_rec.dateposted_apr = i[55-1]
+    #     usage_rec.postedby_apr = i[56-1]
+    #     usage_rec.txrefnum_apr = i[57-1]
+    #     usage_rec.ior_apr = i[58-1]
+    #     usage_rec.reading_may	= i[59-1]
+    #     usage_rec.reading_date_may = i[60-1]
+    #     usage_rec.reading_postedby_may = i[61-1]
+    #     usage_rec.usage_may = i[62-1]
+    #     usage_rec.penalty_may	= i[63-1]
+    #     usage_rec.bill_may = i[64-1]
+    #     usage_rec.totalbill_may = i[65-1]
+    #     usage_rec.paidamt_may = i[66-1]
+    #     usage_rec.datepaid_may = i[67-1]
+    #     usage_rec.dateposted_may=	i[68-1]
+    #     usage_rec.postedby_may = i[69-1]
+    #     usage_rec.txrefnum_may = i[70-1]
+    #     usage_rec.ior_may	= i[71-1]
+    #     usage_rec.reading_jun	= i[72-1]
+    #     usage_rec.reading_date_jun = i[73-1]
+    #     usage_rec.reading_postedby_jun = i[74-1]
+    #     usage_rec.usage_jun = i[75-1]
+    #     usage_rec.penalty_jun	= i[76-1]
+    #     usage_rec.bill_jun = i[77-1]
+    #     usage_rec.totalbill_jun= i [78-1]
+    #     usage_rec.paidamt_jun= i [79-1]
+    #     usage_rec.datepaid_jun = i[80-1]
+    #     usage_rec.dateposted_jun = i[81-1]
+    #     usage_rec.postedby_jun = i[82-1]
+    #     usage_rec.txrefnum_jun = i[83-1]
+    #     usage_rec.ior_jun	= i[84-1]
+    #     usage_rec.reading_jul= i [85-1]
+    #     usage_rec.reading_date_jul = i[86-1]
+    #     usage_rec.reading_postedby_jul = i[87-1]
+    #     usage_rec.usage_jul = i[88-1]
+    #     usage_rec.penalty_jul	= i[89-1]
+    #     usage_rec.bill_jul = i[90-1]
+    #     usage_rec.totalbill_jul = i[91-1]
+    #     usage_rec.paidamt_jul	= i[92-1]
+    #     usage_rec.datepaid_jul = i[93-1]
+    #     usage_rec.dateposted_jul = i[94-1]
+    #     usage_rec.postedby_jul = i[95-1]
+    #     usage_rec.txrefnum_jul = i[96-1]
+    #     usage_rec.ior_jul = i[97-1]
+    #     usage_rec.reading_aug	= i[98-1]
+    #     usage_rec.reading_date_aug = i[99-1]
+    #     usage_rec.reading_postedby_aug = i[100-1]
+    #     usage_rec.usage_aug = i[101-1]
+    #     usage_rec.penalty_aug	= i[102-1]
+    #     usage_rec.bill_aug = i[103-1]
+    #     usage_rec.totalbill_aug = i[104-1]
+    #     usage_rec.paidamt_aug	= i[105-1]
+    #     usage_rec.datepaid_aug = i[106-1]
+    #     usage_rec.dateposted_aug = i[107-1]
+    #     usage_rec.postedby_aug = i[108-1]
+    #     usage_rec.txrefnum_aug = i[109-1]
+    #     usage_rec.ior_aug	= i[110-1]
+    #     usage_rec.reading_sept = i[111-1]
+    #     usage_rec.reading_date_sept = i[112-1]
+    #     usage_rec.reading_postedby_sept = i[113-1]
+    #     usage_rec.usage_sept = i[114-1]
+    #     usage_rec.penalty_sept = i[115-1]
+    #     usage_rec.bill_sept = i[116-1]
+    #     usage_rec.totalbill_sept = i[117-1]
+    #     usage_rec.paidamt_sept = i[118-1]
+    #     usage_rec.datepaid_sept = i[119-1]
+    #     usage_rec.dateposted_sept = i[120-1]
+    #     usage_rec.postedby_sept = i[121-1]
+    #     usage_rec.txrefnum_sept = i[122-1]
+    #     usage_rec.ior_sept = i[123-1]
+        # usage_rec.reading_oct	= i[124-1]
+        # usage_rec.reading_date_oct = i[125-1]
+        # usage_rec.reading_postedby_oct = i[126-1]
+        # usage_rec.usage_oct = i[127-1]
+        # usage_rec.penalty_oct = i[128-1]
+        # usage_rec.bill_oct = i[129-1]
+    #     usage_rec.totalbill_oct = i[130-1]
+    #     usage_rec.paidamt_oct	= i[131-1]
+    #     usage_rec.datepaid_oct = i[132-1]
+    #     usage_rec.dateposted_oct = i[133-1]
+    #     usage_rec.postedby_oct = i[134-1]
+    #     usage_rec.txrefnum_oct = i[135-1]
+    #     usage_rec.ior_oct = i[136-1]
+    #     usage_rec.reading_nov	= i[137-1]
+    #     usage_rec.reading_date_nov = i[138-1]
+    #     usage_rec.reading_postedby_nov = i[139-1]
+    #     usage_rec.usage_nov = i[140-1]
+    #     usage_rec.penalty_nov = i[141-1]
+    #     usage_rec.bill_nov = i[142-1]
+    #     usage_rec.totalbill_nov = i[143-1]
+    #     usage_rec.paidamt_nov	= i[144-1]
+    #     usage_rec.datepaid_nov = i[145-1]
+    #     usage_rec.dateposted_nov = i[146-1]
+    #     usage_rec.postedby_nov = i[147-1]
+    #     usage_rec.txrefnum_nov = i[148-1]
+    #     usage_rec.ior_nov = i[149-1]
+    #     usage_rec.reading_dec= i[150-1]
+    #     usage_rec.reading_date_dec = i[151-1]
+    #     usage_rec.reading_postedby_dec =	i[152-1]
+    #     usage_rec.usage_dec	=i[153-1]
+    #     usage_rec.penalty_dec	=i[154-1]
+    #     usage_rec.bill_dec	=i[155-1]
+    #     usage_rec.totalbill_dec=	i[156-1]
+    #     usage_rec.paidamt_dec=	i[157-1]
+    #     usage_rec.datepaid_dec	=i[158-1]
+    #     usage_rec.dateposted_dec	=i[159-1]
+    #     usage_rec.postedby_dec	=i[160-1]
+    #     usage_rec.txrefnum_dec=	i[161-1]
+    #     usage_rec.ior_dec	=i[162-1]
+    #     arr= i[175].split('-')
+    #     usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
+    #     usage_rec.amountpaid_str_apr =	i[164-1]
+    #     usage_rec.amountpaid_str_aug = i[165-1]
+    #     usage_rec.amountpaid_str_dec = i[166-1]
+    #     usage_rec.amountpaid_str_feb = i[167-1]
+    #     usage_rec.amountpaid_str_jan = i[168-1]
+    #     usage_rec.amountpaid_str_jul = i[169-1]
+    #     usage_rec.amountpaid_str_jun = i[170-1]
+    #     usage_rec.amountpaid_str_mar = i[171-1]
+    #     usage_rec.amountpaid_str_may = i[172-1]
+    #     usage_rec.amountpaid_str_nov = i[173-1]
+    #     usage_rec.amountpaid_str_oct = i[174-1]
+    #     usage_rec.amountpaid_str_sept = i[175-1]
+    #     usage_rec.accountinfoid = i[176-1]
+    #     usage_rec.amountpaid_history =i [177-1]
+    #     usage_rec.datepaid_history = i[179-1]
+    #     usage_rec.or_number_history = i[180-1]
+    #     usage_rec.previous_reading = i[181-1]
+    #     usage_rec.save()
 
-    #    ''' usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[6])
-    #         wala rani
-    #    '''
+
+def billing_out():
+    u_rec = usage_record.objects.all()
+    for u in u_rec:
+        if u.totalbill_jan != 0:
+            jan = Transactions()
+            jan.acctID = u.consumerid
+            jan.ratescode = u.rateid
+            jan.meterReading = u.reading_jan
+            date_str = u.reading_date_jan
+            if date_str!=" " and date_str!="":
+                jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jan.payment = 0
+            jan.bill = u.totalbill_jan
+            jan.payment = 0
+            jan.transType = 'Billing'
+            jan.usage = u.usage_jan
+            jan.save()
+
+        if u.totalbill_feb != 0:
+            feb = Transactions()
+            feb.acctID = u.consumerid
+            feb.ratescode = u.rateid
+            feb.meterReading = u.reading_feb
+            date_str = u.reading_date_feb
+            if date_str!=" " and date_str!="":
+                feb.date = datetime.strptime(date_str, '%Y-%m-%d')
+            feb.bill = u.totalbill_feb
+            feb.payment = 0
+            feb.transType = 'Billing'
+            feb.usage = u.usage_feb
+            feb.save()
+
+        if u.totalbill_mar != 0:
+            mar = Transactions()
+            mar.acctID = u.consumerid
+            mar.ratescode = u.rateid
+            mar.meterReading = u.reading_mar
+            date_str = u.reading_date_mar
+            if date_str!=" " and date_str!="":
+                mar.date = datetime.strptime(date_str, '%Y-%m-%d')
+            mar.bill = u.totalbill_mar
+            mar.payment = 0
+            mar.transType = 'Billing'
+            mar.usage = u.usage_mar
+            mar.save()
+        
+        if u.totalbill_apr != 0:
+            apr = Transactions()
+            apr.acctID = u.consumerid
+            apr.ratescode = u.rateid
+            apr.meterReading = u.reading_apr
+            date_str = u.reading_date_apr
+            if date_str!=" " and date_str!="":
+                apr.date = datetime.strptime(date_str, '%Y-%m-%d')
+            apr.bill = u.totalbill_apr
+            apr.payment = 0
+            apr.transType = 'Billing'
+            apr.usage = u.usage_apr
+            apr.save()
+
+        if u.totalbill_may != 0:
+            may = Transactions()
+            may.acctID = u.consumerid
+            may.ratescode = u.rateid
+            may.meterReading = u.reading_may
+            date_str = u.reading_date_may
+            if date_str!=" " and date_str!="":
+                may.date = datetime.strptime(date_str, '%Y-%m-%d')
+            may.bill = u.totalbill_may
+            may.payment = 0
+            may.transType = 'Billing'
+            may.usage = u.usage_may
+            may.save()
+
+        if u.totalbill_jun != 0:
+            jun = Transactions()
+            jun.acctID = u.consumerid
+            jun.ratescode = u.rateid
+            jun.meterReading = u.reading_jun
+            date_str = u.reading_date_jun
+            if date_str!=" " and date_str!="":
+                jun.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jun.bill = u.totalbill_jun
+            jun.payment = 0
+            jun.transType = 'Billing'
+            jun.usage = u.usage_jun
+            jun.save()
+
+        if u.totalbill_jul != 0:
+            jul = Transactions()
+            jul.acctID = u.consumerid
+            jul.ratescode = u.rateid
+            jul.meterReading = u.reading_jul
+            date_str = u.reading_date_jul
+            if date_str!=" " and date_str!="":
+                jul.date = datetime.strptime(date_str, '%Y-%m-%d')
+            jul.bill = u.totalbill_jul
+            jul.payment = 0
+            jul.transType = 'Billing'
+            jul.usage = u.usage_jul
+            jul.save()
+
+        if u.totalbill_aug != 0:
+            aug = Transactions()
+            aug.acctID = u.consumerid
+            aug.ratescode = u.rateid
+            aug.meterReading = u.reading_aug
+            date_str = u.reading_date_aug
+            if date_str!=" " and date_str!="":
+                aug.date = datetime.strptime(date_str, '%Y-%m-%d')
+            aug.bill = u.totalbill_aug
+            aug.payment = 0
+            aug.transType = 'Billing'
+            aug.usage = u.usage_aug
+            aug.save()
+
+        if u.totalbill_sept != 0:
+            sept = Transactions()
+            sept.acctID = u.consumerid
+            sept.ratescode = u.rateid
+            sept.meterReading = u.reading_sept
+            date_str = u.reading_date_sept
+            if date_str!=" " and date_str!="":
+                sept.date = datetime.strptime(date_str, '%Y-%m-%d')
+            sept.bill = u.totalbill_sept
+            sept.payment = 0
+            sept.transType = 'Billing'
+            sept.usage = u.usage_sept
+            sept.save()
 
 
-    for i in tables[1]:
-        usage_rec.accountid =	i[1-1]
-        usage_rec.rateid = i[2-1]
-        usage_rec.prevyeardue = i[3-1]
-        usage_rec.excesspayment = i[4-1]
-        usage_rec.commulative_bill = i[5-1]
-        usage_rec.year = i[6-1]
-        usage_rec.reading_jan = i[7-1]
-        usage_rec.reading_date_jan = i[8-1]
-        usage_rec.reading_postedby_jan =	i[9-1]
-        usage_rec.usage_jan =	i[10-1]
-        usage_rec.penalty_jan	= i[11-1]
-        usage_rec.bill_jan = i[12-1-1]
-        usage_rec.totalbill_jan =	i[13-1]
-        usage_rec.paidamt_jan = i[14-1]
-        usage_rec.datepaid_jan = i[15-1]
-        usage_rec.dateposted_jan = i[16-1]
-        usage_rec.postedby_jan = i[17-1]
-        usage_rec.txrefnum_jan = i[18-1]
-        usage_rec.ior_jan	= i[19-1]
-        usage_rec.reading_feb = i[20-1]
-        usage_rec.reading_date_feb = i[21-1]
-        usage_rec.reading_postedby_feb = i[22-1]
-        usage_rec.usage_feb = i[23-1]
-        usage_rec.penalty_feb	= i[24-1]
-        usage_rec.bill_feb = i[25-1]
-        usage_rec.totalbill_feb = i[26-1]
-        usage_rec.paidamt_feb = i[27-1]
-        usage_rec.datepaid_feb =i [28-1]
-        usage_rec.dateposted_feb =i [29-1]
-        usage_rec.postedby_feb =i [30-1]
-        usage_rec.txrefnum_feb =i [31-1]
-        usage_rec.ior_feb = i[32-1]
-        usage_rec.reading_mar = i[33-1]
-        usage_rec.reading_date_mar = i[34-1]
-        usage_rec.reading_postedby_mar = i[35-1]
-        usage_rec.usage_mar = i[36-1]
-        usage_rec.penalty_mar = i[37-1]
-        usage_rec.bill_mar = i[38-1]
-        usage_rec.totalbill_mar = i[39-1]
-        usage_rec.paidamt_mar = i[40-1]
-        usage_rec.datepaid_mar = i[41-1]
-        usage_rec.dateposted_mar = i[42-1]
-        usage_rec.postedby_mar = i[43-1]
-        usage_rec.txrefnum_mar = i[44-1]
-        usage_rec.ior_mar = i[45-1]
-        usage_rec.reading_apr	= i[46-1]
-        usage_rec.reading_date_apr = i[47-1]
-        usage_rec.reading_postedby_apr = i[48-1]
-        usage_rec.usage_apr = i[49-1]
-        usage_rec.penalty_apr = i[50-1]
-        usage_rec.bill_apr = i[51-1]
-        usage_rec.totalbill_apr = i[52-1]
-        usage_rec.paidamt_apr	= i[53-1]
-        usage_rec.datepaid_apr = i[54-1]
-        usage_rec.dateposted_apr = i[55-1]
-        usage_rec.postedby_apr = i[56-1]
-        usage_rec.txrefnum_apr = i[57-1]
-        usage_rec.ior_apr = i[58-1]
-        usage_rec.reading_may	= i[59-1]
-        usage_rec.reading_date_may = i[60-1]
-        usage_rec.reading_postedby_may = i[61-1]
-        usage_rec.usage_may = i[62-1]
-        usage_rec.penalty_may	= i[63-1]
-        usage_rec.bill_may = i[64-1]
-        usage_rec.totalbill_may = i[65-1]
-        usage_rec.paidamt_may = i[66-1]
-        usage_rec.datepaid_may = i[67-1]
-        usage_rec.dateposted_may=	i[68-1]
-        usage_rec.postedby_may = i[69-1]
-        usage_rec.txrefnum_may = i[70-1]
-        usage_rec.ior_may	= i[71-1]
-        usage_rec.reading_jun	= i[72-1]
-        usage_rec.reading_date_jun = i[73-1]
-        usage_rec.reading_postedby_jun = i[74-1]
-        usage_rec.usage_jun = i[75-1]
-        usage_rec.penalty_jun	= i[76-1]
-        usage_rec.bill_jun = i[77-1]
-        usage_rec.totalbill_jun= i [78-1]
-        usage_rec.paidamt_jun= i [79-1]
-        usage_rec.datepaid_jun = i[80-1]
-        usage_rec.dateposted_jun = i[81-1]
-        usage_rec.postedby_jun = i[82-1]
-        usage_rec.txrefnum_jun = i[83-1]
-        usage_rec.ior_jun	= i[84-1]
-        usage_rec.reading_jul= i [85-1]
-        usage_rec.reading_date_jul = i[86-1]
-        usage_rec.reading_postedby_jul = i[87-1]
-        usage_rec.usage_jul = i[88-1]
-        usage_rec.penalty_jul	= i[89-1]
-        usage_rec.bill_jul = i[90-1]
-        usage_rec.totalbill_jul = i[91-1]
-        usage_rec.paidamt_jul	= i[92-1]
-        usage_rec.datepaid_jul = i[93-1]
-        usage_rec.dateposted_jul = i[94-1]
-        usage_rec.postedby_jul = i[95-1]
-        usage_rec.txrefnum_jul = i[96-1]
-        usage_rec.ior_jul = i[97-1]
-        usage_rec.reading_aug	= i[98-1]
-        usage_rec.reading_date_aug = i[99-1]
-        usage_rec.reading_postedby_aug = i[100-1]
-        usage_rec.usage_aug = i[101-1]
-        usage_rec.penalty_aug	= i[102-1]
-        usage_rec.bill_aug = i[103-1]
-        usage_rec.totalbill_aug = i[104-1]
-        usage_rec.paidamt_aug	= i[105-1]
-        usage_rec.datepaid_aug = i[106-1]
-        usage_rec.dateposted_aug = i[107-1]
-        usage_rec.postedby_aug = i[108-1]
-        usage_rec.txrefnum_aug = i[109-1]
-        usage_rec.ior_aug	= i[110-1]
-        usage_rec.reading_sept = i[111-1]
-        usage_rec.reading_date_sept = i[112-1]
-        usage_rec.reading_postedby_sept = i[113-1]
-        usage_rec.usage_sept = i[114-1]
-        usage_rec.penalty_sept = i[115-1]
-        usage_rec.bill_sept = i[116-1]
-        usage_rec.totalbill_sept = i[117-1]
-        usage_rec.paidamt_sept = i[118-1]
-        usage_rec.datepaid_sept = i[119-1]
-        usage_rec.dateposted_sept = i[120-1]
-        usage_rec.postedby_sept = i[121-1]
-        usage_rec.txrefnum_sept = i[122-1]
-        usage_rec.ior_sept = i[123-1]
-        usage_rec.reading_oct	= i[124-1]
-        usage_rec.reading_date_oct = i[125-1]
-        usage_rec.reading_postedby_oct = i[126-1]
-        usage_rec.usage_oct = i[127-1]
-        usage_rec.penalty_oct = i[128-1]
-        usage_rec.bill_oct = i[129-1]
-        usage_rec.totalbill_oct = i[130-1]
-        usage_rec.paidamt_oct	= i[131-1]
-        usage_rec.datepaid_oct = i[132-1]
-        usage_rec.dateposted_oct = i[133-1]
-        usage_rec.postedby_oct = i[134-1]
-        usage_rec.txrefnum_oct = i[135-1]
-        usage_rec.ior_oct = i[136-1]
-        usage_rec.reading_nov	= i[137-1]
-        usage_rec.reading_date_nov = i[138-1]
-        usage_rec.reading_postedby_nov = i[139-1]
-        usage_rec.usage_nov = i[140-1]
-        usage_rec.penalty_nov = i[141-1]
-        usage_rec.bill_nov = i[142-1]
-        usage_rec.totalbill_nov = i[143-1]
-        usage_rec.paidamt_nov	= i[144-1]
-        usage_rec.datepaid_nov = i[145-1]
-        usage_rec.dateposted_nov = i[146-1]
-        usage_rec.postedby_nov = i[147-1]
-        usage_rec.txrefnum_nov = i[148-1]
-        usage_rec.ior_nov = i[149-1]
-        usage_rec.reading_dec= i[150-1]
-        usage_rec.reading_date_dec = i[151-1]
-        usage_rec.reading_postedby_dec =	i[152-1]
-        usage_rec.usage_dec	=i[153-1]
-        usage_rec.penalty_dec	=i[154-1]
-        usage_rec.bill_dec	=i[155-1]
-        usage_rec.totalbill_dec=	i[156-1]
-        usage_rec.paidamt_dec=	i[157-1]
-        usage_rec.datepaid_dec	=i[158-1]
-        usage_rec.dateposted_dec	=i[159-1]
-        usage_rec.postedby_dec	=i[160-1]
-        usage_rec.txrefnum_dec=	i[161-1]
-        usage_rec.ior_dec	=i[162-1]
-        arr= i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[163-1])   
-        usage_rec.amountpaid_str_apr =	i[164-1]
-        usage_rec.amountpaid_str_aug = i[165-1]
-        usage_rec.amountpaid_str_dec = i[166-1]
-        usage_rec.amountpaid_str_feb = i[167-1]
-        usage_rec.amountpaid_str_jan = i[168-1]
-        usage_rec.amountpaid_str_jul = i[169-1]
-        usage_rec.amountpaid_str_jun = i[170-1]
-        usage_rec.amountpaid_str_mar = i[171-1]
-        usage_rec.amountpaid_str_may = i[172-1]
-        usage_rec.amountpaid_str_nov = i[173-1]
-        usage_rec.amountpaid_str_oct = i[174-1]
-        usage_rec.amountpaid_str_sept = i[175-1]
-        usage_rec.accountinfoid = i[176-1]
-        usage_rec.amountpaid_history =i [177-1]
-        usage_rec.datepaid_history = i[179-1]
-        usage_rec.or_number_history = i[180-1]
-        usage_rec.previous_reading = i[181-1]
-        usage_rec.save()
+        if u.totalbill_oct != 0:
+            oct = Transactions()
+            oct.acctID = u.consumerid
+            oct.ratescode = u.rateid
+            oct.meterReading = u.reading_oct
+            date_str = u.reading_date_oct
+            if date_str!=" " and date_str!="":
+                oct.date = datetime.strptime(date_str, '%Y-%m-%d')
+            oct.bill = u.totalbill_oct
+            oct.payment = 0
+            oct.transType = 'Billing'
+            oct.usage = u.usage_oct
+            oct.save()
+        
+        
+        if u.totalbill_nov != 0:
+            nov = Transactions()
+            nov.acctID = u.consumerid
+            nov.ratescode = u.rateid
+            nov.meterReading = u.reading_nov
+            date_str = u.reading_date_nov
+            if date_str!=" " and date_str!="":
+                nov.date = datetime.strptime(date_str, '%Y-%m-%d')
+            nov.bill = u.totalbill_nov
+            nov.payment = 0
+            nov.transType = 'Billing'
+            nov.usage = u.usage_nov
+            nov.save()
+        
+        if u.totalbill_dec != 0:
+            dec = Transactions()
+            dec.acctID = u.consumerid
+            dec.ratescode = u.rateid
+            dec.meterReading = u.reading_dec
+            date_str = u.reading_date_dec
+            if date_str!=" " and date_str!="":
+                dec.date = datetime.strptime(date_str, '%Y-%m-%d')
+            dec.bill = u.totalbill_dec
+            dec.payment = 0
+            dec.transType = 'Billing'
+            dec.usage = u.usage_dec
+            dec.save()
+    
 
 def sys_user_out(i):
     sys_user.username = i[0]
@@ -370,3 +552,5 @@ def b_rec_out(i):
     b_rec.total_paid_dec = i[40]
     b_rec.total_usage_dec = i[41]
     b_rec.save()
+
+    #
