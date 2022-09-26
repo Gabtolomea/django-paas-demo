@@ -18,7 +18,7 @@ class SystemUsers(AbstractUser):
     def __str__(self) -> str:
         return self.username
 class Rates(models.Model):
-    rate_id = models.IntegerField(primary_key=True)
+    rate_id = models.CharField(primary_key=True, max_length=20)
     connectionType = models.CharField(max_length=20, blank=True, null=True)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
@@ -33,7 +33,7 @@ class Rates(models.Model):
         return self.connectionType
 
 class Penalty(models.Model):
-    penalty_id = models.IntegerField(primary_key=True)
+    penalty_id = models.CharField(primary_key=True, max_length=20)
     penalty_type = models.CharField(max_length=20)
     penalty_rate = models.IntegerField()
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
@@ -44,7 +44,7 @@ class Penalty(models.Model):
         return self.penalty_type
 
 class Discount(models.Model):
-    discount_id = models.IntegerField(primary_key=True)
+    discount_id = models.CharField(primary_key=True, max_length=20)
     discount_rate = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
@@ -116,7 +116,12 @@ class ConsumerInfo(models.Model):
     sex = models.CharField(max_length=6,null=True, blank=True)
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
-    current_bal = models.FloatField(default=0)
+    current_bal = models.IntegerField(default=0)
+class Penalties(models.Model):
+    penaltycode = models.CharField(primary_key=True, max_length=20)
+    penalty = models.IntegerField()
+class Discounts(models.Model):
+    discount = models.IntegerField()
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
