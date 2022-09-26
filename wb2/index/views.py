@@ -168,7 +168,6 @@ def ledger(request, id):
         'bal':math.ceil(bal*100)/100
     }
     return render(request, 'ledger.html', context)
-
 def forgetpassword (request):
 
     if request.method == "POST":
@@ -205,13 +204,18 @@ def forgetpassword (request):
     return render(request,'forgetpassword.html')
 
 
-    
 
+
+def password_rest_form(request):
+    # form = SystemUserForm()
+    # if request.method == "POST":
+    #     print(request.POST)
+    #     form = SystemUserForm(request.POST)
+
+    return render(request,'password_rest_form')
 
 def meterreading(request):
-    meterred = ConsumerInfo.objects.all()
-
-    
+    meterred = ConsumerInfo.objects.all
     return render(request,'meterreading.html',{'m': meterred})
 
 def consumercreation (request):
