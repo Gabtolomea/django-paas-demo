@@ -8,54 +8,11 @@
         </tr>
         </thead>
         <tbody>
-            {% for m in meter %}
+            {% for m in meterred %}
             <tr>
+                {{meterred}}
 
-<<<<<<< HEAD
-{% block meterreading %}
-<div class="row w-100 m-auto">
-	<div class="col-lg-6 col-md-6 col-sm-6">
-		<button type="button" class="btn btn-wb-back">Back</button>
-	</div>
-	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-		<button type="button" class="btn btn-wb-copy">Get a Copy</button>
-	</div>
-</div>
-<h1 class="mb-3 text-center">Meter Reading</h1>
-<div class="container-fluid p-0">
-	<div class="table-responsive">
-		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
-			<thead class="wb_thead">
-
-				<tr>
-					<th style="min-width: 100px;">Account ID</th>
-					<th style="min-width: 100px;">Name</th>
-					<th style="min-width: 100px;">Meter Number</th>
-					<th style="min-width: 100px;">Address</th>
-	
-				</tr>
-			</thead>
-			<tbody class="wb_tbody">
-				<tr>
-					{% for meter in meternumber %}
-					<td class="{{meter.style}}">{{meter.consumer_id}}</td>
-					<td class="{{meter.style}}">{{meter.lastname}} {{meter.firstname}} {{meter.middlename}}</td>
-					<td class="{{meter.style}}">{{meter.meternumber}}</td>
-					<td class="{{meter.style}}">{{meter.initial_address}}</td>
-					{% endfor %}
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-
-{% endblock meterreading %}
-					
-=======
-                <!-- <td>{{m.acct_id}}</td>
-                <td>{{m.lname}}, {{m.fname}} {{m.mname}}</td>
-                <td>{{m.mn}}</td>
-                <td>{{m.home}}</td> -->
+    
                 <td>{{m.consumer_id}}</td>
                 <td>{{m.lastname}}, {{m.firstname}} {{m.middlename}}</td>
                 <td>{{m.meternumber}}</td>
@@ -65,4 +22,3 @@
             {% endfor %}
     </tbody>
 	
->>>>>>> b23242be83588455d9e6dce141010008b8b45d6c
