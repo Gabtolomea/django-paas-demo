@@ -68,6 +68,9 @@ class BarangayRecord(models.Model):
     total_due_dec = models.IntegerField()
     total_paid_dec = models.IntegerField()
     total_usage_dec = models.IntegerField()
+
+
+#Consumer Creation
 class ConsumerInfo(models.Model):
     consumer_id = models.IntegerField(primary_key=True)
     meternumber = models.CharField(max_length=20, blank=True, null=True)
@@ -86,7 +89,7 @@ class ConsumerInfo(models.Model):
     email = models.EmailField(max_length=100,null=True, blank=True)
     birthdate = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=6,null=True, blank=True)
-    sitio = models.EmailField(max_length=100,null=True, blank=True)
+    sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     # current_bal = models.IntegerField()
 class Penalties(models.Model):
@@ -112,7 +115,6 @@ class Transactions(models.Model):
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
-
 
 class usage_record(models.Model):
     #generate date
