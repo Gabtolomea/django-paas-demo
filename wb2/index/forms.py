@@ -52,7 +52,6 @@ class ConsumerCreationForm(ModelForm):
         ("MALE", "MALE"),
         ("FEMALE", "FEMALE"),
     )
-    
 
     firstname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     middlename = forms.CharField(widget = forms.TextInput(attrs={'class': 'form-control'}))
