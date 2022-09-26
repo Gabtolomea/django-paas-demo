@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,11 +21,16 @@
             </div>
             <center>
                 <p class="header">We sent you an email in response to your request,please check it and click the 'Back to login' button to coninue.</p>
-
-                <div class="form-group m-2 w-75"   >
+                    
+                <div class="form-group m-2 w-75"   > 
+                    <a href="/reset_password">
+                    <button style="background-color:#0093B7; color:white;  border-radius:25px; width: 100%; margin-bottom: 20px;" type="button" class="btn ">RESEND EMAIL</button style>
+                    </a>
+                    <a href="/">
                     <button style="background-color:#0093B7; color:white;  border-radius:25px; width: 100%;" type="button" class="btn ">BACK TO LOGIN</button style>
-                </div>
-
+                    </a>
+                    </div>
+                   
             </center>
 
         </div>
