@@ -127,26 +127,40 @@ def ledger(request, id):
         asc_trans = trans.order_by('date')
         bal = 0
         for i in range(len(asc_trans)):
-            p = 0
             if i == 0:
                 prev = 0
-            if asc_trans[i].transType == 'Billing':
-                usage = asc_trans[i].usage
-                bill = asc_trans[i].bill
-                rate = asc_trans[i].ratescode
+            else:
+                if asc_trans[i-1].meterReading is None:
+                    prev = ''
+                else:
+                    prev = asc_trans[i-1].meterReading
+            if asc_trans[i].meterReading is None:
+                cur = ''
+            else:
                 cur = asc_trans[i].meterReading
-                current = cur
-                style = ''
+            if asc_trans[i].usage is None:
+                usage = ''
+            else:
+                usage = asc_trans[i].usage
+            if asc_trans[i].bill is None:
+                bill = ''
+            else:
+                bill = asc_trans[i].bill
+            if asc_trans[i].processedBy is None:
                 pb = ''
+            else:
+                pb = asc_trans[i].processedBy
+            if asc_trans[i].ratescode is None:
+                rate = ''
+            else:
+                rate = asc_trans[i].ratescode
+            if asc_trans[i].transType == 'Billing':
+                style = ''
+            else:
+                style = 'text-success table-success'
+            if asc_trans[i].transType == 'Billing':
                 bal+=bill
             elif asc_trans[i].transType == 'Payment':
-                usage = ''
-                bill = ''
-                rate = ''
-                prev = ''
-                cur = ''
-                style = 'text-success table-success'
-                pb = asc_trans[i].processedBy
                 bal=bal-asc_trans[i].payment
             date = asc_trans[i].date
             payment = asc_trans[i].payment
@@ -155,21 +169,14 @@ def ledger(request, id):
             bal = math.ceil(bal*100)/100
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
             table.append(new_row)
-            if i < len(asc_trans)-1:
-                if asc_trans[i+1].transType == 'Payment':
-                    p = cur
-                else:
-                    p = p + current
-            prev = p
-
     context = {
         'u':u,
         'table':table,
         'bal':math.ceil(bal*100)/100
     }
     return render(request, 'ledger.html', context)
+    
 def forgetpassword (request):
-
     if request.method == "POST":
         u_email = request.POST['email']
         if  SystemUsers.objects.filter(email = u_email).exists():
@@ -218,43 +225,4 @@ def meterreading(request):
     meterred = ConsumerInfo.objects.all
     return render(request,'meterreading.html',{'m': meterred})
 
-def consumercreation (request):
-    form = ConsumerCreationForm()
-    if request.method == "POST":
-        print(request.POST)
-        form = ConsumerCreationForm(request.POST)
-        firstname  = request.POST['firstname']
-        middlename = request.POST['middlename']
-        lastname = request.POST['lastname']
-        mobilenum = request.POST['mobilenum']
-        email = request.POST['email']
-        birthdate = request.POST['birthdate']
-        sex = request.POST['sex']
-        sitio = request.POST['sitio'] 
-        homeaddress = request.POST['homeaddress']
-        picture = request.POST['picture']
-        meternumber = request.POST['meternumber']
-        initialmeterreading = request.POST['initialmeterreading']
-        installation_address = request.POST['installation']
-        rateid = request.POST['rateid']
-        if form.is_valid():
-            cr = ConsumerInfo
-            cr.firstname = firstname
-            cr.middlename = middlename
-            cr.lastname = lastname
-            cr.mobilenum = mobilenum
-            cr.email = email
-            cr.birthdate = birthdate
-            cr.sex = sex
-            cr.sitio = sitio
-            cr.homeaddress = homeaddress
-            cr.picture = picture 
-            cr.meternumber = meternumber
-            cr.initialmeterreading = initialmeterreading
-            cr.installation_address = installation_address
-            cr.rateid = rateid
-    context = {
-        'form':form,
-        'errors':form.errors,
-    }
-    return render(request, 'consumercreation.html',context)
+
