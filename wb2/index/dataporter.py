@@ -39,9 +39,10 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 def porter():
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    balance()
     print("anong kailangan kong gawin upang malaman mo?")
     
 def porter_in():
@@ -109,7 +110,7 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
+        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
         con_info.status = tables[0][i][8]
         con_info.penaltyflag = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
@@ -486,8 +487,8 @@ def billing_out():
     
 def balance():
     for i in ConsumerInfo.objects.all():
-        user = ConsumerInfo.objects.get(consumerid = i.id)
-        trans = Transactions.objects.filter(acctID = i.id)
+        user = ConsumerInfo.objects.get(consumer_id = i.consumer_id)
+        trans = Transactions.objects.filter(acctID = i.consumer_id)
         asc_trans = trans.order_by('date')
         bal = 0
         for i in range(len(asc_trans)):
@@ -495,8 +496,7 @@ def balance():
                 bal+=asc_trans[i].bill
             elif asc_trans[i].transType == 'Payment':
                 bal=bal-asc_trans[i].payment
-            bal = math.ceil(bal*100)/100
-        user.current_bal = bal
+        user.current_bal = math.ceil(bal*100)/100
         user.save()
 
 def sys_user_out(i):
@@ -511,15 +511,15 @@ def sys_user_out(i):
     sys_user.authorizedapprover = i[9]
     sys_user.save()
 def rt_out(i):
-    rt.rate_id = i[0]
+    rt.rate_id = int(i[0])
     rt.minReading = i[1]
     rt.minReadingCharge = i[2]
     rt.rateAfterMin = i[3]
     rt.ratePenalty = i[4]
     rt.ratePenaltyFreq = i[5]
-    if i[0] == 1:
+    if i[0] == '1':
         rt.connectionType = 'Residential'
-    else:
+    elif i[0] == '2':
         rt.connectionType = 'Commercial'
     rt.added_by = None
     rt.save()
