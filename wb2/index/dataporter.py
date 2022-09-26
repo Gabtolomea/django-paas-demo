@@ -30,14 +30,14 @@ alltables = [
     systemuser,
     yearly_records,
 ]
-sorted_tables = []
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="yjh434ctuG@-@",
-    database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# sorted_tables = []
+# mydb = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="yjh434ctuG@-@",
+#     database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 def porter():
     # r = Rates.objects.get(rateid = str(1))
     # print(r)

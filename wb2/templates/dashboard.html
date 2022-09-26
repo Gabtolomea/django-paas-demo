@@ -18,9 +18,9 @@
             <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
         </div>
         {% endfor %}
-            <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
-                <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px; white-space: nowrap;" >
- 
+            <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
+                <div class="col-sm-9 col-md-9 col-lg-9;" style="font-size: 34px; white-space: nowrap;" >
+
                     <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
                         <i class="fa fa-bars"></i>
                     </button>
@@ -31,7 +31,7 @@
                     <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span style="color: #63CDD7;">STATION</span></span>
                 </div>
                 <div class="mobile_header_nav col-sm-3 col-md-3 col-lg-3" style="text-align: right; padding: 10px;" id="mobile_header_nav">
- 
+
                     <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
                         <i class="fa-solid fa-bell"></i>
                     </a>
@@ -44,8 +44,8 @@
                 </div>
             </div>
     </header>
-    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
-        <div class="dev">
+    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav"> 
+        <div class="user_info">
             <i class="fa-solid fa-circle-user fa-8x"></i>
                 <p>Developer</p>
         </div>
@@ -64,7 +64,7 @@
                
             </li>
             <li class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none">
+                <a href="/" style="color: white; text-decoration: none"> 
                   <i class="fa-solid fa-user fa-2x"></i>
                     <span class="sidenav_text">User Accounts</span>
                 </a>
@@ -162,7 +162,6 @@
             document.getElementById("main_content").classList.add("main_content");
             document.getElementById("main_content").classList.remove("remove_main_content");
         }
- 
     </script>
 </body>
  
