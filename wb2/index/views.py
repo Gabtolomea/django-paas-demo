@@ -167,7 +167,7 @@ def ledger(request, id):
         'bal':math.ceil(bal*100)/100
     }
     return render(request, 'ledger.html', context)
-
+    
 def forgetpassword (request):
 
     if request.method == "POST":
@@ -203,38 +203,28 @@ def forgetpassword (request):
         context = {'email':email,'errors': errors}
     return render(request,'forgetpassword.html')
 
-#______________________-------------------______________________#
-    
+
+
+
+def password_rest_form(request):
+    # form = SystemUserForm()
+    # if request.method == "POST":
+    #     print(request.POST)
+    #     form = SystemUserForm(request.POST)
+
+    return render(request,'password_rest_form')
+
 
 def meterreading(request):
-        meterred = ConsumerInfo.objects.all()
-        # table = []
-        # [meterred.consumer_id,
-        #       meterred.lastname,
-        #       meterred.firstname,
-        #       meterred.middlename,
-        #       meterred.meternumber,
-        #       meterred.installation_address]
-        # for i in range(len(meterred)):
-        #         acct_id = meterred[i].consumer_id
-        #         lname = meterred[i].lastname
-        #         fname = meterred[i].firstname
-        #         mname = meterred[i].middlename
-        #         mn    = meterred[i].meternumber
-        #         home  = meterred[i].initial_address
-        # table.append(meterred.consumer_id,
-        #       meterred.lastname,
-        #       meterred.firstname,
-        #       meterred.middlename,
-        #       meterred.meternumber,
-        #       meterred.installation_address)
-        # table.append(acct_id,lname,fname,mname,mn,home)
-        context = {
-            "meter": meterred,
-            # "table": table
-        }
+    meterred = ConsumerInfo.objects.all()
+    return render(request,'meterreading.html',{'meterred': meterred})
 
-        return render(request,"meterreading.html",context)
+
+def consumer_list(request):
+    cons_list = ConsumerInfo.objects.all()
+    return render(request,'consumerlist.html',{'cons_list': cons_list})
+
+
 
 def consumercreation (request):
     form = ConsumerCreationForm()

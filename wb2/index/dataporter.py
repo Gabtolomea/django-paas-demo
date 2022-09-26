@@ -4,7 +4,6 @@ from .colnames import *
 from datetime import datetime
 
 
-
 tablenames = [
     "accountinfo",
     "accountrecord",
@@ -40,9 +39,11 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 def porter():
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
+    # r = Rates.objects.get(rateid = str(1))
+    # print(r)
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
     print("anong kailangan kong gawin upang malaman mo?")
     
 def porter_in():
@@ -546,4 +547,3 @@ def b_rec_out(i):
     b_rec.total_usage_dec = i[41]
     b_rec.save()
 
-    #

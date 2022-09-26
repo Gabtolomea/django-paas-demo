@@ -106,6 +106,10 @@ class Migration(migrations.Migration):
             name='Rates',
             fields=[
                 ('rateid', models.CharField(max_length=20, primary_key=True, serialize=False)),
+<<<<<<< HEAD
+=======
+                ('rateType', models.CharField(blank=True, max_length=20, null=True)),
+>>>>>>> 7bb5fd91bb6e34f8d0b9598a2df22c56e43c2aa0
                 ('minReading', models.IntegerField()),
                 ('minReadingCharge', models.IntegerField()),
                 ('rateAfterMin', models.IntegerField()),

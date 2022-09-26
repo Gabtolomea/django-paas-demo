@@ -1,26 +1,36 @@
 
-        <thead>
-        <tr>
-            <th>Account ID</th>
-            <th>Name</th>
-            <th>Meter Number</th>
-            <th>Address</th>
-        </tr>
-        </thead>
-        <tbody>
-            {% for m in meter %}
-            <tr>
+    {% extends 'dashboard.html' %}
+    {% load static %}
 
-                <!-- <td>{{m.acct_id}}</td>
-                <td>{{m.lname}}, {{m.fname}} {{m.mname}}</td>
-                <td>{{m.mn}}</td>
-                <td>{{m.home}}</td> -->
-                <td>{{m.consumer_id}}</td>
-                <td>{{m.lastname}}, {{m.firstname}} {{m.middlename}}</td>
-                <td>{{m.meternumber}}</td>
-                <td>{{m.installation_address}}</td>
-            
-            </tr>
-            {% endfor %}
-    </tbody>
-	
+    {% block meterreading %}
+    <h1 class="mb-3 text-center">Meter Reading</h1>
+    <div class="container-fluid p-0">
+        <div class="table-responsive">
+            <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                <thead class="wb_thead">
+        
+                    <tr>
+                        <th style="min-width: 100px;">Account ID</th>
+                        <th style="min-width: 100px;">Name</th>
+                        <th style="min-width: 100px;">Meter Number</th>
+                        <th style="min-width: 100px;">Address</th>
+                        
+                    
+                    </tr>
+                </thead>
+        
+                    <tbody class="wb_tbody">
+                        {% for m in meterred %}
+                        <tr>
+                            <td class="{{t.style}}">{{m.consumer_id}}</td>
+                            <td class="{{t.style}}">{{m.lastname}}, {{m.firstname}} {{m.middlename}}</td>
+                            <td class="{{t.style}}">{{m.meternumber}}</td>
+                            <td class="{{t.style}}">{{m.installation_address}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+     
+{% endblock meterreading %}
