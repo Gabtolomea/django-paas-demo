@@ -112,6 +112,18 @@ def n_str(var):
         return ''
     else:
         return var
+
+
+
+def meterreading(request):
+    meterred = ConsumerInfo.objects.all()
+    context = {
+        'meter':meterred,
+    }           
+    return render(request,"meterreading.html",context)
+
+
+
 def ledger(request, id):
     table = []
     class ledgerclass():
@@ -211,12 +223,6 @@ def forgetpassword (request):
 #______________________-------------------______________________#
     
 
-def meterreading(request):
-    meterred = ConsumerInfo.objects.all()
-    context = {
-        'meter':meterred,
-    }           
-    return render(request,"meterreading.html",context)
 
 def consumercreation (request):
     form = ConsumerCreationForm()
