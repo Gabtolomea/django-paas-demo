@@ -15,7 +15,7 @@ tablenames = [
     "ratestable",
     "revenuecode",
     "systemuser",
-    "yearly_records"
+    # "yearly_records"
 ]
 alltables = [
     accountinfo, 
@@ -28,7 +28,7 @@ alltables = [
     ratestable,
     revenuecode,
     systemuser,
-    yearly_records,
+    # yearly_records,
 ]
 sorted_tables = []
 mydb = mysql.connector.connect(
@@ -493,6 +493,11 @@ def balance():
         user.save()
 
 def sys_user_out(i):
+    sys_user.is_admin = False
+    sys_user.is_teller = False
+    sys_user.is_supervisor = False
+    sys_user.is_manager = False
+    sys_user.is_reader = False
     sys_user.username = i[0]
     sys_user.password = i[1]
     sys_user.first_name = i[2]
@@ -500,6 +505,17 @@ def sys_user_out(i):
     sys_user.mobilenum = i[4]
     sys_user.last_name = i[5]
     sys_user.email = i[6]
+    role = i[7]
+    if '1' in role:
+        sys_user.is_admin = True
+    if '2' in role:
+        sys_user.is_teller = True
+    if '3' in role:
+        sys_user.is_supervisor = True
+    if '4' in role:
+        sys_user.is_manager = True
+    if '5' in role:
+        sys_user.is_reader = True
     sys_user.profilepic = i[8]
     sys_user.authorizedapprover = i[9]
     sys_user.save()
