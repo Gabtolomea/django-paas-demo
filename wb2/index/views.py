@@ -235,11 +235,14 @@ def inputreading(request):
     return render(request,'input-meter-reading.html', context)
 
 
+def bills_list(request):
+    bills_list = ConsumerInfo.objects.all()
+    return render(request,'billslist.html',{'bills_list': bills_list})
+
+
 def consumer_list(request):
-    cons_list = ConsumerInfo.objects.all()
-    return render(request,'consumerlist.html',{'cons_list': cons_list})
-
-
+    consumer_list = ConsumerInfo.objects.all()
+    return render(request, 'conlist.html',{'consumer_list': consumer_list})
 
 def consumercreation (request):
     form = ConsumerCreationForm()

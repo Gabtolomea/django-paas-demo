@@ -38,7 +38,6 @@ mydb = mysql.connector.connect(
     database="lgu_ginatilan_db"
 )
 mycursor = mydb.cursor()
-    
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
