@@ -21,9 +21,15 @@ from .ledger import *
 import math
 from .tokens import generate_token
 
-def lp(request):
-    porter()
+def porter(request):
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    # balance()
     return render(request, "home.html")
+
+def lp(request):
+    return render(request, "landing.html")
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":

@@ -38,12 +38,6 @@ mydb = mysql.connector.connect(
     database="lgu_ginatilan_db"
 )
 mycursor = mydb.cursor()
-def porter():
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
-    balance()
-    print("anong kailangan kong gawin upang malaman mo?")
     
 def porter_in():
     col = 0
