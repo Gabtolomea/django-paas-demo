@@ -105,6 +105,7 @@ p{
 body {
     font-family: Arial;
 }
+ 
 .header_toggle{
     background: transparent;
     border: 0 !important;
@@ -319,7 +320,6 @@ button.btn.btn-wb-copy:hover {
  
 .wb_thead{
     position: sticky;
-    top: 0;
     background-color: #63CDD7;
     text-align: center;
     color: white;
@@ -359,13 +359,6 @@ button.btn.btn-wb-copy:hover {
     transition :all 1s ease;
 }
  
-
-.billing{
-    
-}
-.payment{
-    
-}
  
  
 /* @media(max-width: 720px) {
