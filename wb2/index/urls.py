@@ -6,7 +6,8 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('lp',views.lp,name='lp'),
+    path('port',views.porter,name='porter'),
+    path('',views.lp,name='landing'),
     path('login',views.signin,name='login'),
     path('user_creation', views.user_creation,name='user_creation'),
     path('dashboard', views.dashboard,name='dashboard'),
