@@ -11,13 +11,12 @@
 </style>
 {% endblock style %}
 
-{% block consumer_list %}
+{% block bills_list %}
 <h1 class="mb-3 text-center">Bills Payment</h1>
     <div class="container-fluid p-0">
         <div class="table-responsive">
             <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
                 <thead class="wb_thead">
-                        
                     <tr>
                         <th style="min-width: 100px;">Account ID</th>                        
                         <th style="min-width: 100px;">Meter Number</th>
@@ -28,16 +27,16 @@
                 </thead>
                     
                     <tbody class="wb_tbody">
-                        {% for con in cons_list %}
+                        {% for bill in bills_list %}
                         <tr>
-                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.consumer_id}}</a></td>
-                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.meternumber}}</a></td>
-                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</a></td>
-                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.installation_address}}</a></td>
-                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.current_bal}}</a></td>
+                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.consumer_id}}</a></td>
+                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.meternumber}}</a></td>
+                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</a></td>
+                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
+                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.current_bal}}</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
 
-{% endblock consumer_list %}
+{% endblock bills_list %}
 
