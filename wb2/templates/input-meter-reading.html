@@ -8,9 +8,9 @@
 {% endblock style %}
 {% block script %}
 <script>
-    $(document).ready(function () {
-        $('#table').DataTable();
-    });
+	$(document).ready(function () {
+		$('#table').DataTable()
+	})
 </script>
 {% endblock script %}
 
@@ -23,15 +23,21 @@
 					<th scope="col" style="min-width:110px">Account ID</th>
 					<th scope="col" style="min-width:120px">Name</th>
 					<th scope="col" style="min-width:100px">Meter Number</th>
-					<th scope="col" style="min-width:100px">Current Balance</th>
+					<th scope="col" style="min-width:100px">Address</th>
+					<th scope="col" style="min-width:100px">Stop Meter</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>{{u.consumer_id}}</td>
-					<td>{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
-					<td>{{u.meternumber}}</td>
-					<td>{{bal}}</td>
+					<td>{{consumer.consumer_id}}</td>
+					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
+					<td>{{consumer.meternumber}}</td>
+					<td>{{consumer.homeaddress}}</td>
+					<td>
+						<button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to continue?')" title="Stop">
+							<i class="fa fa-stop"></i>
+						</button>
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -45,14 +51,13 @@
 		<button type="button" class="btn btn-wb-copy">Get a Copy</button>
 	</div>
 </div>
-<h1 class="mb-3 text-center">List of Billing Ledger</h1>
+<h1 class="mb-3 text-center">Meter Reading</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">
 		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
-
 				<tr>
-					<th style="min-width: 100px;">Transaction ID</th>
+					<th style="min-width: 100px;">Month</th>
 					<th style="min-width: 100px;">Date</th>
 					<th style="min-width: 100px;">Previous</th>
 					<th style="min-width: 100px;">Current Reading</th>
@@ -65,7 +70,6 @@
 					<th style="min-width: 100px;">Current Balance</th>
 				</tr>
 			</thead>
-
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
 				<tr>

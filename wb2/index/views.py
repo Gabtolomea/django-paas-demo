@@ -227,10 +227,10 @@ def password_reset_form(request):
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     return render(request,'meterreading.html',{'meterred': meterred})
-def inputreading(request):
-    consumers = ConsumerInfo.objects.all()
+def inputreading(request, id):
+    consumer = ConsumerInfo.objects.get(consumer_id = id)
     context = {
-        'consumers':consumers,
+        'consumer':consumer,
     }
     return render(request,'input-meter-reading.html', context)
 
