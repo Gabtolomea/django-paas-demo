@@ -28,6 +28,7 @@ def porter(request):
     # balance()
     return render(request, "home.html")
 
+@unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 @unauthenticated_user
@@ -102,6 +103,8 @@ def user_creation(request):
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
+
+@login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
@@ -212,18 +215,24 @@ def forgetpassword (request):
 
 
 
-def password_rest_form(request):
+def password_reset_form(request):
     # form = SystemUserForm()
     # if request.method == "POST":
     #     print(request.POST)
     #     form = SystemUserForm(request.POST)
 
-    return render(request,'password_rest_form')
+    return render(request,'password_reset_form')
 
 
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     return render(request,'meterreading.html',{'meterred': meterred})
+def inputreading(request):
+    consumers = ConsumerInfo.objects.all()
+    context = {
+        'consumers':consumers,
+    }
+    return render(request,'input-meter-reading.html', context)
 
 
 def consumer_list(request):
