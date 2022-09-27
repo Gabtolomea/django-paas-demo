@@ -392,27 +392,23 @@ button.btn.btn-wb-copy:hover {
     padding-left: 20px;
     transition: all 1s ease;
 }
-
-
 #loading {
     position: fixed;
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    text-align: center;
     opacity: 1;
     background-color: #fff;
     z-index: 99;
-}
-
-#loading-image {
-    position: absolute;
-    top: 100px;
-    left: 240px;
+  }
+  
+  #loading-image {
     z-index: 100;
-}
+  }
 
 /* @media(max-width: 720px) {
     .toggle_desktop{
