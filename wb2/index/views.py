@@ -1,3 +1,4 @@
+import calendar
 from dis import dis
 from email import errors
 from os import system
@@ -228,9 +229,23 @@ def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     return render(request,'meterreading.html',{'meterred': meterred})
 def inputreading(request, id):
+    table = []
+    class meterreaderclass():
+        def __init__(self, month, usage, reading):
+            self.month = month
+            self.usage = usage
+            self.reading = reading
     consumer = ConsumerInfo.objects.get(consumer_id = id)
+    trans = Transactions.objects.filter(acctID_id = id,transType = 'Billing')
+    for t in trans:
+        month = calendar.month_name[t.date.month]
+        usage = t.usage
+        reading = t.meterReading
+        m = meterreaderclass(month, usage, reading)
+        table.append(m)
     context = {
         'consumer':consumer,
+        'table':table,
     }
     return render(request,'input-meter-reading.html', context)
 
@@ -284,3 +299,10 @@ def consumercreation (request):
         'errors':form.errors,
     }
     return render(request, 'consumercreation.html',context)
+
+def stopmeter(request, id):
+    if request.method == 'POST':
+        consumer = ConsumerInfo.objects.get(consumer_id = id)
+        consumer.stopmeterflag = not consumer.stopmeterflag
+        consumer.save()
+    return redirect('inputreading', id = id)
