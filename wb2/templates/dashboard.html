@@ -106,7 +106,7 @@
                     <span class="sidenav_text">Users Management</span>
                 </li>
             </a>
-            <a href="/" style="color: white; text-decoration: none">
+            <a href="{% url 'user_creation' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li">
                     <i class="fa-solid fa-user-plus fa-2x"></i>
                     <span class="sidenav_text">User Creation</span>
@@ -138,6 +138,8 @@
 
         {% block consumer_list %}
         {% endblock consumer_list %}
+
+    
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"

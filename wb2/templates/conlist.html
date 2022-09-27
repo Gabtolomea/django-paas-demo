@@ -1,20 +1,33 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
-{% block consumer_list %}
 
+{% block style %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+{% endblock style %}
+{% block script %}
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable();
+    });
+</script>
+{% endblock script %}
+
+{% block consumer_list %}
     <center><h1>CONSUMER LIST</h1></center>
+    <a class="btn btn-primary" href="{% url 'consumercreation' %}" role="button">Add New Consumer</a>
+    <br>
+    <br>
     <div class="container-fluid p-0">
         <div class="table-responsive">
-            <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
                 <thead class="wb_thead">
                     <tr>
                         <th style="min-width: 100px;">Account ID</th>                        
                         <th style="min-width: 100px;">Name</th>
                         <th style="min-width: 100px;">Address</th> 
                         <th style="min-width: 100px;">Meter Number</th>
-                        <th scope="col">Update</th>
-                        <th scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody class="wb_tbody">
@@ -23,17 +36,16 @@
                         <td>{{con.consumer_id}}</td>
                         <td>{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
                         <td>{{con.installation_address}}</td>
-                        <td>{{con.meternumber}}</td>
+                        <td class="{{t.style}}">
+                            <ul class="list-inline m-0">
+                                <li>{{con.meternumber}}</li>
+                                <li class="list-inline-item">
+                                    <a href="/source_access/add-meter-reading/0000000001-01"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
+                                </li>
+                            </ul>
+                        </td>
                     </tr>
                      {% endfor %}
                     </tbody>
-                   
-
-
-
-
-
-
-
 
 {% endblock consumer_list %}
