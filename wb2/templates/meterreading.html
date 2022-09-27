@@ -2,11 +2,24 @@
     {% extends 'dashboard.html' %}
     {% load static %}
 
+    {% block style %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+    {% endblock style %}
+    {% block script %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+			order: [[1, 'asc']],
+		});
+        });
+    </script>
+    {% endblock script %}
     {% block meterreading %}
     <h1 class="mb-3 text-center">Meter Reading</h1>
     <div class="container-fluid p-0">
         <div class="table-responsive">
-            <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
                 <thead class="wb_thead">
         
                     <tr>
@@ -14,7 +27,6 @@
                         <th style="min-width: 100px;">Name</th>
                         <th style="min-width: 100px;">Meter Number</th>
                         <th style="min-width: 100px;">Address</th>
-                        
                     
                     </tr>
                 </thead>
@@ -25,7 +37,14 @@
                             <td class="{{t.style}}">{{m.consumer_id}}</td>
                             <td class="{{t.style}}">{{m.lastname}}, {{m.firstname}} {{m.middlename}}</td>
                             <td class="{{t.style}}">{{m.meternumber}}</td>
-                            <td class="{{t.style}}">{{m.installation_address}}</td>
+                            <td class="{{t.style}}">
+                                <ul class="list-inline m-0">
+                                    <li>{{m.installation_address}}</li>
+                                    <li class="list-inline-item">
+                                        <a href="{{m.consumer_id}}"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
+                                    </li>
+                                </ul>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

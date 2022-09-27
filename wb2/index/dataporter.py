@@ -15,7 +15,7 @@ tablenames = [
     "ratestable",
     "revenuecode",
     "systemuser",
-    "yearly_records"
+    # "yearly_records"
 ]
 alltables = [
     accountinfo, 
@@ -28,7 +28,7 @@ alltables = [
     ratestable,
     revenuecode,
     systemuser,
-    yearly_records,
+    # yearly_records,
 ]
 sorted_tables = []
 mydb = mysql.connector.connect(
@@ -38,13 +38,6 @@ mydb = mysql.connector.connect(
     database="lgu_ginatilan_db"
 )
 mycursor = mydb.cursor()
-def porter():
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
-    balance()
-    print("anong kailangan kong gawin upang malaman mo?")
-    
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -127,13 +120,13 @@ def porter_out(tables):
         trans.or_number = tables[6][i][3]
         trans.save()
     for i in tables[1]:
-        usage_rec.accountid =	i[1-1]
-        usage_rec.rateid = i[2-1]
-        usage_rec.prevyeardue = i[3-1]
-        usage_rec.excesspayment = i[4-1]
-        usage_rec.commulative_bill = i[5-1]
-        usage_rec.year = i[6-1]
-        usage_rec.reading_jan = i[7-1]
+        usage_rec.accountid =	i[0]
+        usage_rec.rateid = i[1]
+        usage_rec.prevyeardue = i[2]
+        usage_rec.excesspayment = i[3]
+        usage_rec.commulative_bill = i[4]
+        usage_rec.year = i[5]
+        usage_rec.reading_jan = i[6]
         usage_rec.reading_date_jan = i[8-1]
         usage_rec.reading_postedby_jan =	i[9-1]
         usage_rec.usage_jan =	i[10-1]
@@ -500,6 +493,11 @@ def balance():
         user.save()
 
 def sys_user_out(i):
+    sys_user.is_admin = False
+    sys_user.is_teller = False
+    sys_user.is_supervisor = False
+    sys_user.is_manager = False
+    sys_user.is_reader = False
     sys_user.username = i[0]
     sys_user.password = i[1]
     sys_user.first_name = i[2]
@@ -507,6 +505,17 @@ def sys_user_out(i):
     sys_user.mobilenum = i[4]
     sys_user.last_name = i[5]
     sys_user.email = i[6]
+    role = i[7]
+    if '1' in role:
+        sys_user.is_admin = True
+    if '2' in role:
+        sys_user.is_teller = True
+    if '3' in role:
+        sys_user.is_supervisor = True
+    if '4' in role:
+        sys_user.is_manager = True
+    if '5' in role:
+        sys_user.is_reader = True
     sys_user.profilepic = i[8]
     sys_user.authorizedapprover = i[9]
     sys_user.save()

@@ -26,13 +26,13 @@
                 style=" margin: 10% auto !important; border-radius: 40px;  max-width: 440px; padding: 40px 0; background: #63CDD7;">
                 <div class="log-in" style="padding-right: 15px">
                     <center>
-                        <h1 style="font-size: 32px;  color:white">Login</h1>
-                        <h3 style="font-size: 24px; color:white">Enter User Credentials </h3>
+                        <h4 style="font-size: 32px;  color:white">Login</h4>
+                        <h5 style="font-size: 24px; color:white">Enter User Credentials </h5>
                     </center>
                 </div>
                 <center>
                     <div class="form-group m-2 w-75">
-                        <input type="username" name="username" style="border-radius: 20px;" class="form-control" placeholder="User ID">
+                        <input type="username" name="username" style="border-radius: 20px;" class="form-control" placeholder="Email Address">
                     </div>
 
                     <div class="form-group m-2 w-75">
@@ -50,7 +50,7 @@
                     {% for message in messages %}
                     <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
                         <strong>{{message.tags|title}}!</strong> {{message}}
-                        <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
+                        <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;") aria-label="close">&times;</a>
                     </div>
                     {% endfor %}
                 </center>

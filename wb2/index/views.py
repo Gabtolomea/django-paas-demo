@@ -21,9 +21,16 @@ from .ledger import *
 import math
 from .tokens import generate_token
 
+def porter(request):
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    balance()
+    return render(request, "landing.html")
+
+@unauthenticated_user
 def lp(request):
-    porter()
-    return render(request, "home.html")
+    return render(request, "landing.html")
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
@@ -96,6 +103,8 @@ def user_creation(request):
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
+
+@login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
@@ -206,23 +215,38 @@ def forgetpassword (request):
 
 
 
-def password_rest_form(request):
+def password_reset_form(request):
     # form = SystemUserForm()
     # if request.method == "POST":
     #     print(request.POST)
     #     form = SystemUserForm(request.POST)
 
-    return render(request,'password_rest_form')
+    return render(request,'password_reset_form')
 
 
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     return render(request,'meterreading.html',{'meterred': meterred})
+def inputreading(request, id):
+    consumer = ConsumerInfo.objects.get(consumer_id = id)
+    context = {
+        'consumer':consumer,
+    }
+    return render(request,'input-meter-reading.html', context)
+
+
+def bills_list(request):
+    bills_list = ConsumerInfo.objects.all()
+    return render(request,'billslist.html',{'bills_list': bills_list})
 
 
 def consumer_list(request):
-    cons_list = ConsumerInfo.objects.all()
-    return render(request,'consumerlist.html',{'cons_list': cons_list})
+    consumer_list = ConsumerInfo.objects.all()
+    return render(request, 'conlist.html',{'consumer_list': consumer_list})
+
+# def barangay_report(request):
+#     barangay_report = BarangayRecord.objects.all()
+
 
 
 
