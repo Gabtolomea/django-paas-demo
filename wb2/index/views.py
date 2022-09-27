@@ -44,7 +44,7 @@ def signin(request):
             if user.password == p:
                 login(request,user)
                 messages.success(request, 'Logged in')
-                return redirect('dashboard')
+                return redirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
         else:
