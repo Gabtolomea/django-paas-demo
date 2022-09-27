@@ -24,18 +24,17 @@
                         <th style="min-width: 100px;">Name</th>
                         <th style="min-width: 100px;">Address</th>
                         <th style="min-width: 100px;">Total Balance</th>
-
                     </tr>
                 </thead>
                     
                     <tbody class="wb_tbody">
                         {% for con in cons_list %}
-                        
                         <tr>
-                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.consumer_id}}</a></td>
-                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.meternumber}}</a></td>
-                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</a></td>
-                            <td class="{{t.style}}"><a href="{% url 'ledger' con.consumer_id %}">{{con.installation_address}}</a></td>
+                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.consumer_id}}</a></td>
+                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.meternumber}}</a></td>
+                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</a></td>
+                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.installation_address}}</a></td>
+                            <td><a href="{% url 'ledger' con.consumer_id %}">{{con.current_bal}}</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
