@@ -22,11 +22,11 @@ import math
 from .tokens import generate_token
 
 def porter(request):
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
-    # balance()
-    return render(request, "home.html")
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    balance()
+    return render(request, "landing.html")
 
 @unauthenticated_user
 def lp(request):
