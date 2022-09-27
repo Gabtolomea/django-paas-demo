@@ -19,7 +19,7 @@ urlpatterns = [
     path('consumercreation', views.consumercreation,name='consumercreation'),
     path('bills_list/', views.bills_list, name='bills_list'),
     path('consumer_list/', views.consumer_list, name='consumer_list')
-
+    path('inputreading', views.inputreading, name='inputreading')
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
 ]
