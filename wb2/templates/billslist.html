@@ -3,6 +3,7 @@
 
 
 {% block style %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
     a{
         text-decoration: none;
@@ -10,12 +11,19 @@
     }
 </style>
 {% endblock style %}
-
+{% block script %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        });
+    </script>
+    {% endblock script %}
 {% block bills_list %}
 <h1 class="mb-3 text-center">Bills Payment</h1>
     <div class="container-fluid p-0">
         <div class="table-responsive">
-            <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
                 <thead class="wb_thead">
                     <tr>
                         <th style="min-width: 100px;">Account ID</th>                        
