@@ -39,9 +39,9 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 def porter():
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
     balance()
     print("anong kailangan kong gawin upang malaman mo?")
     
