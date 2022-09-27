@@ -1,0 +1,21 @@
+html{
+    height: auto;
+    max-height: 100%;
+}
+.menu_header{
+    background:black;
+    color:white;
+    padding: 8px;
+}
+
+
+
+
+
+
+
+@media only screen and (max-width: 600px) {
+    body {
+      background-color: lightblue;
+    }
+  }

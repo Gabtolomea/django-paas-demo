@@ -6,14 +6,15 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Billing Ledger</title>
-	
+
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
 </head>
 <style>
 	html {
-		height: 100%;
+		height: auto;
+		min-height: 100%;
 	}
 
 	body {
@@ -110,19 +111,21 @@
 					<th style="white-space: nowrap">Processed By</th>
 					<th style="white-space: nowrap">Transaction ID</th>
 					<th style="white-space: nowrap">Current Balance</th>
+
 				</tr>
 			</thead>
 			<tbody>
 				{% for t in table reversed %}
 				<tr>
-					
+
 				{% for i in t %}
 					<td>{{i}}</td>
-					
+
 				{% endfor %}
 				</tr>
 				{% endfor %}
 			</tbody>
+
 		</table>
 	</div>
 
