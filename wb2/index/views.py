@@ -227,8 +227,12 @@ def password_reset_form(request):
 
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
-    return render(request,'meterreading.html',{'meterred': meterred})
-def inputreading(request, id):
+    context = {
+        'meterred': meterred,
+        'year':date.today().year
+    }
+    return render(request,'meterreading.html', context)
+def inputreading(request, id, year):
     table = []
     class meterreaderclass():
         def __init__(self, month, usage, reading):
@@ -236,11 +240,21 @@ def inputreading(request, id):
             self.usage = usage
             self.reading = reading
     consumer = ConsumerInfo.objects.get(consumer_id = id)
-    trans = Transactions.objects.filter(acctID_id = id,transType = 'Billing')
-    for t in trans:
-        month = calendar.month_name[t.date.month]
-        usage = t.usage
-        reading = t.meterReading
+    trans = Transactions.objects.filter(acctID_id = id,transType = 'Billing', date__year = year)
+    asc_trans = trans.order_by('date')
+    count = len(asc_trans)
+    j = 0
+    for i in range(12):
+        month = calendar.month_name[i+1]
+        usage = 0
+        reading = 0
+        if i<=count and count!=0:
+            if i+1 >= asc_trans[0].date.month and j<count:
+                if i+1 == asc_trans[j].date.month:
+                    month = calendar.month_name[asc_trans[j].date.month]
+                    usage = asc_trans[j].usage
+                    reading = asc_trans[j].meterReading
+                j+=1
         m = meterreaderclass(month, usage, reading)
         table.append(m)
     context = {
@@ -305,4 +319,4 @@ def stopmeter(request, id):
         consumer = ConsumerInfo.objects.get(consumer_id = id)
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
-    return redirect('inputreading', id = id)
+    return redirect('inputreading', id = id, year=date.today().year)
