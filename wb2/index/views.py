@@ -273,6 +273,16 @@ def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html',{'consumer_list': consumer_list})
 
+
+def sysuser(request):
+    sysuser = SystemUsers.objects.all()
+
+
+
+    
+    return render(request, 'sysuser.html',{'sysuser':sysuser})
+
+
 def consumercreation (request):
     form = ConsumerCreationForm()
     if request.method == "POST":
