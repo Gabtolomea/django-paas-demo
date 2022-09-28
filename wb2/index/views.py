@@ -240,7 +240,7 @@ def inputreading(request, id, year):
             self.usage = usage
             self.reading = reading
     consumer = ConsumerInfo.objects.get(consumer_id = id)
-    trans = Transactions.objects.filter(acctID_id = id,transType = 'Billing', date__year = year)
+    trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year)
     asc_trans = trans.order_by('date')
     count = len(asc_trans)
     j = 0
@@ -248,12 +248,11 @@ def inputreading(request, id, year):
         month = calendar.month_name[i+1]
         usage = 0
         reading = 0
-        if i<=count and count!=0:
-            if i+1 >= asc_trans[0].date.month and j<count:
-                if i+1 == asc_trans[j].date.month:
-                    month = calendar.month_name[asc_trans[j].date.month]
-                    usage = asc_trans[j].usage
-                    reading = asc_trans[j].meterReading
+        if j<count and count!=0:
+            if i+1 == asc_trans[j].date.month:
+                month = calendar.month_name[asc_trans[j].date.month]
+                usage = asc_trans[j].usage
+                reading = asc_trans[j].meterReading
                 j+=1
         m = meterreaderclass(month, usage, reading)
         table.append(m)
@@ -277,9 +276,6 @@ def consumer_list(request):
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
 
-
-
-    
     return render(request, 'sysuser.html',{'sysuser':sysuser})
 
 

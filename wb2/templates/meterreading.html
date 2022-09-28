@@ -10,8 +10,13 @@
     <script>
         $(document).ready(function () {
             $('#table').DataTable({
-			order: [[1, 'asc']],
-		});
+                order: [[1, 'asc']],
+                stateSave: true,
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, 'All'],
+                ],
+            });
         });
     </script>
     {% endblock script %}
@@ -34,16 +39,23 @@
                     <tbody class="wb_tbody">
                         {% for m in meterred %}
                         <tr>
-                            <td class="{{t.style}}">{{m.consumer_id}}</td>
-                            <td class="{{t.style}}">{{m.lastname}}, {{m.firstname}} {{m.middlename}}</td>
-                            <td class="{{t.style}}">{{m.meternumber}}</td>
                             <td class="{{t.style}}">
-                                <ul class="list-inline m-0">
-                                    <li>{{m.installation_address}}</li>
-                                    <li class="list-inline-item">
-                                        <a href="{{m.consumer_id}}/{{year}}"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
-                                    </li>
-                                </ul>
+                                {{m.consumer_id}}
+
+                            </td>
+                            <td class="{{t.style}}">
+                                {{m.lastname}}, {{m.firstname}} {{m.middlename}}
+
+                            </td>
+                            <td class="{{t.style}}">
+                                {{m.meternumber}}
+
+                            </td>
+                            <td class="{{t.style}}">
+                                {{m.installation_address}}
+                                <a class="btn btn-success btn-sm rounded-0" href="{{m.consumer_id}}/{{year}}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}
