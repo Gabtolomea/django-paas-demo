@@ -1,6 +1,7 @@
 import calendar
 from dis import dis
 from email import errors
+from multiprocessing import context
 from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -23,10 +24,10 @@ import math
 from .tokens import generate_token
 
 def porter(request):
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
-    balance()
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    # balance()
     return render(request, "landing.html")
 
 @unauthenticated_user
@@ -227,8 +228,13 @@ def password_reset_form(request):
 
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
-    return render(request,'meterreading.html',{'meterred': meterred})
-def inputreading(request, id):
+    context = {
+        'meterred': meterred,
+        'year':date.today().year
+    }
+    return render(request,'meterreading.html', context)
+
+def inputreading(request, id, year):
     table = []
     class meterreaderclass():
         def __init__(self, month, usage, reading):
@@ -236,11 +242,21 @@ def inputreading(request, id):
             self.usage = usage
             self.reading = reading
     consumer = ConsumerInfo.objects.get(consumer_id = id)
-    trans = Transactions.objects.filter(acctID_id = id,transType = 'Billing')
-    for t in trans:
-        month = calendar.month_name[t.date.month]
-        usage = t.usage
-        reading = t.meterReading
+    trans = Transactions.objects.filter(acctID_id = id,transType = 'Billing', date__year = year)
+    asc_trans = trans.order_by('date')
+    count = len(asc_trans)
+    j = 0
+    for i in range(12):
+        month = calendar.month_name[i+1]
+        usage = 0
+        reading = 0
+        if i<=count and count!=0:
+            if i+1 >= asc_trans[0].date.month and j<count:
+                if i+1 == asc_trans[j].date.month:
+                    month = calendar.month_name[asc_trans[j].date.month]
+                    usage = asc_trans[j].usage
+                    reading = asc_trans[j].meterReading
+                j+=1
         m = meterreaderclass(month, usage, reading)
         table.append(m)
     context = {
@@ -258,10 +274,6 @@ def bills_list(request):
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html',{'consumer_list': consumer_list})
-
-# def barangay_report(request):
-#     barangay_report = BarangayRecord.objects.all()
-
 
 
 
@@ -311,4 +323,22 @@ def stopmeter(request, id):
         consumer = ConsumerInfo.objects.get(consumer_id = id)
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
-    return redirect('inputreading', id = id)
+    return redirect('inputreading', id = id, year=date.today().year)
+
+
+
+def sysuser(request):
+    table = []
+    class sysuserclass():
+        def __init__(self, first_name, last_name, username, is_admin, is_teller, is_supervisor, is_manager, is_reader):
+            self.first_name = first_name
+            self.last_name = last_name
+            self.username = username
+            self.is_admin = is_admin
+            self.is_teller = is_teller
+            self.is_supervisor = is_supervisor
+            self.is_manager = is_manager
+            self.is_reader = is_reader
+        sys = SystemUsers.objects.all()
+      
+    return render(request, 'sysuser.html', context)
