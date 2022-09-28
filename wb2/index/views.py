@@ -234,31 +234,50 @@ def meterreading(request):
     return render(request,'meterreading.html', context)
 def inputreading(request, id, year):
     table = []
+    years = []
     class meterreaderclass():
-        def __init__(self, month, usage, reading):
+        def __init__(self, transid , month, usage, reading):
+            self.transid = transid
             self.month = month
             self.usage = usage
             self.reading = reading
     consumer = ConsumerInfo.objects.get(consumer_id = id)
+    lastid = Transactions.objects.latest('transactionid').transactionid
+    alltrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing')
     trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year)
     asc_trans = trans.order_by('date')
     count = len(asc_trans)
     j = 0
+    for i in alltrans:
+        if i.date.year not in years:
+            years.append(i.date.year)
+    if int(year) in years:
+        years.remove(int(year))
     for i in range(12):
         month = calendar.month_name[i+1]
         usage = 0
         reading = 0
+        transid = lastid + i
         if j<count and count!=0:
             if i+1 == asc_trans[j].date.month:
                 month = calendar.month_name[asc_trans[j].date.month]
+                transid = asc_trans[j].transactionid
                 usage = asc_trans[j].usage
                 reading = asc_trans[j].meterReading
                 j+=1
-        m = meterreaderclass(month, usage, reading)
+        m = meterreaderclass(transid, month, usage, reading)
         table.append(m)
+    if request.method=="POST":
+        readings = []
+        for i in range(12):
+            r = request.POST.get('reading-'+calendar.month_name[i+1],0)
+            readings.append(r)
+        print(readings)
     context = {
         'consumer':consumer,
         'table':table,
+        'cur_year':year,
+        'years':years
     }
     return render(request,'input-meter-reading.html', context)
 
