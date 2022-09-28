@@ -1,3 +1,4 @@
+import calendar
 from dis import dis
 from email import errors
 from os import system
@@ -21,15 +22,16 @@ from .ledger import *
 import math
 from .tokens import generate_token
 
-# creating PDF using reportlab
-# import io
-# from django.http import FileResponse
-# from reportlab.pdfgen import canvas
+def porter(request):
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    balance()
+    return render(request, "landing.html")
 
-
+@unauthenticated_user
 def lp(request):
-    porter()
-    return render(request, "home.html")
+    return render(request, "landing.html")
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
@@ -43,7 +45,7 @@ def signin(request):
             if user.password == p:
                 login(request,user)
                 messages.success(request, 'Logged in')
-                return redirect('dashboard')
+                return redirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
         else:
@@ -102,6 +104,8 @@ def user_creation(request):
         'errors':form.errors,
     }
     return render(request, 'registration.html', context)
+
+@login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
@@ -212,19 +216,67 @@ def forgetpassword (request):
 
 
 
-def password_rest_form(request):
+def password_reset_form(request):
     # form = SystemUserForm()
     # if request.method == "POST":
     #     print(request.POST)
     #     form = SystemUserForm(request.POST)
 
-    return render(request,'password_rest_form')
+    return render(request,'password_reset_form')
 
 
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
-    return render(request,'meterreading.html',{'meterred': meterred})
+    context = {
+        'meterred': meterred,
+        'year':date.today().year
+    }
+    return render(request,'meterreading.html', context)
+def inputreading(request, id, year):
+    table = []
+    class meterreaderclass():
+        def __init__(self, month, usage, reading):
+            self.month = month
+            self.usage = usage
+            self.reading = reading
+    consumer = ConsumerInfo.objects.get(consumer_id = id)
+    trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year)
+    asc_trans = trans.order_by('date')
+    count = len(asc_trans)
+    j = 0
+    for i in range(12):
+        month = calendar.month_name[i+1]
+        usage = 0
+        reading = 0
+        if j<count and count!=0:
+            if i+1 == asc_trans[j].date.month:
+                month = calendar.month_name[asc_trans[j].date.month]
+                usage = asc_trans[j].usage
+                reading = asc_trans[j].meterReading
+                j+=1
+        m = meterreaderclass(month, usage, reading)
+        table.append(m)
+    context = {
+        'consumer':consumer,
+        'table':table,
+    }
+    return render(request,'input-meter-reading.html', context)
 
+
+def bills_list(request):
+    bills_list = ConsumerInfo.objects.all()
+    return render(request,'billslist.html',{'bills_list': bills_list})
+
+
+def consumer_list(request):
+    consumer_list = ConsumerInfo.objects.all()
+    return render(request, 'conlist.html',{'consumer_list': consumer_list})
+
+
+def sysuser(request):
+    sysuser = SystemUsers.objects.all()
+
+    return render(request, 'sysuser.html',{'sysuser':sysuser})
 
 
 def consumercreation (request):
@@ -267,3 +319,10 @@ def consumercreation (request):
         'errors':form.errors,
     }
     return render(request, 'consumercreation.html',context)
+
+def stopmeter(request, id):
+    if request.method == 'POST':
+        consumer = ConsumerInfo.objects.get(consumer_id = id)
+        consumer.stopmeterflag = not consumer.stopmeterflag
+        consumer.save()
+    return redirect('inputreading', id = id, year=date.today().year)

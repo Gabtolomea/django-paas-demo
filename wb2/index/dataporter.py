@@ -2,7 +2,7 @@ import mysql.connector
 from .models import *
 from .colnames import *
 from datetime import datetime
-
+import math
 
 tablenames = [
     "accountinfo",
@@ -15,7 +15,7 @@ tablenames = [
     "ratestable",
     "revenuecode",
     "systemuser",
-    "yearly_records"
+    # "yearly_records"
 ]
 alltables = [
     accountinfo, 
@@ -28,7 +28,7 @@ alltables = [
     ratestable,
     revenuecode,
     systemuser,
-    yearly_records,
+    # yearly_records,
 ]
 sorted_tables = []
 mydb = mysql.connector.connect(
@@ -38,14 +38,6 @@ mydb = mysql.connector.connect(
     database="lgu_ginatilan_db"
 )
 mycursor = mydb.cursor()
-def porter():
-    # r = Rates.objects.get(rateid = str(1))
-    # print(r)
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
-    print("anong kailangan kong gawin upang malaman mo?")
-    
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -111,7 +103,7 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rateid=tables[0][i][7])
+        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
         con_info.status = tables[0][i][8]
         con_info.penaltyflag = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
@@ -128,13 +120,13 @@ def porter_out(tables):
         trans.or_number = tables[6][i][3]
         trans.save()
     for i in tables[1]:
-        usage_rec.accountid =	i[1-1]
-        usage_rec.rateid = i[2-1]
-        usage_rec.prevyeardue = i[3-1]
-        usage_rec.excesspayment = i[4-1]
-        usage_rec.commulative_bill = i[5-1]
-        usage_rec.year = i[6-1]
-        usage_rec.reading_jan = i[7-1]
+        usage_rec.accountid =	i[0]
+        usage_rec.rateid = i[1]
+        usage_rec.prevyeardue = i[2]
+        usage_rec.excesspayment = i[3]
+        usage_rec.commulative_bill = i[4]
+        usage_rec.year = i[5]
+        usage_rec.reading_jan = i[6]
         usage_rec.reading_date_jan = i[8-1]
         usage_rec.reading_postedby_jan =	i[9-1]
         usage_rec.usage_jan =	i[10-1]
@@ -486,8 +478,26 @@ def billing_out():
             dec.usage = u.usage_dec
             dec.save()
     
+def balance():
+    for i in ConsumerInfo.objects.all():
+        user = ConsumerInfo.objects.get(consumer_id = i.consumer_id)
+        trans = Transactions.objects.filter(acctID = i.consumer_id)
+        asc_trans = trans.order_by('date')
+        bal = 0
+        for i in range(len(asc_trans)):
+            if asc_trans[i].transType == 'Billing':
+                bal+=asc_trans[i].bill
+            elif asc_trans[i].transType == 'Payment':
+                bal=bal-asc_trans[i].payment
+        user.current_bal = math.ceil(bal*100)/100
+        user.save()
 
 def sys_user_out(i):
+    sys_user.is_admin = False
+    sys_user.is_teller = False
+    sys_user.is_supervisor = False
+    sys_user.is_manager = False
+    sys_user.is_reader = False
     sys_user.username = i[0]
     sys_user.password = i[1]
     sys_user.first_name = i[2]
@@ -495,19 +505,37 @@ def sys_user_out(i):
     sys_user.mobilenum = i[4]
     sys_user.last_name = i[5]
     sys_user.email = i[6]
+    role = i[7]
+    if '1' in role:
+        sys_user.is_admin = True
+    if '2' in role:
+        sys_user.is_teller = True
+    if '3' in role:
+        sys_user.is_supervisor = True
+    if '4' in role:
+        sys_user.is_manager = True
+    if '5' in role:
+        sys_user.is_reader = True
     sys_user.profilepic = i[8]
     sys_user.authorizedapprover = i[9]
     sys_user.save()
 def rt_out(i):
-    rt.rateid = i[0]
+    rt.rate_id = int(i[0])
     rt.minReading = i[1]
     rt.minReadingCharge = i[2]
     rt.rateAfterMin = i[3]
     rt.ratePenalty = i[4]
     rt.ratePenaltyFreq = i[5]
+    if i[0] == '1':
+        rt.connectionType = 'Residential'
+    elif i[0] == '2':
+        rt.connectionType = 'Commercial'
+    rt.added_by = None
     rt.save()
 def b_rec_out(i):
-    b_rec.barangay_val = i[0]
+    b_rec.barangayrec_id = i[0]
+    arr = i[0].split('-')
+    b_rec.barangaycode = Barangays.objects.get(id=int(arr[0]))
     b_rec.year = i[2]
     b_rec.total_due_jan = i[6]
     b_rec.total_paid_jan = i[7]
