@@ -1,6 +1,7 @@
 import calendar
 from dis import dis
 from email import errors
+from multiprocessing import context
 from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -23,10 +24,10 @@ import math
 from .tokens import generate_token
 
 def porter(request):
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
-    balance()
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    # balance()
     return render(request, "landing.html")
 
 @unauthenticated_user
@@ -232,6 +233,7 @@ def meterreading(request):
         'year':date.today().year
     }
     return render(request,'meterreading.html', context)
+
 def inputreading(request, id, year):
     table = []
     class meterreaderclass():
@@ -273,14 +275,6 @@ def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html',{'consumer_list': consumer_list})
 
-
-def sysuser(request):
-    sysuser = SystemUsers.objects.all()
-
-
-
-    
-    return render(request, 'sysuser.html',{'sysuser':sysuser})
 
 
 def consumercreation (request):
@@ -330,3 +324,21 @@ def stopmeter(request, id):
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
     return redirect('inputreading', id = id, year=date.today().year)
+
+
+
+def sysuser(request):
+    table = []
+    class sysuserclass():
+        def __init__(self, first_name, last_name, username, is_admin, is_teller, is_supervisor, is_manager, is_reader):
+            self.first_name = first_name
+            self.last_name = last_name
+            self.username = username
+            self.is_admin = is_admin
+            self.is_teller = is_teller
+            self.is_supervisor = is_supervisor
+            self.is_manager = is_manager
+            self.is_reader = is_reader
+        sys = SystemUsers.objects.all()
+      
+    return render(request, 'sysuser.html', context)

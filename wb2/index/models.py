@@ -17,6 +17,8 @@ class SystemUsers(AbstractUser):
     authorizedapprover = models.CharField(max_length=20)
     def __str__(self) -> str:
         return self.username
+
+
 class Rates(models.Model):
     rate_id = models.CharField(primary_key=True, max_length=20)
     connectionType = models.CharField(max_length=20, blank=True, null=True)
