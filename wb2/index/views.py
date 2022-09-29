@@ -3,6 +3,7 @@ from dis import dis
 from email import errors
 from multiprocessing import context
 from os import system
+from turtle import update
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -253,7 +254,10 @@ def meterreading(request):
 
 def inputreading(request, id, year):
     table = []
+<<<<<<< HEAD
     years = []
+=======
+>>>>>>> ryla
 
     class meterreaderclass():
         def __init__(self, transid, month, usage, reading):
@@ -262,8 +266,11 @@ def inputreading(request, id, year):
             self.usage = usage
             self.reading = reading
     consumer = ConsumerInfo.objects.get(consumer_id=id)
+<<<<<<< HEAD
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
+=======
+>>>>>>> ryla
     trans = Transactions.objects.filter(
         acctID_id=id, transType='Billing', date__year=year)
     asc_trans = trans.order_by('date')
@@ -278,7 +285,10 @@ def inputreading(request, id, year):
         month = calendar.month_name[i+1]
         usage = 0
         reading = 0
+<<<<<<< HEAD
         transid = lastid + i
+=======
+>>>>>>> ryla
         if j < count and count != 0:
             if i+1 == asc_trans[j].date.month:
                 month = calendar.month_name[asc_trans[j].date.month]
@@ -286,7 +296,11 @@ def inputreading(request, id, year):
                 usage = asc_trans[j].usage
                 reading = asc_trans[j].meterReading
                 j += 1
+<<<<<<< HEAD
         m = meterreaderclass(transid, month, usage, reading)
+=======
+        m = meterreaderclass(month, usage, reading)
+>>>>>>> ryla
         table.append(m)
     if request.method == "POST":
         readings = []
@@ -297,8 +311,11 @@ def inputreading(request, id, year):
     context = {
         'consumer': consumer,
         'table': table,
+<<<<<<< HEAD
         'cur_year': year,
         'years': years
+=======
+>>>>>>> ryla
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -313,6 +330,15 @@ def consumer_list(request):
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
 
+<<<<<<< HEAD
+=======
+def sysuser(request):
+    sysuser = SystemUsers.objects.all()
+
+    return render(request, 'sysuser.html', {'sysuser': sysuser})
+
+
+>>>>>>> ryla
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -363,6 +389,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
+<<<<<<< HEAD
 def sysuser(request):
     table = []
     class sysuserclass():
@@ -390,3 +417,23 @@ def sysuser(request):
                     role = role + "Reader, "
                 
             
+=======
+
+def userupdate(request, id):
+    user = ConsumerInfo.objects.get(pk=id)
+    form = Userinfoupdate()
+    if request.method == 'POST':
+        con_id = ConsumerInfo.objects.get(pk=id)
+        con_id.consumer_id = not con_id.consumer_id
+        con_id.save()
+        form = Userinfoupdate(request.POST)
+        if form.is_valid():
+            return redirect('userupdate', id=id)
+    context = {
+        'form': form,
+        'user': user
+
+    }
+
+    return render(request, 'userupdate.html', context)
+>>>>>>> ryla
