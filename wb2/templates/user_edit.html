@@ -1,0 +1,162 @@
+{%load static%}      
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Registration Form</title>
+	<link rel="stylesheet" type="text/css" href="/wb2/static/style.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+	
+	</head>
+	<style>
+
+		html{
+			height: 100%;
+		}
+		body{
+			height: 100%;
+			background-image: linear-gradient(white,#63CDD7);
+		}
+	.form-header{
+		font-family: Arial;
+		margin: 0px 0px 16px;
+		padding: 0px 12px;
+	}
+
+	.container {
+		font-family: Arial;
+		color: #ffffff;
+	}
+
+	.wrapper {
+		font: 16px Arial;
+		margin: 0px 0px 16px;
+		padding: 0px 12px;
+		background: #63CDD7;
+		border-radius: 40px;
+		padding: 30px;
+	}
+
+	.approver {
+		font: 16px Arial;
+		margin: 0px 0px 16px;
+		padding: 0px 12px;
+	}
+		.submit {
+			background-color: #0093B7;
+			color: white;
+			border-radius: 25px;
+			width: 100%;
+			text-align: center;
+		}
+	</style>
+	<body>
+		<section id="registration-page">
+			<form action="user_creation" method="POST" class="signup-form">
+				{% csrf_token %}
+				<div class="container">
+					<div class=" shadow wrapper m-4">
+						<div class="form-header">
+							<h1>User Update</h1>
+						</div>
+						<div class="row form-group w-100 m-auto">
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+								<label for="" class="">Firstname</label>
+                           <input type="text" name="firstname" class="form-control" id="Fname" aria-describedby="fname"  value="{{ sys.first_name }}" placeholder="Firstname" >
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                <label for="">Middlename</label>
+                                <input type="text" name="middlename" class="form-control" id="Mname" aria-describedby="mname"  value="{{ sys.mid_name }}" placeholder="Middlename" >
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                <label for="">Lastname</label>
+                                <input type="text" name="lastname" class="form-control" id="lname" aria-describedby="lname"  value="{{ sys.last_name}}" placeholder="Lastname" >
+							</div>
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+								<label for="">Mobilenum</label>
+                                <input type="text" name="mobilenum" class="form-control" id="mnum" aria-describedby="mnum"  value="{{ sys.mobilenum}}" placeholder="Mobile Number" >
+							</div>
+								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+									<label for="">Email</label>
+                                <input type="text" name="email" class="form-control" id="email" aria-describedby="email"  value="{{ sys.email}}" placeholder="Email Address" >
+								</div>
+								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                    <label for="">User ID</label>
+                                    <input type="text" name="uid" class="form-control" id="uid" aria-describedby="uid"  value="{{ sys.username }}" placeholder="UserID" >
+								</div>
+						</div>
+
+						<div class="row form-group w-100 m-auto">
+							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+								<label for="">Password</label>
+                                <input type="password" name="PASS" class="form-control" id="email" aria-describedby="email"  value="{{ sys.password }}" placeholder="" >
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+								<label for="">Confirm Password</label>
+                                <input type="password" name="PASS" class="form-control" id="email" aria-describedby="email"  value="{{ sys.password }}" placeholder="" >
+
+							</div>
+						</div>
+
+						<div class="row m-auto w-100">
+							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+								<h3>Type of User</h3>
+                                <input type="checkbox" id="is_admin" name="admin" value="{{ sys.is_admin}}">
+                                <label for="admin">ADMIN</label><br>
+                                <input type="checkbox" id="is_teller" name="teller" value="{{ sys.is_teller }}">
+                                <label for="admin">TELLER</label><br>                             
+                                <input type="checkbox" id="is_supervisor" name="supervisor" value="{{ sys.is_supervisor }}">
+                                <label for="admin">SUPERVISOR</label><br>                             
+                                <input type="checkbox" id="is_manager" name="manager" value="{{ sys.is_manager }}">
+                                <label for="admin">MANAGER</label><br> 
+                                <input type="checkbox" id="is_reader" name="reader" value="{{ sys.is_reader}}">
+                                <label for="admin">METER READER</label><br>
+							</div>
+					    </div>
+						<div class="row w-100 m-auto mb-3">
+							<div class="col-lg-12 col-md-12 col-sm-12 mb-4">
+								
+								<div class="input-group mb-2">
+									<label class="input-group-text" for="inputGroupSelect01">Authorized Approver</label>
+                                    <select name="authorizedapprover" class="form-select" id="id_authorizedapprover">
+                                        <option value="sys.0">Approver for Inbound Application</option>
+                                      
+                                        <option value="1">Non Approver</option>
+                                      
+                                        <option value="2">Supervisor</option>
+                                      
+                                        <option value="3">Engineer's Office</option>
+                                      
+                                        <option value="4">Mayor's Office</option>
+                                      
+                                      </select>
+							</div>
+							<div class="profile mb-3">
+								{% if form.errors %}
+									{% for error in form.profilepic.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="formFile" class="form-label">Profile Picture*</label>
+								{{form.profilepic}}
+							</div>
+						</div>
+						<button type="submit" id="footer-subscription-button" class="btn submit" >Update</button>
+						
+
+					</div>
+				</div>
+			</div>
+		</form>
+	</section>
+</body>
+
+</html>
