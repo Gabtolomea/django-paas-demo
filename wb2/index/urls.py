@@ -14,7 +14,7 @@ urlpatterns = [
     path('signout', views.signout,name='signout'),
     path('bills_list/<id>/', views.ledger,name='ledger'),
     path('meterreading/', views.meterreading,name='meterreading'),
-    path('meterreading/<id>/<year>', views.inputreading,name='inputreading'),
+    path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
     path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),name="password_reset_confirm"),
     path('consumercreation', views.consumercreation,name='consumercreation'),

@@ -12,6 +12,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
+from django.core.exceptions import ObjectDoesNotExist
 import base64
 from wb2 import settings
 from .forms import *
@@ -245,33 +246,65 @@ def inputreading(request, id, year):
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing')
     trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year)
+    dec = None
+    if year<date.today().year:
+        nexttrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year+1)
+        try:
+            dec = nexttrans.get(date__month=1)
+        except ObjectDoesNotExist:
+            dec = None
     asc_trans = trans.order_by('date')
     count = len(asc_trans)
     j = 0
+    if asc_trans[0].date.month == 1:
+        j = 1
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
     if int(year) in years:
         years.remove(int(year))
-    for i in range(12):
-        month = calendar.month_name[i+1]
+    # print(asc_trans)
+    # print(count)
+    for i in range(1,13):
+        month = calendar.month_name[i]
+        transid = 0
         usage = 0
         reading = 0
-        transid = lastid + i
-        if j<count and count!=0:
-            if i+1 == asc_trans[j].date.month:
-                month = calendar.month_name[asc_trans[j].date.month]
-                transid = asc_trans[j].transactionid
-                usage = asc_trans[j].usage
-                reading = asc_trans[j].meterReading
-                j+=1
+        if i<12:
+            # print(str(i)+" "+str(j+1))
+            if j<count and count != 0:
+                if i == asc_trans[j].date.month-1:
+                    transid = asc_trans[j].transactionid
+                    usage = asc_trans[j].usage
+                    reading = asc_trans[j].meterReading
+                    print(reading)
+                    j+=1
+        else:
+            if dec:
+                transid = dec.transactionid
+                usage = dec.usage
+                reading = dec.meterReading
+
         m = meterreaderclass(transid, month, usage, reading)
         table.append(m)
+        
     if request.method=="POST":
         readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1],0)
-            readings.append(r)
+            readings.append(int(r))
+            if r!=0:
+                try:
+                    Transactions.objects.get(acctID_id=id, transType = 'Billing',date__year=year,date__month=i+1)
+                except ObjectDoesNotExist:
+                    t = Transactions()
+                    t.acctID = id
+                    t.transType = 'Billing'
+                    t.date = date.today()
+                    t.meterReading = r
+
+                else:
+                    t = Transactions.objects.get(acctID_id=id, transType = 'Billing',date__year=year,date__month=i+1)
         print(readings)
     context = {
         'consumer':consumer,
