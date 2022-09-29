@@ -30,10 +30,10 @@ def porter(request):
     balance()
     return render(request, "landing.html")
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -52,7 +52,7 @@ def signin(request):
         else:
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -106,7 +106,7 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
