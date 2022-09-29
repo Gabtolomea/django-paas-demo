@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
-    password = models.BinaryField(max_length=450, blank=True)  
+    password = models.BinaryField(max_length=450, blank=True, editable = True)  
     username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
