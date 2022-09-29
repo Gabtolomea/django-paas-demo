@@ -124,18 +124,7 @@
 								
 								<div class="input-group mb-2">
 									<label class="input-group-text" for="inputGroupSelect01">Authorized Approver</label>
-                                    <select name="authorizedapprover" class="form-select" id="id_authorizedapprover">
-                                        <option value="sys.0">Approver for Inbound Application</option>
-                                      
-                                        <option value="1">Non Approver</option>
-                                      
-                                        <option value="2">Supervisor</option>
-                                      
-                                        <option value="3">Engineer's Office</option>
-                                      
-                                        <option value="4">Mayor's Office</option>
-                                      
-                                      </select>
+                                    {{form.authorizedapprover}}
 							</div>
 							<div class="profile mb-3">
 								{% if form.errors %}

@@ -109,7 +109,11 @@ def user_creation(request):
 
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username = id)
+    form = sysup(instance=sys)
+    if form.is_valid():
+        form.save()
     context={
+        'form':form,
         'sys':sys
             }
     return render(request, 'user_edit.html',context)
