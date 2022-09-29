@@ -338,6 +338,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id = id, year=date.today().year)
 
 
+<<<<<<< HEAD
 
 def sysuser(request):
     table = []
@@ -377,17 +378,16 @@ def sysuser(request):
         
     return render(request, 'sysuser.html', context)
 
+=======
+>>>>>>> ryla
 def userupdate(request, id):
-    user = ConsumerInfo.objects.get(pk=id)
+    user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
     if request.method == 'POST':
-        con_id = ConsumerInfo.objects.get(pk=id)
-        con_id.consumer_id = not con_id.consumer_id
-        con_id.save()
-        form = Userinfoupdate(request.POST)
+        form = Userinfoupdate(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('consumer_list/')
+            return redirect('consumer_list')
     context = {
         'form': form,
         'user': user
