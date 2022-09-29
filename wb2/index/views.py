@@ -350,70 +350,21 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
+
 def userupdate(request, id):
-
-    # class updateclass():
-    #     def __init__(self, firstname, middlename, lastname, mobilenum, email, birthdate, sex, sitio, homeaddress, picture, meternumber, initialmeterreading, installation_address, rateid):
-    #         self.firstname = firstname
-    #         self.middlename = middlename
-    #         self.lastname = lastname
-    #         self.mobilenum = mobilenum
-    #         self.email = email
-    #         self.birthdate = birthdate
-    #         self.sex = sex
-    #         self.sitio = sitio
-    #         self.homeaddress = homeaddress
-    #         self.picture = picture
-    #         self.meternumber = meternumber
-    #         self.initialmeterreading = initialmeterreading
-    #         self.installation_address = installation_address
-    #         self.rateid = rateid
-
-    #     def id(self):
-    #         return self.firstname
-    # last_info = updateclass(firstname, middlename, lastname, mobilenum, email, birthdate, sex,
-    #                         sitio, homeaddress, picture, meternumber, initialmeterreading, installation_address, rateid)
+    user = ConsumerInfo.objects.get(pk=id)
     form = Userinfoupdate()
     if request.method == 'POST':
-        con_id = ConsumerInfo.objects.get(con_id=id)
+        con_id = ConsumerInfo.objects.get(pk=id)
         con_id.consumer_id = not con_id.consumer_id
         con_id.save()
-        print(request.Post)
         form = Userinfoupdate(request.POST)
-        firstname = request.POST['firstname']
-        middlename = request.POST['middlename']
-        lastname = request.POST['lastname']
-        mobilenum = request.POST['mobilenum']
-        email = request.POST['email']
-        birthdate = request.POST['birthdate']
-        sex = request.POST['sex']
-        sitio = request.POST['sitio']
-        homeaddress = request.POST['homeaddress']
-        picture = request.POST['picture']
-        meternumber = request.POST['meternumber']
-        initialmeterreading = request.POST['initialmeterreading']
-        installation_address = request.POST['installation']
-        rateid = request.POST['rateid']
         if form.is_valid():
-            con = ConsumerInfo
-            con.firstname = firstname
-            con.middlename = middlename
-            con.lastname = lastname
-            con.mobilenum = mobilenum
-            con.email = email
-            con.birthdate = birthdate
-            con.sex = sex
-            con.sitio = sitio
-            con.homeaddress = homeaddress
-            con.picture = picture
-            con.meternumber = meternumber
-            con.initialmeterreading = initialmeterreading
-            con.installation_address = installation_address
-            con.rateid = rateid
             return redirect('userupdate', id=id)
     context = {
         'form': form,
-        'errors': form.errors
+        'user': user
+
     }
 
     return render(request, 'userupdate.html', context)
