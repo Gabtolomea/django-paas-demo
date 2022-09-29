@@ -16,7 +16,7 @@
     {{form.initialmeterreading}}
     <label>Rate Type</label>
     {{form.rateid}}
-    
+    <input type="text" name="homeaddress" value="{{user.rateid}}" />
     <label>Mobile Number</label>
     <input type="text" name="mobilenum" value="{{user.mobilenum}}" />
     <label>Email</label>
@@ -30,5 +30,10 @@
     <label>Profile Picture</label>
     {{form.picture}}
 
+    <br>
+    <br>
+    <br>
+    <br>
+    <button type="submit" id="footer-subscription-button" class="btn submit" >Submit</button>
 
 </form>
