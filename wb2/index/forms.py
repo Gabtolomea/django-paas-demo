@@ -56,7 +56,7 @@ class sysup(ModelForm):
         ("4", "Mayor's Office"),
     )
     authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
-
+    # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
     class Meta:
         model = SystemUsers
         fields =(  
