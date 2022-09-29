@@ -350,7 +350,6 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
-
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(pk=id)
     form = Userinfoupdate(instance=user)
@@ -358,10 +357,10 @@ def userupdate(request, id):
         con_id = ConsumerInfo.objects.get(pk=id)
         con_id.consumer_id = not con_id.consumer_id
         con_id.save()
-        form = Userinfoupdate(request.POST)
+        form = Userinfoupdate(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('consumer_list/')
+            return redirect('consumer_list')
     context = {
         'form': form,
         'user': user
