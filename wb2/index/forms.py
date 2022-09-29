@@ -87,7 +87,26 @@ class ConsumerCreationForm(ModelForm):
             'sitio',
             'picture'
         )
-
+class Userinfoupdate(ModelForm):
+    
+    class Meta():
+        model = ConsumerInfo
+        fields = (
+            'meternumber',
+            'firstname',
+            'lastname',
+            'middlename',
+            'homeaddress',
+            'installation_address',
+            'initialmeterreading',
+            'rateid',
+            'mobilenum',
+            'email',
+            'birthdate',
+            'sex',
+            'sitio',
+            'picture'
+        )
 
 # class RatesForm(ModelForm):
 #     class Meta:

@@ -1,6 +1,7 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
+{% block script %}
 
 {% block style %}
 <style>
@@ -48,40 +49,157 @@
 		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 
-				<tr>
-					<th style="min-width: 100px;">Transaction ID</th>
-					<th style="min-width: 100px;">Date</th>
-					<th style="min-width: 100px;">Previous</th>
-					<th style="min-width: 100px;">Current Reading</th>
-					<th style="min-width: 110px;">Cubic Meter Used</th>
-					<th style="min-width: 110px;">Rate ID</th>
-					<th style="min-width: 110px;">Amount Billed</th>
-					<th style="min-width: 100px;">Payment</th>
-					<th style="min-width: 100px;">Processed By</th>
-					<th style="min-width: 110px;">OR Number</th>
-					<th style="min-width: 100px;">Current Balance</th>
-				</tr>
-			</thead>
+					<tbody class="wb_tbody">
+						<tr>
+							<td>{{u.consumer_id}}</td>
+							<td>{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+							<td>{{u.meternumber}}</td>
+							<td>{{bal}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row w-100 m-auto">
+			<div class="col-lg-6 col-md-6 col-sm-6">
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
+				<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy">Get a Copy
+				</button>
+			</div>
+		</div>
+		<h1 class="mb-3 text-center">Account Ledger</h1>
+		<div class="container-fluid p-0">
+			<div class="table-responsive">
+				<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
+					<thead class="wb_thead">
 
-			<tbody class="wb_tbody">
-				{% for t in table reversed %}
-				<tr>
-					<td class="{{t.style}}">{{t.transid}}</td>
-					<td class="{{t.style}}">{{t.date}}</td>
-					<td class="{{t.style}}">{{t.prev}}</td>
-					<td class="{{t.style}}">{{t.reading}}</td>
-					<td class="{{t.style}}">{{t.usage}}</td>
-					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{{t.bill}}</td>
-					<td class="{{t.style}}">{{t.payment}}</td>
-					<td class="{{t.style}}">{{t.pb}}</td>
-					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">{{t.bal}}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-</div>
+						<tr>
+							<th style="min-width: 100px;">Transaction ID</th>
+							<th style="min-width: 100px;">Date</th>
+							<th style="min-width: 100px;">Previous</th>
+							<th style="min-width: 100px;">Current Reading</th>
+							<th style="min-width: 110px;">Cubic Meter Used</th>
+							<th style="min-width: 110px;">Rate ID</th>
+							<th style="min-width: 110px;">Amount Billed</th>
+							<th style="min-width: 100px;">Payment</th>
+							<th style="min-width: 100px;">Processed By</th>
+							<th style="min-width: 110px;">OR Number</th>
+							<th style="min-width: 100px;">Current Balance</th>
+						</tr>
+					</thead>
+
+					<tbody class="wb_tbody">
+						{% for t in table reversed %}
+						<tr>
+							<td class="{{t.style}}">{{t.transid}}</td>
+							<td class="{{t.style}}">{{t.date}}</td>
+							<td class="{{t.style}}">{{t.prev}}</td>
+							<td class="{{t.style}}">{{t.reading}}</td>
+							<td class="{{t.style}}">{{t.usage}}</td>
+							<td class="{{t.style}}">{{t.rateid}}</td>
+							<td class="{{t.style}}">{{t.bill}}</td>
+							<td class="{{t.style}}">{{t.payment}}</td>
+							<td class="{{t.style}}">{{t.pb}}</td>
+							<td class="{{t.style}}">{{t.ornum}}</td>
+							<td class="{{t.style}}">{{t.bal}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table id="tabs">
+			</div>
+		</div>
+	</div id="elementH">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+
+	<script type="text/javascript">
+		
+		function getpdf(){
+			var doc = new jsPDF('landscape', 'pt', 'legal');
+                                var htmlstring = '';
+                                var tempVarToCheckPageHeight = 0;
+                                var pageHeight = 0;
+ 
+                                pageHeight = doc.internal.pageSize.height;
+                                specialElementHandlers = {
+                                    // element with id of "bypass" - jQuery style selector
+                                    '#bypassme': function (element, renderer) {
+                                        // true = "handled elsewhere, bypass text extraction"
+                                        return true
+                                    }
+                                };
+                                margins = {
+                                    top: 150,
+                                    bottom: 60,
+                                    left: 40,
+                                    right: 40,
+                                    width: 600
+                                };
+                                const formatter = new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'Php',
+                                    minimumFractionDigits: 2
+                                })
+ 
+                                var y = 20;
+                                var x = 40;
+								doc.text(420, y=y+30,"Copy of Account Ledger ");
+                                doc.setLineWidth(2);
+                                doc.setFontSize(11);
+                                doc.autoTable({
+                                    html: '#dtBasicExample',
+                                    theme: 'striped',
+                                    startY: y = y + 20,
+                                })
+								y=y+40
+                                doc.setLineWidth(2);
+                                doc.setFontSize(14);
+                                var tables = document.getElementsByClassName("table-sm")
+                                for(i=0;i<13;i++){
+                                    
+                                    doc.autoTable({
+                                        html: tables[i],
+                                        startY: y=y+15,
+                                        theme: 'striped',
+                                        pageBreak: 'auto',
+                                        columnStyles: {
+                                            0: {
+                                                cellWidth: 75,
+                                            },
+                                            1: {
+                                                cellWidth: 80,
+                                            },
+                                            4: {
+                                                cellWidth: 70,
+                                            }
+                                        },
+                                        styles: {
+                                            minCellHeight: 30
+ 
+                                        },
+                                    })
+                                    y = doc.lastAutoTable.finalY
+                                    console.log(y);
+                                    if(y>600){
+                                        doc.addPage()
+                                        y=20
+                                    }
+                                }
+								
+								console.log("testing")
+                                doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+                            }
+		
+
+
+
+
+	</script>
+</body>
+
 
 {% endblock ledger %}
