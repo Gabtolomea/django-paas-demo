@@ -351,12 +351,9 @@ def stopmeter(request, id):
 
 
 def userupdate(request, id):
-    user = ConsumerInfo.objects.get(pk=id)
+    user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
     if request.method == 'POST':
-        con_id = ConsumerInfo.objects.get(pk=id)
-        con_id.consumer_id = not con_id.consumer_id
-        con_id.save()
         form = Userinfoupdate(request.POST, instance=user)
         if form.is_valid():
             form.save()
