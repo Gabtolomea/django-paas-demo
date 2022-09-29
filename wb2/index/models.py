@@ -1,10 +1,5 @@
-from calendar import c
+
 from datetime import date
-import email
-from pyexpat import model
-from tkinter import CASCADE
-from turtle import setx
-from urllib import request
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
@@ -20,17 +15,47 @@ class SystemUsers(AbstractUser):
     mobilenum = models.CharField(max_length=20, blank=True)
     profilepic = models.ImageField(blank=True, null=True)
     authorizedapprover = models.CharField(max_length=20)
+    def __str__(self) -> str:
+        return self.username
 class Rates(models.Model):
-    rateid = models.CharField(primary_key=True, max_length=20)
+    rate_id = models.CharField(primary_key=True, max_length=20)
+    connectionType = models.CharField(max_length=20, blank=True, null=True)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
     ratePenalty = models.IntegerField()
     ratePenaltyFreq = models.IntegerField()
+    date_added = models.DateField(auto_now_add=True)
+    date_mod = models.DateField(auto_now=True)
+    added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self) -> str:
+        return self.connectionType
+
+class Penalty(models.Model):
+    penalty_id = models.CharField(primary_key=True, max_length=20)
+    penalty_type = models.CharField(max_length=20)
+    penalty_rate = models.IntegerField()
+    penalty_info = models.TextField(max_length=300, blank=True, null=True)
+    date_added = models.DateField(auto_now_add=True)
+    added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self) -> str:
+        return self.penalty_type
+
+class Discount(models.Model):
+    discount_id = models.CharField(primary_key=True, max_length=20)
+    discount_rate = models.IntegerField()
+    date_added = models.DateField(auto_now_add=True)
+    added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
 class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
+    def __str__(self) -> str:
+        return self.barangay
 class BarangayRecord(models.Model):
-    barangay_val = models.CharField(primary_key=True, max_length=10,)
+    barangayrec_id = models.CharField(max_length=20)
+    barangaycode = models.ForeignKey(Barangays,on_delete=models.SET_NULL, null=True)
     year = models.IntegerField()
     total_due_jan = models.IntegerField()
     total_paid_jan = models.IntegerField()
@@ -68,6 +93,9 @@ class BarangayRecord(models.Model):
     total_due_dec = models.IntegerField()
     total_paid_dec = models.IntegerField()
     total_usage_dec = models.IntegerField()
+
+
+#Consumer Creation
 class ConsumerInfo(models.Model):
     consumer_id = models.IntegerField(primary_key=True)
     meternumber = models.CharField(max_length=20, blank=True, null=True)
@@ -86,9 +114,9 @@ class ConsumerInfo(models.Model):
     email = models.EmailField(max_length=100,null=True, blank=True)
     birthdate = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=6,null=True, blank=True)
-    sitio = models.EmailField(max_length=100,null=True, blank=True)
+    sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
-    # current_bal = models.IntegerField()
+    current_bal = models.IntegerField(default=0)
 class Penalties(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty = models.IntegerField()
@@ -112,7 +140,6 @@ class Transactions(models.Model):
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
-
 
 class usage_record(models.Model):
     #generate date
