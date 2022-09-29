@@ -1,4 +1,5 @@
-{%load static%}      
+
+        
 <!DOCTYPE html>
 <html lang="en">
 
@@ -61,70 +62,133 @@
 				<div class="container">
 					<div class=" shadow wrapper m-4">
 						<div class="form-header">
-							<h1>User Update</h1>
+							<h1>Registration Form</h1>
 						</div>
 						<div class="row form-group w-100 m-auto">
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-								<label for="" class="">Firstname</label>
-                           <input type="text" name="firstname" class="form-control" id="Fname" aria-describedby="fname"  value="{{ sys.first_name }}" placeholder="Firstname" >
+								{% if form.errors %}
+									{% for error in form.first_name.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">First Name*</label>
+								{{form.first_name}}
 							</div>
 
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                <label for="">Middlename</label>
-                                <input type="text" name="middlename" class="form-control" id="Mname" aria-describedby="mname"  value="{{ sys.mid_name }}" placeholder="Middlename" >
+								{% if form.errors %}
+									{% for error in form.mid_name.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Middle Name*</label>
+								{{form.mid_name}}
 							</div>
 
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                <label for="">Lastname</label>
-                                <input type="text" name="lastname" class="form-control" id="lname" aria-describedby="lname"  value="{{ sys.last_name}}" placeholder="Lastname" >
+								{% if form.errors %}
+									{% for error in form.last_name.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Last Name*</label>
+								{{form.last_name}}
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-								<label for="">Mobilenum</label>
-                                <input type="text" name="mobilenum" class="form-control" id="mnum" aria-describedby="mnum"  value="{{ sys.mobilenum}}" placeholder="Mobile Number" >
+								{% if form.errors %}
+									{% for error in form.mobilenum.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Mobile Number*</label>
+								{{form.mobilenum}}
 							</div>
 								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-									<label for="">Email</label>
-                                <input type="text" name="email" class="form-control" id="email" aria-describedby="email"  value="{{ sys.email}}" placeholder="Email Address" >
+									{% if form.errors %}
+										{% for error in form.email.errors %}
+										<div class="alert alert-danger">
+											<strong>{{ error|escape }}</strong>
+										</div>
+										{% endfor %}
+									{% endif %}
+									<label for="">Email*</label>
+									{{form.email}}
 								</div>
 								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                    <label for="">User ID</label>
-                                    <input type="text" name="uid" class="form-control" id="uid" aria-describedby="uid"  value="{{ sys.username }}" placeholder="UserID" >
+									{% if form.errors %}
+										{% for error in form.username.errors %}
+										<div class="alert alert-danger">
+											<strong>{{ error|escape }}</strong>
+										</div>
+										{% endfor %}
+									{% endif %}
+									<label for="">User ID*</label>
+									{{form.username}}
 								</div>
 						</div>
 
 						<div class="row form-group w-100 m-auto">
 							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-								<label for="">Password</label>
-                                <input type="password" name="PASS" class="form-control" id="email" aria-describedby="email"  value="{{ sys.password }}" placeholder="" >
+								{% if form.errors %}
+									{% for error in form.password.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Password*</label>
+								{{form.password}}
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-								<label for="">Confirm Password</label>
-                                <input type="password" name="PASS" class="form-control" id="email" aria-describedby="email"  value="{{ sys.password }}" placeholder="" >
-
+								{% if form.errors %}
+									{% for error in form.password.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Confirm Password*</label>
+								{{form.password}}
 							</div>
 						</div>
 
 						<div class="row m-auto w-100">
 							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 								<h3>Type of User</h3>
-                                <input type="checkbox" id="is_admin" name="admin" value="{{ sys.is_admin}}">
-                                <label for="admin">ADMIN</label><br>
-                                <input type="checkbox" id="is_teller" name="teller" value="{{ sys.is_teller }}">
-                                <label for="admin">TELLER</label><br>                             
-                                <input type="checkbox" id="is_supervisor" name="supervisor" value="{{ sys.is_supervisor }}">
-                                <label for="admin">SUPERVISOR</label><br>                             
-                                <input type="checkbox" id="is_manager" name="manager" value="{{ sys.is_manager }}">
-                                <label for="admin">MANAGER</label><br> 
-                                <input type="checkbox" id="is_reader" name="reader" value="{{ sys.is_reader}}">
-                                <label for="admin">METER READER</label><br>
+								{{form.is_admin}}
+								<label for="id_is_admin">ADMIN</label><br>
+								{{form.is_teller}}
+								<label for="id_is_teller">TELLER</label><br>
+								{{form.is_supervisor}}
+								<label for="id_is_supervisor">SUPERVISOR</label><br>
+								{{form.is_manager}}
+								<label for="id_is_manager">MANAGER</label><br>
+								{{form.is_reader}}
+								<label for="id_is_reader">METER READER</label><br>
 							</div>
 					    </div>
 						<div class="row w-100 m-auto mb-3">
 							<div class="col-lg-12 col-md-12 col-sm-12 mb-4">
 								
+								{% if form.errors %}
+									{% for error in form.authorizedapprover.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
 								<div class="input-group mb-2">
 									<label class="input-group-text" for="inputGroupSelect01">Authorized Approver</label>
-                                    {{form.authorizedapprover}}
+									{{form.authorizedapprover}}
+								  </div>
 							</div>
 							<div class="profile mb-3">
 								{% if form.errors %}
@@ -138,7 +202,7 @@
 								{{form.profilepic}}
 							</div>
 						</div>
-						<button type="submit" id="footer-subscription-button" class="btn submit" >Update</button>
+						<button type="submit" id="footer-subscription-button" class="btn submit" >Submit</button>
 						
 
 					</div>

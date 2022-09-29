@@ -24,6 +24,7 @@ from .ledger import *
 import math
 from .tokens import generate_token
 
+
 def porter(request):
     # porter_in()
     # porter_out(sorted_tables)
@@ -31,21 +32,24 @@ def porter(request):
     # balance()
     return render(request, "landing.html")
 
+
 @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
+
+
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-        pkval = SystemUsers.objects.filter(username = u)
+        pkval = SystemUsers.objects.filter(username=u)
         passAscii = password.encode("ascii")
         p = base64.b64encode(passAscii)
         if pkval.exists():
-            user = SystemUsers.objects.get(username = u)
+            user = SystemUsers.objects.get(username=u)
             if user.password == p:
-                login(request,user)
+                login(request, user)
                 messages.success(request, 'Logged in')
                 return redirect('bills_list')
             else:
@@ -53,13 +57,19 @@ def signin(request):
         else:
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
+
+
 @login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
+
+
 def home(request):
     return render(request, 'home.html')
+
+
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -102,31 +112,24 @@ def user_creation(request):
             user.save()
             return redirect('dashboard')
     context = {
-        'form':form,
-        'errors':form.errors,
+        'form': form,
+        'errors': form.errors,
     }
     return render(request, 'registration.html', context)
 
-def user_edit(request, id):
-    sys = SystemUsers.objects.get(username = id)
-    form = sysup(instance=sys)
-    if form.is_valid():
-        form.save()
-    context={
-        'form':form,
-        'sys':sys
-            }
-    return render(request, 'user_edit.html',context)
 
 @login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
-        'user':user
+        'user': user
     }
-    return render(request, 'dashboard.html',context)
+    return render(request, 'dashboard.html', context)
+
+
 def ledger(request, id):
     table = []
+
     class ledgerclass():
         def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style):
             self.transid = transid
@@ -141,11 +144,12 @@ def ledger(request, id):
             self.bal = bal
             self.rateid = rateid
             self.style = style
+
         def id(self):
             return self.transid
-    if ConsumerInfo.objects.filter(pk = id).exists():
-        u = ConsumerInfo.objects.get(pk = id)
-        trans = Transactions.objects.filter(acctID = u.consumer_id)
+    if ConsumerInfo.objects.filter(pk=id).exists():
+        u = ConsumerInfo.objects.get(pk=id)
+        trans = Transactions.objects.filter(acctID=u.consumer_id)
         asc_trans = trans.order_by('date')
         bal = 0
         for i in range(len(asc_trans)):
@@ -160,7 +164,7 @@ def ledger(request, id):
                 current = cur
                 style = ''
                 pb = ''
-                bal+=bill
+                bal += bill
             elif asc_trans[i].transType == 'Payment':
                 usage = ''
                 bill = ''
@@ -169,13 +173,14 @@ def ledger(request, id):
                 cur = ''
                 style = 'text-success table-success'
                 pb = asc_trans[i].processedBy
-                bal=bal-asc_trans[i].payment
+                bal = bal-asc_trans[i].payment
             date = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
+            new_row = ledgerclass(
+                transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
                 if asc_trans[i+1].transType == 'Payment':
@@ -185,18 +190,19 @@ def ledger(request, id):
             prev = p
 
     context = {
-        'u':u,
-        'table':table,
-        'bal':math.ceil(bal*100)/100
+        'u': u,
+        'table': table,
+        'bal': math.ceil(bal*100)/100
     }
     return render(request, 'ledger.html', context)
-    
-def forgetpassword (request):
+
+
+def forgetpassword(request):
 
     if request.method == "POST":
         u_email = request.POST['email']
-        if  SystemUsers.objects.filter(email = u_email).exists():
-            user = SystemUsers.objects.get(email = u_email)
+        if SystemUsers.objects.filter(email=u_email).exists():
+            user = SystemUsers.objects.get(email=u_email)
             user.is_active = False
             user.save()
 
@@ -204,29 +210,28 @@ def forgetpassword (request):
             email_subject = "Confirm your Email"
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = generate_token.make_token(user)
-            message = render_to_string('email_verif.html',{
-                    'name': user.first_name,
-                    'domain': current_site.domain,
-                    'uid': uid,
-                    'token': token
-                })
+            message = render_to_string('email_verif.html', {
+                'name': user.first_name,
+                'domain': current_site.domain,
+                'uid': uid,
+                'token': token
+            })
             print(f"http://{current_site.domain}/activate/{uid}/{token}")
             email = EmailMessage(
-                    email_subject,
-                    message,
-                    settings.EMAIL_HOST_USER,
-                    [user.email],
-                )
+                email_subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [user.email],
+            )
             email.fail_silently = True
             email.send()
-            messages.success(request, 'Please verify your account by clicking the link in your email: '+str(u_email))
-                
+            messages.success(
+                request, 'Please verify your account by clicking the link in your email: '+str(u_email))
+
             return redirect('login')
-            
-        context = {'email':email,'errors': errors}
-    return render(request,'forgetpassword.html')
 
-
+        context = {'email': email, 'errors': errors}
+    return render(request, 'forgetpassword.html')
 
 
 def password_reset_form(request):
@@ -235,26 +240,29 @@ def password_reset_form(request):
     #     print(request.POST)
     #     form = SystemUserForm(request.POST)
 
-    return render(request,'password_reset_form')
+    return render(request, 'password_reset_form')
 
 
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
         'meterred': meterred,
-        'year':date.today().year
+        'year': date.today().year
     }
-    return render(request,'meterreading.html', context)
+    return render(request, 'meterreading.html', context)
+
 
 def inputreading(request, id, year):
     table = []
+
     class meterreaderclass():
         def __init__(self, month, usage, reading):
             self.month = month
             self.usage = usage
             self.reading = reading
-    consumer = ConsumerInfo.objects.get(consumer_id = id)
-    trans = Transactions.objects.filter(acctID_id = id,transType = 'Billing', date__year = year)
+    consumer = ConsumerInfo.objects.get(consumer_id=id)
+    trans = Transactions.objects.filter(
+        acctID_id=id, transType='Billing', date__year=year)
     asc_trans = trans.order_by('date')
     count = len(asc_trans)
     j = 0
@@ -262,46 +270,45 @@ def inputreading(request, id, year):
         month = calendar.month_name[i+1]
         usage = 0
         reading = 0
-        if i<=count and count!=0:
-            if i+1 >= asc_trans[0].date.month and j<count:
+        if i <= count and count != 0:
+            if i+1 >= asc_trans[0].date.month and j < count:
                 if i+1 == asc_trans[j].date.month:
                     month = calendar.month_name[asc_trans[j].date.month]
                     usage = asc_trans[j].usage
                     reading = asc_trans[j].meterReading
-                j+=1
+                j += 1
         m = meterreaderclass(month, usage, reading)
         table.append(m)
     context = {
-        'consumer':consumer,
-        'table':table,
+        'consumer': consumer,
+        'table': table,
     }
-    return render(request,'input-meter-reading.html', context)
+    return render(request, 'input-meter-reading.html', context)
 
 
 def bills_list(request):
     bills_list = ConsumerInfo.objects.all()
-    return render(request,'billslist.html',{'bills_list': bills_list})
+    return render(request, 'billslist.html', {'bills_list': bills_list})
 
 
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
-    return render(request, 'conlist.html',{'consumer_list': consumer_list})
+    return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
 
-
-def consumercreation (request):
+def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
         print(request.POST)
         form = ConsumerCreationForm(request.POST)
-        firstname  = request.POST['firstname']
+        firstname = request.POST['firstname']
         middlename = request.POST['middlename']
         lastname = request.POST['lastname']
         mobilenum = request.POST['mobilenum']
         email = request.POST['email']
         birthdate = request.POST['birthdate']
         sex = request.POST['sex']
-        sitio = request.POST['sitio'] 
+        sitio = request.POST['sitio']
         homeaddress = request.POST['homeaddress']
         picture = request.POST['picture']
         meternumber = request.POST['meternumber']
@@ -319,29 +326,29 @@ def consumercreation (request):
             cr.sex = sex
             cr.sitio = sitio
             cr.homeaddress = homeaddress
-            cr.picture = picture 
+            cr.picture = picture
             cr.meternumber = meternumber
             cr.initialmeterreading = initialmeterreading
             cr.installation_address = installation_address
             cr.rateid = rateid
     context = {
-        'form':form,
-        'errors':form.errors,
+        'form': form,
+        'errors': form.errors,
     }
-    return render(request, 'consumercreation.html',context)
+    return render(request, 'consumercreation.html', context)
+
 
 def stopmeter(request, id):
     if request.method == 'POST':
-        consumer = ConsumerInfo.objects.get(consumer_id = id)
+        consumer = ConsumerInfo.objects.get(consumer_id=id)
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
-    return redirect('inputreading', id = id, year=date.today().year)
+    return redirect('inputreading', id=id, year=date.today().year)
 
-
-<<<<<<< HEAD
 
 def sysuser(request):
     table = []
+
     class sysuserclass():
         def __init__(self, first_name, last_name, mid_name, username, email, role):
             self.email = email
@@ -368,18 +375,15 @@ def sysuser(request):
             role = role + "Manager "
         if s.is_reader:
             role = role + "Reader "
-        
-        su = sysuserclass(firstname, lastname, midname, username,email, role)
+
+        su = sysuserclass(firstname, lastname, midname, username, email, role)
         table.append(su)
     context = {
-        'table':table
+        'table': table
     }
-    
-        
     return render(request, 'sysuser.html', context)
 
-=======
->>>>>>> ryla
+
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -395,3 +399,18 @@ def userupdate(request, id):
     }
 
     return render(request, 'userupdate.html', context)
+
+
+def user_edit(request, id):
+    sys = SystemUsers.objects.get(username=id)
+    form = sysup(instance=sys)
+    if request.method == 'POST':
+        form = sysup(request.POST, instance=sys)
+        if form.is_valid():
+            form.save()
+        return redirect('sysuser')
+    context = {
+        'form': form,
+        'sys':sys
+    }
+    return render(request, 'user_edit.html', context)

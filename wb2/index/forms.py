@@ -56,9 +56,24 @@ class sysup(ModelForm):
         ("4", "Mayor's Office"),
     )
     authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
+
     class Meta:
         model = SystemUsers
-        fields =('authorizedapprover',)
+        fields =(  
+        'password',
+        'first_name',
+        'last_name',
+        'email',
+        'username',
+        'is_admin',
+        'is_teller',
+        'is_supervisor',
+        'is_manager',
+        'is_reader',
+        'mid_name',
+        'mobilenum',
+        'profilepic',
+        'authorizedapprover',)
 
 
 class ConsumerCreationForm(ModelForm):
