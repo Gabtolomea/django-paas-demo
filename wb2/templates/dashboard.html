@@ -13,7 +13,7 @@
 <body>
     <header>
      {% for message in messages %}
-        <div class="alert alert-{% if message.tags == "erro %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible>
+        <div class="alert alert-{% if message.tags == "erro" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
           <strong>{{message.tags|title}}!</strong> {{message}}
             <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
         </div>
@@ -84,13 +84,15 @@
             <li>
                 <a href="/" style="color: white; text-decoration: none">
 
+
+                <a href="/" style="color: white; text-decoration: none">
             <li class="side_nav_li">
                 <a href="/" style="color: white; text-decoration: none">
 
                   <i class="fa-solid fa-user fa-2x"></i>
                     <span class="sidenav_text">User Accounts</span>
-                </a>
-            </li>
+
+            </li></a>
             <li class="side_nav_li">
                 <a href="/" style="color: white; text-decoration: none" >
                     <i class="fa-solid fa-newspaper fa-2x"></i>
