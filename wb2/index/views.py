@@ -146,14 +146,16 @@ def ledger(request, id):
         trans = Transactions.objects.filter(acctID=u.consumer_id)
         asc_trans = trans.order_by('date')
         bal = 0
+        p = 0
+        current = 0
+        print(asc_trans)
         for i in range(len(asc_trans)):
-            p = 0
             if i == 0:
                 prev = 0
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
-                rate = asc_trans[i].ratescode
+                connectionType = Rates.objects.get(rate_id=asc_trans[i].ratescode)
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -162,7 +164,7 @@ def ledger(request, id):
             elif asc_trans[i].transType == 'Payment':
                 usage = ''
                 bill = ''
-                rate = ''
+                connectionType = ''
                 prev = ''
                 cur = ''
                 style = 'text-success table-success'
@@ -173,8 +175,7 @@ def ledger(request, id):
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(
-                transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, rate, style)
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
                 if asc_trans[i+1].transType == 'Payment':
@@ -250,10 +251,11 @@ def inputreading(request, id, year):
     table = []
     years = []
     class meterreaderclass():
-        def __init__(self, transid , month, usage, reading):
+        def __init__(self, transid , month, usage, prev, reading):
             self.transid = transid
             self.month = month
             self.usage = usage
+            self.prev = prev
             self.reading = reading
     consumer = ConsumerInfo.objects.get(consumer_id = id)
     lastid = Transactions.objects.latest('transactionid').transactionid
@@ -278,11 +280,14 @@ def inputreading(request, id, year):
         years.remove(int(year))
     # print(asc_trans)
     # print(count)
+    lastreading = 0
     for i in range(1,13):
         month = calendar.month_name[i]
-        transid = 0
+        lastid+=1
+        transid = lastid
         usage = 0
-        reading = 0
+        prev = lastreading
+        reading = prev
         if i<12:
             # print(str(i)+" "+str(j+1))
             if j<count and count != 0:
@@ -290,15 +295,17 @@ def inputreading(request, id, year):
                     transid = asc_trans[j].transactionid
                     usage = asc_trans[j].usage
                     reading = asc_trans[j].meterReading
-                    print(reading)
+                    prev = asc_trans[j].meterReading-usage
+                    lastreading = reading
                     j+=1
         else:
             if dec:
                 transid = dec.transactionid
                 usage = dec.usage
                 reading = dec.meterReading
-
-        m = meterreaderclass(transid, month, usage, reading)
+                prev = asc_trans[j].meterReading-usage
+        print(str(prev)+" "+str(reading))
+        m = meterreaderclass(transid, month, usage, prev, reading)
         table.append(m)
         
     if request.method=="POST":
@@ -340,7 +347,6 @@ def consumer_list(request):
 
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
-
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
 
