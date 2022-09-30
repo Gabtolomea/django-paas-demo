@@ -40,11 +40,11 @@
         </div>
         <div class="row " style="background-color: black;  ">
             <div class=" col-lg-12 col-md-12 col-sm-12 col-6  ml-2" style="text-align: center;  color: white; padding: 8px; ">
-                <a href="#" style="color: white ; margin-right: 5%; text-decoration: none;">Home</a>
-                <a href="#" style="color: white ; margin-right: 5%; text-decoration: none;">About</a>
-                <a href="#" style="color: white ; margin-right: 5%; text-decoration: none;">Services</a>
-                <a href="#" style="color: white ; margin-right: 5%; text-decoration: none;">Contacts</a>
-                <a href="#" style="color: white ; margin-right: 5%; text-decoration: none;">Register</a>
+                <a href="{% url 'about' %}" style="color: white ; margin-right: 5%; text-decoration: none;">Home</a>
+                <a href="{% url 'about' %}" style="color: white ; margin-right: 5%; text-decoration: none;">About</a>
+                <a href="{% url 'about' %}" style="color: white ; margin-right: 5%; text-decoration: none;">Services</a>
+                <a href="{% url 'about' %}" style="color: white ; margin-right: 5%; text-decoration: none;">Contacts</a>
+                <a href="{% url 'about' %}" style="color: white ; margin-right: 5%; text-decoration: none;">Register</a>
             </div>
     </header>
     <div class="row" style="background-color: #E6ECEB;">
@@ -54,7 +54,7 @@
               <h4 style="color:black; margin-top: -103px; margin-bottom: 120px;">"Water is life, and clean water</h4>
               <h4 style="color:black; margin-top: -118px; margin-bottom: 150px;">means health"</h4>
 
-              <button type="button" class="btn btn-primary" >System User's Login</button>
+              <a href="{%url 'login'%}" type="button" class="btn btn-primary" >System User's Login</a>
               <button type="button" class="btn btn-dark " style="margin-left: 10%;">Consumer's Login</button>
 
               <img src="images/billing.svg.svg" style="width: 500px; height: 500px; margin-left:1150px; margin-top: -550px;">

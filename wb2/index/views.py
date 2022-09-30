@@ -469,7 +469,6 @@ def user_edit(request, id):
     if request.method == 'POST':
         form = sysup(request.POST, instance=sys)
         if form.is_valid():
-            print("Jazfer Gwapo")
             form.save()
         return redirect('sysuser')
     context = {
@@ -485,3 +484,6 @@ def deleteUser(request, id):
         sys.delete()
         return redirect('sysuser')
     return render(request, 'delete.html',)
+
+def about(request):
+    return render(request, 'about.html')

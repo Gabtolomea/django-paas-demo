@@ -55,7 +55,6 @@ class sysup(ModelForm):
         ("3", "Engineer's Office"),
         ("4", "Mayor's Office"),
     )
-    profilepic = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))

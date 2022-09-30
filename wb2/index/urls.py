@@ -24,7 +24,8 @@ urlpatterns = [
     path('stopmeter/<id>/', views.stopmeter, name='stopmeter'),
     path('user_edit/<id>/', views.user_edit, name='user_edit'),
     path('userupdate/<id>/', views.userupdate, name='userupdate'),
-    path('deleteUser/<id>/', views.deleteUser, name='deleteUser')
+    path('deleteUser/<id>/', views.deleteUser, name='deleteUser'),
+    path('about', views.about, name='about')
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
