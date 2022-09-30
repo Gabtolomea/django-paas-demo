@@ -18,7 +18,7 @@ tablenames = [
     # "yearly_records"
 ]
 alltables = [
-    accountinfo, 
+    accountinfo,
     accountrecord,
     barangay_record,
     consumerinfo,
@@ -349,7 +349,7 @@ def billing_out():
             mar.transType = 'Billing'
             mar.usage = u.usage_mar
             mar.save()
-        
+
         if u.totalbill_apr != 0:
             apr = Transactions()
             apr.acctID = u.consumerid
@@ -448,8 +448,8 @@ def billing_out():
             oct.transType = 'Billing'
             oct.usage = u.usage_oct
             oct.save()
-        
-        
+
+
         if u.totalbill_nov != 0:
             nov = Transactions()
             nov.acctID = u.consumerid
@@ -463,7 +463,7 @@ def billing_out():
             nov.transType = 'Billing'
             nov.usage = u.usage_nov
             nov.save()
-        
+
         if u.totalbill_dec != 0:
             dec = Transactions()
             dec.acctID = u.consumerid
