@@ -1,13 +1,13 @@
-from calendar import c
+
 from datetime import date
-from pyexpat import model
-from tkinter import CASCADE
-from urllib import request
+from operator import is_
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class SystemUsers(AbstractUser):
-    password = models.BinaryField(max_length=450, blank=True)
+    first_name = models.CharField(max_length=20, blank=True)
+    last_name = models.CharField(max_length=20, blank=True)
+    password = models.BinaryField(max_length=450, blank=True, editable = True)  
     username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
@@ -18,17 +18,51 @@ class SystemUsers(AbstractUser):
     mobilenum = models.CharField(max_length=20, blank=True)
     profilepic = models.ImageField(blank=True, null=True)
     authorizedapprover = models.CharField(max_length=20)
+    email = models.EmailField(max_length=100,null=True, blank=True)
+
+    def __str__(self) -> str:
+        return self.username
+
+
 class Rates(models.Model):
-    rateid = models.CharField(primary_key=True, max_length=20)
+    rate_id = models.CharField(primary_key=True, max_length=20)
+    connectionType = models.CharField(max_length=20, blank=True, null=True)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
     ratePenalty = models.IntegerField()
     ratePenaltyFreq = models.IntegerField()
+    date_added = models.DateField(auto_now_add=True)
+    date_mod = models.DateField(auto_now=True)
+    added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self) -> str:
+        return self.connectionType
+
+class Penalty(models.Model):
+    penalty_id = models.CharField(primary_key=True, max_length=20)
+    penalty_type = models.CharField(max_length=20)
+    penalty_rate = models.IntegerField()
+    penalty_info = models.TextField(max_length=300, blank=True, null=True)
+    date_added = models.DateField(auto_now_add=True)
+    added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self) -> str:
+        return self.penalty_type
+
+class Discount(models.Model):
+    discount_id = models.CharField(primary_key=True, max_length=20)
+    discount_rate = models.IntegerField()
+    date_added = models.DateField(auto_now_add=True)
+    added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
 class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
+    def __str__(self) -> str:
+        return self.barangay
 class BarangayRecord(models.Model):
-    barangay_val = models.CharField(primary_key=True, max_length=10,)
+    barangayrec_id = models.CharField(primary_key = True ,max_length=20)
+    barangaycode = models.ForeignKey(Barangays,on_delete=models.SET_NULL, null=True)
     year = models.IntegerField()
     total_due_jan = models.IntegerField()
     total_paid_jan = models.IntegerField()
@@ -66,20 +100,30 @@ class BarangayRecord(models.Model):
     total_due_dec = models.IntegerField()
     total_paid_dec = models.IntegerField()
     total_usage_dec = models.IntegerField()
+
+
+#Consumer Creation
 class ConsumerInfo(models.Model):
-    consumer_id = models.CharField(primary_key=True, max_length=20)
+    consumer_id = models.IntegerField(primary_key=True)
     meternumber = models.CharField(max_length=20, blank=True, null=True)
     firstname = models.CharField(max_length=50, blank=True)
     lastname = models.CharField(max_length=50, blank=True)
     middlename = models.CharField(max_length=50, blank=True)
-    barangaycode = models.ForeignKey(Barangays, on_delete=models.CASCADE)
+    homeaddress = models.CharField(max_length=50, blank=True)
+    installation_address = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
     status = models.IntegerField()
     penaltyflag = models.BooleanField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
-    # current_bal = models.IntegerField()
+    mobilenum = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(max_length=100,null=True, blank=True)
+    birthdate = models.DateField(null=True, blank=True)
+    sex = models.CharField(max_length=6,null=True, blank=True)
+    sitio = models.CharField(max_length=100,null=True, blank=True)
+    picture = models.ImageField(null=True, blank=True)
+    current_bal = models.IntegerField(default=0)
 class Penalties(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty = models.IntegerField()
@@ -102,8 +146,9 @@ class Transactions(models.Model):
     bill = models.FloatField(null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
-    
-
+    or_number = models.CharField(max_length=100)
+    def __str__(self) -> str:
+        return str(self.date)
 
 class usage_record(models.Model):
     #generate date

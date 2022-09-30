@@ -19,7 +19,7 @@
     }
 </style>
 <body>
-    <form action="login" method="POST">
+    <form action="" method="POST">
         {% csrf_token %}
         <div class="container">
 
@@ -56,7 +56,7 @@
                     {% for message in messages %}
                     <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
                         <strong>{{message.tags|title}}!</strong> {{message}}
-                        <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
+                        <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;") aria-label="close">&times;</a>
                     </div>
                     {% endfor %}
                 </center>
