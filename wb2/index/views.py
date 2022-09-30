@@ -336,6 +336,10 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
+# def landing(request):
+#     return render(request,'landing.html')
+
+
 def bills_list(request):
     bills_list = ConsumerInfo.objects.all()
     return render(request, 'billslist.html', {'bills_list': bills_list})
@@ -465,11 +469,19 @@ def user_edit(request, id):
     if request.method == 'POST':
         form = sysup(request.POST, instance=sys)
         if form.is_valid():
+            print("Jazfer Gwapo")
             form.save()
         return redirect('sysuser')
     context = {
+        'sys':sys,
         'form': form,
         'password':password,
-        'sys':sys
     }
     return render(request, 'user_edit.html', context)
+
+def deleteUser(request, id):
+    sys = SystemUsers.objects.get(username=id)
+    if request.method == "POST":
+        sys.delete()
+        return redirect('sysuser')
+    return render(request, 'delete.html',)

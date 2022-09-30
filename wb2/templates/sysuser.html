@@ -45,14 +45,14 @@
                         <tr>
                             {%for t in table%}
                             <td> {{t.username }}</td>
-                            <td>{{t.first_name }} {{t.last_name }} {{t.midname}}</td>
+                            <td>{{t.first_name }} {{t.mid_name}} {{t.last_name }}</td>
                             <td>{{t.email }}</td>
                             <td>{{t.role}}</td>
                             <td>
-                                        <a href="{%url 'user_edit' t.username%}"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button"     data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
+                                        <a href="{%url 'user_edit' t.username%}"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
                                     </td>      
                                     <td>
-                                        <a href=""><button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete this System User( {{ t.username }} )?')" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
+                                        <a href="{%url 'deleteUser' t.username%}"><button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete this System User( {{ t.username }} )?')" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
                                     </td>
                         </tr>
 
