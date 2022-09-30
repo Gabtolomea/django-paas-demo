@@ -458,6 +458,9 @@ def userupdate(request, id):
 
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
+    encoded = sys.password
+    decode64 = base64.b64decode(encoded)
+    password = decode64.decode("ascii")
     form = sysup(instance=sys)
     if request.method == 'POST':
         form = sysup(request.POST, instance=sys)
@@ -466,6 +469,7 @@ def user_edit(request, id):
         return redirect('sysuser')
     context = {
         'form': form,
+        'password':password,
         'sys':sys
     }
     return render(request, 'user_edit.html', context)
