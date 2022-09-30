@@ -71,7 +71,6 @@ class ConsumerCreationForm(ModelForm):
     class Meta():
         model = ConsumerInfo
         fields = (
-            'consumer_id',
             'meternumber',
             'firstname',
             'lastname',

@@ -54,7 +54,7 @@ class Barangays(models.Model):
     def __str__(self) -> str:
         return self.barangay
 class BarangayRecord(models.Model):
-    barangayrec_id = models.CharField(max_length=20)
+    barangayrec_id = models.CharField(primary_key = True ,max_length=20)
     barangaycode = models.ForeignKey(Barangays,on_delete=models.SET_NULL, null=True)
     year = models.IntegerField()
     total_due_jan = models.IntegerField()
@@ -140,6 +140,8 @@ class Transactions(models.Model):
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
+    def __str__(self) -> str:
+        return str(self.date)
 
 class usage_record(models.Model):
     #generate date

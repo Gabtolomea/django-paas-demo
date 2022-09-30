@@ -1,235 +1,290 @@
-
-
- {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.1.js"
+      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+      crossorigin="anonymous"
+    ></script>
     <!-- CSS only -->
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
-    {% block style %}
-    {% endblock style %}
-</head>
- 
-<body>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://kit.fontawesome.com/9658ee38ca.js"
+      crossorigin="anonymous"
+    ></script>
+    {% block style %} {% endblock style %}
+  </head>
+
+  <body>
+    <div id="loading">
+      <img
+        id="loading-image"
+        src="{% static 'img/loading.gif'%}"
+        alt="Loading..."
+      />
+    </div>
     <header>
-     {% for message in messages %}
-        <div class="alert alert-{% if message.tags == "erro %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible>
-          <strong>{{message.tags|title}}!</strong> {{message}}
-            <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "error %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
+      {% for message in messages %}
+      <div
+        class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
+      >
+        <strong>{{message.tags|title}}!</strong> {{message}}
+        <a
+          href="#"
+          class="close"
+          data-dismiss="alert"
+          style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
+          aria-label="close"
+          >&times;</a
+        >
+      </div>
+      {% endfor %}
+
+      <div
+        class="row w-100 m-auto"
+        style="height: 100%; align-content: center; font-weight: 700"
+        id="myHeader"
+      >
+        <div
+          class="col-sm-9 col-md-9 col-lg-9;"
+          style="font-size: 34px; white-space: nowrap"
+        >
+          <button
+            class="header_toggle"
+            onclick="first_toggle()"
+            id="first_toggle"
+          >
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <button
+            class="header_toggle"
+            onclick="second_toggle()"
+            id="second_toggle"
+            style="display: none"
+          >
+            <i class="fa fa-bars"></i>
+          </button>
+          <span
+            class="mobile_header_font"
+            style="padding-left: 10px; color: white"
+          >
+            ONLINE WATER BILLING
+            <span style="color: #63cdd7">STATION</span></span
+          >
         </div>
-        {% endfor %}
-
-            <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
-
-
-
-                <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px; white-space: nowrap;" >
-
-
-            <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
-                <div class="col-sm-9 col-md-9 col-lg-9;" style="font-size: 34px; white-space: nowrap;" >
-
-
-
-
-            <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
-                <div class="col-sm-9 col-md-9 col-lg-9;" style="font-size: 34px; white-space: nowrap;" >
-
-
-                    <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
-                        <i class="fa fa-bars"></i>
-                    </button>
- 
-                    <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span style="color: #63CDD7;">STATION</span></span>
-                </div>
-                <div class="mobile_header_nav col-sm-3 col-md-3 col-lg-3" style="text-align: right; padding: 10px;" id="mobile_header_nav">
-
- 
-
-
-                </div>
-                <div class="mobile_header_nav col-sm-3 col-md-3 col-lg-3" style="text-align: right; padding: 10px;" id="mobile_header_nav">
-
-                </div>
-                <div class="mobile_header_nav col-sm-3 col-md-3 col-lg-3" style="text-align: right; padding: 10px;" id="mobile_header_nav">
-
-
-
-
-                    <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
-                        <i class="fa-solid fa-bell"></i>
-                    </a>
-                    <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
-                        <i class="fa-solid fa-magnifying-glass-plus"></i>
-
-                    </a>  
-                    <a href="{% url 'signout'%}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
-
-                    </a>
-                    <a href="signout" style="color:#0093B7; text-decoration: none ;padding:0 5%">
-
-                        <i class="fa-solid fa-right-from-bracket"></i>
-
-                    </a>
-                </div>
-            </div>
+        <div
+          class="mobile_header_nav col-sm-3 col-md-3 col-lg-3"
+          style="text-align: right; padding: 10px"
+          id="mobile_header_nav"
+        >
+          <a
+            href="#"
+            style="color: #0093b7; text-decoration: none; padding: 0 5%"
+          >
+            <i class="fa-solid fa-bell"></i>
+          </a>
+          <a
+            href=""
+            style="color: #0093b7; text-decoration: none; padding: 0 5%"
+          >
+            <i class="fa-solid fa-magnifying-glass-plus"></i>
+          </a>
+          <a
+            href="{% url 'signout' %}"
+            style="color: #0093b7; text-decoration: none; padding: 0 5%"
+          >
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </a>
+        </div>
+      </div>
     </header>
-
-    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
-
-
-    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
-
-
-        <div class="dev">
-
-    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
-        <div class="user_info">            <i class="fa-solid fa-circle-user fa-8x"></i>
-
-    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav"> 
-        <div class="user_info">
-            <i class="fa-solid fa-circle-user fa-8x"></i>
-
-                <p>Developer</p>
-        </div>
-        <ul class="list-unstyled" style=" margin-top: 30px; margin-left: -72px; ">
-            <li class="side_nav_li">
-
-
-                <a href="/" style="color: white; text-decoration: none;">
-
-                <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none;">
-
-                    <i class="fa-solid fa-money-bill-wave fa-2x"></i>
-                    <span class="sidenav_text">Billing</span>
-                </a>
-            </li>
-            <li class="side_nav_li">
-                <a href="{% url 'meterreading' %}" style="color: white; text-decoration: none ">
-                    <i class="fa fa-tachometer fa-2x"></i>
-                    <span class="sidenav_text">Meter Reading</span>
-                </a>
-            </li>
-            <li class="side_nav_li">
-
-                <a href="/" style="color: white; text-decoration: none">
-
-                <a href="/" style="color: white; text-decoration: none"> 
-
-                  <i class="fa-solid fa-user fa-2x"></i>
-                    <span class="sidenav_text">User Accounts</span>
-                </a>
-            </li>
-            <li class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none" >
-                    <i class="fa-solid fa-newspaper fa-2x"></i>
-                    <span class="sidenav_text">Reports</span>
-                </a>
-            </li>
-            <li class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none">
-                    <i class="fa-solid fa-thumbs-up fa-2x"></i>
-                    <span class="sidenav_text">Approve Application</span>
-                </a>
-            </li>
-            <li class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none">
-                     <i class="fa-solid fa-user-group fa-2x"></i>
-                    <span class="sidenav_text">Users Management</span>
-                </a>
-            </li>
-            <li class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none">
-                    <i class="fa-solid fa-user-plus fa-2x"></i>
-                    <span class="sidenav_text">User Creation</span>
-                </a>
-            </li>
-            <li class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none">
-                    <i class="fa-solid fa-book fa-2x"></i>
-                    <span class="sidenav_text">Rates Management</span>
-                </a>
-            </li>
-            <li  class="side_nav_li">
-                <a href="/" style="color: white; text-decoration: none">
-                    <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
-                    <span class="sidenav_text">Account Settings</span>
-                </a>
-            </li>
-        </ul>
+    <div
+      class="sidebar"
+      style="height: auto !important; min-height: 100%"
+      id="side_nav"
+    >
+      <div class="user_info">
+        <i class="fa-solid fa-circle-user fa-8x"></i>
+        <p>Developer</p>
+      </div>
+      <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px">
+        <a
+          href="{% url 'bills_list' %}"
+          style="color: white; text-decoration: none"
+        >
+          <li class="side_nav_li">
+            <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+            <span class="sidenav_text">Billing</span>
+          </li>
+        </a>
+        <a
+          href="{% url 'meterreading' %}"
+          style="color: white; text-decoration: none"
+        >
+          <li class="side_nav_li">
+            <i class="fa fa-tachometer fa-2x"></i>
+            <span class="sidenav_text">Meter Reading</span>
+          </li>
+        </a>
+        <a
+          href="{% url 'consumer_list' %}"
+          style="color: white; text-decoration: none"
+        >
+          <li class="side_nav_li">
+            <i class="fa-solid fa-user fa-2x"></i>
+            <span class="sidenav_text">User Accounts</span>
+          </li>
+        </a>
+        <a href="/" style="color: white; text-decoration: none">
+          <li class="side_nav_li">
+            <i class="fa-solid fa-newspaper fa-2x"></i>
+            <span class="sidenav_text">Reports</span>
+          </li>
+        </a>
+        <a href="/" style="color: white; text-decoration: none">
+          <li class="side_nav_li">
+            <i class="fa-solid fa-thumbs-up fa-2x"></i>
+            <span class="sidenav_text">Approve Application</span>
+          </li>
+        </a>
+        <a
+          href="{% url 'sysuser' %}"
+          style="color: white; text-decoration: none"
+        >
+          <li class="side_nav_li">
+            <i class="fa-solid fa-user-group fa-2x"></i>
+            <span class="sidenav_text">Users Management</span>
+          </li>
+        </a>
+        <a
+          href="{% url 'user_creation' %}"
+          style="color: white; text-decoration: none"
+        >
+          <li class="side_nav_li">
+            <i class="fa-solid fa-user-plus fa-2x"></i>
+            <span class="sidenav_text">User Creation</span>
+          </li>
+        </a>
+        <a href="/" style="color: white; text-decoration: none">
+          <li class="side_nav_li">
+            <i class="fa-solid fa-book fa-2x"></i>
+            <span class="sidenav_text">Rates Management</span>
+          </li>
+        </a>
+        <a href="/" style="color: white; text-decoration: none">
+          <li class="side_nav_li">
+            <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+            <span class="sidenav_text">Account Settings</span>
+          </li>
+        </a>
+      </ul>
     </div>
-    <div class="container-fluid main_content" style="padding-top:87px;" id="main_content">
-        {% block ledger %}
-        {% endblock ledger%}
- 
-    <div class="container-fluid main_content" style="padding-top:87px;" id="main_content">
-        {% block ledger %}
-        {% endblock ledger%}
-        {% block meterreading %}
-        {% endblock meterreading%}
-        {% block consumer_list %}
-        {% endblock consumer_list %}
+    <div
+      class="container-fluid main_content"
+      style="padding-top: 20px"
+      id="main_content"
+    >
+      {% block ledger %} {% endblock ledger%} {% block meterreading %} {%
+      endblock meterreading%} {% block bills_list %} {% endblock bills_list %}
+      {% block consumer_list %} {% endblock consumer_list %} {% block sysuser %}
+      {% endblock sysuser %}
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+      crossorigin="anonymous"
+    ></script>
     <script>
- 
-        function media_query_720(screen_size) {
-            if (screen_size.matches) { // If media query matches
-                document.getElementById("first_toggle").style.display = "none";
-                document.getElementById("second_toggle").style.display = "inline";
- 
-                document.getElementById("mobile_header_nav").style.display = "none";
- 
-                document.getElementById("side_nav").classList.remove("sidebar");
-                document.getElementById("side_nav").classList.add("remove_sidebar");
-                document.getElementById("main_content").classList.remove("main_content");
-                document.getElementById("main_content").classList.add("remove_main_content");
-            } else {
-                document.getElementById("first_toggle").style.display = "inline";
-                document.getElementById("second_toggle").style.display = "none";
- 
-                document.getElementById("mobile_header_nav").style.display = "inline";
- 
-                document.getElementById("side_nav").classList.add("sidebar");
-                document.getElementById("side_nav").classList.remove("remove_sidebar");
-                document.getElementById("main_content").classList.add("main_content");
-                document.getElementById("main_content").classList.remove("remove_main_content");
-            }
-        }
-        var screen_size = window.matchMedia("(max-width: 720px)")
-        media_query_720(screen_size) // Call listener function at run time
-        screen_size.addListener(media_query_720) // Attach listener function on state changes
- 
- 
-        function first_toggle() {
-            document.getElementById("first_toggle").style.display = "none";
-            document.getElementById("second_toggle").style.display = "inline";
- 
-            document.getElementById("side_nav").classList.remove("sidebar");
-            document.getElementById("side_nav").classList.add("remove_sidebar");
-            document.getElementById("main_content").classList.remove("main_content");
-            document.getElementById("main_content").classList.add("remove_main_content");
-        }
-        function second_toggle() {
-            document.getElementById("first_toggle").style.display = "inline";
-            document.getElementById("second_toggle").style.display = "none";
+      function media_query_720(screen_size) {
+        if (screen_size.matches) {
+          // If media query matches
+          document.getElementById("first_toggle").style.display = "none";
+          document.getElementById("second_toggle").style.display = "inline";
 
-            document.getElementById("side_nav").classList.add("sidebar");
-            document.getElementById("side_nav").classList.remove("remove_sidebar");
-            document.getElementById("main_content").classList.add("main_content");
-            document.getElementById("main_content").classList.remove("remove_main_content");
+          document.getElementById("mobile_header_nav").style.display = "none";
+
+          document.getElementById("side_nav").classList.remove("sidebar");
+          document.getElementById("side_nav").classList.add("remove_sidebar");
+          document
+            .getElementById("main_content")
+            .classList.remove("main_content");
+          document
+            .getElementById("main_content")
+            .classList.add("remove_main_content");
+        } else {
+          document.getElementById("first_toggle").style.display = "inline";
+          document.getElementById("second_toggle").style.display = "none";
+
+          document.getElementById("mobile_header_nav").style.display = "inline";
+
+          document.getElementById("side_nav").classList.add("sidebar");
+          document
+            .getElementById("side_nav")
+            .classList.remove("remove_sidebar");
+          document.getElementById("main_content").classList.add("main_content");
+          document
+            .getElementById("main_content")
+            .classList.remove("remove_main_content");
         }
+      }
+      var screen_size = window.matchMedia("(max-width: 720px)");
+      media_query_720(screen_size); // Call listener function at run time
+      screen_size.addListener(media_query_720); // Attach listener function on state changes
+
+      function first_toggle() {
+        document.getElementById("first_toggle").style.display = "none";
+        document.getElementById("second_toggle").style.display = "inline";
+
+        document.getElementById("side_nav").classList.remove("sidebar");
+        document.getElementById("side_nav").classList.add("remove_sidebar");
+        document
+          .getElementById("main_content")
+          .classList.remove("main_content");
+        document
+          .getElementById("main_content")
+          .classList.add("remove_main_content");
+      }
+      function second_toggle() {
+        document.getElementById("first_toggle").style.display = "inline";
+        document.getElementById("second_toggle").style.display = "none";
+
+        document.getElementById("side_nav").classList.add("sidebar");
+        document.getElementById("side_nav").classList.remove("remove_sidebar");
+        document.getElementById("main_content").classList.add("main_content");
+        document
+          .getElementById("main_content")
+          .classList.remove("remove_main_content");
+      }
     </script>
-</body>
- 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
- 
+  </body>
+  <script
+    src="https://code.jquery.com/jquery-3.6.1.js"
+    integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    $(window).on("load", function () {
+      $("#loading").hide();
+    });
+  </script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"
+  ></script>
+  {% block script %} {% endblock script %}
 </html>
