@@ -47,6 +47,35 @@ class SystemUserForm(UserCreationForm):
             'authorizedapprover',
         )
 
+class sysup(ModelForm):
+    CHOICES =(
+        ("0", "Approver for Inbound Application"),
+        ("1", "Non Approver"),
+        ("2", "Supervisor"),
+        ("3", "Engineer's Office"),
+        ("4", "Mayor's Office"),
+    )
+    authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
+    # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
+    class Meta:
+        model = SystemUsers
+        fields =(  
+        'password',
+        'first_name',
+        'last_name',
+        'email',
+        'username',
+        'is_admin',
+        'is_teller',
+        'is_supervisor',
+        'is_manager',
+        'is_reader',
+        'mid_name',
+        'mobilenum',
+        'profilepic',
+        'authorizedapprover',)
+
+
 class ConsumerCreationForm(ModelForm):
     CHOICES = (
         ("MALE", "MALE"),

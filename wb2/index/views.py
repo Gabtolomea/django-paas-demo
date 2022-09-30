@@ -1,11 +1,12 @@
 import calendar
 from dis import dis
 from email import errors
+from multiprocessing import context
 from os import system
-from turtle import update
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -26,10 +27,10 @@ from .tokens import generate_token
 
 
 def porter(request):
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
-    balance()
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    # balance()
     return render(request, "landing.html")
 
 # @unauthenticated_user
@@ -400,6 +401,44 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
+def sysuser(request):
+    table = []
+
+    class sysuserclass():
+        def __init__(self, first_name, last_name, mid_name, username, email, role):
+            self.email = email
+            self.first_name = first_name
+            self.mid_name = mid_name
+            self.last_name = last_name
+            self.username = username
+            self.role = role
+    sys = SystemUsers.objects.all()
+    for s in sys:
+        firstname = s.first_name
+        lastname = s.last_name
+        username = s.username
+        midname = s.mid_name
+        email = s.email
+        role = ""
+        if s.is_admin:
+            role = role + "Admin "
+        if s.is_teller:
+            role = role + "Teller "
+        if s.is_supervisor:
+            role = role + "Supervisor "
+        if s.is_manager:
+            role = role + "Manager "
+        if s.is_reader:
+            role = role + "Reader "
+
+        su = sysuserclass(firstname, lastname, midname, username, email, role)
+        table.append(su)
+    context = {
+        'table': table
+    }
+    return render(request, 'sysuser.html', context)
+
+
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -415,3 +454,18 @@ def userupdate(request, id):
     }
 
     return render(request, 'userupdate.html', context)
+
+
+def user_edit(request, id):
+    sys = SystemUsers.objects.get(username=id)
+    form = sysup(instance=sys)
+    if request.method == 'POST':
+        form = sysup(request.POST, instance=sys)
+        if form.is_valid():
+            form.save()
+        return redirect('sysuser')
+    context = {
+        'form': form,
+        'sys':sys
+    }
+    return render(request, 'user_edit.html', context)
