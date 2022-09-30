@@ -23,6 +23,7 @@ from .dataporter import *
 from .ledger import *
 import math
 from .tokens import generate_token
+from django.db.models import F, Sum
 
 
 def porter(request):
@@ -33,9 +34,13 @@ def porter(request):
     return render(request, "landing.html")
 
 # @unauthenticated_user
+
+
 def lp(request):
     return render(request, "landing.html")
 # @unauthenticated_user
+
+
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -55,6 +60,8 @@ def signin(request):
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
 # @login_required(login_url='login')
+
+
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -113,6 +120,8 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 # @login_required(login_url='login')
+
+
 def dashboard(request):
     user = request.user
     context = {
@@ -249,19 +258,22 @@ def meterreading(request):
 def inputreading(request, id, year):
     table = []
     years = []
+
     class meterreaderclass():
-        def __init__(self, transid , month, usage, reading):
+        def __init__(self, transid, month, usage, reading):
             self.transid = transid
             self.month = month
             self.usage = usage
             self.reading = reading
-    consumer = ConsumerInfo.objects.get(consumer_id = id)
+    consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
-    alltrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing')
-    trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year)
+    alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
+    trans = Transactions.objects.filter(
+        acctID_id=id, transType='Billing', date__year=year)
     dec = None
-    if year<date.today().year:
-        nexttrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year+1)
+    if year < date.today().year:
+        nexttrans = Transactions.objects.filter(
+            acctID_id=id, transType='Billing', date__year=year+1)
         try:
             dec = nexttrans.get(date__month=1)
         except ObjectDoesNotExist:
@@ -278,20 +290,20 @@ def inputreading(request, id, year):
         years.remove(int(year))
     # print(asc_trans)
     # print(count)
-    for i in range(1,13):
+    for i in range(1, 13):
         month = calendar.month_name[i]
         transid = 0
         usage = 0
         reading = 0
-        if i<12:
+        if i < 12:
             # print(str(i)+" "+str(j+1))
-            if j<count and count != 0:
+            if j < count and count != 0:
                 if i == asc_trans[j].date.month-1:
                     transid = asc_trans[j].transactionid
                     usage = asc_trans[j].usage
                     reading = asc_trans[j].meterReading
                     print(reading)
-                    j+=1
+                    j += 1
         else:
             if dec:
                 transid = dec.transactionid
@@ -300,15 +312,16 @@ def inputreading(request, id, year):
 
         m = meterreaderclass(transid, month, usage, reading)
         table.append(m)
-        
-    if request.method=="POST":
+
+    if request.method == "POST":
         readings = []
         for i in range(12):
-            r = request.POST.get('reading-'+calendar.month_name[i+1],0)
+            r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
             readings.append(int(r))
-            if r!=0:
+            if r != 0:
                 try:
-                    Transactions.objects.get(acctID_id=id, transType = 'Billing',date__year=year,date__month=i+1)
+                    Transactions.objects.get(
+                        acctID_id=id, transType='Billing', date__year=year, date__month=i+1)
                 except ObjectDoesNotExist:
                     t = Transactions()
                     t.acctID = id
@@ -317,13 +330,14 @@ def inputreading(request, id, year):
                     t.meterReading = r
 
                 else:
-                    t = Transactions.objects.get(acctID_id=id, transType = 'Billing',date__year=year,date__month=i+1)
+                    t = Transactions.objects.get(
+                        acctID_id=id, transType='Billing', date__year=year, date__month=i+1)
         print(readings)
     context = {
-        'consumer':consumer,
-        'table':table,
-        'cur_year':year,
-        'years':years
+        'consumer': consumer,
+        'table': table,
+        'cur_year': year,
+        'years': years
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -409,3 +423,15 @@ def userupdate(request, id):
     }
 
     return render(request, 'userupdate.html', context)
+
+
+def barangayreport(request):
+    br = BarangayRecord.objects.annotate(
+        total_usage =F('total_usage_jan') + F('total_usage_feb')+ F('total_usage_mar')+ F('total_usage_apr')+ F('total_usage_may')+ F('total_usage_jun')+ F('total_usage_jul')+ F('total_usage_aug')+ F('total_usage_sept')+ F('total_usage_oct')+ F('total_usage_nov')+ F('total_usage_dec'),
+        total_rec = F('total_due_jan') + F('total_usage_feb')+ F('total_usage_mar')+ F('total_usage_apr')+ F('total_usage_may')+ F('total_usage_jun')+ F('total_usage_jul')+ F('total_usage_aug')+ F('total_usage_sept')+ F('total_usage_oct')+ F('total_usage_nov')+ F('total_usage_dec'),)
+    context = {
+        'br': br,
+    }
+    
+    return render(request,'barangayreport.html',context)
+    

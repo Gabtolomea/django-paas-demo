@@ -23,6 +23,7 @@ urlpatterns = [
     path('sysuser/', views.sysuser,name='sysuser'),
     path('stopmeter/<id>/', views.stopmeter, name='stopmeter'),
     path('userupdate/<id>/', views.userupdate, name='userupdate'),
+    path('barangayreport/', views.barangayreport, name='barangayreport'),
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
 ]

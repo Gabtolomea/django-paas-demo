@@ -1,0 +1,21 @@
+<div>
+<table>
+    <thead>
+        <tr>
+            <th>Barangay</th>
+            <th>Total Usage</th>
+        </tr>
+    </thead>
+
+<tbody>
+    {% for br in br %}
+    <tr>
+        <td>{{br.barangaycode}}</td>
+        <td>{{br.total_usage}}</td>
+        
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+</div>
