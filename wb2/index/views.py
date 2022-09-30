@@ -22,6 +22,7 @@ from .decorators import *
 from .models import *
 from .dataporter import *
 from .ledger import *
+from .functions import *
 import math
 from .tokens import generate_token
 
@@ -182,7 +183,10 @@ def ledger(request, id):
                 if asc_trans[i+1].transType == 'Payment':
                     p = cur
                 else:
+                    p = str_int(p)
+                    total = p
                     p = p + current
+                    p = p - total
             prev = p
 
     context = {
