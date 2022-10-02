@@ -358,7 +358,7 @@ def inputreading(request, id, year):
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
                     t.save()
-            return redirect('')
+            return redirect('inputreading', id=id, year=date.today().year)
     context = {
         'consumer':consumer,
         'table':table,
