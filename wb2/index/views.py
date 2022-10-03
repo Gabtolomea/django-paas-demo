@@ -125,7 +125,6 @@ def dashboard(request):
 
 def ledger(request, id):
     table = []
-
     class ledgerclass():
         def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style):
             self.transid = transid
@@ -140,13 +139,12 @@ def ledger(request, id):
             self.bal = bal
             self.rateid = rateid
             self.style = style
-
         def id(self):
             return self.transid
     if ConsumerInfo.objects.filter(pk=id).exists():
         u = ConsumerInfo.objects.get(pk=id)
         trans = Transactions.objects.filter(acctID=u.consumer_id)
-        asc_trans = trans.order_by('date')
+        asc_trans = trans.order_by('year','month')
         bal = 0
         p = 0
         current = 0
@@ -277,6 +275,7 @@ def inputreading(request, id, year):
         years.remove(year)
     # print(asc_trans)
     # print(count)
+    j=0
     lastreading = 0
     for i in range(1,13):
         month = calendar.month_name[i]
@@ -289,7 +288,7 @@ def inputreading(request, id, year):
         if i<12:
             # print(str(i)+" "+str(j+1))
             if j<count and count != 0:
-                if i == asc_trans[j].date.month-1:
+                if i == asc_trans[j].month:
                     transid = asc_trans[j].transactionid
                     usage = asc_trans[j].usage
                     reading = asc_trans[j].meterReading
@@ -297,32 +296,28 @@ def inputreading(request, id, year):
                     lastreading = reading
                     style = '-success'
                     j+=1
-        else:
-            if dec:
-                transid = dec.transactionid
-                usage = dec.usage
-                reading = dec.meterReading
-                prev = asc_trans[j].meterReading-usage
-                style = '-success'
         # print(str(prev)+" "+str(reading))
         m = meterreaderclass(transid, month, usage, prev, reading, style)
         table.append(m)
-    print(lastreading)
     if request.method=="POST":
         readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1],0)
             readings.append(int(r))
+        print(readings)
+        d = 1
         for i in readings:
             if i !=0:
                 try:
-                    Transactions.objects.get(acctID_id=id, transType = 'Billing',date__year=year,date__month=i+1)
+                    Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     print("create transaction")
                     t = Transactions()
                     t.acctID = consumer
                     t.transType = 'Billing'
                     t.date = date.today()
+                    t.month = d
+                    t.year = year
                     t.meterReading = i
                     t.usage = i - lastreading
                     t.ratescode = consumer.rateid_id
@@ -330,25 +325,41 @@ def inputreading(request, id, year):
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                     else:
-                        xcubic = usage - rate.minReading
+                        xcubic = t.usage - rate.minReading
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
                 else:
-                    t = Transactions.objects.get(acctID_id=id, transType = 'Billing',date__year=year,date__month=i+1)
-                    t.meterReading = r
+                    print("update transaction")
+                    t = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
+                    lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
+                    try:
+                        Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d+1)
+                    except ObjectDoesNotExist:
+                        print("asdf")
+                    else:
+                        next = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d+1)
+                        next.usage = next.meterReading - i
+                        next.save()
+                    lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
+                    t.meterReading = i
+                    t.date = date.today()
+                    t.usage = i - lastreading
                     rate = Rates.objects.get(rate_id = t.ratescode)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
+                        print(rate.minReadingCharge)
                     else:
-                        xcubic = usage - rate.minReading
+                        xcubic = t.usage - rate.minReading
+                        print(usage)
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
                     t.save()
-            return redirect('inputreading', id=id, year=date.today().year)
+            d+=1
+        return redirect('inputreading', id=id, year=date.today().year)
     context = {
         'consumer':consumer,
         'table':table,

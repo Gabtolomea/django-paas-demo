@@ -118,6 +118,8 @@ def porter_out(tables):
         trans.payment = tables[6][i][1]
         trans.processedBy = tables[6][i][5]
         trans.or_number = tables[6][i][3]
+        trans.year = tables[6][i][2].year
+        trans.month = tables[6][i][2].month
         trans.save()
     for i in tables[1]:
         usage_rec.accountid =	i[0]
@@ -554,6 +556,8 @@ def rt_out(i):
     elif i[0] == '2':
         rt.connectionType = 'Commercial'
     rt.added_by = None
+    rt.date_added=date.today()
+    rt.date_mod = date.today()
     rt.save()
 def b_rec_out(i):
     b_rec.barangayrec_id = i[0]
