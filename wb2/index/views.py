@@ -24,7 +24,7 @@ from .dataporter import *
 from .ledger import *
 import math
 from .tokens import generate_token
-
+from django.core.files.storage import FileSystemStorage
 
 def porter(request):
     # porter_in()
@@ -341,8 +341,13 @@ def inputreading(request, id, year):
 
 
 def bills_list(request):
+    user = request.user
     bills_list = ConsumerInfo.objects.all()
-    return render(request, 'billslist.html', {'bills_list': bills_list})
+    context = {
+        'bills_list': bills_list,
+        'user':user,
+    }
+    return render(request, 'billslist.html', context)
 
 
 def consumer_list(request):
@@ -468,8 +473,14 @@ def user_edit(request, id):
     form = sysup(instance=sys)
     if request.method == 'POST':
         form = sysup(request.POST, instance=sys)
+        # pic = request.POST['profilepic']
         if form.is_valid():
-            form.save()
+            upload = request.FILES['profilepic']
+            fss = FileSystemStorage()
+            fss.save(upload.name, upload)
+            # sys.profilepic = pic
+            sys.save()
+            
         return redirect('sysuser')
     context = {
         'sys':sys,

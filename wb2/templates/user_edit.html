@@ -57,7 +57,7 @@
 	</style>
 	<body>
 		<section id="registration-page">
-			<form action="{%url 'user_edit' sys.username%}" method="POST" class="signup-form">
+			<form action="{%url 'user_edit' sys.username%}" enctype="multipart/form-data" method="POST" class="signup-form">
 				{% csrf_token %}
 				<div class="container">
 					<div class=" shadow wrapper m-4">
