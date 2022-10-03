@@ -24,6 +24,7 @@ from .ledger import *
 import math
 from .tokens import generate_token
 from django.db.models import F, Sum
+from django.db.models.functions import Coalesce
 
 
 def porter(request):
@@ -425,13 +426,25 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-def barangayreport(request):
-    br = BarangayRecord.objects.annotate(
-        total_usage =F('total_usage_jan') + F('total_usage_feb')+ F('total_usage_mar')+ F('total_usage_apr')+ F('total_usage_may')+ F('total_usage_jun')+ F('total_usage_jul')+ F('total_usage_aug')+ F('total_usage_sept')+ F('total_usage_oct')+ F('total_usage_nov')+ F('total_usage_dec'),
-        total_rec = F('total_due_jan') + F('total_usage_feb')+ F('total_usage_mar')+ F('total_usage_apr')+ F('total_usage_may')+ F('total_usage_jun')+ F('total_usage_jul')+ F('total_usage_aug')+ F('total_usage_sept')+ F('total_usage_oct')+ F('total_usage_nov')+ F('total_usage_dec'),)
+def barangayreport(request, year):
+    yr =BarangayRecord.objects.all(year)
+    br = BarangayRecord.objects.filter(year=year).annotate(
+        total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
+        F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
+        F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'),
+        total_due=F('total_due_jan') + F('total_due_feb') + F('total_due_mar') + F('total_due_apr') + F('total_due_may') + F('total_due_jun') +
+        F('total_due_jul') + F('total_due_aug') + F('total_due_sept') +
+        F('total_due_oct') + F('total_due_nov') + F('total_due_dec'),
+        total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
+        F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
+        F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
+        total_rec=F('total_due') - F('total_paid'),
+        percent=F('total_paid') / F('total_due')*100)
+
     context = {
         'br': br,
+        'year': yr
+
     }
-    
-    return render(request,'barangayreport.html',context)
-    
+
+    return render(request, 'barangayreport.html', context)
