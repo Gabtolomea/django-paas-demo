@@ -190,13 +190,9 @@ def ledger(request, id):
     context = {
         'u': u,
         'table': table,
-        'bal': math.ceil(bal*100)/100
     }
     return render(request, 'ledger.html', context)
-
-
 def forgetpassword(request):
-
     if request.method == "POST":
         u_email = request.POST['email']
         if SystemUsers.objects.filter(email=u_email).exists():
@@ -230,8 +226,6 @@ def forgetpassword(request):
 
         context = {'email': email, 'errors': errors}
     return render(request, 'forgetpassword.html')
-
-
 def password_reset_form(request):
     # form = SystemUserForm()
     # if request.method == "POST":
@@ -239,8 +233,6 @@ def password_reset_form(request):
     #     form = SystemUserForm(request.POST)
 
     return render(request, 'password_reset_form')
-
-
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -248,25 +240,24 @@ def meterreading(request):
         'year': date.today().year
     }
     return render(request, 'meterreading.html', context)
-
-
 def inputreading(request, id, year):
     table = []
     years = []
     class meterreaderclass():
-        def __init__(self, transid , month, usage, prev, reading, style):
+        def __init__(self, transid , month, usage, prev, reading, next, style):
             self.transid = transid
             self.month = month
             self.usage = usage
             self.prev = prev
             self.reading = reading
+            self.next = next
             self.style = style
     user = request.user
     consumer = ConsumerInfo.objects.get(consumer_id = id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing')
     trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', year = year)
-    asc_trans = trans.order_by('date')
+    asc_trans = trans.order_by('month')
     count = len(asc_trans)
     for i in alltrans:
         if i.date.year not in years:
@@ -285,19 +276,22 @@ def inputreading(request, id, year):
         prev = lastreading
         reading = prev
         style = ''
-        if i<12:
-            # print(str(i)+" "+str(j+1))
-            if j<count and count != 0:
-                if i == asc_trans[j].month:
-                    transid = asc_trans[j].transactionid
-                    usage = asc_trans[j].usage
-                    reading = asc_trans[j].meterReading
-                    prev = asc_trans[j].meterReading-usage
-                    lastreading = reading
-                    style = '-success'
-                    j+=1
-        # print(str(prev)+" "+str(reading))
-        m = meterreaderclass(transid, month, usage, prev, reading, style)
+        # print(str(i)+" "+str(j+1))
+        if j<count and count != 0:
+            if i == asc_trans[j].month:
+                transid = asc_trans[j].transactionid
+                usage = asc_trans[j].usage
+                reading = asc_trans[j].meterReading
+                prev = asc_trans[j].meterReading-usage
+                if j<count-1:
+                    next = asc_trans[j+1].meterReading
+                else:
+                    next = False
+                lastreading = reading
+                style = '-success'
+                j+=1
+        print(str(prev)+" "+str(reading)+" "+str(next))
+        m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
     if request.method=="POST":
         readings = []
@@ -331,6 +325,7 @@ def inputreading(request, id, year):
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
+                    get_balance(id)
                 else:
                     print("update transaction")
                     t = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
@@ -358,6 +353,7 @@ def inputreading(request, id, year):
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
                     t.save()
+                    get_balance(id)
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
     context = {
@@ -506,3 +502,6 @@ def user_edit(request, id):
         'sys':sys
     }
     return render(request, 'user_edit.html', context)
+
+def payment(request, id):
+    return redirect('ledger', id=id)

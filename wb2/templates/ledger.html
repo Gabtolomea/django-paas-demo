@@ -1,5 +1,8 @@
 {% extends 'dashboard.html' %}
 {% load static %}
+{% block title %}
+Account Ledger
+{% endblock title %}
 {% block ledger %}
 <div class="container-fluid p-0">
 	<div class="table_responsive" style="max-height: 922px;">
@@ -17,10 +20,39 @@
 					<td class="table-light">{{u.consumer_id}}</td>
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light">{{u.meternumber}}</td>
-					<td class="table-light">{{bal}}</td>
+					<td class="table-light">{{u.current_bal}}
+						<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
+							<button id="" type="button" class="btn btn-success" data-toggle="modal"
+								data-target="#payment">Pay</button>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>
+	</div>
+</div>
+<div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'payment' u.consumer_id %}" method="post">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<label for="id_amount"></label>
+					<input type="number" name="amount" id="id_amount" class="input form-control">
+					<input type="number" name="or_num" id="" class="input form-control">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
 <div class="row w-100 m-auto">

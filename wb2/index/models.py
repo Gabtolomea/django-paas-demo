@@ -125,7 +125,7 @@ class ConsumerInfo(models.Model):
     sex = models.CharField(max_length=6,null=True, blank=True)
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
-    current_bal = models.IntegerField(default=0)
+    current_bal = models.FloatField(default=0)
 class Penalties(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty = models.IntegerField()
