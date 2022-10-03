@@ -315,6 +315,8 @@ def billing_out():
             date_str = u.reading_date_jan
             if date_str!=" " and date_str!="":
                 jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+                jan.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            jan.month = 1
             jan.payment = 0
             jan.bill = u.totalbill_jan
             jan.payment = 0
@@ -330,6 +332,8 @@ def billing_out():
             date_str = u.reading_date_feb
             if date_str!=" " and date_str!="":
                 feb.date = datetime.strptime(date_str, '%Y-%m-%d')
+                feb.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            feb.month = 2
             feb.bill = u.totalbill_feb
             feb.payment = 0
             feb.transType = 'Billing'
@@ -344,6 +348,8 @@ def billing_out():
             date_str = u.reading_date_mar
             if date_str!=" " and date_str!="":
                 mar.date = datetime.strptime(date_str, '%Y-%m-%d')
+                mar.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            mar.month = 3
             mar.bill = u.totalbill_mar
             mar.payment = 0
             mar.transType = 'Billing'
@@ -358,6 +364,8 @@ def billing_out():
             date_str = u.reading_date_apr
             if date_str!=" " and date_str!="":
                 apr.date = datetime.strptime(date_str, '%Y-%m-%d')
+                apr.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            apr.month = 4
             apr.bill = u.totalbill_apr
             apr.payment = 0
             apr.transType = 'Billing'
@@ -372,6 +380,8 @@ def billing_out():
             date_str = u.reading_date_may
             if date_str!=" " and date_str!="":
                 may.date = datetime.strptime(date_str, '%Y-%m-%d')
+                may.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            may.month = 5
             may.bill = u.totalbill_may
             may.payment = 0
             may.transType = 'Billing'
@@ -386,6 +396,8 @@ def billing_out():
             date_str = u.reading_date_jun
             if date_str!=" " and date_str!="":
                 jun.date = datetime.strptime(date_str, '%Y-%m-%d')
+                jun.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            jun.month = 6
             jun.bill = u.totalbill_jun
             jun.payment = 0
             jun.transType = 'Billing'
@@ -400,6 +412,8 @@ def billing_out():
             date_str = u.reading_date_jul
             if date_str!=" " and date_str!="":
                 jul.date = datetime.strptime(date_str, '%Y-%m-%d')
+                jul.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            jul.month = 7
             jul.bill = u.totalbill_jul
             jul.payment = 0
             jul.transType = 'Billing'
@@ -414,6 +428,8 @@ def billing_out():
             date_str = u.reading_date_aug
             if date_str!=" " and date_str!="":
                 aug.date = datetime.strptime(date_str, '%Y-%m-%d')
+                aug.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            aug.month = 8
             aug.bill = u.totalbill_aug
             aug.payment = 0
             aug.transType = 'Billing'
@@ -428,12 +444,13 @@ def billing_out():
             date_str = u.reading_date_sept
             if date_str!=" " and date_str!="":
                 sept.date = datetime.strptime(date_str, '%Y-%m-%d')
+                sept.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            sept.month = 9
             sept.bill = u.totalbill_sept
             sept.payment = 0
             sept.transType = 'Billing'
             sept.usage = u.usage_sept
             sept.save()
-
 
         if u.totalbill_oct != 0:
             oct = Transactions()
@@ -443,6 +460,8 @@ def billing_out():
             date_str = u.reading_date_oct
             if date_str!=" " and date_str!="":
                 oct.date = datetime.strptime(date_str, '%Y-%m-%d')
+                oct.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            oct.month = 10
             oct.bill = u.totalbill_oct
             oct.payment = 0
             oct.transType = 'Billing'
@@ -458,6 +477,8 @@ def billing_out():
             date_str = u.reading_date_nov
             if date_str!=" " and date_str!="":
                 nov.date = datetime.strptime(date_str, '%Y-%m-%d')
+                nov.year = datetime.strptime(date_str, '%Y-%m-%d').year
+            nov.month = 11
             nov.bill = u.totalbill_nov
             nov.payment = 0
             nov.transType = 'Billing'
@@ -472,6 +493,8 @@ def billing_out():
             date_str = u.reading_date_dec
             if date_str!=" " and date_str!="":
                 dec.date = datetime.strptime(date_str, '%Y-%m-%d')
+                dec.year = datetime.strptime(date_str, '%Y-%m-%d').year-1
+            dec.month = 12
             dec.bill = u.totalbill_dec
             dec.payment = 0
             dec.transType = 'Billing'

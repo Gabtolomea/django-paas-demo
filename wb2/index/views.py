@@ -28,10 +28,10 @@ from .tokens import generate_token
 
 
 def porter(request):
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
-    # balance()
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    balance()
     return render(request, "landing.html")
 
 # @unauthenticated_user
@@ -267,24 +267,14 @@ def inputreading(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id = id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing')
-    trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year)
-    dec = None
-    if year<date.today().year:
-        nexttrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', date__year = year+1)
-        try:
-            dec = nexttrans.get(date__month=1)
-        except ObjectDoesNotExist:
-            dec = None
+    trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', year = year)
     asc_trans = trans.order_by('date')
     count = len(asc_trans)
-    j = 0
-    if asc_trans[0].date.month == 1:
-        j = 1
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
-    if int(year) in years:
-        years.remove(int(year))
+    if year in years:
+        years.remove(year)
     # print(asc_trans)
     # print(count)
     lastreading = 0

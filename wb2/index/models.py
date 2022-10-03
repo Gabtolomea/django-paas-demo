@@ -1,6 +1,7 @@
 
 from datetime import date
 from operator import is_
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
@@ -144,6 +145,8 @@ class Transactions(models.Model):
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
     bill = models.FloatField(null=True)
+    month = models.IntegerField(blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
