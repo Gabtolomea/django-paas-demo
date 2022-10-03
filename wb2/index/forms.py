@@ -43,11 +43,9 @@ class SystemUserForm(UserCreationForm):
             'is_reader',
             'midname',
             'mobilenum',
-            # 'profilepic',
+            'profilepic',
             'authorizedapprover',
         )
-
-
 
 class sysup(ModelForm):
     CHOICES =(
