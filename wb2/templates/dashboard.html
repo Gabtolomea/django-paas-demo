@@ -1,4 +1,4 @@
-<!-- {% load static %} -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,8 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
-    <!-- {% block style %}
-    {% endblock style %} -->
+    {% block style %}
+    {% endblock style %}
 </head>
 
 <body>
@@ -20,7 +20,7 @@
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
     </div>
     <header>
-        <!-- {% for message in messages %}
+        {% for message in messages %}
         <div
             class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
             <strong>{{message.tags|title}}!</strong> {{message}}
@@ -28,7 +28,7 @@
                 style="color: var(--bs-{% if message.tags == 'error' %} danger {% else %}{{message.tags}}{% endif %}); text-decoration: none;"
                 aria-label="close">&times;</a>
         </div>
-        {% endfor %} -->
+        {% endfor %}
 
        <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
 
@@ -128,7 +128,9 @@
         </ul>
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
-        <!-- {% block ledger %}
+
+
+        {% block ledger %}
         {% endblock ledger%}
 
         {% block meterreading %}
@@ -141,7 +143,7 @@
         {% endblock consumer_list %}
 
         {% block sysuser %}
-        {% endblock sysuser %} -->
+        {% endblock sysuser %}
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
