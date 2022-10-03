@@ -381,8 +381,9 @@ button.btn.btn-wb-copy:hover {
     left: 0px;
     transition: all 1s ease;
     opacity: 0;
-}
+    z-index: -1;
 
+}
 .main_content {
     padding-left: 420px !important;
     transition: all 1s ease;
@@ -405,7 +406,7 @@ button.btn.btn-wb-copy:hover {
     background-color: #fff;
     z-index: 99;
   }
-  
+
   #loading-image {
     z-index: 100;
   }
