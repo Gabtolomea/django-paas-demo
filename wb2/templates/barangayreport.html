@@ -1,0 +1,60 @@
+<form method = 'POST'>
+    {% csrf_token %}
+<div>
+    <div class = "col-sm-offset-7 col-sm-5">
+        <div class="form-group">
+            <label for="exampleInputBarangay">Select Year</label>
+            <select name="{{record.year}}" onchange='this.form.submit();'>
+              <option value="{{br.year}}" selected>{{record.year}}</option>
+              {% for br in br %}
+              <option value="{{br.year}}">{{br.year}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <noscript><input type="submit" value="Submit" href="/{{br.year}}"></noscript>
+  </div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Barangay</th>
+            <th>Total Usage (Cubic Meter)</th>
+            <th>Total Receivable</th>
+            <th>Total Collection</th>
+            <th>Collection Rate</th>
+        </tr>
+    </thead>
+
+<tbody>
+    {% for br in br %}
+    <tr>
+        <td>{{br.barangaycode}}</td>
+        <td>{{br.total_usage|floatformat:1}}</td>
+        <td>{{br.total_rec|floatformat:1}}</td>
+        <td>{{br.total_paid|floatformat:1}}</td>
+        <td>{{br.percent|floatformat:1}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td> Total</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+
+
+</tbody>
+
+</table>
+
+
+</div>
+</form>
