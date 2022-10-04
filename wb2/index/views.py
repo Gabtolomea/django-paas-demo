@@ -288,6 +288,7 @@ def inputreading(request, id, year):
         prev = lastreading
         reading = prev
         style = ''
+        next = False
         # print(str(i)+" "+str(j+1))
         if j<count and count != 0:
             if i == asc_trans[j].month:
