@@ -42,7 +42,6 @@ class Rates(models.Model):
         return self.connectionType
 
 class Penalty(models.Model):
-    penalty_id = models.CharField(primary_key=True, max_length=20)
     penalty_after =  models.IntegerField(default = 0)#months
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)

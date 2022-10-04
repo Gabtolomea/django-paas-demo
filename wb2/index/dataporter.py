@@ -304,6 +304,11 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
+    penalty = Penalty()
+    penalty.penalty_after = 0
+    penalty.penalty_rate = 0
+    penalty.penalty_info = ''
+    penalty.save()
 
 
 def billing_out():
