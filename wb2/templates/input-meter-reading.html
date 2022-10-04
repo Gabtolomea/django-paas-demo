@@ -59,7 +59,7 @@
 <h1 class="mb-3 text-center">Meter Reading</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">
-		<form id="yearselection" action="">
+		<!-- <form id="yearselection" action="">
 			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
 				{% for i in years reversed %}
@@ -70,58 +70,64 @@
 		<script>
 			yearselection = document.getElementById("yearselection")
 			selector = document.getElementById("selector")
-			function change(){
+			function change() {
 				yearselection.action = selector.value
 				yearselection.submit()
 			}
-		</script>
-		<table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+		</script> -->
+		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr>
 					<th style="min-width: 100px;">Month</th>
-					<th style="min-width: 100px;">Meter Reading</th>
 					<th style="min-width: 100px;">Consumption</th>
+					<th style="min-width: 100px;">Meter Reading</th>
 					<th style="min-width: 100px;">Action</th>
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table %}
-				<form action="{{cur_year}}" method="POST">
+				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
 					{% csrf_token %}
-				<tr>
-					<td class="{{t.style}}">{{t.month}}</td>
-					<td class="{{t.style}} p-0"><input class="input form-control border-0 rounded-0" name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled type="number" min=0 value="{{t.reading}}"></td>
-					<td class="{{t.style}}">{{t.usage}}</td>
-					<td class="{{t.style}} p-0">
-						<button id="edit-{{t.transid}}" type="button" class="btn btn-primary" onclick="toggle({{t.transid}})">
-							<i class="fa fa-edit"></i>
-						</button>
-						<button id="submit-{{t.transid}}" style="display: none;" class="btn btn-success" onclick="enableAll()" type="submit">SAVE</button>
-					</td>
-				</tr>
+					<tr>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.month}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled
+								type="number" min={{t.prev}} value="{{t.reading}}"></td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							<button id="edit-{{t.transid}}" type="button" class="btn btn-primary"
+								onclick="toggle({{t.transid}})">
+								<i class="fa fa-edit"></i>
+							</button>
+							<button id="submit-{{t.transid}}" style="display: none;" class="btn btn-success"
+								onclick="enableAll()" type="submit">SAVE</button>
+						</td>
+					</tr>
 				</form>
 				{% endfor %}
-				<script>
-					function enableAll(){
-						inputs = document.getElementsByClassName('input')
-						for (let i = 0; i < inputs.length; i++) {
+			</tbody>
+			<script>
+				function enableAll() {
+					inputs = document.getElementsByClassName('input')
+					for (let i = 0; i < inputs.length; i++) {
+						if (inputs[i].disabled){
 							inputs[i].disabled = !inputs[i].disabled
 						}
 					}
-					function toggle(id){
-						input = document.getElementById(id)
-						submit = document.getElementById("submit-"+id)
-						input.disabled = !input.disabled
-						chars = input.value.length
-						if (input.disabled){
-							submit.style.display = "none"
-						}else{
-							submit.style.display = "block"
-						}
-						input.focus()
+				}
+				function toggle(id) {
+					input = document.getElementById(id)
+					submit = document.getElementById("submit-" + id)
+					input.disabled = !input.disabled
+					chars = input.value.length
+					if (input.disabled) {
+						submit.style.display = "none"
+					} else {
+						submit.style.display = "block"
 					}
-				</script>
-			</tbody>
+					input.focus()
+				}
+			</script>
 		</table>
 	</div>
 </div>

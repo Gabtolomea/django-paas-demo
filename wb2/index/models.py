@@ -1,10 +1,15 @@
 
 from datetime import date
+from email.policy import default
+from operator import is_
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class SystemUsers(AbstractUser):
-    password = models.BinaryField(max_length=450, blank=True)
+    first_name = models.CharField(max_length=20, blank=True)
+    last_name = models.CharField(max_length=20, blank=True)
+    password = models.BinaryField(max_length=450, blank=True, editable = True)  
     username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
@@ -15,8 +20,12 @@ class SystemUsers(AbstractUser):
     mobilenum = models.CharField(max_length=20, blank=True)
     profilepic = models.ImageField(blank=True, null=True)
     authorizedapprover = models.CharField(max_length=20)
+    email = models.EmailField(max_length=100,null=True, blank=True)
+
     def __str__(self) -> str:
         return self.username
+
+
 class Rates(models.Model):
     rate_id = models.CharField(primary_key=True, max_length=20)
     connectionType = models.CharField(max_length=20, blank=True, null=True)
@@ -137,6 +146,8 @@ class Transactions(models.Model):
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
     bill = models.FloatField(null=True)
+    month = models.IntegerField(blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)

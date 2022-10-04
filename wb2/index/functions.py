@@ -10,3 +10,9 @@ def n_str(var):
         return ''
     else:
         return var
+
+def str_int(var):
+    if var == '':
+        return 0
+    else:
+        return int(var)
