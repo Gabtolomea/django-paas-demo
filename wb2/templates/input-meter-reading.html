@@ -142,42 +142,44 @@ Input Reading
 		<center><h1>Usage Reports</h1></center>
 		<br>
 		<!-- Chart -->
-		<div class="container align-items-center">
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-			<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-				<script>
-					var labels =[{%for i in table%} '{{i.month}}', {% endfor %}];
-					var chart = new Chart("myChart", {
-						type: "line",
-						data: {
-							labels: labels,
-							datasets: [{
-							data: [{%for i in table%} '{{i.usage}}', {% endfor %}],
-							label: "Total Usage",
-							fill: false,
-							borderColor: '#20B2AA',
-							tension: 0.1,
-							backgroundColor: "#3090C7",
-							}]
-						},
-						options: {
-						title: {
-							display: true,
-							text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
-						},
-						scales: {
-						xAxes: [{
-							ticks: {
-							beginAtZero: true
-							}
-						}]
-						}
 
-					}
-					})
+	</div>
+	<div class="container align-items-center">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+		<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+			<script>
+				var labels =[{%for i in table%} '{{i.month}}', {% endfor %}];
 				
-				</script>
-		</div>
+				var chart = new Chart("myChart", {
+					type: "line",
+					data: {
+						labels: labels,
+						datasets: [{
+						data: [{%for i in table%} '{{i.usage}}', {% endfor %}],
+						label: "Total Usage",
+						fill: false,
+						borderColor: '#20B2AA',
+						tension: 0.1,
+						backgroundColor: "#3090C7",
+						}]
+					},
+					options: {
+					title: {
+						display: true,
+						text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
+					},
+					scales: {
+					xAxes: [{
+						ticks: {
+						beginAtZero: true
+						}
+					}]
+					}
+
+				}
+				})
+			
+			</script>
 	</div>
 </div>
 
