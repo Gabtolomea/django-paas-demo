@@ -287,6 +287,7 @@ def inputreading(request, id, year):
         prev = lastreading
         reading = prev
         style = ''
+        next=False
         # print(str(i)+" "+str(j+1))
         if j<count and count != 0:
             if i == asc_trans[j].month:
@@ -305,6 +306,7 @@ def inputreading(request, id, year):
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
     
+    con_penalty = Penalty.objects.get(id=consumer.penaltyid)
     if request.method=="POST":
         readings = []
         for i in range(12):
@@ -314,11 +316,16 @@ def inputreading(request, id, year):
         d = 1
         for i in readings:
             if i !=0:
+                if consumer.penaltycounter >= con_penalty.penalty_after:
+                  #via percentage
+                    if con_penalty.penalty_rate != 0:
+                        xy = con_penalty.penalty_rate * usageID.commulative_bill
+                        interest = xy / 100
+                        usageID.penalty_jan = interest
                 try:
                     Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
-
                     t = Transactions()
                     t.acctID = consumer
                     t.transType = 'Billing'
@@ -517,9 +524,6 @@ def barangayreport(request, year):
     context = {
         'br': br,
         'record': record,
-    
-        
-
     }
 
     return render(request, 'barangayreport.html', context)
@@ -556,5 +560,9 @@ def payment(request, id):
         t.processedBy = request.user.username
         t.or_number = or_num
         t.save()
+        if consumer.current_bal>0:
+            consumer.penaltycounter+=1
+        else:
+            consumer.penaltycounter = 0
         get_balance(id)
     return redirect('ledger', id=id)

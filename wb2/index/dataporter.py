@@ -84,6 +84,11 @@ bar = [
 ]
 usage_rec = usage_record()
 def porter_out(tables):
+    penalty = Penalty()
+    penalty.penalty_after = 0
+    penalty.penalty_rate = 0
+    penalty.penalty_info = ''
+    penalty.save()
     for i in bar:
         b = Barangays()
         b.barangay = i
@@ -104,8 +109,9 @@ def porter_out(tables):
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
         con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
+        con_info.penaltyid = Penalty.objects.get(id=1)
         con_info.status = tables[0][i][8]
-        con_info.penaltyflag = tables[0][i][11]
+        con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
         con_info.deleteflag = tables[0][i][14]
         con_info.save()
@@ -304,11 +310,7 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
-    penalty = Penalty()
-    penalty.penalty_after = 0
-    penalty.penalty_rate = 0
-    penalty.penalty_info = ''
-    penalty.save()
+    
 
 
 def billing_out():
