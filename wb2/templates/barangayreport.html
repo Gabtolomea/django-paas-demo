@@ -1,60 +1,72 @@
-<form method = 'POST'>
+<form method='POST'>
     {% csrf_token %}
-<div>
-    <div class = "col-sm-offset-7 col-sm-5">
-        <div class="form-group">
-            <label for="exampleInputBarangay">Select Year</label>
-            <select name="{{record.year}}" onchange='this.form.submit();'>
-              <option value="{{br.year}}" selected>{{record.year}}</option>
-              {% for br in br %}
-              <option value="{{br.year}}">{{br.year}}</option>
-              {%endfor%}
-            </select>
-          </div>
-          <noscript><input type="submit" value="Submit" href="/{{br.year}}"></noscript>
-  </div>
+    <div>
+        <div class="col-sm-offset-7 col-sm-5">
+            <div class="form-group">
+                <label for="exampleInputBarangay">Select Year</label>
+                <form id="yearselection" action="">
+                    <select class="form-select" id="selector" onchange="change()">
+                        <option value="{{cur_year}}">{{cur_year}}</option>
+                        <!-- {% for i in years reversed %} -->
+                        <option value="{{year}}">{{year}}</option>
+                        <!-- {% endfor %} -->
+                    </select>
+                </form>
+                <script>
+                    yearselection = document.getElementById("yearselection")
+                    selector = document.getElementById("selector")
+                    function change() {
+                        yearselection.action = selector.value
+                        yearselection.submit()
+                    }
+                </script>
+            </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Barangay</th>
-            <th>Total Usage (Cubic Meter)</th>
-            <th>Total Receivable</th>
-            <th>Total Collection</th>
-            <th>Collection Rate</th>
-        </tr>
-    </thead>
+        </div>
 
-<tbody>
-    {% for br in br %}
-    <tr>
-        <td>{{br.barangaycode}}</td>
-        <td>{{br.total_usage|floatformat:1}}</td>
-        <td>{{br.total_rec|floatformat:1}}</td>
-        <td>{{br.total_paid|floatformat:1}}</td>
-        <td>{{br.percent|floatformat:1}}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td> Total</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+        <table>
+            <thead>
+                <tr>
+                    <th>Barangay</th>
+                    <th>Total Usage (Cubic Meter)</th>
+                    <th>Total Receivable</th>
+                    <th>Total Collection</th>
+                    <th>Collection Rate</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for br in br %}
+                <tr>
+                    <td >
+                        <a href="view_barangay/{{br.barangayrec_id}}">{{br.barangaycode}}</a>
+                    </td>
+                    <td>{{br.total_usage|floatformat:1}}</td>
+                    <td>{{br.total_rec|floatformat:1}}</td>
+                    <td>{{br.total_paid|floatformat:1}}</td>
+                    <td>{{ value|default_if_none:"nothing" }}{{br.percent|floatformat:1}}%</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>{{td.tu|floatformat:1}}</td>
+                    <td>{{td.tr|floatformat:1}}</td>
+                    <td>{{td.tp|floatformat:1}}</td>
+                    <td>{{ value|default_if_none:"nothing" }}{{td.tper|floatformat:1}}%</td>
+                </tr>
 
 
-</tbody>
+            </tbody>
 
-</table>
+        </table>
 
 
-</div>
+    </div>
 </form>
