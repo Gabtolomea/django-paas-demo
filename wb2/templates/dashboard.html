@@ -20,21 +20,16 @@
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
     </div>
     <header>
-
-        {% for message in messages %}
-        <div
-            class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
-            <strong>{{message.tags|title}}!</strong> {{message}}
-            <a href="#" class="close" data-dismiss="alert"
-                style="color: var(--bs-{% if message.tags == 'error' %} danger {% else %}{{message.tags}}{% endif %}); text-decoration: none;"
-                aria-label="close">&times;</a>
+     {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+          <strong>{{message.tags|title}}!</strong> {{message}}
+            <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
         </div>
         {% endfor %}
 
-       <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
+            <!-- <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
 
-                <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px; white-space: nowrap;" >
-
+                <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px; white-space: nowrap;" > -->
 
         <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
             <div class="col-sm-9 col-md-9 col-lg-9;" style="font-size: 34px; white-space: nowrap;">
@@ -61,7 +56,6 @@
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
-
         </div>
         <!-- </div>
     </div> -->
@@ -83,12 +77,10 @@
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span class="sidenav_text">Meter Reading</span>
 
-
                 </li>
             </a>
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li">
-
                     <i class="fa-solid fa-user fa-2x"></i>
                     <span class="sidenav_text">User Accounts</span>
                 </li>
@@ -103,12 +95,10 @@
                 <li class="side_nav_li">
                     <i class="fa-solid fa-thumbs-up fa-2x"></i>
                     <span class="sidenav_text">Approve Application</span>
-
                 </li>
             </a>
             <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li">
-
                     <i class="fa-solid fa-user-group fa-2x"></i>
                     <span class="sidenav_text">Users Management</span>
                 </li>
@@ -134,13 +124,6 @@
         </ul>
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
-        <div class="container-fluid p-0">
-            <div class="table_responsive" style="max-height: 922px;">
-                <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-                    <thead class="wb_thead">
-
-
-
         {% block ledger %}
         {% endblock ledger%}
 
