@@ -144,7 +144,7 @@ def ledger(request, id):
     if ConsumerInfo.objects.filter(pk=id).exists():
         u = ConsumerInfo.objects.get(pk=id)
         trans = Transactions.objects.filter(acctID=u.consumer_id)
-        asc_trans = trans.order_by('year','month')
+        asc_trans = trans.order_by('year','month','transactionid')
         bal = 0
         p = 0
         current = 0
@@ -290,22 +290,23 @@ def inputreading(request, id, year):
                 lastreading = reading
                 style = '-success'
                 j+=1
-        print(str(prev)+" "+str(reading)+" "+str(next))
+        # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
+    
     if request.method=="POST":
         readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1],0)
             readings.append(int(r))
-        print(readings)
+        # print(readings)
         d = 1
         for i in readings:
             if i !=0:
                 try:
                     Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
-                    print("create transaction")
+                    # print("create transaction")
                     t = Transactions()
                     t.acctID = consumer
                     t.transType = 'Billing'
@@ -327,7 +328,7 @@ def inputreading(request, id, year):
                     t.save()
                     get_balance(id)
                 else:
-                    print("update transaction")
+                    # print("update transaction")
                     t = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                     lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
                     try:
@@ -338,6 +339,7 @@ def inputreading(request, id, year):
                         next = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d+1)
                         next.usage = next.meterReading - i
                         next.save()
+                    
                     lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
                     t.meterReading = i
                     t.date = date.today()
@@ -352,10 +354,14 @@ def inputreading(request, id, year):
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
+                    
                     t.save()
                     get_balance(id)
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
+    
+    # CHARLIE DIRI PAGHIMO
+
     context = {
         'consumer':consumer,
         'table':table,
@@ -504,4 +510,18 @@ def user_edit(request, id):
     return render(request, 'user_edit.html', context)
 
 def payment(request, id):
+    if request.method == 'POST':
+        amount = request.POST['amount']
+        or_num = request.POST['or_num']
+        t = Transactions()
+        t.acctID = ConsumerInfo.objects.get(consumer_id=id)
+        t.transType = "Payment"
+        t.date = date.today()
+        t.year = date.today().year
+        t.month = date.today().month
+        t.payment = amount
+        t.processedBy = request.user.username
+        t.or_number = or_num
+        t.save()
+        get_balance(id)
     return redirect('ledger', id=id)
