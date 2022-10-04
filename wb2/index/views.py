@@ -24,13 +24,10 @@ from .dataporter import *
 from .ledger import *
 import math
 from .tokens import generate_token
-<<<<<<< HEAD
 from django.core.files.storage import FileSystemStorage
-=======
 from django.db.models import F, Sum
 from django.db.models.functions import Coalesce
 
->>>>>>> ryla
 
 def porter(request):
     # porter_in()
