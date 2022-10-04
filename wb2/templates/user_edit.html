@@ -1,0 +1,215 @@
+
+        
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Registration Form</title>
+	<link rel="stylesheet" type="text/css" href="/wb2/static/style.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+	
+	</head>
+	<style>
+
+		html{
+			height: 100%;
+		}
+		body{
+			height: 100%;
+			background-image: linear-gradient(white,#63CDD7);
+		}
+	.form-header{
+		font-family: Arial;
+		margin: 0px 0px 16px;
+		padding: 0px 12px;
+	}
+
+	.container {
+		font-family: Arial;
+		color: #ffffff;
+	}
+
+	.wrapper {
+		font: 16px Arial;
+		margin: 0px 0px 16px;
+		padding: 0px 12px;
+		background: #63CDD7;
+		border-radius: 40px;
+		padding: 30px;
+	}
+
+	.approver {
+		font: 16px Arial;
+		margin: 0px 0px 16px;
+		padding: 0px 12px;
+	}
+		.submit {
+			background-color: #0093B7;
+			color: white;
+			border-radius: 25px;
+			width: 100%;
+			text-align: center;
+		}
+	</style>
+	<body>
+		<section id="registration-page">
+			<form action="user_creation" method="POST" class="signup-form">
+				{% csrf_token %}
+				<div class="container">
+					<div class=" shadow wrapper m-4">
+						<div class="form-header">
+							<h1>Registration Form</h1>
+						</div>
+						<div class="row form-group w-100 m-auto">
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+								{% if form.errors %}
+									{% for error in form.first_name.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">First Name*</label>
+								{{form.first_name}}
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+								{% if form.errors %}
+									{% for error in form.mid_name.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Middle Name*</label>
+								{{form.mid_name}}
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+								{% if form.errors %}
+									{% for error in form.last_name.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Last Name*</label>
+								{{form.last_name}}
+							</div>
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+								{% if form.errors %}
+									{% for error in form.mobilenum.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Mobile Number*</label>
+								{{form.mobilenum}}
+							</div>
+								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+									{% if form.errors %}
+										{% for error in form.email.errors %}
+										<div class="alert alert-danger">
+											<strong>{{ error|escape }}</strong>
+										</div>
+										{% endfor %}
+									{% endif %}
+									<label for="">Email*</label>
+									{{form.email}}
+								</div>
+								<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+									{% if form.errors %}
+										{% for error in form.username.errors %}
+										<div class="alert alert-danger">
+											<strong>{{ error|escape }}</strong>
+										</div>
+										{% endfor %}
+									{% endif %}
+									<label for="">User ID*</label>
+									{{form.username}}
+								</div>
+						</div>
+
+						<div class="row form-group w-100 m-auto">
+							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+								{% if form.errors %}
+									{% for error in form.password.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Password*</label>
+								<input type="password" name="" id="" value="{{password}}">
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+								{% if form.errors %}
+									{% for error in form.password.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="">Password*</label>
+								<input type="password" name="" id="" value="{{password}}">
+							</div>
+						</div>
+
+						<div class="row m-auto w-100">
+							<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+								<h3>Type of User</h3>
+								{{form.is_admin}}
+								<label for="id_is_admin">ADMIN</label><br>
+								{{form.is_teller}}
+								<label for="id_is_teller">TELLER</label><br>
+								{{form.is_supervisor}}
+								<label for="id_is_supervisor">SUPERVISOR</label><br>
+								{{form.is_manager}}
+								<label for="id_is_manager">MANAGER</label><br>
+								{{form.is_reader}}
+								<label for="id_is_reader">METER READER</label><br>
+							</div>
+					    </div>
+						<div class="row w-100 m-auto mb-3">
+							<div class="col-lg-12 col-md-12 col-sm-12 mb-4">
+								
+								{% if form.errors %}
+									{% for error in form.authorizedapprover.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<div class="input-group mb-2">
+									<label class="input-group-text" for="inputGroupSelect01">Authorized Approver</label>
+									{{form.authorizedapprover}}
+								  </div>
+							</div>
+							<div class="profile mb-3">
+								{% if form.errors %}
+									{% for error in form.profilepic.errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<label for="formFile" class="form-label">Profile Picture*</label>
+								{{form.profilepic}}
+							</div>
+						</div>
+						<button type="submit" id="footer-subscription-button" class="btn submit" >Submit</button>
+						
+
+					</div>
+				</div>
+			</div>
+		</form>
+	</section>
+</body>
+
+</html>

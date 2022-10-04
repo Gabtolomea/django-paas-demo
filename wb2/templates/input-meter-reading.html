@@ -1,6 +1,9 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
+{% block title %}
+Input Reading
+{% endblock title %}
 
 {% block ledger %}
 <div class="container-fluid p-0">
@@ -75,26 +78,26 @@
 				yearselection.submit()
 			}
 		</script> -->
-		<table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr>
 					<th style="min-width: 100px;">Month</th>
-					<th style="min-width: 100px;">Meter Reading</th>
 					<th style="min-width: 100px;">Consumption</th>
+					<th style="min-width: 100px;">Meter Reading</th>
 					<th style="min-width: 100px;">Action</th>
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table %}
-				<form action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
+				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
 					{% csrf_token %}
 					<tr>
-						<td class="{{t.style}}">{{t.month}}</td>
-						<td class="{{t.style}} p-0">
-							<input class="input form-control border-0 rounded-0" name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled
-								type="number" min=0 value="{{t.reading}}"></td>
-						<td class="{{t.style}}">{{t.usage}}</td>
-						<td class="{{t.style}} p-0">
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.month}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled
+								type="number" min={{t.prev}} {% if t.next %}max = "{{t.next}}"{%endif%} value="{{t.reading}}"></td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<button id="edit-{{t.transid}}" type="button" class="btn btn-primary"
 								onclick="toggle({{t.transid}})">
 								<i class="fa fa-edit"></i>
