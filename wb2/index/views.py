@@ -25,6 +25,8 @@ from .ledger import *
 from .functions import *
 import math
 from .tokens import generate_token
+from django.db.models import F, Sum, FloatField
+from django.db.models.functions import Coalesce
 
 
 def porter(request):
@@ -35,9 +37,13 @@ def porter(request):
     return render(request, "landing.html")
 
 # @unauthenticated_user
+
+
 def lp(request):
     return render(request, "landing.html")
 # @unauthenticated_user
+
+
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -57,6 +63,8 @@ def signin(request):
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
 # @login_required(login_url='login')
+
+
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -115,6 +123,8 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 # @login_required(login_url='login')
+
+
 def dashboard(request):
     user = request.user
     context = {
@@ -243,6 +253,7 @@ def meterreading(request):
 def inputreading(request, id, year):
     table = []
     years = []
+
     class meterreaderclass():
         def __init__(self, transid , month, usage, prev, reading, next, style):
             self.transid = transid
@@ -297,7 +308,7 @@ def inputreading(request, id, year):
     if request.method=="POST":
         readings = []
         for i in range(12):
-            r = request.POST.get('reading-'+calendar.month_name[i+1],0)
+            r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
             readings.append(int(r))
         # print(readings)
         d = 1
@@ -307,6 +318,7 @@ def inputreading(request, id, year):
                     Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
+
                     t = Transactions()
                     t.acctID = consumer
                     t.transType = 'Billing'
@@ -355,14 +367,12 @@ def inputreading(request, id, year):
                 get_balance(id)
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
-    
-    # CHARLIE DIRI PAGHIMO
 
     context = {
-        'consumer':consumer,
-        'table':table,
-        'cur_year':year,
-        'years':years
+        'consumer': consumer,
+        'table': table,
+        'cur_year': year,
+        'years': years
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -487,6 +497,32 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
+def barangayreport(request, year):
+    record = BarangayRecord.objects.all()
+    br = BarangayRecord.objects.filter(year=year).annotate(
+        total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
+        F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
+        F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'),
+        total_due=F('total_due_jan') + F('total_due_feb') + F('total_due_mar') + F('total_due_apr') + F('total_due_may') + F('total_due_jun') +
+        F('total_due_jul') + F('total_due_aug') + F('total_due_sept') +
+        F('total_due_oct') + F('total_due_nov') + F('total_due_dec'),
+        total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
+        F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
+        F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
+        total_rec=F('total_due') - F('total_paid'),
+        percent=F('total_paid') / F('total_due')*100)
+
+    tl = BarangayRecord.objects.filter(year=year).aggregate()
+
+    context = {
+        'br': br,
+        'record': record,
+    
+        
+
+    }
+
+    return render(request, 'barangayreport.html', context)
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -507,10 +543,11 @@ def user_edit(request, id):
 
 def payment(request, id):
     if request.method == 'POST':
+        consumer = ConsumerInfo.objects.get(consumer_id=id)
         amount = request.POST['amount']
         or_num = request.POST['or_num']
         t = Transactions()
-        t.acctID = ConsumerInfo.objects.get(consumer_id=id)
+        t.acctID = consumer
         t.transType = "Payment"
         t.date = date.today()
         t.year = date.today().year
