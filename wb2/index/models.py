@@ -42,15 +42,12 @@ class Rates(models.Model):
         return self.connectionType
 
 class Penalty(models.Model):
-    penalty_id = models.CharField(primary_key=True, max_length=20)
-    penalty_type = models.CharField(max_length=20)
-    penalty_rate = models.IntegerField()
+    penalty_after =  models.IntegerField(default = 0)#months
+    penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
-    def __str__(self) -> str:
-        return self.penalty_type
 
 class Discount(models.Model):
     discount_id = models.CharField(primary_key=True, max_length=20)
@@ -116,7 +113,7 @@ class ConsumerInfo(models.Model):
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
     status = models.IntegerField()
-    penaltyflag = models.BooleanField()
+    penaltycounter = models.IntegerField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
@@ -125,12 +122,7 @@ class ConsumerInfo(models.Model):
     sex = models.CharField(max_length=6,null=True, blank=True)
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
-    current_bal = models.IntegerField(default=0)
-class Penalties(models.Model):
-    penaltycode = models.CharField(primary_key=True, max_length=20)
-    penalty = models.IntegerField()
-class Discounts(models.Model):
-    discount = models.IntegerField()
+    current_bal = models.FloatField(default=0)
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
@@ -354,3 +346,26 @@ class usage_record(models.Model):
     txrefnum_dec = models.CharField(max_length=45,default = " ")
     ior_dec = models.CharField(max_length=50,default=" ")
     amountpaid_str_dec = models.TextField(default="")
+
+class revenuecode(models.Model):
+    application_fee = models.FloatField(default = 0)
+    mayors_permit = models.FloatField(default = 0)
+    gravel_excavation = models.FloatField(default = 0)
+    asphalted_road = models.FloatField(default = 0)
+    cemented_road = models.FloatField(default = 0)
+    additionalfee_pipe_of_20_lineal_feet = models.FloatField(default = 0)
+    residentialservice_per_month = models.FloatField(default = 0)
+    commercialservice_per_month = models.FloatField(default = 0)
+    residentialservice_excess_per_cubicmeter = models.FloatField(default = 0)
+    commercialservice_excess_per_cubicmeter = models.FloatField(default = 0)
+    drilling_from_mainline = models.FloatField(default = 0)
+    reinstallation_fee = models.FloatField(default = 0)
+    tapping_fee = models.FloatField(default = 0)
+    repair_fee = models.FloatField(default = 0)
+    transfer_fee = models.FloatField(default = 0)
+    three_month_penalty = models.FloatField(default = 0)
+    send_disconnection_notice_after = models.IntegerField(default = 0)#months
+    disconnection_after = models.IntegerField(default = 0)#months
+    penalty_after = models.IntegerField(default = 0)#months
+    fix_amount_penalty = models.FloatField(default = 0)
+    percentage_penalty = models.FloatField(default = 0)
