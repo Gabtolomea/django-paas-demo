@@ -326,11 +326,10 @@ def inputreading(request, id, year):
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
-                    get_balance(id)
                 else:
                     # print("update transaction")
                     t = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
-                    lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
+                    lastreading = last_reading(id, year, d)
                     try:
                         Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d+1)
                     except ObjectDoesNotExist:
@@ -339,24 +338,21 @@ def inputreading(request, id, year):
                         next = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d+1)
                         next.usage = next.meterReading - i
                         next.save()
-                    
-                    lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
                     t.meterReading = i
                     t.date = date.today()
                     t.usage = i - lastreading
                     rate = Rates.objects.get(rate_id = t.ratescode)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
-                        print(rate.minReadingCharge)
                     else:
                         xcubic = t.usage - rate.minReading
-                        print(usage)
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
                     
                     t.save()
-                    get_balance(id)
+                
+                get_balance(id)
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
     
