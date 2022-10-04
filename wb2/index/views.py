@@ -26,6 +26,7 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
+from django.db.models import F, Sum, FloatField
 from django.db.models.functions import Coalesce
 
 
@@ -545,7 +546,7 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 def barangayreport(request, year):
-    yr =BarangayRecord.objects.all(year)
+    record = BarangayRecord.objects.all()
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -559,11 +560,13 @@ def barangayreport(request, year):
         total_rec=F('total_due') - F('total_paid'),
         percent=F('total_paid') / F('total_due')*100)
 
+    tl = BarangayRecord.objects.filter(year=year).aggregate()
+
     context = {
         'br': br,
-        'year': yr
-
+        'record': record,
     }
+
 
     return render(request, 'barangayreport.html', context)
 def payment(request, id):
