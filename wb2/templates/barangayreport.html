@@ -24,7 +24,7 @@
 
         </div>
 
-        <table>
+        <table id = "checkme">
             <thead>
                 <tr>
                     <th>Barangay</th>
@@ -44,7 +44,7 @@
                     <td>{{br.total_usage|floatformat:1}}</td>
                     <td>{{br.total_rec|floatformat:1}}</td>
                     <td>{{br.total_paid|floatformat:1}}</td>
-                    <td>{{ value|default_if_none:"nothing" }}{{br.percent|floatformat:1}}%</td>
+                    <td>{{br.percent|floatformat:1}}%</td>
                 </tr>
                 {% endfor %}
                 <tr>
@@ -59,14 +59,13 @@
                     <td>{{td.tu|floatformat:1}}</td>
                     <td>{{td.tr|floatformat:1}}</td>
                     <td>{{td.tp|floatformat:1}}</td>
-                    <td>{{ value|default_if_none:"nothing" }}{{td.tper|floatformat:1}}%</td>
+                    <td>{{td.tper|floatformat:1}}%</td>
                 </tr>
 
 
             </tbody>
 
         </table>
-
 
     </div>
 </form>
