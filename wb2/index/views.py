@@ -585,3 +585,5 @@ def payment(request, id):
         t.save()
         get_balance(id)
     return redirect('ledger', id=id)
+
+
