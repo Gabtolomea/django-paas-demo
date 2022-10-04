@@ -3,7 +3,10 @@
 <html lang="en">
 
 <head>
-    <title>Dashboard</title>
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -27,38 +30,29 @@
         </div>
         {% endfor %}
 
-            <!-- <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
+            <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
+                <div class="col-sm-9 col-md-9 col-lg-9;" style="font-size: 34px; white-space: nowrap;" >
+                    <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span style="color: #63CDD7;">STATION</span></span>
+                </div>
+                <div class="mobile_header_nav col-sm-3 col-md-3 col-lg-3" style="text-align: right; padding: 10px;" id="mobile_header_nav">
 
-                <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px; white-space: nowrap;" > -->
-
-        <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
-            <div class="col-sm-9 col-md-9 col-lg-9;" style="font-size: 34px; white-space: nowrap;">
-                <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
-                    <i class="fa fa-bars"></i>
-                </button>
-
-                <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span
-                        style="color: #63CDD7;">STATION</span></span>
+                    <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
+                        <i class="fa-solid fa-bell"></i>
+                    </a>
+                    <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </a>
+                    <a href="{% url 'signout' %}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
             </div>
-            <div class="mobile_header_nav col-sm-3 col-md-3 col-lg-3" style="text-align: right; padding: 10px;"
-                id="mobile_header_nav">
-
-                <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
-                    <i class="fa-solid fa-bell"></i>
-                </a>
-                <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i>
-                </a>
-                <a href="{% url 'signout' %}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </a>
-            </div>
-        </div>
-        <!-- </div>
-    </div> -->
     </header>
     <div class="sidebar" style="height: auto !important; min-height: 100%;" id="side_nav">
         <div class="user_info">

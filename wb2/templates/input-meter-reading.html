@@ -1,6 +1,9 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
+{% block title %}
+Input Reading
+{% endblock title %}
 
 {% block ledger %}
 <div class="container-fluid p-0">
@@ -28,7 +31,8 @@
 					<td>{{consumer.meternumber}}</td>
 					<td>{{consumer.homeaddress}}</td>
 					<td>
-						<form action="{% url 'stopmeter' consumer.consumer_id %}" method="post">
+						<form action="" method="post">
+							{% comment %} {% url 'stopmeter' consumer.consumer_id %} {% endcomment %}
 							{% csrf_token %}
 							{% if consumer.stopmeterflag %}
 							<button class="btn btn-success btn-sm rounded-3" type="submit"
@@ -56,7 +60,7 @@
 		<button type="button" class="btn btn-wb-copy">Get a Copy</button>
 	</div>
 </div>
-<h1 class="mb-3 text-center">Meter Reading</h1>
+<h1 class="mb-3 text-center">Input Reading</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">
 		<!-- <form id="yearselection" action="">
@@ -75,26 +79,45 @@
 				yearselection.submit()
 			}
 		</script> -->
-		<table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-			<thead class="wb_thead">
-				<tr>
-					<th style="min-width: 100px;">Month</th>
-					<th style="min-width: 100px;">Consumption</th>
-					<th style="min-width: 100px;">Meter Reading</th>
-					<th style="min-width: 100px;">Action</th>
+		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
+			<thead class="wb_thead" >
+				<tr class="header">
+					<th scope="col" style="min-width:110px">Month</th>
+					<th scope="col" style="min-width:120px">Consumption</th>
+					<th scope="col" style="min-width:100px">Meter Reading</th>
+					<th scope="col" style="min-width:100px">Actions</th>
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
-				{% for t in table %}
-				<form action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
+				<form class="sr-only" action="" method="POST">
 					{% csrf_token %}
 					<tr>
-						<td class="{{t.style}}">{{t.month}}</td>
-						<td class="{{t.style}}">{{t.usage}}</td>
-						<td class="{{t.style}} p-0">
-							<input class="input form-control border-0 rounded-0" name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled
-								type="number" min={{t.prev}} value="{{t.reading}}"></td>
-						<td class="{{t.style}} p-0">
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">January</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">91</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							<input class="input form-control border-0 rounded-0 " name="reading-January" id="inputid" onfocus="this.select()" disabled
+								type="number" min=56 {% if t.next %}max = "57"{%endif%} value="90"></td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							<button id="edit-inputid" type="button" class="btn btn-primary"
+								onclick="toggle('inputid')">
+								<i class="fa fa-edit"></i>
+							</button>
+							<button id="submit-inputid" style="display: none;" class="btn btn-success"
+								onclick="enableAll()" type="submit">SAVE</button>
+						</td>
+					</tr>
+				</form>
+
+				{% for t in table %}
+				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
+					{% csrf_token %}
+					<tr>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.month}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled
+								type="number" min={{t.prev}} {% if t.next %}max = "{{t.next}}"{%endif%} value="{{t.reading}}"></td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<button id="edit-{{t.transid}}" type="button" class="btn btn-primary"
 								onclick="toggle({{t.transid}})">
 								<i class="fa fa-edit"></i>

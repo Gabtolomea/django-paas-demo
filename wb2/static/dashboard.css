@@ -382,8 +382,8 @@ button.btn.btn-wb-copy:hover {
     transition: all 1s ease;
     opacity: 0;
     z-index: -1;
+ }
 
-}
 .main_content {
     padding-left: 420px !important;
     transition: all 1s ease;

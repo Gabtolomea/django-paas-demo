@@ -1,6 +1,8 @@
 
 from datetime import date
+from email.policy import default
 from operator import is_
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
@@ -40,15 +42,12 @@ class Rates(models.Model):
         return self.connectionType
 
 class Penalty(models.Model):
-    penalty_id = models.CharField(primary_key=True, max_length=20)
-    penalty_type = models.CharField(max_length=20)
-    penalty_rate = models.IntegerField()
+    penalty_after =  models.IntegerField(default = 0)#months
+    penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
-    def __str__(self) -> str:
-        return self.penalty_type
 
 class Discount(models.Model):
     discount_id = models.CharField(primary_key=True, max_length=20)
@@ -64,42 +63,42 @@ class BarangayRecord(models.Model):
     barangayrec_id = models.CharField(primary_key = True ,max_length=20)
     barangaycode = models.ForeignKey(Barangays,on_delete=models.SET_NULL, null=True)
     year = models.IntegerField()
-    total_due_jan = models.IntegerField()
-    total_paid_jan = models.IntegerField()
-    total_usage_jan = models.IntegerField()
-    total_due_feb = models.IntegerField()
-    total_paid_feb = models.IntegerField()
-    total_usage_feb = models.IntegerField()
-    total_due_mar = models.IntegerField()
-    total_paid_mar = models.IntegerField()
-    total_usage_mar = models.IntegerField()
-    total_due_apr = models.IntegerField()
-    total_paid_apr = models.IntegerField()
-    total_usage_apr = models.IntegerField()
-    total_due_may = models.IntegerField()
-    total_paid_may = models.IntegerField()
-    total_usage_may = models.IntegerField()
-    total_due_jun = models.IntegerField()
-    total_paid_jun = models.IntegerField()
-    total_usage_jun = models.IntegerField()
-    total_due_jul = models.IntegerField()
-    total_paid_jul = models.IntegerField()
-    total_usage_jul = models.IntegerField()
-    total_due_aug = models.IntegerField()
-    total_paid_aug = models.IntegerField()
-    total_usage_aug = models.IntegerField()
-    total_due_sept = models.IntegerField()
-    total_paid_sept = models.IntegerField()
-    total_usage_sept = models.IntegerField()
-    total_due_oct = models.IntegerField()
-    total_paid_oct = models.IntegerField()
-    total_usage_oct = models.IntegerField()
-    total_due_nov = models.IntegerField()
-    total_paid_nov = models.IntegerField()
-    total_usage_nov = models.IntegerField()
-    total_due_dec = models.IntegerField()
-    total_paid_dec = models.IntegerField()
-    total_usage_dec = models.IntegerField()
+    total_due_jan = models.IntegerField(null=True)
+    total_paid_jan = models.IntegerField(null=True)
+    total_usage_jan = models.IntegerField(null=True)
+    total_due_feb = models.IntegerField(null=True)
+    total_paid_feb = models.IntegerField(null=True)
+    total_usage_feb = models.IntegerField(null=True)
+    total_due_mar = models.IntegerField(null=True)
+    total_paid_mar = models.IntegerField(null=True)
+    total_usage_mar = models.IntegerField(null=True)
+    total_due_apr = models.IntegerField(null=True)
+    total_paid_apr = models.IntegerField(null=True)
+    total_usage_apr = models.IntegerField(null=True)
+    total_due_may = models.IntegerField(null=True)
+    total_paid_may = models.IntegerField(null=True)
+    total_usage_may = models.IntegerField(null=True)
+    total_due_jun = models.IntegerField(null=True)
+    total_paid_jun = models.IntegerField(null=True)
+    total_usage_jun = models.IntegerField(null=True)
+    total_due_jul = models.IntegerField(null=True)
+    total_paid_jul = models.IntegerField(null=True)
+    total_usage_jul = models.IntegerField(null=True)
+    total_due_aug = models.IntegerField(null=True)
+    total_paid_aug = models.IntegerField(null=True)
+    total_usage_aug = models.IntegerField(null=True)
+    total_due_sept = models.IntegerField(null=True)
+    total_paid_sept = models.IntegerField(null=True)
+    total_usage_sept = models.IntegerField(null=True)
+    total_due_oct = models.IntegerField(null=True)
+    total_paid_oct = models.IntegerField(null=True)
+    total_usage_oct = models.IntegerField(null=True)
+    total_due_nov = models.IntegerField(null=True)
+    total_paid_nov = models.IntegerField(null=True)
+    total_usage_nov = models.IntegerField(null=True)
+    total_due_dec = models.IntegerField(null=True)
+    total_paid_dec = models.IntegerField(null=True)
+    total_usage_dec = models.IntegerField(null=True)
 
 
 #Consumer Creation
@@ -114,7 +113,7 @@ class ConsumerInfo(models.Model):
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
     status = models.IntegerField()
-    penaltyflag = models.BooleanField()
+    penaltycounter = models.IntegerField()
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
@@ -123,12 +122,7 @@ class ConsumerInfo(models.Model):
     sex = models.CharField(max_length=6,null=True, blank=True)
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
-    current_bal = models.IntegerField(default=0)
-class Penalties(models.Model):
-    penaltycode = models.CharField(primary_key=True, max_length=20)
-    penalty = models.IntegerField()
-class Discounts(models.Model):
-    discount = models.IntegerField()
+    current_bal = models.FloatField(default=0)
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
@@ -144,6 +138,8 @@ class Transactions(models.Model):
     # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
     bill = models.FloatField(null=True)
+    month = models.IntegerField(blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
@@ -350,3 +346,26 @@ class usage_record(models.Model):
     txrefnum_dec = models.CharField(max_length=45,default = " ")
     ior_dec = models.CharField(max_length=50,default=" ")
     amountpaid_str_dec = models.TextField(default="")
+
+class revenuecode(models.Model):
+    application_fee = models.FloatField(default = 0)
+    mayors_permit = models.FloatField(default = 0)
+    gravel_excavation = models.FloatField(default = 0)
+    asphalted_road = models.FloatField(default = 0)
+    cemented_road = models.FloatField(default = 0)
+    additionalfee_pipe_of_20_lineal_feet = models.FloatField(default = 0)
+    residentialservice_per_month = models.FloatField(default = 0)
+    commercialservice_per_month = models.FloatField(default = 0)
+    residentialservice_excess_per_cubicmeter = models.FloatField(default = 0)
+    commercialservice_excess_per_cubicmeter = models.FloatField(default = 0)
+    drilling_from_mainline = models.FloatField(default = 0)
+    reinstallation_fee = models.FloatField(default = 0)
+    tapping_fee = models.FloatField(default = 0)
+    repair_fee = models.FloatField(default = 0)
+    transfer_fee = models.FloatField(default = 0)
+    three_month_penalty = models.FloatField(default = 0)
+    send_disconnection_notice_after = models.IntegerField(default = 0)#months
+    disconnection_after = models.IntegerField(default = 0)#months
+    penalty_after = models.IntegerField(default = 0)#months
+    fix_amount_penalty = models.FloatField(default = 0)
+    percentage_penalty = models.FloatField(default = 0)
