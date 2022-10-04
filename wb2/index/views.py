@@ -307,6 +307,7 @@ def inputreading(request, id, year):
                     Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
+
                     t = Transactions()
                     t.acctID = consumer
                     t.transType = 'Billing'
@@ -355,8 +356,6 @@ def inputreading(request, id, year):
                 get_balance(id)
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
-    
-    # CHARLIE DIRI PAGHIMO
 
     context = {
         'consumer':consumer,
@@ -507,10 +506,11 @@ def user_edit(request, id):
 
 def payment(request, id):
     if request.method == 'POST':
+        consumer = ConsumerInfo.objects.get(consumer_id=id)
         amount = request.POST['amount']
         or_num = request.POST['or_num']
         t = Transactions()
-        t.acctID = ConsumerInfo.objects.get(consumer_id=id)
+        t.acctID = consumer
         t.transType = "Payment"
         t.date = date.today()
         t.year = date.today().year
