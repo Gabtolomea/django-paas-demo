@@ -5,7 +5,10 @@
 <html lang="en">
 
 <head>
-    <title>Dashboard</title>
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -22,20 +25,16 @@
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
     </div>
     <header>
-        {% for message in messages %}
-        <div
-            class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
-            <strong>{{message.tags|title}}!</strong> {{message}}
-            <a href="#" class="close" data-dismiss="alert"
-                style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
-                aria-label="close">&times;</a>
+     {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+          <strong>{{message.tags|title}}!</strong> {{message}}
+            <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
         </div>
         {% endfor %}
 
-        <!-- <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
- 
-                <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px; white-space: nowrap;" > -->
+            <!-- <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;">
 
+                <div class="col-sm-9 col-md-9 col-lg-9; sty" style="font-size: 34px; white-space: nowrap;" > -->
 
         <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
             <div class="col-sm-9 col-md-9 col-lg-9;" style="font-size: 34px; white-space: nowrap;">

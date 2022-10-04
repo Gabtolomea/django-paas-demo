@@ -1,6 +1,9 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
+{% block title %}
+Input Reading
+{% endblock title %}
 
 {% block ledger %}
 <div class="container-fluid p-0">
@@ -93,7 +96,7 @@
 						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
 						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled
-								type="number" min={{t.prev}} value="{{t.reading}}"></td>
+								type="number" min={{t.prev}} {% if t.next %}max = "{{t.next}}"{%endif%} value="{{t.reading}}"></td>
 						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<button id="edit-{{t.transid}}" type="button" class="btn btn-primary"
 								onclick="toggle({{t.transid}})">
