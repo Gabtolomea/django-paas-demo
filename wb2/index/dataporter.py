@@ -311,8 +311,6 @@ def porter_out(tables):
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
     
-
-
 def billing_out():
     u_rec = usage_record.objects.all()
     for u in u_rec:
@@ -527,7 +525,7 @@ def balance():
 def get_balance(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
     trans = Transactions.objects.filter(acctID = id)
-    asc_trans = trans.order_by('year', 'month')
+    asc_trans = trans.order_by('year', 'month','transactionid')
     bal = 0
     for i in range(len(asc_trans)):
         if asc_trans[i].transType == 'Billing':
@@ -536,6 +534,21 @@ def get_balance(id):
             bal=bal-asc_trans[i].payment
     user.current_bal = math.ceil(bal*100)/100
     user.save()
+
+def get_cummulative(id):
+    user = ConsumerInfo.objects.get(consumer_id = id)
+    trans = Transactions.objects.filter(acctID = id, year = date.today().year)
+    asc_trans = trans.order_by('month','transactionid')
+    cum = 0
+    for i in range(len(asc_trans)):
+        if asc_trans[i].transType == 'Billing':
+            cum+=asc_trans[i].bill
+        elif asc_trans[i].transType == 'Payment':
+            cum=cum-asc_trans[i].payment
+    user.cummulative = math.ceil(cum*100)/100
+    user.save()
+    return math.ceil(cum*100)/100
+
 def sys_user_out(i):
     sys_user.is_admin = False
     sys_user.is_teller = False

@@ -307,6 +307,8 @@ def inputreading(request, id, year):
         table.append(m)
     
     con_penalty = Penalty.objects.get(id=consumer.penaltyid)
+    cummulative = get_cummulative(id)
+    interest = 0
     if request.method=="POST":
         readings = []
         for i in range(12):
@@ -319,9 +321,8 @@ def inputreading(request, id, year):
                 if consumer.penaltycounter >= con_penalty.penalty_after:
                   #via percentage
                     if con_penalty.penalty_rate != 0:
-                        xy = con_penalty.penalty_rate * usageID.commulative_bill
+                        xy = con_penalty.penalty_rate * cummulative
                         interest = xy / 100
-                        usageID.penalty_jan = interest
                 try:
                     Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
@@ -345,6 +346,26 @@ def inputreading(request, id, year):
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
+                    if interest:
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Penalty'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.meterReading = i
+                        t.usage = i - lastreading
+                        t.ratescode = consumer.rateid_id
+                        rate = Rates.objects.get(rate_id = consumer.rateid_id)
+                        if t.usage <= rate.minReading:
+                            t.bill = rate.minReadingCharge
+                        else:
+                            xcubic = t.usage - rate.minReading
+                            xmincharge = xcubic * rate.rateAfterMin
+                            t.bill = xmincharge + rate.minReadingCharge
+                        t.payment = 0
+                        t.processedBy = user.username
+                        t.save()
                 else:
                     # print("update transaction")
                     t = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
