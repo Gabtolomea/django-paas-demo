@@ -89,14 +89,19 @@ Input Reading
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table %}
-				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
+				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
+					method="POST">
 					{% csrf_token %}
 					<tr>
-						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.month}}</td>
-						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
+							{{t.month}}</td>
+						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
+							{{t.usage}}</td>
 						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled
-								type="number" min={{t.prev}} {% if t.next %}max = "{{t.next}}"{%endif%} value="{{t.reading}}"></td>
+							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
+								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}} 
+								{% if t.next %}max="{{t.next}}" {%endif%} value="{{t.reading}}">
+						</td>
 						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<button id="edit-{{t.transid}}" type="button" class="btn btn-primary"
 								onclick="toggle({{t.transid}})">
@@ -113,7 +118,7 @@ Input Reading
 				function enableAll() {
 					inputs = document.getElementsByClassName('input')
 					for (let i = 0; i < inputs.length; i++) {
-						if (inputs[i].disabled){
+						if (inputs[i].disabled) {
 							inputs[i].disabled = !inputs[i].disabled
 						}
 					}
@@ -132,6 +137,49 @@ Input Reading
 				}
 			</script>
 		</table>
+		<br>
+		<br>
+		<center><h1>Usage Reports</h1></center>
+		<br>
+		<!-- Chart -->
+
+	</div>
+	<div class="container align-items-center">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+		<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+			<script>
+				var labels =[{%for i in table%} '{{i.month}}', {% endfor %}];
+				
+				var chart = new Chart("myChart", {
+					type: "line",
+					data: {
+						labels: labels,
+						datasets: [{
+						data: [{%for i in table%} '{{i.usage}}', {% endfor %}],
+						label: "Total Usage",
+						fill: false,
+						borderColor: '#20B2AA',
+						tension: 0.1,
+						backgroundColor: "#3090C7",
+						}]
+					},
+					options: {
+					title: {
+						display: true,
+						text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
+					},
+					scales: {
+					xAxes: [{
+						ticks: {
+						beginAtZero: true
+						}
+					}]
+					}
+
+				}
+				})
+			
+			</script>
 	</div>
 </div>
 
