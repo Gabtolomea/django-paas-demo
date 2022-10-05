@@ -22,18 +22,18 @@ from .decorators import *
 from .models import *
 from .dataporter import *
 from .ledger import *
-from .functions import *
 import math
 from .tokens import generate_token
-from django.db.models import F, Sum, FloatField
-from django.db.models.functions import Coalesce
+from django.core.files.storage import FileSystemStorage
+from django.db.models import F, Sum
+
 
 
 def porter(request):
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
-    balance()
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    # balance()
     return render(request, "landing.html")
 
 # @unauthenticated_user
@@ -195,10 +195,7 @@ def ledger(request, id):
                 if asc_trans[i+1].transType == 'Payment':
                     p = cur
                 else:
-                    p = str_int(p)
-                    t = p
                     p = p + current
-                    p = p - t
             prev = p
 
     context = {
@@ -267,7 +264,7 @@ def inputreading(request, id, year):
     years = []
 
     class meterreaderclass():
-        def __init__(self, transid, month, usage, prev, reading, next, style):
+        def __init__(self, transid , month, usage, prev, reading, next, style):
             self.transid = transid
             self.month = month
             self.usage = usage
@@ -276,23 +273,25 @@ def inputreading(request, id, year):
             self.next = next
             self.style = style
     user = request.user
-    consumer = ConsumerInfo.objects.get(consumer_id=id)
+    consumer = ConsumerInfo.objects.get(consumer_id = id)
     lastid = Transactions.objects.latest('transactionid').transactionid
-    alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    trans = Transactions.objects.filter(
-        acctID_id=id, transType='Billing', year=year)
+    alltrans = Transactions.objects.filter(acctID_id = id, transType = 'Billing')
+    trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', year = year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
+    j = 0
+    if asc_trans[0].date.month == 1:
+        j = 1
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
-    if year in years:
-        years.remove(year)
+    if int(year) in years:
+        years.remove(int(year))
     # print(asc_trans)
     # print(count)
-    j = 0
+    j=0
     lastreading = 0
-    for i in range(1, 13):
+    for i in range(1,13):
         month = calendar.month_name[i]
         lastid += 1
         transid = lastid
@@ -317,8 +316,8 @@ def inputreading(request, id, year):
         # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
-
-    if request.method == "POST":
+    
+    if request.method=="POST":
         readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
@@ -328,12 +327,11 @@ def inputreading(request, id, year):
         for i in readings:
             if i != 0:
                 try:
-                    Transactions.objects.get(
-                        acctID_id=id, transType='Billing', year=year, month=d)
+                    Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
                     t = Transactions()
-                    t.acctID = consumer
+                    t.acctID = id
                     t.transType = 'Billing'
                     t.date = date.today()
                     t.month = d
@@ -401,9 +399,18 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
+# def landing(request):
+#     return render(request,'landing.html')
+
+
 def bills_list(request):
+    user = request.user
     bills_list = ConsumerInfo.objects.all()
-    return render(request, 'billslist.html', {'bills_list': bills_list})
+    context = {
+        'bills_list': bills_list,
+        'user':user,
+    }
+    return render(request, 'billslist.html', context)
 
 
 def consumer_list(request):
@@ -521,6 +528,39 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
+def user_edit(request, id):
+    sys = SystemUsers.objects.get(username=id)
+    encoded = sys.password
+    decode64 = base64.b64decode(encoded)
+    password = decode64.decode("ascii")
+    form = sysup(instance=sys)
+    if request.method == 'POST':
+        form = sysup(request.POST, instance=sys)
+        # pic = request.POST['profilepic']
+        if form.is_valid():
+            upload = request.FILES['profilepic']
+            fss = FileSystemStorage()
+            fss.save(upload.name, upload)
+            # sys.profilepic = pic
+            sys.save()
+            
+        return redirect('sysuser')
+    context = {
+        'sys':sys,
+        'form': form,
+        'password':password,
+    }
+    return render(request, 'user_edit.html', context)
+
+def deleteUser(request, id):
+    sys = SystemUsers.objects.get(username=id)
+    if request.method == "POST":
+        sys.delete()
+        return redirect('sysuser')
+    return render(request, 'delete.html',)
+
+def about(request):
+    return render(request, 'about.html')
 def barangayreport(request, year):
 
     years = []
