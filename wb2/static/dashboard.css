@@ -66,11 +66,12 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     color: #63CDD7;
 
 }
+
 .side_nav_li{
-    padding:15px 0 15px 120px;
+    padding:10px 0 10px 100px;
     color:#E6ECEB;
     font-weight: bold;
-    font-size: medium;
+    font-size: 10px;
     white-space: nowrap;
 }
 li.side_nav_li:hover {
@@ -82,7 +83,7 @@ ul{
 }
 .sidenav_text{
     padding-left: 20px;
-    font-size: 20px;
+    font-size: 16px;
     font-weight:700;
 }
 .online_water{
@@ -90,7 +91,7 @@ ul{
     color:white
 }
 .user_info{
-    font-size:20px;
+    font-size: 14px;
     color: #E6ECEB;
     font-weight: bold;
     text-align: center;
@@ -153,23 +154,14 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     color: #63CDD7;
 
 }
-.side_nav_li{
-    padding:15px 0 15px 120px;
-    color:#E6ECEB;
-    font-weight: bold;
-    font-size: medium;
-    white-space: nowrap;
-}
-li.side_nav_li:hover {
-    background: #a0c5cf;
-}
+
 ul{
     margin-top: 10px;
     margin-left:-27px;
 }
 .sidenav_text{
     padding-left: 20px;
-    font-size: 20px;
+    font-size: 16px;
     font-weight:700;
 }
 .online_water{
@@ -187,9 +179,6 @@ p{
     font-size:40px;
     margin-left: -13px;
 }
-
-
-
 
 .toggle-button {
     position: absolute;
@@ -287,7 +276,7 @@ p{
     transition: all 0.75s ease;
 }
 .main_content{
-    padding-left: 420px;
+    padding-left: 320px;
 }
 .btn-wb-back{
     background: #091d36!important;
@@ -320,7 +309,7 @@ button.btn.btn-wb-copy:hover {
 
 .wb_thead{
     position: sticky;
-    top: ;
+    top: 0;
     background-color: #63CDD7;
     text-align: center;
     color: white;
@@ -332,10 +321,9 @@ button.btn.btn-wb-copy:hover {
 }
 
 
-
 .sidebar {
     position: fixed;
-    width: 400px;
+    width: 300px;
     height: 100%;
     left: 0px;
     background: #0093B7;
@@ -353,40 +341,25 @@ button.btn.btn-wb-copy:hover {
  }
 
  .main_content{
-    padding-left: 420px !important;
+    padding-left: 320px !important;
     transition :all 1s ease;
 }
  .remove_main_content{
-    padding-left: 20px;
     transition :all 1s ease;
 }
+@media (max-width: 393px) {
+    span.station {
+        display: flex !important;
+        justify-content: center !important;
+    }
+    button.btn.btn-wb-copy {
+        font-size: 10px;
+    }
+    button.btn.btn-wb-back {
+        font-size: 10px;
+    }
+  }
 
 
 
-/* @media(max-width: 720px) {
-    .toggle_desktop{
-        display: none;
-    }
-    .toggle_mobile{
-        display: inline !important;
-    }
-    .sidebar {
-       width: 0;
-       transition :all 1s ease;
-       opacity: 0;
-    }
-    .main_content{
-        padding-left: 20px !important;
-        transition :all 1s ease;
-    }
-    .mobile_header_font{
-        font-size: 25px;
-    }
-    .mobile_header_nav{
-        display: none;
-    }
-    i.fa.fa-bars {
-        font-size: 24px;
-    }
-} */
 
