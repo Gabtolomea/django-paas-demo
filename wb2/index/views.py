@@ -570,6 +570,8 @@ def deleteUser(request, id):
 
 def about(request):
     return render(request, 'about.html')
+
+    # data reports 
 def barangayreport(request, year):
 
     years = []
@@ -591,27 +593,15 @@ def barangayreport(request, year):
         total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
         F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
         F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
-        total_rec=F('total_due') - F('total_paid'))
-    td = BarangayRecord.objects.filter(year=year).annotate(
-        total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
-        F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
-        F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'),
-        total_due=F('total_due_jan') + F('total_due_feb') + F('total_due_mar') + F('total_due_apr') + F('total_due_may') + F('total_due_jun') +
-        F('total_due_jul') + F('total_due_aug') + F('total_due_sept') +
-        F('total_due_oct') + F('total_due_nov') + F('total_due_dec'),
-        total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
-        F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
-        F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
-        total_rec=F('total_due') - F('total_paid'),
-        percent=F('total_paid') / F('total_due')*100).aggregate(
+        total_rec=F('total_due') - F('total_paid')
+        ).aggregate(
         tu=Sum('total_usage'),
         tp=Sum('total_paid'),
-        tr=Sum('total_due') - Sum('total_paid'))
-    
+        tr=Sum('total_due') - Sum('total_paid')
+        )
 
     context = {
         'br': br,
-        'td': td,
         'cur_year': year,
         'years': years,
         'bang': bang
@@ -629,6 +619,38 @@ def view_barangay(request, id, year):
 
     }
     return render(request, 'view_barangay.html', context)
+
+def usage_report_data (request, year):
+
+    # Monthly total usage
+    tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
+        jan=Sum('total_usage_jan'),
+        feb=Sum('total_usage_feb'),
+        mar=Sum('total_usage_mar'),
+        apr=Sum('total_usage_apr'),
+        may=Sum('total_usage_may'),
+        jun=Sum('total_usage_jun'),
+        jul=Sum('total_usage_jul'),
+        aug=Sum('total_usage_aug'),
+        sept=Sum('total_usage_sept'),
+        oct=Sum('total_usage_oct'),
+        nov=Sum('total_usage_nov'),
+        dec=Sum('total_usage_dec'),
+        )
+    
+    #By Barangay total Usage
+    tu_bay = BarangayRecord.objects.filter(year=year).annotate(
+        F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
+        F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
+        F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')
+    )
+
+    context = {
+        'tu_mon': tu_mon,
+        'tu_bay': tu_bay,
+        
+      }
+    render (request, 'usage_report_data.html', context)
 
 
 def user_edit(request, id):
