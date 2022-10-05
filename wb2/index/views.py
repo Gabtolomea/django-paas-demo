@@ -158,7 +158,6 @@ def ledger(request, id):
         bal = 0
         p = 0
         current = 0
-        print(asc_trans)
         for i in range(len(asc_trans)):
             if i == 0:
                 prev = 0
@@ -316,13 +315,18 @@ def inputreading(request, id, year):
             readings.append(int(r))
         # print(readings)
         d = 1
+        if cummulative>0:
+            consumer.penaltycounter+=1
+        else:
+            consumer.penaltycounter = 0
+        consumer.save()
         for i in readings:
             if i !=0:
                 if consumer.penaltycounter >= con_penalty.penalty_after:
                   #via percentage
                     if con_penalty.penalty_rate != 0:
                         xy = con_penalty.penalty_rate * cummulative
-                        interest = xy / 100
+                        interest = xy/100
                 try:
                     Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
@@ -600,9 +604,5 @@ def payment(request, id):
         t.processedBy = request.user.username
         t.or_number = or_num
         t.save()
-        if consumer.current_bal>0:
-            consumer.penaltycounter+=1
-        else:
-            consumer.penaltycounter = 0
         get_balance(id)
     return redirect('ledger', id=id)
