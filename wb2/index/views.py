@@ -299,6 +299,7 @@ def inputreading(request, id, year):
         prev = lastreading
         reading = prev
         style = ''
+        next=False
         # print(str(i)+" "+str(j+1))
         if j < count and count != 0:
             if i == asc_trans[j].month:
@@ -317,6 +318,9 @@ def inputreading(request, id, year):
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
     
+    con_penalty = Penalty.objects.get(id=consumer.penaltyid)
+    cummulative = get_cummulative(id)
+    interest = 0
     if request.method=="POST":
         readings = []
         for i in range(12):
@@ -325,7 +329,16 @@ def inputreading(request, id, year):
         # print(readings)
         d = 1
         for i in readings:
+<<<<<<< HEAD
             if i != 0:
+=======
+            if i !=0:
+                if consumer.penaltycounter >= con_penalty.penalty_after:
+                  #via percentage
+                    if con_penalty.penalty_rate != 0:
+                        xy = con_penalty.penalty_rate * cummulative
+                        interest = xy / 100
+>>>>>>> jazzy
                 try:
                     Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
                 except ObjectDoesNotExist:
@@ -349,13 +362,37 @@ def inputreading(request, id, year):
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
-                    get_balance(id)
+                    if interest:
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Penalty'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.meterReading = i
+                        t.usage = i - lastreading
+                        t.ratescode = consumer.rateid_id
+                        rate = Rates.objects.get(rate_id = consumer.rateid_id)
+                        if t.usage <= rate.minReading:
+                            t.bill = rate.minReadingCharge
+                        else:
+                            xcubic = t.usage - rate.minReading
+                            xmincharge = xcubic * rate.rateAfterMin
+                            t.bill = xmincharge + rate.minReadingCharge
+                        t.payment = 0
+                        t.processedBy = user.username
+                        t.save()
                 else:
                     # print("update transaction")
+<<<<<<< HEAD
                     t = Transactions.objects.get(
                         acctID_id=id, transType='Billing', year=year, month=d)
                     lastreading = Transactions.objects.get(
                         acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
+=======
+                    t = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
+                    lastreading = last_reading(id, year, d)
+>>>>>>> jazzy
                     try:
                         Transactions.objects.get(
                             acctID_id=id, transType='Billing', year=year, month=d+1)
@@ -366,29 +403,37 @@ def inputreading(request, id, year):
                             acctID_id=id, transType='Billing', year=year, month=d+1)
                         next.usage = next.meterReading - i
                         next.save()
+<<<<<<< HEAD
 
                     lastreading = Transactions.objects.get(
                         acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
+=======
+>>>>>>> jazzy
                     t.meterReading = i
                     t.date = date.today()
                     t.usage = i - lastreading
                     rate = Rates.objects.get(rate_id=t.ratescode)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
-                        print(rate.minReadingCharge)
                     else:
                         xcubic = t.usage - rate.minReading
-                        print(usage)
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
 
                     t.save()
+<<<<<<< HEAD
                     get_balance(id)
             d += 1
         return redirect('inputreading', id=id, year=date.today().year)
 
     # CHARLIE DIRI PAGHIMO
+=======
+                
+                get_balance(id)
+            d+=1
+        return redirect('inputreading', id=id, year=date.today().year)
+>>>>>>> jazzy
 
     context = {
         'consumer': consumer,
@@ -602,12 +647,16 @@ def barangayreport(request, year):
 
     context = {
         'br': br,
+<<<<<<< HEAD
         'td': td,
         'cur_year': year,
         'years': years,
         'bang': bang
         
 
+=======
+        'record': record,
+>>>>>>> jazzy
     }
 
     return render(request, 'barangayreport.html', context)
@@ -643,10 +692,11 @@ def user_edit(request, id):
 
 def payment(request, id):
     if request.method == 'POST':
+        consumer = ConsumerInfo.objects.get(consumer_id=id)
         amount = request.POST['amount']
         or_num = request.POST['or_num']
         t = Transactions()
-        t.acctID = ConsumerInfo.objects.get(consumer_id=id)
+        t.acctID = consumer
         t.transType = "Payment"
         t.date = date.today()
         t.year = date.today().year
@@ -655,5 +705,9 @@ def payment(request, id):
         t.processedBy = request.user.username
         t.or_number = or_num
         t.save()
+        if consumer.current_bal>0:
+            consumer.penaltycounter+=1
+        else:
+            consumer.penaltycounter = 0
         get_balance(id)
     return redirect('ledger', id=id)

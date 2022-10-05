@@ -45,7 +45,10 @@ a.menu:hover{
 a.nav-link:hover {
   background-color: #63CDD7 !important;
 }
-
+.page-section {
+  padding: 200px 0 50px 0;
+  background-color: #E6ECEB;
+}
 
 @media (max-width: 575px) {
   .water_billing_mobile_header{
@@ -66,6 +69,9 @@ a.nav-link:hover {
   .sm_contacts_bottom{
     display: block !important;
   }
+  .screen_size_sm{
+    display: none;
+  }
 }
 
 @media (max-width: 991px) {
@@ -76,9 +82,6 @@ a.nav-link:hover {
     display: block !important ;
   }
   .contacts_header{
-    display: none;
-  }
-   .screen_size_sm{
     display: none;
   }
   .menu_button_header{
@@ -93,3 +96,9 @@ a.nav-link:hover {
   }
 }
 
+@media (max-width: 350px){
+   a { font-size: 5px;}
+}
+@media (min-width: 351px){
+   a { font-size: 10px;}
+}

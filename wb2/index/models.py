@@ -9,7 +9,7 @@ from django.contrib.auth.models import AbstractUser
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
-    password = models.BinaryField(max_length=450, blank=True, editable = True)  
+    password = models.BinaryField(max_length=450, blank=True, editable = True)
     username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
@@ -42,13 +42,11 @@ class Rates(models.Model):
         return self.connectionType
 
 class Penalty(models.Model):
-    penalty_id = models.CharField(primary_key=True, max_length=20)
     penalty_after =  models.IntegerField(default = 0)#months
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
-
 
 class Discount(models.Model):
     discount_id = models.CharField(primary_key=True, max_length=20)
@@ -113,8 +111,9 @@ class ConsumerInfo(models.Model):
     installation_address = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
+    penaltyid = models.ForeignKey(Penalty,on_delete=models.SET_NULL, null=True)
     status = models.IntegerField()
-    penaltyflag = models.BooleanField()
+    penaltycounter = models.IntegerField(default=0)
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
@@ -124,10 +123,12 @@ class ConsumerInfo(models.Model):
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
+    cummulative = models.FloatField(default=0)
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
         ('Payment','Payment'),
+        ('Penalty','Penalty'),
     )
     transactionid = models.AutoField(primary_key=True)
     date = models.DateField(null=True, blank=True)
