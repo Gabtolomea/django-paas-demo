@@ -18,7 +18,7 @@ class SystemUsers(AbstractUser):
     is_reader = models.BooleanField(default=False)
     mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    profilepic = models.ImageField(blank=True, null=True)
+    profilepic = models.ImageField(upload_to="static/images",blank=True, null=True)
     authorizedapprover = models.CharField(max_length=20)
     email = models.EmailField(max_length=100,null=True, blank=True)
 
