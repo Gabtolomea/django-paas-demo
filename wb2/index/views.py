@@ -306,7 +306,7 @@ def inputreading(request, id, year):
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
     
-    con_penalty = Penalty.objects.get(id=consumer.penaltyid)
+    con_penalty = Penalty.objects.get(id=consumer.penaltyid.id)
     cummulative = get_cummulative(id)
     interest = 0
     if request.method=="POST":
@@ -362,7 +362,7 @@ def inputreading(request, id, year):
                         else:
                             xcubic = t.usage - rate.minReading
                             xmincharge = xcubic * rate.rateAfterMin
-                            t.bill = xmincharge + rate.minReadingCharge
+                            t.bill = xmincharge + rate.minReadingCharge + interest
                         t.payment = 0
                         t.processedBy = user.username
                         t.save()
@@ -389,8 +389,27 @@ def inputreading(request, id, year):
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
-                    
                     t.save()
+                    if interest:
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Penalty'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.meterReading = i
+                        t.usage = i - lastreading
+                        t.ratescode = consumer.rateid_id
+                        rate = Rates.objects.get(rate_id = consumer.rateid_id)
+                        if t.usage <= rate.minReading:
+                            t.bill = rate.minReadingCharge
+                        else:
+                            xcubic = t.usage - rate.minReading
+                            xmincharge = xcubic * rate.rateAfterMin
+                            t.bill = xmincharge + rate.minReadingCharge + interest
+                        t.payment = 0
+                        t.processedBy = user.username
+                        t.save()
                 
                 get_balance(id)
             d+=1

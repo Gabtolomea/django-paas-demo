@@ -3,6 +3,7 @@ from .models import *
 from .colnames import *
 from datetime import datetime
 import math
+import mysql.connector
 
 tablenames = [
     "accountinfo",
@@ -33,21 +34,20 @@ alltables = [
 
 
 sorted_tables = []
-# sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="yjh434ctuG@-@",
-#     database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="yjh434ctuG@-@",
+    database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 def porter():
-    # porter_in()
-    # porter_out(sorted_tables)
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
+    porter_in()
+    porter_out(sorted_tables)
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
     return
 
 
@@ -305,15 +305,15 @@ def porter_out(tables):
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
         usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
-        usage_rec.amountpaid_str_apr =	i[164-1]
-        usage_rec.amountpaid_str_aug = i[165-1]
-        usage_rec.amountpaid_str_dec = i[166-1]
-        usage_rec.amountpaid_str_feb = i[167-1]
-        usage_rec.amountpaid_str_jan = i[168-1]
-        usage_rec.amountpaid_str_jul = i[169-1]
-        usage_rec.amountpaid_str_jun = i[170-1]
-        usage_rec.amountpaid_str_mar = i[171-1]
-        usage_rec.amountpaid_str_may = i[172-1]
+        usage_rec.amountpaid_str_apr =	i[163]
+        usage_rec.amountpaid_str_aug = i[164]
+        usage_rec.amountpaid_str_dec = i[165]
+        usage_rec.amountpaid_str_feb = i[166]
+        usage_rec.amountpaid_str_jan = i[167]
+        usage_rec.amountpaid_str_jul = i[168]
+        usage_rec.amountpaid_str_jun = i[169]
+        usage_rec.amountpaid_str_mar = i[170]
+        usage_rec.amountpaid_str_may = i[171]
         usage_rec.amountpaid_str_nov = i[173-1]
         usage_rec.amountpaid_str_oct = i[174-1]
         usage_rec.amountpaid_str_sept = i[175-1]
