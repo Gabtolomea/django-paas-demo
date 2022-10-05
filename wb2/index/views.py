@@ -524,7 +524,7 @@ def userupdate(request, id):
 def barangayreport(request, year):
 
     years = []
-
+    bang = BarangayRecord.objects.all()
     my = BarangayRecord.objects.filter(year=year)
     for i in my:
         if i.year not in years:
@@ -542,9 +542,7 @@ def barangayreport(request, year):
         total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
         F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
         F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
-        total_rec=F('total_due') - F('total_paid'),
-        percent=F('total_paid') / F('total_due')*100
-    )
+        total_rec=F('total_due') - F('total_paid'))
     td = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -559,16 +557,15 @@ def barangayreport(request, year):
         percent=F('total_paid') / F('total_due')*100).aggregate(
         tu=Sum('total_usage'),
         tp=Sum('total_paid'),
-        tr=Sum('total_due') - Sum('total_paid'),
-        tper=Sum('total_paid') / Sum('total_due')*100
-    )
+        tr=Sum('total_due') - Sum('total_paid'))
     
 
     context = {
         'br': br,
         'td': td,
         'cur_year': year,
-        'years': years
+        'years': years,
+        'bang': bang
         
 
     }
