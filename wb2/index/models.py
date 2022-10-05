@@ -137,7 +137,7 @@ class Transactions(models.Model):
     meterReading = models.IntegerField(blank=True, null=True)
     usage = models.IntegerField(blank=True, null=True)
     ratescode = models.CharField(max_length=20, blank=True, null=True)
-    # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
+    penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
     # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
     bill = models.FloatField(null=True)
     month = models.IntegerField(blank=True, null=True)
