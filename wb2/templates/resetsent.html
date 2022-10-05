@@ -1,4 +1,4 @@
-<!-- {% load static %} -->
+<!--{% load static %}-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -64,29 +64,49 @@
 		margin-top: 20px;
 	}
 
-	.header {
-		margin-top: 20px;
-		color: #fff;
-		margin-bottom: 60px;
-		padding-left: 10%;
-		padding-right: 10%
-	}
-</style>
+  @media (max-width: 450){
+    h5 { font-size: 16px;}
+  }
+  @media (min-width: 451px){
+    h5 { font-size: 32px;}
+  }
 
+  @media (max-width: 450px){
+    p { font-size: 10px;}
+  }
+  @media (min-width: 451px){
+    p { font-size: 20px;}
+  }
+
+  @media (max-width: 575px){
+	button.btn{
+	  font-size: 11px !important;
+	}
+  }
+
+  @media (max-width: 450px){
+	::placeholder {font-size: 10px;}
+  }
+
+  @media (min-width: 451px){
+	::placeholder {font-size: 15px; }
+  }
+
+</style>
 <body>
 	<div class="container">
 		<div class="wrapper shadow"
 			style=" margin: 10% auto !important; border-radius: 30px;  max-width: 600px; max-height: 500px; padding: 40px 0; background: #63CDD7; height:400px;">
 			<div class="log-in" style="padding-right: 15px">
 				<center>
-					<h5 class="password" style="font-size: 30px;  color:white; font-family:'Poppins',sans-serif;">Reset
+					<h5 class="password" style="color:white; font-family:'Poppins',sans-serif;">Reset
 						Password
 						Sent</h5>
 				</center>
 				<br>
 			</div>
 			<center>
-				<p class="header">We sent you an email in response to your request,please check it and click the 'Back
+				<p class="header" style="color: white;">We sent you an email in response to your request,please check it and click the 'Back
 					to login'
 					button to coninue.</p>
 
@@ -101,20 +121,6 @@
 							type="button" class="btn ">BACK TO LOGIN</button style>
 					</a>
 				</div>
-
-			</center>
-
-			<div class="form-group m-2 w-75">
-				<a href="/reset_password">
-					<button
-						style="background-color:#0093B7; color:white;  border-radius:25px; width: 100%; margin-bottom: 20px;"
-						type="button" class="btn ">RESEND EMAIL</button style>
-				</a>
-				<a href="/">
-					<button style="background-color:#0093B7; color:white;  border-radius:25px; width: 100%;"
-						type="button" class="btn ">BACK TO LOGIN</button style>
-				</a>
-			</div>
 
 			</center>
 

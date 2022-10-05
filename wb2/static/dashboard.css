@@ -121,7 +121,22 @@ body {
     font-family: Arial;
 }
 
-.header_toggle {
+
+
+ 
+header {
+    position: absolute;
+    background-color: #262222;
+    width: 100%;
+    font-size: 20px;
+    margin: auto;
+    left: 0;
+    z-index: 1;
+    height: 70px;
+}
+
+.header_toggle{
+
     background: transparent;
     border: 0 !important;
     padding: 0 10px !important;
@@ -412,6 +427,7 @@ button.btn.btn-wb-copy:hover {
   }
 
 /* @media(max-width: 720px) {
+>>>>>>> c5
     .toggle_desktop{
         display: none;
     }

@@ -1,4 +1,4 @@
-import mysql.connector
+# import mysql.connector
 from .models import *
 from .colnames import *
 from datetime import datetime
@@ -30,14 +30,27 @@ alltables = [
     systemuser,
     # yearly_records,
 ]
+
+
 sorted_tables = []
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="yjh434ctuG@-@",
-    database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# sorted_tables = []
+
+# mydb = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="yjh434ctuG@-@",
+#     database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
+def porter():
+    # porter_in()
+    # porter_out(sorted_tables)
+    # porter_in()
+    # porter_out(sorted_tables)
+    # billing_out()
+    return
+
+
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
