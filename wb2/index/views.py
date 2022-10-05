@@ -200,6 +200,8 @@ def ledger(request, id):
         'table': table,
     }
     return render(request, 'ledger.html', context)
+
+
 def forgetpassword(request):
     if request.method == "POST":
         u_email = request.POST['email']
