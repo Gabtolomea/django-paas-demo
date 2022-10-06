@@ -11,6 +11,10 @@
                         <option value="{{year}}">{{year}}</option>
                         <!-- {% endfor %} -->
                     </select>
+                        {% for i in years reversed %}
+                        <option value="{{i}}">{{i}}</option>
+                         {% endfor %}
+                     </select>
                 </form>
                 <script>
                     yearselection = document.getElementById("yearselection")
@@ -24,6 +28,8 @@
 
         </div>
 
+        <table id = "checkme">
+<body onload ="collection_rate()">
         <table>
             <thead>
                 <tr>
@@ -34,7 +40,6 @@
                     <th>Collection Rate</th>
                 </tr>
             </thead>
-
             <tbody>
                 {% for br in br %}
                 <tr>
@@ -44,7 +49,10 @@
                     <td>{{br.total_usage|floatformat:1}}</td>
                     <td>{{br.total_rec|floatformat:1}}</td>
                     <td>{{br.total_paid|floatformat:1}}</td>
-                    <td>{{ value|default_if_none:"nothing" }}{{br.percent|floatformat:1}}%</td>
+                    <td>{{br.percent|floatformat:1}}%</td>
+                    <td class = "total_paid">{{br.total_rec|floatformat:1}}</td>
+                    <td class ="total_due">{{br.total_paid|floatformat:1}}</td>
+                    <td class ="rate"></td>
                 </tr>
                 {% endfor %}
                 <tr>
@@ -59,14 +67,39 @@
                     <td>{{td.tu|floatformat:1}}</td>
                     <td>{{td.tr|floatformat:1}}</td>
                     <td>{{td.tp|floatformat:1}}</td>
-                    <td>{{ value|default_if_none:"nothing" }}{{td.tper|floatformat:1}}%</td>
+                    <td>{{td.tper|floatformat:1}}%</td>
+                    <td class = "total_paid">{{td.tr|floatformat:1}}</td>
+                    <td class ="total_due">{{td.tp|floatformat:1}}</td>
+                    <td class ="rate"></td>
                 </tr>
 
 
             </tbody>
 
+        </body>
         </table>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script>
+            function collection_rate(){
+              total_paid = document.getElementsByClassName("total_paid")
+              total_due = document.getElementsByClassName("total_due")
+              rate = document.getElementsByClassName("rate")
 
+              for (let index = 0; index < rate.length; index++) {
+                int_total_due = parseInt(total_due[index].innerHTML)
+                int_total_paid = parseInt(total_paid[index].innerHTML)
+                temporary_rate = (int_total_paid / int_total_due)* 100
+                if (temporary_rate!==temporary_rate){
+                  rate[index].innerHTML = "0.0%"
+                }else{
+                  rate[index].innerHTML = temporary_rate.toFixed(2)+ "%"
+                }
+                console.log("test")
+              }
+            }
+
+
+          </script>
 
     </div>
 </form>
