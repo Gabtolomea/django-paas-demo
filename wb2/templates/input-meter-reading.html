@@ -178,7 +178,6 @@ Input Reading
 			}
 			})
 		</script>
-
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
 			integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
@@ -187,46 +186,52 @@ Input Reading
 			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script type="text/javascript">
-			function printPDF() {
-				var doc = new jsPDF('p', 'pt', 'legal');
-				var htmlstring = '';
-				var tempVarToCheckPageHeight = 0;
-				var pageHeight = 0;
+			
+	function print() {
+		var doc = new jsPDF('landscape', 'pt', 'legal');
+		var htmlstring = '';
+		var tempVarToCheckPageHeight = 0;
+		var pageHeight = 0;
 
-				pageHeight = doc.internal.pageSize.height;
-				specialElementHandlers = {
-					// element with id of "bypass" - jQuery style selector
-					'#bypassme': function (element, renderer) {
-						// true = "handled elsewhere, bypass text extraction"
-						return true
-					}
-					margins = {
+		pageHeight = doc.internal.pageSize.height;
+		specialElementHandlers = {
+			// element with id of "bypass" - jQuery style selector
+			'#bypassme': function (element, renderer) {
+				// true = "handled elsewhere, bypass text extraction"
+				return true
+			}
+		};
+		margins = {
 			top: 150,
 			bottom: 60,
 			left: 40,
 			right: 40,
 			width: 600
 		};
+		const formatter = new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: 'Php',
+			minimumFractionDigits: 2
+		})
 
-		var y = 20;
-		var x = 40;
-		doc.text(420, y = y + 30, "Copy of Meter Reading ");
+		var y = 10;
+		var x = 20;
+		doc.text(420, y = y + 30, "Copy of Account Ledger ");
 		doc.setLineWidth(2);
 		doc.setFontSize(11);
-		doc.autoTable({
-			html: '#dtBasicExample',
-			theme: 'striped',
-			startY: y = y + 20,
-		})
-		y = y + 40
+		// doc.autoTable({
+		// 	html: '#dtBasicExample',
+		// 	theme: 'striped',
+		// 	startY: y = y + 20,
+		// })
+		// y = y + 40
 		doc.setLineWidth(2);
 		doc.setFontSize(14);
-		var tables = document.getElementsByClassName("table table-bordered table-sm")
+		var tables = document.getElementsByClassName("table-sm")
 		for (i = 0; i < 13; i++) {
-
 			doc.autoTable({
 				html: tables[i],
-				startY: y = y + 15,
+				startY: y = y + 13,
 				theme: 'striped',
 				pageBreak: 'auto',
 				columnStyles: {
@@ -242,7 +247,6 @@ Input Reading
 				},
 				styles: {
 					minCellHeight: 30
-
 				},
 			})
 			y = doc.lastAutoTable.finalY
@@ -254,7 +258,7 @@ Input Reading
 		}
 
 		console.log("testing")
-		doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+		doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
 	}				
 		</script>
 	</div>
