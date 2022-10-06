@@ -6,117 +6,122 @@ water usage
 {% endblock title %}
 
 {% block style %}
+
+
 <style>
-    html{
-        background-color: #F2F3F2;
+  html{
+      background-color: #F2F3F2;
+  }
+  table {
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      table-layout: fixed;
     }
-    table {
-        border: 1px solid #ccc;
-        border-collapse: collapse;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        table-layout: fixed;
+    
+    table caption {
+      font-size: 1.5em;
+      margin: .5em 0 .75em;
+    }
+    
+    table tr {
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      padding: .35em;
+    }
+    
+    table th,
+    table td {
+      padding: .625em;
+      text-align: center;
+    }
+    
+    table th {
+      font-size: .85em;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    
+    @media screen and (max-width: 600px) {
+      table {
+        border: 0;
+      }
+    
+      table caption {
+        font-size: 1.3em;
       }
       
-      table caption {
-        font-size: 1.5em;
-        margin: .5em 0 .75em;
+      table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
       }
       
       table tr {
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        padding: .35em;
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .625em;
       }
       
-      table th,
       table td {
-        padding: .625em;
-        text-align: center;
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: .8em;
+        text-align: right;
       }
       
-      table th {
-        font-size: .85em;
-        letter-spacing: .1em;
+      table td::before {
+        /*
+        * aria-label has no advantage, it won't be read inside a table
+        content: attr(aria-label);
+        */
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
         text-transform: uppercase;
       }
       
-      @media screen and (max-width: 600px) {
-        table {
-          border: 0;
-        }
-      
-        table caption {
-          font-size: 1.3em;
-        }
-        
-        table thead {
-          border: none;
-          clip: rect(0 0 0 0);
-          height: 1px;
-          margin: -1px;
-          overflow: hidden;
-          padding: 0;
-          position: absolute;
-          width: 1px;
-        }
-        
-        table tr {
-          border-bottom: 3px solid #ddd;
-          display: block;
-          margin-bottom: .625em;
-        }
-        
-        table td {
-          border-bottom: 1px solid #ddd;
-          display: block;
-          font-size: .8em;
-          text-align: right;
-        }
-        
-        table td::before {
-          /*
-          * aria-label has no advantage, it won't be read inside a table
-          content: attr(aria-label);
-          */
-          content: attr(data-label);
-          float: left;
-          font-weight: bold;
-          text-transform: uppercase;
-        }
-        
-        table td:last-child {
-          border-bottom: 0;
-        }
+      table td:last-child {
+        border-bottom: 0;
       }
-      body {
-        font-family: "Open Sans", sans-serif;
-        line-height: 1.25;
-      }
-
-      @media (max-width: 400px){
-        h2 { font-size: 20px;}
     }
-    @media (min-width: 401px){
-        h2 { font-size: 32px;}
+    body {
+      font-family: "Open Sans", sans-serif;
+      line-height: 1.25;
     }
 
     @media (max-width: 400px){
-        h3 { font-size: 15px;}
-    }
-    @media (min-width: 401px){
-        h3 { font-size: 20px;}
-    }
-   
-    #years{
-        width: 180px;
-        height: 23px;
-        
-    }
+      h2 { font-size: 20px;}
+  }
+  @media (min-width: 401px){
+      h2 { font-size: 32px;}
+  }
+
+  @media (max-width: 400px){
+      h3 { font-size: 15px;}
+  }
+  @media (min-width: 401px){
+      h3 { font-size: 20px;}
+  }
+ 
+  #years{
+      width: 180px;
+      height: 23px;
+      border-radius: 50px;
+      
+  }
 </style>
+
 {% endblock style %}
 {% block waterusage %}
+<body>
     <table>
         <div>
         <h2 style= "font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Water Usage Per Barangay</h2>
@@ -124,13 +129,20 @@ water usage
 
 
 
-            <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;">Select Year: </label>
+            <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year: </label>
 
             <select name="years" id="years">
             <option value="2022">2022</option>
             <option value="2021">2021</option>
             <option value="2020">2020</option>
             <option value="2019">2019</option>
+            <option value="2019">2018</option>
+            <option value="2019">2017</option>
+            <option value="2019">2016</option>
+            <option value="2019">2015</option>
+            <option value="2019">2014</option>
+            <option value="2019">2013</option>
+            <option value="2019">2012</option>
              </select>
 
         <div>
@@ -154,7 +166,7 @@ water usage
             <td data-label="Collection Rate" style="background-color: #D3D3D3">Null</td>
           </tr>
           <tr>
-            <td data-label="Barangay" style="background-color: #DBF3FA;"><a href ="#">Cagseng</a></td>
+            <td data-label="Barangay" style="background-color: #DBF3FA;"><a href ="#">Cagsing</a></td>
             <td data-label="Total Usage(Cu. Meter)" style="background-color: #D3D3D3">Null</td>
             <td data-label="Total Receivables" style="background-color: #D3D3D3">Null</td>
             <td data-label="Total Collection" style="background-color: #D3D3D3">Null</td>
@@ -253,4 +265,8 @@ water usage
           </tr>
         </tbody>
       </table>
+    </body>
+
+
+
 {% endblock waterusage %}
