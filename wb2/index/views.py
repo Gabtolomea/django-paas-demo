@@ -331,6 +331,12 @@ def inputreading(request, id, year):
     cummulative = get_cummulative(id)
     interest = 0
     if request.method=="POST":
+        try:
+            BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+        except ObjectDoesNotExist:
+            con_b_rec = BarangayRecord()
+        else:
+            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
         readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
@@ -445,6 +451,21 @@ def inputreading(request, id, year):
                         t.processedBy = user.username
                         t.save()
                 get_balance(id)
+
+            # match d:
+            #     case 1:
+            #         con_b_rec.total_due_jan
+            #     case 2:
+            #     case 3:
+            #     case 4:
+            #     case 5:
+            #     case 6:
+            #     case 7:
+            #     case 8:
+            #     case 9:
+            #     case 10:
+            #     case 11:
+            #     case 12:
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
 
