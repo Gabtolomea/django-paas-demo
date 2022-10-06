@@ -622,6 +622,7 @@ def view_barangay(request, id, year):
 
 def usage_report_data (request, year):
 
+    
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -639,18 +640,18 @@ def usage_report_data (request, year):
         )
     
     #By Barangay total Usage
-    tu_bay = BarangayRecord.objects.filter(year=year).annotate(
-        F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
-        F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
-        F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')
-    )
+    # tu_bay = BarangayRecord.objects.filter(year=year, barangaycode = tu_bay).annotate(
+    #     F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
+    #     F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
+    #     F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')
+    # ).order_by()
 
     context = {
         'tu_mon': tu_mon,
-        'tu_bay': tu_bay,
+        # 'tu_bay': tu_bay,
         
       }
-    render (request, 'usage_report_data.html', context)
+    return render (request, 'usage_report_data.html', context)
 
 
 def user_edit(request, id):
