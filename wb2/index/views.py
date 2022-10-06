@@ -522,7 +522,8 @@ def barangayreport(request, year):
 
     }
 
-    return render(request, 'barangayreport.html', context)
+    return render(request, 'waterusage.html', context)
+
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -558,3 +559,6 @@ def payment(request, id):
         t.save()
         get_balance(id)
     return redirect('ledger', id=id)
+
+def ledgertesting(request):
+    return render(request, 'ledger.html')
