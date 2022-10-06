@@ -28,6 +28,7 @@ urlpatterns = [
     path('barangayreport/<year>/', views.barangayreport, name='barangayreport'),
     path('barangayreport/<year>/view_barangay/<id>/', views.view_barangay, name='view_barngay'),
     path('usage_report_data/<year>/', views.usage_report_data, name='usage_report_data'),
+    path('usage_report_data/<year>/barangay_by_monthly/<id>/', views.barangay_by_monthly, name='barangay_by_monthly'),
     path('payment/<id>/', views.payment, name='payment'),
     # path('forBill/<id>/', views.forBill, name= 'forBill'),
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),

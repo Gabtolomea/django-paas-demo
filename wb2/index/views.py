@@ -629,6 +629,7 @@ def view_barangay(request, id, year):
         'bang': bang
     }
     return render(request, 'view_barangay.html', context)
+
 def usage_report_data (request, year):
     
     # Monthly total usage
@@ -661,3 +662,23 @@ def usage_report_data (request, year):
         
       }
     return render (request, 'usage_report_data.html', context)
+
+def barangay_by_monthly (request, id, year):
+    bbm = BarangayRecord.objects.get(barangayrec_id = id, year = year).aggregate(
+        jan=Sum('total_usage_jan'),
+        feb=Sum('total_usage_feb'),
+        mar=Sum('total_usage_mar'),
+        apr=Sum('total_usage_apr'),
+        may=Sum('total_usage_may'),
+        jun=Sum('total_usage_jun'),
+        jul=Sum('total_usage_jul'),
+        aug=Sum('total_usage_aug'),
+        sept=Sum('total_usage_sept'),
+        oct=Sum('total_usage_oct'),
+        nov=Sum('total_usage_nov'),
+        dec=Sum('total_usage_dec'),
+        )
+    context = {
+        'bbm': bbm
+    }
+    return render(request,"barangay_by_monthly.html", context)
