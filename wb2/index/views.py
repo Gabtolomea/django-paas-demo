@@ -21,10 +21,11 @@ from .forms import *
 from .decorators import *
 from .models import *
 from .dataporter import *
-from .ledger import *
 from .functions import *
 import math
 from .tokens import generate_token
+from django.core.files.storage import FileSystemStorage
+from django.db.models import F, Sum
 from django.db.models import F, Sum, FloatField
 from django.db.models.functions import Coalesce
 
@@ -208,10 +209,7 @@ def ledger(request, id):
                 if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
                     p = cur
                 else:
-                    p = str_int(p)
-                    t = p
                     p = p + current
-                    p = p - t
             prev = p
 
     context = {
@@ -219,6 +217,9 @@ def ledger(request, id):
         'table': table,
     }
     return render(request, 'ledger.html', context)
+
+
+
 def forgetpassword(request):
     if request.method == "POST":
         u_email = request.POST['email']
@@ -287,11 +288,14 @@ def inputreading(request, id, year):
     trans = Transactions.objects.filter(acctID_id = id, transType = 'Billing', year = year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
+    j = 0
+    if asc_trans[0].date.month == 1:
+        j = 1
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
-    if year in years:
-        years.remove(year)
+    if int(year) in years:
+        years.remove(int(year))
     # print(asc_trans)
     # print(count)
     j=0
@@ -304,7 +308,7 @@ def inputreading(request, id, year):
         prev = lastreading
         reading = prev
         style = ''
-        next=False
+        next = False
         # print(str(i)+" "+str(j+1))
         if j<count and count != 0:
             if i == asc_trans[j].month:
@@ -350,7 +354,7 @@ def inputreading(request, id, year):
                     # print("create transaction")
                     bill = 0
                     t = Transactions()
-                    t.acctID = consumer
+                    t.acctID = id
                     t.transType = 'Billing'
                     t.date = date.today()
                     t.month = d
@@ -453,9 +457,18 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
+# def landing(request):
+#     return render(request,'landing.html')
+
+
 def bills_list(request):
+    user = request.user
     bills_list = ConsumerInfo.objects.all()
-    return render(request, 'billslist.html', {'bills_list': bills_list})
+    context = {
+        'bills_list': bills_list,
+        'user':user,
+    }
+    return render(request, 'billslist.html', context)
 
 
 def consumer_list(request):
@@ -573,6 +586,40 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
+def user_edit(request, id):
+    sys = SystemUsers.objects.get(username=id)
+    encoded = sys.password
+    decode64 = base64.b64decode(encoded)
+    password = decode64.decode("ascii")
+    form = sysup(instance=sys)
+    if request.method == 'POST':
+        form = sysup(request.POST, instance=sys)
+        # pic = request.POST['profilepic']
+        if form.is_valid():
+            upload = request.FILES['profilepic']
+            fss = FileSystemStorage()
+            fss.save(upload.name, upload)
+            # sys.profilepic = pic
+            sys.save()
+            
+        return redirect('sysuser')
+    context = {
+        'sys':sys,
+        'form': form,
+        'password':password,
+    }
+    return render(request, 'user_edit.html', context)
+
+def deleteUser(request, id):
+    sys = SystemUsers.objects.get(username=id)
+    if request.method == "POST":
+        sys.delete()
+        return redirect('sysuser')
+    return render(request, 'delete.html',)
+
+def about(request):
+    return render(request, 'about.html')
+    
 def barangayreport(request, year):
     record = BarangayRecord.objects.all()
     br = BarangayRecord.objects.filter(year=year).annotate(
@@ -595,24 +642,8 @@ def barangayreport(request, year):
         'record': record,
     }
 
+
     return render(request, 'barangayreport.html', context)
-def user_edit(request, id):
-    sys = SystemUsers.objects.get(username=id)
-    encoded = sys.password
-    decode64 = base64.b64decode(encoded)
-    password = decode64.decode("ascii")
-    form = sysup(instance=sys)
-    if request.method == 'POST':
-        form = sysup(request.POST, instance=sys)
-        if form.is_valid():
-            form.save()
-        return redirect('sysuser')
-    context = {
-        'form': form,
-        'password':password,
-        'sys':sys
-    }
-    return render(request, 'user_edit.html', context)
 
 def payment(request, id):
     if request.method == 'POST':
@@ -631,3 +662,5 @@ def payment(request, id):
         t.save()
         get_balance(id)
     return redirect('ledger', id=id)
+
+
