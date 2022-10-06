@@ -5,7 +5,7 @@
             <div class="form-group">
                 <label for="exampleInputBarangay">Select Year</label>
                 <form id="yearselection" action="">
-                    <select class="form-select" id="selector" onchange="change()">
+                    <select class="form-select" aria-label="selector" onchange="change()">
                         <option value="{{cur_year}}">{{cur_year}}</option>
                     </select>
                     {% for i in years reversed %}
@@ -28,7 +28,7 @@
 
         <table id="checkme">
 
-            <body onload="collection_rate()">
+            <body onload= "collection_rate()">
                 <table>
                     <thead>
                         <tr>
