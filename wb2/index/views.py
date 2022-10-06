@@ -179,6 +179,24 @@ def ledger(request, id):
                 style = 'text-success table-success'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
+            elif asc_trans[i].transType == 'Penalty':
+                usage = ''
+                bill = asc_trans[i].bill
+                connectionType = ''
+                prev = ''
+                cur = ''
+                style = 'text-danger table-danger'
+                pb = asc_trans[i].processedBy
+                bal += bill
+            elif asc_trans[i].transType == 'Discount':
+                usage = ''
+                bill = asc_trans[i].bill
+                connectionType = ''
+                prev = ''
+                cur = ''
+                style = 'text-primary table-primary'
+                pb = asc_trans[i].processedBy
+                bal = bal-asc_trans[i].payment
             date = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
@@ -187,7 +205,7 @@ def ledger(request, id):
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
-                if asc_trans[i+1].transType == 'Payment':
+                if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
                     p = cur
                 else:
                     p = str_int(p)
@@ -359,10 +377,12 @@ def inputreading(request, id, year):
                         t.month = d
                         t.year = year
                         t.bill = interest
+                        bill+=interest
                         t.payment = 0
                         t.processedBy = user.username
                         t.save()
                     if consumer.discountcode is not None:
+                        discount = consumer.discountcode
                         t = Transactions()
                         t.acctID = consumer
                         t.transType = 'Discount'
@@ -370,7 +390,7 @@ def inputreading(request, id, year):
                         t.month = d
                         t.year = year
                         t.bill = 0
-                        # t.payment = 
+                        t.payment = bill-(bill*(discount.discount_rate/100))
                         t.processedBy = user.username
                         t.save()
                 else:
@@ -408,7 +428,18 @@ def inputreading(request, id, year):
                         t.payment = 0
                         t.processedBy = user.username
                         t.save()
-
+                    if consumer.discountcode is not None:
+                        discount = consumer.discountcode
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Discount'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = 0
+                        t.payment = bill-(bill*(discount.discount_rate/100))
+                        t.processedBy = user.username
+                        t.save()
                 get_balance(id)
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
