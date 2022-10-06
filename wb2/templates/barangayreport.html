@@ -15,10 +15,11 @@
                 </form>
                 <script>
                     yearselection = document.getElementById("yearselection")
-                    selector = document.getElementById("selector")
+                    selector = document.getElementById("selector").innerHTML = "barangayreport/{{bang.year}}/"
                     function change() {
                         yearselection.action = selector.value
                         yearselection.submit()
+                        console.log("selction testing")
                     }
                 </script>
             </div>
