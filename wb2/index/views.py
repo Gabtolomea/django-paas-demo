@@ -202,6 +202,7 @@ def ledger(request, id):
     return render(request, 'ledger.html', context)
 
 
+
 def forgetpassword(request):
     if request.method == "POST":
         u_email = request.POST['email']
@@ -548,6 +549,7 @@ def deleteUser(request, id):
 
 def about(request):
     return render(request, 'about.html')
+    
 def barangayreport(request, year):
     record = BarangayRecord.objects.all()
     br = BarangayRecord.objects.filter(year=year).annotate(
@@ -572,6 +574,7 @@ def barangayreport(request, year):
 
 
     return render(request, 'barangayreport.html', context)
+
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
