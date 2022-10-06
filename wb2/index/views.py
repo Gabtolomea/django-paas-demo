@@ -31,10 +31,10 @@ from django.db.models.functions import Coalesce
 
 
 def porter(request):
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
-    # balance()
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    balance()
     return render(request, "landing.html")
 
 # @unauthenticated_user
