@@ -30,10 +30,10 @@ from django.db.models import F, Sum
 
 
 def porter(request):
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
-    # balance()
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    balance()
     return render(request, "landing.html")
 
 # @unauthenticated_user
@@ -640,11 +640,11 @@ def usage_report_data (request, year):
         )
     
     #By Barangay total Usage
-    # tu_bay = BarangayRecord.objects.filter(year=year, barangaycode = tu_bay).annotate(
+    # tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(
     #     F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
     #     F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
     #     F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')
-    # ).order_by()
+    # )).order_by()
 
     context = {
         'tu_mon': tu_mon,
