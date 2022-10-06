@@ -2,7 +2,6 @@ from . import views
 
 from django.urls import path
 from django.views.generic.base import RedirectView
-
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -24,10 +23,18 @@ urlpatterns = [
     path('stopmeter/<id>/', views.stopmeter, name='stopmeter'),
     path('user_edit/<id>/', views.user_edit, name='user_edit'),
     path('userupdate/<id>/', views.userupdate, name='userupdate'),
+    path('deleteUser/<id>/', views.deleteUser, name='deleteUser'),
+    path('about', views.about, name='about'),
     path('barangayreport/<year>/', views.barangayreport, name='barangayreport'),
+    path('barangayreport/<year>/view_barangay/<id>/', views.view_barangay, name='view_barngay'),
+    path('usage_report_data/<year>/', views.usage_report_data, name='usage_report_data'),
     path('payment/<id>/', views.payment, name='payment'),
+<<<<<<< HEAD
     path('ledgertesting', views.ledgertesting,name='ledgertesting'),
 
+=======
+    # path('forBill/<id>/', views.forBill, name= 'forBill'),
+>>>>>>> e58a8e958a0c852d8ebd73438f67aafe3d18a87e
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
 ]

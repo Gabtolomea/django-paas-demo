@@ -3,6 +3,7 @@ from .models import *
 from .colnames import *
 from datetime import datetime
 import math
+import mysql.connector
 
 tablenames = [
     "accountinfo",
@@ -33,21 +34,20 @@ alltables = [
 
 
 sorted_tables = []
-# sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="yjh434ctuG@-@",
-#     database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="yjh434ctuG@-@",
+    database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 def porter():
-    # porter_in()
-    # porter_out(sorted_tables)
-    # porter_in()
-    # porter_out(sorted_tables)
-    # billing_out()
+    porter_in()
+    porter_out(sorted_tables)
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
     return
 
 
@@ -97,6 +97,11 @@ bar = [
 ]
 usage_rec = usage_record()
 def porter_out(tables):
+    penalty = Penalty()
+    penalty.penalty_after = 0
+    penalty.penalty_rate = 0
+    penalty.penalty_info = ''
+    penalty.save()
     for i in bar:
         b = Barangays()
         b.barangay = i
@@ -117,8 +122,9 @@ def porter_out(tables):
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
         con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
+        con_info.penaltyid = Penalty.objects.get(id=1)
         con_info.status = tables[0][i][8]
-        con_info.penaltyflag = tables[0][i][11]
+        con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
         con_info.deleteflag = tables[0][i][14]
         con_info.save()
@@ -299,15 +305,15 @@ def porter_out(tables):
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
         usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
-        usage_rec.amountpaid_str_apr =	i[164-1]
-        usage_rec.amountpaid_str_aug = i[165-1]
-        usage_rec.amountpaid_str_dec = i[166-1]
-        usage_rec.amountpaid_str_feb = i[167-1]
-        usage_rec.amountpaid_str_jan = i[168-1]
-        usage_rec.amountpaid_str_jul = i[169-1]
-        usage_rec.amountpaid_str_jun = i[170-1]
-        usage_rec.amountpaid_str_mar = i[171-1]
-        usage_rec.amountpaid_str_may = i[172-1]
+        usage_rec.amountpaid_str_apr =	i[163]
+        usage_rec.amountpaid_str_aug = i[164]
+        usage_rec.amountpaid_str_dec = i[165]
+        usage_rec.amountpaid_str_feb = i[166]
+        usage_rec.amountpaid_str_jan = i[167]
+        usage_rec.amountpaid_str_jul = i[168]
+        usage_rec.amountpaid_str_jun = i[169]
+        usage_rec.amountpaid_str_mar = i[170]
+        usage_rec.amountpaid_str_may = i[171]
         usage_rec.amountpaid_str_nov = i[173-1]
         usage_rec.amountpaid_str_oct = i[174-1]
         usage_rec.amountpaid_str_sept = i[175-1]
@@ -317,13 +323,7 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
-    penalty = Penalty()
-    penalty.penalty_after = 0
-    penalty.penalty_rate = 0
-    penalty.penalty_info = ''
-    penalty.save()
-
-
+    
 def billing_out():
     u_rec = usage_record.objects.all()
     for u in u_rec:
@@ -538,7 +538,7 @@ def balance():
 def get_balance(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
     trans = Transactions.objects.filter(acctID = id)
-    asc_trans = trans.order_by('year', 'month')
+    asc_trans = trans.order_by('year', 'month','transactionid')
     bal = 0
     for i in range(len(asc_trans)):
         if asc_trans[i].transType == 'Billing':
@@ -547,6 +547,21 @@ def get_balance(id):
             bal=bal-asc_trans[i].payment
     user.current_bal = math.ceil(bal*100)/100
     user.save()
+
+def get_cummulative(id):
+    user = ConsumerInfo.objects.get(consumer_id = id)
+    trans = Transactions.objects.filter(acctID = id, year = date.today().year)
+    asc_trans = trans.order_by('month','transactionid')
+    cum = 0
+    for i in range(len(asc_trans)):
+        if asc_trans[i].transType == 'Billing':
+            cum+=asc_trans[i].bill
+        elif asc_trans[i].transType == 'Payment':
+            cum=cum-asc_trans[i].payment
+    user.cummulative = math.ceil(cum*100)/100
+    user.save()
+    return math.ceil(cum*100)/100
+
 def sys_user_out(i):
     sys_user.is_admin = False
     sys_user.is_teller = False
