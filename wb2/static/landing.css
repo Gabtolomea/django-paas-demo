@@ -43,6 +43,10 @@ a.nav-link:hover {
   padding: 150px 0 50px 0;
   background-color: #E6ECEB;
 }
+.nav-item active{
+  opacity: 1;
+  background: red;
+}
 
 @media (max-width: 575px) {
   .water_billing_mobile_header{

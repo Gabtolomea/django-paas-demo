@@ -10,7 +10,82 @@
     <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body>  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-dark border-0">
+            <span class="mobile_header_font" style="color:white;font-weight: 700;"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body sidebar w-100">
+            <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x"></i>
+                <p style="font-size: 30px">Developer</p>
+            </div>
+            <ul class="list-unstyled" style="padding-left: 30px;">
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none;">
+                        <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                        <span class="sidenav_text">Billing</span>
+                    </a>
+                </li>
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none ">
+                        <i class="fa fa-tachometer fa-2x"></i>
+                        <span class="sidenav_text">Meter Reading</span>
+                    </a>
+                </li>
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                        <i class="fa-solid fa-user fa-2x"></i>
+                        <span class="sidenav_text">User Accounts</span>
+                    </a>
+                </li>
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none" >
+                        <i class="fa-solid fa-newspaper fa-2x"></i>
+                        <span class="sidenav_text">Reports</span>
+                    </a>
+                </li>
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                        <i class="fa-solid fa-thumbs-up fa-2x"></i>
+                        <span class="sidenav_text">Approve Application</span>
+                    </a>
+                </li>
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                        <i class="fa-solid fa-user-group fa-2x"></i>
+                        <span class="sidenav_text">Users Management</span>
+                    </a>
+                </li>
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                        <i class="fa-solid fa-user-plus fa-2x"></i>
+                        <span class="sidenav_text">User Creation</span>
+                    </a>
+                </li>
+                <li class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                        <i class="fa-solid fa-book fa-2x"></i>
+                        <span class="sidenav_text">Rates Management</span>
+                    </a>
+                </li>
+                <li  class="modal_side_nav_li">
+                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                        <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                        <span class="sidenav_text">Account Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <header>
      {% for message in messages %}
         <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
@@ -25,6 +100,10 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                        <!-- Button trigger modal -->
+                    <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal" data-target="#exampleModal">
                         <i class="fa fa-bars"></i>
                     </button>
                     <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
@@ -436,7 +515,9 @@
         function media_query_720(screen_size) {
             if (screen_size.matches) { // If media query matches
                 document.getElementById("first_toggle").style.display = "none";
-                document.getElementById("second_toggle").style.display = "inline";
+                document.getElementById("second_toggle").style.display = "none";
+                document.getElementById("third_toggle").style.display = "inline";
+                
 
                 document.getElementById("mobile_header_nav").style.display = "none";
 
@@ -447,6 +528,7 @@
             } else {
                 document.getElementById("first_toggle").style.display = "inline";
                 document.getElementById("second_toggle").style.display = "none";
+                document.getElementById("third_toggle").style.display = "none";
 
                 document.getElementById("mobile_header_nav").style.display = "inline";
 
@@ -479,6 +561,42 @@
             document.getElementById("main_content").classList.add("main_content");
             document.getElementById("main_content").classList.remove("remove_main_content");
         }
+        $(document).ready(function () {
+            let menuScrollTimer = null;
+            $(".nav a").click(function (e) {
+                // Prevent default behaviour ( scroll to element )
+                e.preventDefault();
+                if (menuScrollTimer === null) {
+                    // Highlight the clicked item
+                    $('.nav a.active').removeClass('active');
+                    $(this).addClass('active');
+                    // Smooth scroll to the target section
+                    let target = $(this).attr('href');
+                    $('html, body').animate({ scrollTop: $(target).offset().top - 100 }, 1050);
+                    // Set `menuScrollTimer` timer
+                    // This will prevents multiple clicks on menu items whule the smooth scroll is taking effect
+                    // This will also prevent the scroll logic from running
+                    menuScrollTimer = setTimeout(function () {
+                        clearTimeout(menuScrollTimer);
+                        menuScrollTimer = null;
+                    }, 1050);
+                }
+            });
+
+            $(window).scroll(function (e) {
+                // Avoid triggering the logic if the scroll event is triggerd from clicking one of the items
+                if (menuScrollTimer === null) {
+                    let windowTop = $(this).scrollTop();
+
+                    $('.nav a').each(function (event) {
+                        if (windowTop >= $($(this).attr('href')).offset().top - 100) {
+                            $('.nav .active').removeClass('active');
+                            $(this).addClass('active');
+                        }
+                    });
+                }
+            });
+        });        
     </script>
 </body>
 

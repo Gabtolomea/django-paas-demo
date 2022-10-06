@@ -66,7 +66,19 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     color: #63CDD7;
 
 }
-
+.modal_side_nav_li{
+    color:#E6ECEB;
+    font-weight: bold;
+    font-size: 10px;
+    white-space: nowrap;
+}
+.modal_side_nav_li_text{
+    padding:10px 0 10px 10px;
+    display: block;
+}
+li.modal_side_nav_li:hover {
+    background: #a0c5cf;
+}
 .side_nav_li{
     padding:10px 0 10px 100px;
     color:#E6ECEB;
@@ -120,7 +132,12 @@ button#first_toggle:hover{
     border-radius: 5px;
 }
 
-button#second _toggle:hover{
+button#second_toggle:hover{
+    background: #63CDD7 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
+}
+button#third_toggle:hover {
     background: #63CDD7 !important;
     color: #ffffff !important;
     border-radius: 5px;
