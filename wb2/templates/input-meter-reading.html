@@ -56,7 +56,7 @@ Input Reading
 		<a href="{% url 'consumer_list' %}"><button type="button" class="btn btn-wb-back">Back</button></a>
 	</div>
 	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-		<button type="button" class="btn btn-wb-copy">Get a Copy</button>
+		<button type="button" class="btn btn-wb-copy" onclick="print()">Get a Copy</button>
 	</div>
 </div>
 <h1 class="mb-3 text-center">Meter Reading</h1>
@@ -139,7 +139,9 @@ Input Reading
 		</table>
 		<br>
 		<br>
-		<center><h1>Usage Reports</h1></center>
+		<center>
+			<h1>Usage Reports</h1>
+		</center>
 		<br>
 		<!-- Chart -->
 
@@ -147,39 +149,60 @@ Input Reading
 	<div class="container align-items-center">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 		<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-			<script>
-				var labels =[{%for i in table%} '{{i.month}}', {% endfor %}];
-				
-				var chart = new Chart("myChart", {
-					type: "line",
-					data: {
-						labels: labels,
-						datasets: [{
-						data: [{%for i in table%} '{{i.usage}}', {% endfor %}],
-						label: "Total Usage",
-						fill: false,
-						borderColor: '#20B2AA',
-						tension: 0.1,
-						backgroundColor: "#3090C7",
-						}]
+		<script>
+			var labels = [{%for i in table %} '{{i.month}}', {% endfor %}];
+			var chart = new Chart("myChart", {
+				type: "line",
+				data: {
+					labels: labels,
+					datasets: [{
+						data: [{%for i in table %} '{{i.usage}}', {% endfor %}],
+				label: "Total Usage",
+				fill: false,
+				borderColor: '#20B2AA',
+				tension: 0.1,
+				backgroundColor: "#3090C7",
+			}]
 					},
-					options: {
-					title: {
-						display: true,
+			options: {
+				title: {
+					display: true,
 						text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
 					},
-					scales: {
+				scales: {
 					xAxes: [{
 						ticks: {
-						beginAtZero: true
+							beginAtZero: true
 						}
 					}]
-					}
-
 				}
-				})
-			
-			</script>
+			}
+			})
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+			integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			function print() {
+				var doc = new jsPDF('landscape', 'pt', 'legal');
+				var htmlstring = '';
+				var tempVarToCheckPageHeight = 0;
+				var pageHeight = 0;
+
+				pageHeight = doc.internal.pageSize.height;
+				specialElementHandlers = {
+					// element with id of "bypass" - jQuery style selector
+					'#bypassme': function (element, renderer) {
+						// true = "handled elsewhere, bypass text extraction"
+						return true
+					}
+				};
+			}					
+		</script>
 	</div>
 </div>
 
