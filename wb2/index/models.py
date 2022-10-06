@@ -49,7 +49,6 @@ class Penalty(models.Model):
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
 class Discount(models.Model):
-    discount_id = models.CharField(primary_key=True, max_length=20)
     discount_rate = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
@@ -138,7 +137,7 @@ class Transactions(models.Model):
     usage = models.IntegerField(blank=True, null=True)
     ratescode = models.CharField(max_length=20, blank=True, null=True)
     penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
-    # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
+    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
     bill = models.FloatField(null=True)
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)

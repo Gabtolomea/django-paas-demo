@@ -322,13 +322,12 @@ def inputreading(request, id, year):
         consumer.save()
         for i in readings:
             if i !=0:
-                if consumer.penaltycounter >= con_penalty.penalty_after:
+                if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
                   #via percentage
-                    if con_penalty.penalty_rate != 0:
-                        xy = con_penalty.penalty_rate * cummulative
-                        interest = xy/100
+                    xy = con_penalty.penalty_rate * cummulative
+                    interest = xy/100
                 try:
-                    Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
+                    Transactions.objects.get(acctID_id=id, transType='Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
                     t = Transactions()
@@ -357,16 +356,7 @@ def inputreading(request, id, year):
                         t.date = date.today()
                         t.month = d
                         t.year = year
-                        t.meterReading = i
-                        t.usage = i - lastreading
-                        t.ratescode = consumer.rateid_id
-                        rate = Rates.objects.get(rate_id = consumer.rateid_id)
-                        if t.usage <= rate.minReading:
-                            t.bill = rate.minReadingCharge
-                        else:
-                            xcubic = t.usage - rate.minReading
-                            xmincharge = xcubic * rate.rateAfterMin
-                            t.bill = xmincharge + rate.minReadingCharge + interest
+                        t.bill = interest
                         t.payment = 0
                         t.processedBy = user.username
                         t.save()
@@ -401,16 +391,7 @@ def inputreading(request, id, year):
                         t.date = date.today()
                         t.month = d
                         t.year = year
-                        t.meterReading = i
-                        t.usage = i - lastreading
-                        t.ratescode = consumer.rateid_id
-                        rate = Rates.objects.get(rate_id = consumer.rateid_id)
-                        if t.usage <= rate.minReading:
-                            t.bill = rate.minReadingCharge
-                        else:
-                            xcubic = t.usage - rate.minReading
-                            xmincharge = xcubic * rate.rateAfterMin
-                            t.bill = xmincharge + rate.minReadingCharge + interest
+                        t.bill = interest
                         t.payment = 0
                         t.processedBy = user.username
                         t.save()
