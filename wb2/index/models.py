@@ -123,11 +123,14 @@ class ConsumerInfo(models.Model):
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
     cummulative = models.FloatField(default=0)
+    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
+    
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
         ('Payment','Payment'),
         ('Penalty','Penalty'),
+        ('Discount','Discount'),
     )
     transactionid = models.AutoField(primary_key=True)
     date = models.DateField(null=True, blank=True)

@@ -330,6 +330,7 @@ def inputreading(request, id, year):
                     Transactions.objects.get(acctID_id=id, transType='Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
+                    bill = 0
                     t = Transactions()
                     t.acctID = consumer
                     t.transType = 'Billing'
@@ -345,6 +346,7 @@ def inputreading(request, id, year):
                     else:
                         xcubic = t.usage - rate.minReading
                         xmincharge = xcubic * rate.rateAfterMin
+                        bill = xmincharge + rate.minReadingCharge
                         t.bill = xmincharge + rate.minReadingCharge
                     t.payment = 0
                     t.processedBy = user.username
@@ -358,6 +360,17 @@ def inputreading(request, id, year):
                         t.year = year
                         t.bill = interest
                         t.payment = 0
+                        t.processedBy = user.username
+                        t.save()
+                    if consumer.discountcode is not None:
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Discount'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = 0
+                        # t.payment = 
                         t.processedBy = user.username
                         t.save()
                 else:
@@ -395,7 +408,7 @@ def inputreading(request, id, year):
                         t.payment = 0
                         t.processedBy = user.username
                         t.save()
-                
+
                 get_balance(id)
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
