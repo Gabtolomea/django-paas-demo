@@ -74,7 +74,6 @@ def home(request):
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
-        print(request.POST)
         form = SystemUserForm(request.POST)
         username = request.POST['username']
         firstname = request.POST['firstname']
@@ -153,7 +152,6 @@ def ledger(request, id):
         asc_trans = trans.order_by('year', 'month', 'transactionid')
         bal = 0
         current = 0
-        print(asc_trans)
         for i in range(len(asc_trans)):
             p = 0
             if i == 0:
@@ -436,10 +434,8 @@ def inputreading(request, id, year):
                     rate = Rates.objects.get(rate_id=t.ratescode)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
-                        print(rate.minReadingCharge)
                     else:
                         xcubic = t.usage - rate.minReading
-                        print(usage)
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
@@ -549,7 +545,6 @@ def sysuser(request):
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
-        print(request.POST)
         form = ConsumerCreationForm(request.POST)
         firstname = request.POST['firstname']
         middlename = request.POST['middlename']
@@ -717,7 +712,6 @@ def barangayreport(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-    print(years)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
