@@ -35,6 +35,7 @@ def porter(request):
     balance()
     return render(request, "landing.html")
 
+
 # @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
@@ -696,7 +697,6 @@ def payment(request, id):
     # data reports 
 def barangayreport(request, year):
     years = []
-    bang = BarangayRecord.objects.all()
     my = BarangayRecord.objects.filter(year=year)
     for i in my:
         if i.year not in years:
@@ -724,7 +724,7 @@ def barangayreport(request, year):
         'br': br,
         'cur_year': year,
         'years': years,
-        'bang': bang
+        
         
     }
     return render(request, 'waterusage.html', context)
