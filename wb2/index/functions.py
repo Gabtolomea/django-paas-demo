@@ -1,6 +1,6 @@
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
-
+import math
 def n_int(var):
     if var is None:
         return 0
@@ -31,3 +31,16 @@ def last_reading(id, year, month):
                 return Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=cont).meterReading
         year-=1
         cont=12
+
+def get_balance(id):
+    user = ConsumerInfo.objects.get(consumer_id = id)
+    trans = Transactions.objects.filter(acctID = id)
+    asc_trans = trans.order_by('year', 'month','transactionid')
+    bal = 0
+    for i in range(len(asc_trans)):
+        if asc_trans[i].transType == 'Billing':
+            bal+=asc_trans[i].bill
+        elif asc_trans[i].transType == 'Payment':
+            bal=bal-asc_trans[i].payment
+    user.current_bal = math.ceil(bal*100)/100
+    user.save()
