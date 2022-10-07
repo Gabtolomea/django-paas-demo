@@ -712,4 +712,5 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-
+def inputreadingtesting(request):
+    return render(request, 'input-meter-reading.html')

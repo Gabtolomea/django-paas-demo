@@ -520,7 +520,7 @@ def billing_out():
             dec.transType = 'Billing'
             dec.usage = u.usage_dec
             dec.save()
-    
+
 def balance():
     for i in ConsumerInfo.objects.all():
         user = ConsumerInfo.objects.get(consumer_id = i.consumer_id)
