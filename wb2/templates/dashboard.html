@@ -1,8 +1,7 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
     <title>
         {% block title %}
@@ -13,12 +12,18 @@
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous" />
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
-    {% block style %} {% endblock style %}
+    {% block style %}
+    {% endblock style %}
 </head>
 
-<body>  
+ 
+<body>
+    <div id="loading">
+        <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
+    </div>
+ 
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -95,16 +100,13 @@
   </div>
 
     <header>
-        {% for message in messages %}
-        <div
-            class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
-            <strong>{{message.tags|title}}!</strong> {{message}}
-            <a href="#" class="close" data-dismiss="alert"
-                style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
-                aria-label="close">&times;</a>
+     {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+          <strong>{{message.tags|title}}!</strong> {{message}}
+            <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;" aria-label="close">&times;</a>
         </div>
         {% endfor %}
-
+ 
             <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
                 <div class="col-sm-8 col-md-8 col-lg-8;" style="font-size: 20px; white-space: nowrap;" >
                     <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
@@ -119,7 +121,9 @@
                     </button>
                     <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
                 </div>
+
                 <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
+
 
                     <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
                         <i class="fa-solid fa-bell"></i>
@@ -127,16 +131,18 @@
                     <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
                         <i class="fa-solid fa-magnifying-glass-plus"></i>
                     </a>
-                    <a href="signout" style="color:#0093B7; text-decoration: none ;padding:0 5%">
+                    <a href="{% url 'signout' %}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
                         <i class="fa-solid fa-right-from-bracket"></i>
                     </a>
                 </div>
             </div>
     </header>
 
+
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
-        <div class="user_info"><!-- <i class="fa-solid fa-circle-user fa-8x"><img src="{{images}}/{{user.profilepic}}" alt=""></i> -->
-            <p style="font-size: 30px" class="centered">{{user.username}}</p>
+        <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
+            <p style="font-size: 30px">Developer</p>
+
         </div>
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
@@ -149,7 +155,7 @@
                 <li class="side_nav_li">
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span class="sidenav_text">Meter Reading</span>
-
+ 
                 </li>
             </a>
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
@@ -160,7 +166,7 @@
             </a>
             <a href="/" style="color: white; text-decoration: none">
                 <li class="side_nav_li">
-                    <i class="fa-solid fa-chart-line fa-2x"></i>
+                    <i class="fa-solid fa-newspaper fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
                 </li>
             </a>
@@ -182,13 +188,13 @@
                     <span class="sidenav_text">User Creation</span>
                 </li>
             </a>
-            <a href="" style="color: white; text-decoration: none">
+            <a href="/" style="color: white; text-decoration: none">
                 <li class="side_nav_li">
                     <i class="fa-solid fa-book fa-2x"></i>
                     <span class="sidenav_text">Rates Management</span>
                 </li>
             </a>
-            <a href="" style="color: white; text-decoration: none">
+            <a href="/" style="color: white; text-decoration: none">
                 <li class="side_nav_li">
                     <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
                     <span class="sidenav_text">Account Settings</span>
@@ -197,39 +203,361 @@
         </ul>
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
+
         {% block ledger %}
-        {% endblock ledger %}
+        {% endblock ledger%}
+ 
+        {% block meterreading %}
+        {% endblock meterreading%}
+ 
         {% block bills_list %}
         {% endblock bills_list %}
-        {% block meterreading %}
-        {% endblock meterreading %}
-
+ 
         {% block consumer_list %}
         {% endblock consumer_list %}
-
+ 
         {% block sysuser %}
         {% endblock sysuser %}
+        {% block waterusage %}
+        {% endblock waterusage %}
+ 
 
-        {% block consumercreation %}
-        {% endblock consumercreation %}
-        {% block deleteUser %}
-        {% endblock deleteUser %}
-        {% block registration %}
-        {% endblock registration %}
+        <div class="container-fluid p-0">
+            <div class="table-responsive" style="max-height: 922px;">
+                <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead class="wb_thead">
+
+                        <tr class="header">
+                            <th scope="col" style="min-width:110px">Account ID</th>
+                            <th scope="col" style="min-width:120px">Name</th>
+                            <th scope="col" style="min-width:100px">Meter Number</th>
+                            <th scope="col" style="min-width:100px">Current Balance</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="wb_tbody">
+                        <tr>
+                            <td>-</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row w-100 m-auto pt-3 pb-3">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                <button type="button" class="btn btn-wb-back">Back</button>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-6" style="text-align-last: right;">
+                <button type="button" class="btn btn-wb-copy">Get a Copy</button>
+            </div>
+        </div>
+        <h1 class="mb-3 text-center" style="font-size: 30px;">List of Billing Ledger</h1>
+        <div class="container-fluid p-0">
+            <div class="table-responsive" style="max-height: 700px;">
+                <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%;" style="z-index: 0;">
+                    <thead class="wb_thead">
+
+                        <tr>
+                            <th style="min-width: 100px;">Date</th>
+                            <th style="min-width: 100px;">Previous</th>
+                            <th style="min-width: 100px;">Current Reading</th>
+                            <th style="min-width: 110px;">Cubic Meter Used</th>
+                            <th style="min-width: 110px;">Amount Billed</th>
+                            <th style="min-width: 100px;">Payment</th>
+                            <th style="min-width: 100px;">Processed By</th>
+                            <th style="min-width: 110px;">Transaction ID</th>
+                            <th style="min-width: 100px;">Current Balance</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="wb_tbody">
+                        <tr>
+                            <td>-</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr> 
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>     <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+
+                         <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>     <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>     <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
     <script>
-
+ 
         function media_query_720(screen_size) {
             if (screen_size.matches) { // If media query matches
                 document.getElementById("first_toggle").style.display = "none";
+
                 document.getElementById("second_toggle").style.display = "none";
                 document.getElementById("third_toggle").style.display = "inline";
                 
 
-                    document.getElementById("mobile_header_nav").style.display = "none";
-
+                document.getElementById("mobile_header_nav").style.display = "none";
+ 
                 document.getElementById("side_nav").classList.remove("sidebar");
                 document.getElementById("side_nav").classList.add("remove_sidebar");
                 document.getElementById("main_content").classList.remove("main_content");
@@ -237,41 +565,35 @@
             } else {
                 document.getElementById("first_toggle").style.display = "inline";
                 document.getElementById("second_toggle").style.display = "none";
+
                 document.getElementById("third_toggle").style.display = "none";
 
                 document.getElementById("mobile_header_nav").style.display = "inline";
-
-                    document.getElementById("side_nav").classList.add("sidebar");
-                    document
-                        .getElementById("side_nav")
-                        .classList.remove("remove_sidebar");
-                    document.getElementById("main_content").classList.add("main_content");
-                    document
-                        .getElementById("main_content")
-                        .classList.remove("remove_main_content");
-                }
+ 
+                document.getElementById("side_nav").classList.add("sidebar");
+                document.getElementById("side_nav").classList.remove("remove_sidebar");
+                document.getElementById("main_content").classList.add("main_content");
+                document.getElementById("main_content").classList.remove("remove_main_content");
             }
-            var screen_size = window.matchMedia("(max-width: 720px)");
-            media_query_720(screen_size); // Call listener function at run time
-            screen_size.addListener(media_query_720); // Attach listener function on state changes
-
+        }
+        var screen_size = window.matchMedia("(max-width: 720px)")
+        media_query_720(screen_size) // Call listener function at run time
+        screen_size.addListener(media_query_720) // Attach listener function on state changes
+ 
+ 
         function first_toggle() {
             document.getElementById("first_toggle").style.display = "none";
             document.getElementById("second_toggle").style.display = "inline";
-
-                document.getElementById("side_nav").classList.remove("sidebar");
-                document.getElementById("side_nav").classList.add("remove_sidebar");
-                document
-                    .getElementById("main_content")
-                    .classList.remove("main_content");
-                document
-                    .getElementById("main_content")
-                    .classList.add("remove_main_content");
-            }
-            function second_toggle() {
-                document.getElementById("first_toggle").style.display = "inline";
-                document.getElementById("second_toggle").style.display = "none";
-
+ 
+            document.getElementById("side_nav").classList.remove("sidebar");
+            document.getElementById("side_nav").classList.add("remove_sidebar");
+            document.getElementById("main_content").classList.remove("main_content");
+            document.getElementById("main_content").classList.add("remove_main_content");
+        }
+        function second_toggle() {
+            document.getElementById("first_toggle").style.display = "inline";
+            document.getElementById("second_toggle").style.display = "none";
+ 
             document.getElementById("side_nav").classList.add("sidebar");
             document.getElementById("side_nav").classList.remove("remove_sidebar");
             document.getElementById("main_content").classList.add("main_content");
@@ -314,13 +636,21 @@
             });
         });        
     </script>
-</body>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
+ 
+</body><script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+<script>
+    $(window).on('load', function () {
+        $('#loading').hide();
+    })
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 {% block script %}
 {% endblock script %}
+ 
 </html>
+

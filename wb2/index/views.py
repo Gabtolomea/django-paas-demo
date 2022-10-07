@@ -727,7 +727,7 @@ def barangayreport(request, year):
         'bang': bang
         
     }
-    return render(request, 'barangayreport.html', context)
+    return render(request, 'waterusage.html', context)
 
 def view_barangay(request, id, year):
     bang = BarangayRecord.objects.get(barangayrec_id = id, year = year)

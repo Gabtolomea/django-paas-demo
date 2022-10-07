@@ -35,7 +35,7 @@ Account Ledger
 
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
-			<form action="{% url 'payment' u.consumer_id %}" method="post">
+			<form action="" method="post"> {% comment %} {% url 'payment' u.consumer_id %} {% endcomment %}
 				{% csrf_token %}
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
