@@ -40,6 +40,8 @@ def porter(request):
 def lp(request):
     return render(request, "landing.html")
 # @unauthenticated_user
+
+
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -59,13 +61,17 @@ def signin(request):
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
 # @login_required(login_url='login')
+
+
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
 
+
 def home(request):
     return render(request, 'home.html')
+
 
 def user_creation(request):
     form = SystemUserForm()
@@ -115,6 +121,8 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 # @login_required(login_url='login')
+
+
 def dashboard(request):
     user = request.user
     context = {
@@ -209,7 +217,7 @@ def ledger(request, id):
     context = {
         'u': u,
         'table': table,
-        'year':year,
+        'year': year,
     }
     return render(request, 'ledger.html', context)
 
@@ -323,22 +331,24 @@ def inputreading(request, id, year):
                     next = False
                 lastreading = reading
                 style = 'table-success'
-                j+=1
+                j += 1
         # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
-    
+
     con_penalty = Penalty.objects.get(id=consumer.penaltyid.id)
     cummulative = get_cummulative(id)
     interest = 0
-    usage=0
-    if request.method=="POST":
+    usage = 0
+    if request.method == "POST":
         try:
-            BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+            BarangayRecord.objects.get(
+                barangaycode_id=consumer.installation_address_id, year=year)
         except ObjectDoesNotExist:
             con_b_rec = BarangayRecord()
         else:
-            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+            con_b_rec = BarangayRecord.objects.get(
+                barangaycode_id=consumer.installation_address_id, year=year)
         readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
@@ -346,13 +356,14 @@ def inputreading(request, id, year):
         # print(readings)
         d = 1
         for i in readings:
-            if i !=0:
+            if i != 0:
                 if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
-                  #via percentage
+                  # via percentage
                     xy = con_penalty.penalty_rate * cummulative
                     interest = xy/100
                 try:
-                    Transactions.objects.get(acctID_id=id, transType='Billing',year=year,month=d)
+                    Transactions.objects.get(
+                        acctID_id=id, transType='Billing', year=year, month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
                     bill = 0
@@ -385,7 +396,7 @@ def inputreading(request, id, year):
                         t.month = d
                         t.year = year
                         t.bill = interest
-                        bill+=interest
+                        bill += interest
                         t.payment = 0
                         t.processedBy = user.username
                         t.save()
@@ -399,7 +410,7 @@ def inputreading(request, id, year):
                         t.year = year
                         t.bill = 0
                         t.payment = bill-(bill*(discount.discount_rate/100))
-                        bill-=bill*(discount.discount_rate/100)
+                        bill -= bill*(discount.discount_rate/100)
                         t.processedBy = user.username
                         t.save()
                 else:
@@ -425,7 +436,7 @@ def inputreading(request, id, year):
                     t.date = date.today()
                     t.usage = i - lastreading
                     usage = i - lastreading
-                    rate = Rates.objects.get(rate_id = t.ratescode)
+                    rate = Rates.objects.get(rate_id=t.ratescode)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                         print(rate.minReadingCharge)
@@ -458,49 +469,49 @@ def inputreading(request, id, year):
                         t.year = year
                         t.bill = 0
                         t.payment = bill-(bill*(discount.discount_rate/100))
-                        bill-=bill*(discount.discount_rate/100)
+                        bill -= bill*(discount.discount_rate/100)
                         t.processedBy = user.username
                         t.save()
                 get_balance(id)
 
             match d:
                 case 1:
-                    con_b_rec.total_due_jan+=bill
-                    con_b_rec.total_usage_jan+=usage
+                    con_b_rec.total_due_jan += bill
+                    con_b_rec.total_usage_jan += usage
                 case 2:
-                    con_b_rec.total_due_feb+=bill
-                    con_b_rec.total_usage_feb+=usage
+                    con_b_rec.total_due_feb += bill
+                    con_b_rec.total_usage_feb += usage
                 case 3:
-                    con_b_rec.total_due_mar+=bill
-                    con_b_rec.total_usage_mar+=usage
+                    con_b_rec.total_due_mar += bill
+                    con_b_rec.total_usage_mar += usage
                 case 4:
-                    con_b_rec.total_due_apr+=bill
-                    con_b_rec.total_usage_apr+=usage
+                    con_b_rec.total_due_apr += bill
+                    con_b_rec.total_usage_apr += usage
                 case 5:
-                    con_b_rec.total_due_may+=bill
-                    con_b_rec.total_usage_may+=usage
+                    con_b_rec.total_due_may += bill
+                    con_b_rec.total_usage_may += usage
                 case 6:
-                    con_b_rec.total_due_jun+=bill
-                    con_b_rec.total_usage_jun+=usage
+                    con_b_rec.total_due_jun += bill
+                    con_b_rec.total_usage_jun += usage
                 case 7:
-                    con_b_rec.total_due_jul+=bill
-                    con_b_rec.total_usage_jul+=usage
+                    con_b_rec.total_due_jul += bill
+                    con_b_rec.total_usage_jul += usage
                 case 8:
-                    con_b_rec.total_due_aug+=bill
-                    con_b_rec.total_usage_aug+=usage
+                    con_b_rec.total_due_aug += bill
+                    con_b_rec.total_usage_aug += usage
                 case 9:
-                    con_b_rec.total_due_sept+=bill
-                    con_b_rec.total_usage_sept+=usage
+                    con_b_rec.total_due_sept += bill
+                    con_b_rec.total_usage_sept += usage
                 case 10:
-                    con_b_rec.total_due_oct+=bill
-                    con_b_rec.total_usage_oct+=usage
+                    con_b_rec.total_due_oct += bill
+                    con_b_rec.total_usage_oct += usage
                 case 11:
-                    con_b_rec.total_due_nov+=bill
-                    con_b_rec.total_usage_nov+=usage
+                    con_b_rec.total_due_nov += bill
+                    con_b_rec.total_usage_nov += usage
                 case 12:
-                    con_b_rec.total_due_dec+=bill
-                    con_b_rec.total_usage_dec+=usage
-            d+=1
+                    con_b_rec.total_due_dec += bill
+                    con_b_rec.total_usage_dec += usage
+            d += 1
         return redirect('inputreading', id=id, year=date.today().year)
 
     # CHARLIE DIRI PAGHIMO
@@ -693,8 +704,9 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
+    # data reports
 
-    # data reports 
+
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.filter(year=year)
@@ -703,7 +715,7 @@ def barangayreport(request, year):
             years.append(i.year)
     if year in years:
         years.remove(year)
-   
+
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -715,29 +727,44 @@ def barangayreport(request, year):
         F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
         F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
         total_rec=F('total_due') - F('total_paid')
-        ).aggregate(
+    )
+    fr = BarangayRecord.objects.filter(year=year).annotate(
+        total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
+        F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
+        F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'),
+        total_due=F('total_due_jan') + F('total_due_feb') + F('total_due_mar') + F('total_due_apr') + F('total_due_may') + F('total_due_jun') +
+        F('total_due_jul') + F('total_due_aug') + F('total_due_sept') +
+        F('total_due_oct') + F('total_due_nov') + F('total_due_dec'),
+        total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
+        F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
+        F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
+        total_rec=F('total_due') - F('total_paid')
+    ).aggregate(
         tu=Sum('total_usage'),
         tp=Sum('total_paid'),
         tr=Sum('total_due') - Sum('total_paid')
-        )
+    )
     context = {
         'br': br,
         'cur_year': year,
         'years': years,
-        
-        
+        'fr': fr,
+
+
     }
     return render(request, 'waterusage.html', context)
 
+
 def view_barangay(request, id, year):
-    bang = BarangayRecord.objects.get(barangayrec_id = id, year = year)
+    bang = BarangayRecord.objects.get(barangayrec_id=id, year=year)
     context = {
         'bang': bang
     }
     return render(request, 'view_barangay.html', context)
 
-def usage_report_data (request, year):
-    
+
+def usage_report_data(request, year):
+
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -752,9 +779,9 @@ def usage_report_data (request, year):
         oct=Sum('total_usage_oct'),
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
-        )
+    )
 
-    #By Barangay total Usage
+    # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(
         F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -765,12 +792,13 @@ def usage_report_data (request, year):
     context = {
         'tu_mon': tu_mon,
         'tu_bay': tu_bay,
-        
-      }
-    return render (request, 'usage_report_data.html', context)
 
-def barangay_by_monthly (request, id, year):
-    bbm = BarangayRecord.objects.get(barangayrec_id = id, year = year).aggregate(
+    }
+    return render(request, 'usage_report_data.html', context)
+
+
+def barangay_by_monthly(request, id, year):
+    bbm = BarangayRecord.objects.get(barangayrec_id=id, year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -783,8 +811,8 @@ def barangay_by_monthly (request, id, year):
         oct=Sum('total_usage_oct'),
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
-        )
+    )
     context = {
         'bbm': bbm
     }
-    return render(request,"barangay_by_monthly.html", context)
+    return render(request, "barangay_by_monthly.html", context)
