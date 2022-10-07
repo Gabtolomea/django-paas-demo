@@ -728,13 +728,11 @@ def barangayreport(request, year):
         tu=Sum('total_usage'),
         tp=Sum('total_paid'),
         tr=Sum('total_due') - Sum('total_paid')
-        )
+    )
     context = {
         'br': br,
         'cur_year': year,
         'years': years,
-        
-        
     }
     return render(request, 'waterusage.html', context)
 
