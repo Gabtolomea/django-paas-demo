@@ -30,7 +30,7 @@ urlpatterns = [
     path('usage_report_data/<year>/', views.usage_report_data, name='usage_report_data'),
     path('usage_report_data/<year>/barangay_by_monthly/<id>/', views.barangay_by_monthly, name='barangay_by_monthly'),
     path('payment/<id>/', views.payment, name='payment'),
-    path('inputreadingtesting', views.inputreadingtesting, name='inputreadingtesting'),
+    # path('inputreadingtesting', views.inputreadingtesting, name='inputreadingtesting'),
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
