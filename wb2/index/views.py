@@ -21,7 +21,7 @@ from .forms import *
 from .decorators import *
 from .models import *
 from .dataporter import *
-from .ledger import *
+from .functions import *
 import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
@@ -29,7 +29,6 @@ from django.db.models import F, Sum
 from django.db.models import F, Sum, FloatField
 from django.db.models.functions import Coalesce
 from .decorators import unauthenticated_user
-
 
 def porter(request):
     porter_in()
@@ -68,10 +67,8 @@ def signout(request):
     messages.success(request, 'Logout successful')
     return redirect('login')
 
-
 def home(request):
     return render(request, 'home.html')
-
 
 def user_creation(request):
     form = SystemUserForm()
@@ -152,10 +149,9 @@ def ledger(request, id):
         trans = Transactions.objects.filter(acctID=u.consumer_id)
         asc_trans = trans.order_by('year','month','transactionid')
         bal = 0
-        p = 0
         current = 0
-        print(asc_trans)
         for i in range(len(asc_trans)):
+            p = 0
             if i == 0:
                 prev = 0
             if asc_trans[i].transType == 'Billing':
@@ -176,6 +172,24 @@ def ledger(request, id):
                 style = 'text-success table-success'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
+            elif asc_trans[i].transType == 'Penalty':
+                usage = ''
+                bill = asc_trans[i].bill
+                connectionType = ''
+                prev = ''
+                cur = ''
+                style = 'text-danger table-danger'
+                pb = asc_trans[i].processedBy
+                bal += bill
+            elif asc_trans[i].transType == 'Discount':
+                usage = ''
+                bill = asc_trans[i].bill
+                connectionType = ''
+                prev = ''
+                cur = ''
+                style = 'text-primary table-primary'
+                pb = asc_trans[i].processedBy
+                bal = bal-asc_trans[i].payment
             date = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
@@ -184,15 +198,16 @@ def ledger(request, id):
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
-                if asc_trans[i+1].transType == 'Payment':
+                if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
                     p = cur
                 else:
                     p = p + current
             prev = p
-
+    year = date.today().year
     context = {
         'u': u,
         'table': table,
+        'year':year,
     }
     return render(request, 'ledger.html', context)
 
@@ -289,7 +304,7 @@ def inputreading(request, id, year):
         transid = lastid
         usage = 0
         prev = lastreading
-        reading = prev
+        reading = 0
         style = ''
         next = False
         # print(str(i)+" "+str(j+1))
@@ -304,25 +319,45 @@ def inputreading(request, id, year):
                 else:
                     next = False
                 lastreading = reading
-                style = '-success'
+                style = 'table-success'
                 j+=1
         # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
     
+    con_penalty = Penalty.objects.get(id=consumer.penaltyid.id)
+    cummulative = get_cummulative(id)
+    interest = 0
+    usage=0
     if request.method=="POST":
+        try:
+            BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+        except ObjectDoesNotExist:
+            con_b_rec = BarangayRecord()
+        else:
+            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
         readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
             readings.append(int(r))
         # print(readings)
         d = 1
+        if cummulative>0:
+            consumer.penaltycounter+=1
+        else:
+            consumer.penaltycounter = 0
+        consumer.save()
         for i in readings:
             if i !=0:
+                if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
+                  #via percentage
+                    xy = con_penalty.penalty_rate * cummulative
+                    interest = xy/100
                 try:
-                    Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
+                    Transactions.objects.get(acctID_id=id, transType='Billing',year=year,month=d)
                 except ObjectDoesNotExist:
                     # print("create transaction")
+                    bill = 0
                     t = Transactions()
                     t.acctID = id
                     t.transType = 'Billing'
@@ -331,6 +366,7 @@ def inputreading(request, id, year):
                     t.year = year
                     t.meterReading = i
                     t.usage = i - lastreading
+                    usage = i - lastreading
                     t.ratescode = consumer.rateid_id
                     rate = Rates.objects.get(rate_id = consumer.rateid_id)
                     if t.usage <= rate.minReading:
@@ -338,15 +374,40 @@ def inputreading(request, id, year):
                     else:
                         xcubic = t.usage - rate.minReading
                         xmincharge = xcubic * rate.rateAfterMin
+                        bill = xmincharge + rate.minReadingCharge
                         t.bill = xmincharge + rate.minReadingCharge
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
-                    get_balance(id)
+                    if interest:
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Penalty'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = interest
+                        bill+=interest
+                        t.payment = 0
+                        t.processedBy = user.username
+                        t.save()
+                    if consumer.discountcode is not None:
+                        discount = consumer.discountcode
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Discount'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = 0
+                        t.payment = bill-(bill*(discount.discount_rate/100))
+                        bill-=bill*(discount.discount_rate/100)
+                        t.processedBy = user.username
+                        t.save()
                 else:
                     # print("update transaction")
                     t = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d)
-                    lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
+                    lastreading = last_reading(id, year, d)
                     try:
                         Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d+1)
                     except ObjectDoesNotExist:
@@ -355,28 +416,84 @@ def inputreading(request, id, year):
                         next = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d+1)
                         next.usage = next.meterReading - i
                         next.save()
-                    
-                    lastreading = Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=d-1).meterReading
                     t.meterReading = i
                     t.date = date.today()
                     t.usage = i - lastreading
+                    usage = i - lastreading
                     rate = Rates.objects.get(rate_id = t.ratescode)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
-                        print(rate.minReadingCharge)
                     else:
                         xcubic = t.usage - rate.minReading
-                        print(usage)
                         xmincharge = xcubic * rate.rateAfterMin
                         t.bill = xmincharge + rate.minReadingCharge
                     t.processedBy = user.username
-                    
                     t.save()
-                    get_balance(id)
+                    if interest:
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Penalty'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = interest
+                        t.payment = 0
+                        t.processedBy = user.username
+                        t.save()
+                    if consumer.discountcode is not None:
+                        discount = consumer.discountcode
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Discount'
+                        t.date = date.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = 0
+                        t.payment = bill-(bill*(discount.discount_rate/100))
+                        bill-=bill*(discount.discount_rate/100)
+                        t.processedBy = user.username
+                        t.save()
+                get_balance(id)
+
+            match d:
+                case 1:
+                    con_b_rec.total_due_jan+=bill
+                    con_b_rec.total_usage_jan+=usage
+                case 2:
+                    con_b_rec.total_due_feb+=bill
+                    con_b_rec.total_usage_feb+=usage
+                case 3:
+                    con_b_rec.total_due_mar+=bill
+                    con_b_rec.total_usage_mar+=usage
+                case 4:
+                    con_b_rec.total_due_apr+=bill
+                    con_b_rec.total_usage_apr+=usage
+                case 5:
+                    con_b_rec.total_due_may+=bill
+                    con_b_rec.total_usage_may+=usage
+                case 6:
+                    con_b_rec.total_due_jun+=bill
+                    con_b_rec.total_usage_jun+=usage
+                case 7:
+                    con_b_rec.total_due_jul+=bill
+                    con_b_rec.total_usage_jul+=usage
+                case 8:
+                    con_b_rec.total_due_aug+=bill
+                    con_b_rec.total_usage_aug+=usage
+                case 9:
+                    con_b_rec.total_due_sept+=bill
+                    con_b_rec.total_usage_sept+=usage
+                case 10:
+                    con_b_rec.total_due_oct+=bill
+                    con_b_rec.total_usage_oct+=usage
+                case 11:
+                    con_b_rec.total_due_nov+=bill
+                    con_b_rec.total_usage_nov+=usage
+                case 12:
+                    con_b_rec.total_due_dec+=bill
+                    con_b_rec.total_usage_dec+=usage
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
-    
-    # CHARLIE DIRI PAGHIMO
 
     context = {
         'consumer': consumer,
@@ -578,10 +695,11 @@ def barangayreport(request, year):
 
 def payment(request, id):
     if request.method == 'POST':
+        consumer = ConsumerInfo.objects.get(consumer_id=id)
         amount = request.POST['amount']
         or_num = request.POST['or_num']
         t = Transactions()
-        t.acctID = ConsumerInfo.objects.get(consumer_id=id)
+        t.acctID = consumer
         t.transType = "Payment"
         t.date = date.today()
         t.year = date.today().year
@@ -593,4 +711,5 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-
+def inputreadingtesting(request):
+    return render(request, 'input-meter-reading.html')

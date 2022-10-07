@@ -1,0 +1,100 @@
+html{
+  height: auto;
+  max-height: 100%;
+}
+.menu_header{
+  background:black;
+  color:white;
+  padding: 8px;
+}
+button#first_toggle:hover{
+background: #63CDD7 !important;
+color: #ffffff !important;
+border-radius: 5px;
+}
+.header_toggle{
+background: transparent;
+border: 0 !important;
+padding: 0 10px !important;
+color: #63CDD7;
+}
+
+button.btn.btn-dark:hover {
+background: #a0c5cf !important;
+border-radius: 10px;
+}
+button.btn.btn-primary:hover {
+background: #a0c5cf !important;
+border-radius: 10px;
+}
+a.menu:hover{
+color: #a0c5cf !important;
+}
+.col-lg-4.col-md-4.col-sm-4.text-center:hover {
+color: #a0c5cf !important;
+}
+
+.page-section{
+padding: 30px 0;
+background-color: #E6ECEB;
+}
+
+.col-md-4.col-sm-12.text-center:hover {
+color: #a0c5cf !important;
+}
+a.nav-link:hover {
+background-color: #63CDD7 !important;
+}
+.page-section {
+padding: 200px 0 50px 0;
+background-color: #E6ECEB;
+}
+
+@media (max-width: 575px) {
+.water_billing_mobile_header{
+  text-align: left !important;
+}
+button.btn.btn-dark {
+  font-size: 15px !important;
+}
+button.btn.btn-primary {
+  font-size: 15px !important;
+}
+.menu_header{
+  display: none;
+}
+.menu_button_header{
+  display: block !important;
+}
+.sm_contacts_bottom{
+  display: block !important;
+}
+.screen_size_sm{
+  display: none;
+}
+}
+
+@media (max-width: 991px) {
+.screen_size_md_none{
+  display: none;
+}
+.screen_size_md_block{
+  display: block !important ;
+}
+.contacts_header{
+  display: none;
+}
+.menu_button_header{
+  display: none;
+}
+}
+
+@media (min-width: 992px){
+.navbar-expand-lg .navbar-collapse {
+  display: none!important;
+  flex-basis: auto;
+}
+}
+
+
+
