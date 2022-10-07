@@ -330,6 +330,7 @@ def inputreading(request, id, year):
     con_penalty = Penalty.objects.get(id=consumer.penaltyid.id)
     cummulative = get_cummulative(id)
     interest = 0
+    usage=0
     if request.method=="POST":
         try:
             BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
@@ -367,6 +368,7 @@ def inputreading(request, id, year):
                     t.year = year
                     t.meterReading = i
                     t.usage = i - lastreading
+                    usage = i - lastreading
                     t.ratescode = consumer.rateid_id
                     rate = Rates.objects.get(rate_id = consumer.rateid_id)
                     if t.usage <= rate.minReading:
@@ -401,6 +403,7 @@ def inputreading(request, id, year):
                         t.year = year
                         t.bill = 0
                         t.payment = bill-(bill*(discount.discount_rate/100))
+                        bill-=bill*(discount.discount_rate/100)
                         t.processedBy = user.username
                         t.save()
                 else:
@@ -418,6 +421,7 @@ def inputreading(request, id, year):
                     t.meterReading = i
                     t.date = date.today()
                     t.usage = i - lastreading
+                    usage = i - lastreading
                     rate = Rates.objects.get(rate_id = t.ratescode)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
@@ -448,24 +452,48 @@ def inputreading(request, id, year):
                         t.year = year
                         t.bill = 0
                         t.payment = bill-(bill*(discount.discount_rate/100))
+                        bill-=bill*(discount.discount_rate/100)
                         t.processedBy = user.username
                         t.save()
                 get_balance(id)
 
-            # match d:
-            #     case 1:
-            #         con_b_rec.total_due_jan
-            #     case 2:
-            #     case 3:
-            #     case 4:
-            #     case 5:
-            #     case 6:
-            #     case 7:
-            #     case 8:
-            #     case 9:
-            #     case 10:
-            #     case 11:
-            #     case 12:
+            match d:
+                case 1:
+                    con_b_rec.total_due_jan+=bill
+                    con_b_rec.total_usage_jan+=usage
+                case 2:
+                    con_b_rec.total_due_feb+=bill
+                    con_b_rec.total_usage_feb+=usage
+                case 3:
+                    con_b_rec.total_due_mar+=bill
+                    con_b_rec.total_usage_mar+=usage
+                case 4:
+                    con_b_rec.total_due_apr+=bill
+                    con_b_rec.total_usage_apr+=usage
+                case 5:
+                    con_b_rec.total_due_may+=bill
+                    con_b_rec.total_usage_may+=usage
+                case 6:
+                    con_b_rec.total_due_jun+=bill
+                    con_b_rec.total_usage_jun+=usage
+                case 7:
+                    con_b_rec.total_due_jul+=bill
+                    con_b_rec.total_usage_jul+=usage
+                case 8:
+                    con_b_rec.total_due_aug+=bill
+                    con_b_rec.total_usage_aug+=usage
+                case 9:
+                    con_b_rec.total_due_sept+=bill
+                    con_b_rec.total_usage_sept+=usage
+                case 10:
+                    con_b_rec.total_due_oct+=bill
+                    con_b_rec.total_usage_oct+=usage
+                case 11:
+                    con_b_rec.total_due_nov+=bill
+                    con_b_rec.total_usage_nov+=usage
+                case 12:
+                    con_b_rec.total_due_dec+=bill
+                    con_b_rec.total_usage_dec+=usage
             d+=1
         return redirect('inputreading', id=id, year=date.today().year)
 
