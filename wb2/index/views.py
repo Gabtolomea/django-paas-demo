@@ -706,7 +706,6 @@ def payment(request, id):
 @login_required(login_url='login') 
 def barangayreport(request, year):
     years = []
-    bang = BarangayRecord.objects.all()
     my = BarangayRecord.objects.filter(year=year)
     for i in my:
         if i.year not in years:
@@ -734,7 +733,7 @@ def barangayreport(request, year):
         'br': br,
         'cur_year': year,
         'years': years,
-        'bang': bang
+        
         
     }
     return render(request, 'waterusage.html', context)
