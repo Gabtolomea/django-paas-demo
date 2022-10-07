@@ -711,13 +711,13 @@ def payment(request, id):
 @login_required(login_url='login') 
 def barangayreport(request, year):
     years = []
-    my = BarangayRecord.objects.filter(year=year)
+    my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
             years.append(i.year)
-    if year in years:
-        years.remove(year)
-
+    if int(year) in years:
+        years.remove(int(year))
+    print(years)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +

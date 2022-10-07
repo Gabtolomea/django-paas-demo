@@ -131,11 +131,23 @@ water usage
 
             <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year: </label>
 
-            <select name="years" id="years">
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-           
-             </select>
+            
+		<form id="yearselection" action="">
+			<select class="form-select" id="selector" onchange="change()">
+				<option value="{{cur_year}}">{{cur_year}}</option>
+				{% for i in years reversed %}
+				<option value="{{i}}">{{i}}</option>
+				{% endfor %}
+			</select>
+		</form>
+		<script>
+			yearselection = document.getElementById("yearselection")
+			selector = document.getElementById("selector")
+			function change() {
+				yearselection.action = selector.value
+				yearselection.submit()
+			}
+		</script>
 
         <div>
             <h3 style= " margin-bottom: 50px; text-align: center; margin-top: 30px;">Barangay Yearly Record</h3>
