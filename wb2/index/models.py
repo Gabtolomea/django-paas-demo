@@ -113,7 +113,7 @@ class ConsumerInfo(models.Model):
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
     status = models.IntegerField()
-    penaltyflag = models.BooleanField()
+    penaltycounter = models.IntegerField(null=True)
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
