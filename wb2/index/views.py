@@ -516,36 +516,6 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-<<<<<<< HEAD
-def barangayreport(request, year):
-    record = BarangayRecord.objects.all()
-    br = BarangayRecord.objects.filter(year=year).annotate(
-        total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
-        F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
-        F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'),
-        total_due=F('total_due_jan') + F('total_due_feb') + F('total_due_mar') + F('total_due_apr') + F('total_due_may') + F('total_due_jun') +
-        F('total_due_jul') + F('total_due_aug') + F('total_due_sept') +
-        F('total_due_oct') + F('total_due_nov') + F('total_due_dec'),
-        total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
-        F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
-        F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
-        total_rec=F('total_due') - F('total_paid'),
-        percent=F('total_paid') / F('total_due')*100)
-
-    tl = BarangayRecord.objects.filter(year=year).aggregate()
-
-    context = {
-        'br': br,
-        'record': record,
-    
-        
-
-    }
-
-    return render(request, 'waterusage.html', context)
-
-=======
->>>>>>> e58a8e958a0c852d8ebd73438f67aafe3d18a87e
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -598,10 +568,9 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-<<<<<<< HEAD
 def ledgertesting(request):
     return render(request, 'ledger.html')
-=======
+
 def barangayreport(request, year):
     years = []
     bang = BarangayRecord.objects.all()
@@ -635,7 +604,7 @@ def barangayreport(request, year):
         'bang': bang
         
     }
-    return render(request, 'barangayreport.html', context)
+    return render(request, 'waterusage.html', context)
 
 def view_barangay(request, id, year):
     bang = BarangayRecord.objects.get(barangayrec_id = id, year = year)
@@ -681,7 +650,4 @@ def usage_report_data (request, year):
         # 'tu_bay': tu_bay,
 
       }
-    render (request, 'usage_report_data.html', context)
     return render (request, 'usage_report_data.html', context)
-
->>>>>>> e58a8e958a0c852d8ebd73438f67aafe3d18a87e
