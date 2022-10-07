@@ -78,10 +78,7 @@ water usage
       }
       
       table td::before {
-        /*
-        * aria-label has no advantage, it won't be read inside a table
-        content: attr(aria-label);
-        */
+        
         content: attr(data-label);
         float: left;
         font-weight: bold;
@@ -134,8 +131,7 @@ water usage
             <select name="years" id="years">
             <option value="2022">2022</option>
             <option value="2021">2021</option>
-           
-             </select>
+            </select>
 
         <div>
             <h3 style= " margin-bottom: 50px; text-align: center; margin-top: 30px;">Barangay Yearly Record</h3>

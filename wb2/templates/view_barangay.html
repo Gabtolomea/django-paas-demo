@@ -1,6 +1,113 @@
 
-<div>
-  <labe>Barangay Yearly Records for Year {{bang.barangaycode}}</labe>
+<style>
+  html{
+      background-color: #F2F3F2;
+  }
+  table {
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      table-layout: fixed;
+    }
+    
+    table caption {
+      font-size: 1.5em;
+      margin: .5em 0 .75em;
+    }
+    
+    table tr {
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      padding: .35em;
+    }
+    
+    table th,
+    table td {
+      padding: .625em;
+      text-align: center;
+    }
+    
+    table th {
+      font-size: .85em;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    
+    @media screen and (max-width: 600px) {
+      table {
+        border: 0;
+      }
+    
+      table caption {
+        font-size: 1.3em;
+      }
+      
+      table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+      
+      table tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .625em;
+      }
+      
+      table td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: .8em;
+        text-align: right;
+      }
+      
+      table td::before {
+        
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      
+      table td:last-child {
+        border-bottom: 0;
+      }
+    }
+    body {
+      font-family: "Open Sans", sans-serif;
+      line-height: 1.25;
+    }
+
+    @media (max-width: 400px){
+      h2 { font-size: 20px;}
+  }
+  @media (min-width: 401px){
+      h2 { font-size: 32px;}
+  }
+
+  @media (max-width: 400px){
+      h3 { font-size: 15px;}
+  }
+  @media (min-width: 401px){
+      h3 { font-size: 20px;}
+  }
+ 
+  #years{
+      width: 180px;
+      height: 23px;
+      border-radius: 50px;
+      
+  }
+</style>
+
+  <label style= "font-weight: bold; font-size: 1.3em; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Barangay Yearly Records for Year {{bang.barangaycode}}</label>
     <div class = "col-sm-offset-7 col-sm-5">
         <div class="form-group">
             <label for="exampleInputBarangay">Select Year</label>
@@ -19,145 +126,19 @@
 <table>
     <thead>
         <tr>
-            <th>Billing Cycle Cutoff Month</th>
-            <th>Total Usage (Cubic Meter)</th>
-            <th>Total Receivable</th>
-            <th>Total Collection</th>
+            <th scope="col" style="background-color: #63CDD7; font-size: 12px;">Billing Cycle Cutoff Month</th>
+            <th scope="col" style="background-color: #808080; font-size: 12px;">Total Usage (Cubic Meter)</th>
+            <th scope="col" style="background-color: #808080; font-size: 12px;">Total Receivable</th>
+            <th scope="col" style="background-color: #808080; font-size: 12px;">Total Collection</th>
             
         </tr>
     </thead>
     <tbody>
         <tr>
-          <td>
-            <p>January</p>
-          </td>
-          <td>{{bang.total_due_jan|floatformat:2}}</td>
-          <td>{{bang.total_due_jan|floatformat:2 }}</td>
-          <td>{{bang.total_paid_jan|floatformat:2 }}</td>
-          <td>{{bang.total_usage_jan|floatformat:1}}</td>
-          <td>{{bang.total_due_jan|floatformat:1}}</td>
-          <td>{{bang.total_paid_jan|floatformat:1}}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>February</p>
-          </td>
-          <td>{{ bang.usage_feb|floatformat:2 }}</td>
-          <td>{{ bang.total_due_feb|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_feb|floatformat:2 }}</td>
-          <td>{{bang.total_usage_feb|floatformat:1}}</td>
-          <td>{{bang.total_due_feb|floatformat:1}}</td>
-          <td>{{bang.total_paid_feb|floatformat:1}}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>March</p>
-          </td>
-          <td>{{ bang.usage_mar|floatformat:2  }}</td>
-          <td>{{ bang.total_due_mar|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_mar|floatformat:2 }}</td>
-          <td>{{bang.total_usage_mar|floatformat:1}}</td>
-          <td>{{bang.total_due_mar|floatformat:1 }}</td>
-          <td>{{bang.total_paid_mar|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>April</p>
-          </td>
-          <td>{{ bang.usage_apr|floatformat:2  }}</td>
-          <td>{{ bang.total_due_apr|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_apr|floatformat:2 }}</td>
-          <td>{{bang.total_usage_apr|floatformat:1  }}</td>
-          <td>{{bang.total_due_apr|floatformat:1 }}</td>
-          <td>{{bang.total_paid_apr|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>May</p>
-          </td>
-          <td>{{ bang.usage_may|floatformat:2  }}</td>
-          <td>{{ bang.total_due_may|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_may|floatformat:2 }}</td>
-          <td>{{bang.total_usage_may|floatformat:1  }}</td>
-          <td>{{bang.total_due_may|floatformat:1 }}</td>
-          <td>{{bang.total_paid_may|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>June</p>
-          </td>
-          <td>{{ bang.usage_jun|floatformat:2  }}</td>
-          <td>{{ bang.total_due_jun|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_jun|floatformat:2 }}</td>
-          <td>{{bang.total_usage_jun|floatformat:1  }}</td>
-          <td>{{bang.total_due_jun|floatformat:1 }}</td>
-          <td>{{bang.total_paid_jun|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>July</p>
-          </td>
-          <td>{{ bang.usage_jul|floatformat:2  }}</td>
-          <td>{{ bang.total_due_jul|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_jul|floatformat:2 }}</td>
-          <td>{{bang.total_usage_jul|floatformat:1  }}</td>
-          <td>{{bang.total_due_jul|floatformat:1 }}</td>
-          <td>{{bang.total_paid_jul|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>August</p>
-          </td>
-          <td>{{ bang.usage_aug|floatformat:2  }}</td>
-          <td>{{ bang.total_due_aug|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_aug|floatformat:2 }}</td>
-          <td>{{bang.total_usage_aug|floatformat:1  }}</td>
-          <td>{{bang.total_due_aug|floatformat:1 }}</td>
-          <td>{{bang.total_paid_aug|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>September</p>
-          </td>
-          <td>{{ bang.usage_sept|floatformat:2  }}</td>
-          <td>{{ bang.total_due_sept|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_sept|floatformat:2 }}</td>
-          <td>{{bang.total_usage_sept|floatformat:1  }}</td>
-          <td>{{bang.total_due_sept|floatformat:1 }}</td>
-          <td>{{bang.total_paid_sept|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>October</p>
-          </td>
-          <td>{{ bang.usage_oct|floatformat:2  }}</td>
-          <td>{{ bang.total_due_oct|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_oct|floatformat:2 }}</td>
-          <td>{{bang.total_usage_oct|floatformat:1  }}</td>
-          <td>{{bang.total_due_oct|floatformat:1 }}</td>
-          <td>{{bang.total_paid_oct|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>November</p>
-          </td>
-          <td>{{ bang.usage_nov|floatformat:2  }}</td>
-          <td>{{ bang.total_due_nov|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_nov|floatformat:2 }}</td>
-          <td>{{bang.total_usage_nov|floatformat:1  }}</td>
-          <td>{{bang.total_due_nov|floatformat:1 }}</td>
-          <td>{{bang.total_paid_nov|floatformat:1 }}</td>
-        </tr>
-        <tr>
-          <td>
-            <p>December</p>
-          </td>
-          <td>{{ bang.usage_dec|floatformat:2  }}</td>
-          <td>{{ bang.total_due_dec|floatformat:2 }}</td>
-          <td>{{ bang.total_paid_dec|floatformat:2 }}</td>
-          <td>{{bang.total_usage_dec|floatformat:1  }}</td>
-          <td>{{bang.total_due_dec|floatformat:1 }}</td>
-          <td>{{bang.total_paid_dec|floatformat:1 }}</td>
+          <td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">January</td>
+          <td data-label="Total Usage (Cubic Meter)" style="background-color: #D3D3D3;">{{bang.total_usage_jan|floatformat:1}}</td>
+          <td data-label="Total Receivable" style="background-color: #D3D3D3;">{{bang.total_due_jan|floatformat:1}}</td>
+          <td data-label="Total Collection" style="background-color: #D3D3D3;">{{bang.total_paid_jan|floatformat:1}}</td>
         </tr>
       </tbody>
 </table>
@@ -184,6 +165,3 @@
 
 
   </script>
-
-
-</div>
