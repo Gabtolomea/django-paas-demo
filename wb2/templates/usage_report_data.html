@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
 <body>
@@ -7,7 +8,6 @@
   <canvas id="myChart" width="800" height="150"></canvas>
 
   <script>
-    window.onload = function () {
       var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       var yValues = ['{{tu_mon.jan}}', '{{tu_mon.feb}}', '{{tu_mon.mar}}', '{{tu_mon.apr}}', '{{tu_mon.may}}', '{{tu_mon.jun}}', '{{tu_mon.jul}}', '{{tu_mon.aug}}', '{{tu_mon.sept}}', '{{tu_mon.oct}}', '{{tu_mon.nov}}', '{{tu_mon.dec}}'];
 
@@ -15,15 +15,14 @@
         type: "line",
         
         data: {
-          labels: xValues,
-          datasets: [{
-            label: "Total Usage",
+           labels: xValues,
+        datasets: [{
+          label: "Total Usage",
             fill: false,
             borderColor: '#20B2AA',
             tension: 0.1,
             backgroundColor: "#3090C7",
-            click: onClick,
-            data: yValues
+          data: yValues
           }]
         },
         options: {
@@ -32,7 +31,8 @@
             display: true,
             text: "Monthly Total Usage"
           }
-        }
+        },
+        
       });
   </script>
 
@@ -47,8 +47,8 @@
 
 
   <script>
-      var xValues = [{%for tu_bay in tu_bay %}'{{tu_bay.barangaycode}}', {% endfor %}];
-    var yValues = [{%for tu_bay in tu_bay %}{ { tu_bay.sum } }, {% endfor %}];
+    var xValues = [{%for tu_bay in tu_bay %}'{{tu_bay.barangaycode}}', {% endfor %}];
+    var yValues = [{%for tu_bay in tu_bay %}'{{ tu_bay.sum }}', {% endfor %}];
     var barColors = ["Cyan"];
 
     new Chart("barangay", {
@@ -68,8 +68,18 @@
           text: 'By Barangay Total Usage',
         }
       }
-
     });
+    const ctx =document.getElementById('barangay');
+    function clickHandler(click){
+      const points = barangay.getElementsAtEventForMode (click, 'nearest',
+      {intersect : true }, true);
+    if (points.length){
+        const firstPoint = points[0];
+        console.log(points)
+        console.log(firstPoint); 
+    }
+    }
+    ctx.onclick = clickHandler;
   </script>
 </body>
 
