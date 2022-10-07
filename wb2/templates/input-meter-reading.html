@@ -105,48 +105,27 @@ Input Reading
 					<th style="width: 25% !important;">Actions</th>
 				</tr>
 			</thead>
-			<tbody class="showOnHover wb_tbody">
-				<form class=" sr-only" action="" method="POST">
-					{% csrf_token %}
-					<tr class="text-center" >
-						<td class="border-bottom border-start-0 border-end-0 border-secondary" >January</td>
-						<td class="border-bottom border-start-0 border-end-0 border-secondary">91</td>
-						<td class="border-bottom border-start-0 border-end-0 border-secondary p-0 ">
-							<input class="input form-control border-0 rounded-0 " name="reading-January" id="inputid" onfocus="this.select()" disabled
-								type="number" min=56 {% if t.next %}max = "57"{%endif%} value="90">
-							</td>
-						<td class="border-bottom border-start-0 border-end-0 border-secondary p-0" >
-							<button id="submit-inputid" style="display: none;" class=" btn btn-success"
-								onclick="enableAll()" type="submit">SAVE</button>
-								<button id=" edit-inputid" type="button" class="hide btn btn-primary"
-								onclick="toggle('inputid')">
-								<i class="fa fa-edit"></i>
-							</button>
-						</td>
-					</tr>
-				</form>
-
+			<tbody class="wb_tbody">
 				{% for t in table %}
-				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
-					method="POST">
+				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
 					{% csrf_token %}
-					<tr>
-						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
+					<tr class="showOnHover text-center">
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
 							{{t.month}}</td>
-						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
 							{{t.usage}}</td>
-						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
 								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}} 
 								{% if t.next %}max="{{t.next}}" {%endif%} value="{{t.reading}}">
 						</td>
-						<td class="table{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<button id="edit-{{t.transid}}" type="button" class="btn btn-primary"
-								onclick="toggle({{t.transid}})">
-								<i class="fa fa-edit"></i>
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							<button id="submit-{{t.transid}}" style="display: none;" class="btn btn-success" onclick="enableAll()" type="submit">
+								SAVE
 							</button>
-							<button id="submit-{{t.transid}}" style="display: none;" class="btn btn-success"
-								onclick="enableAll()" type="submit">SAVE</button>
+							<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}})">
+								<i class="fa fa-edit"></i> EDIT
+							</button>
 						</td>
 					</tr>
 				</form>
@@ -193,27 +172,27 @@ Input Reading
 				data: {
 					labels: labels,
 					datasets: [{
-						data: [{%for i in table %} '{{i.usage}}', {% endfor %}],
-				label: "Total Usage",
-				fill: false,
-				borderColor: '#20B2AA',
-				tension: 0.1,
-				backgroundColor: "#3090C7",
-			}]
-					},
-			options: {
-				title: {
-					display: true,
-						text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
-					},
-				scales: {
-					xAxes: [{
-						ticks: {
-							beginAtZero: true
-						}
+						data: [{% for i in table %} {% if i.usage %} '{{i.usage}}', {% endif %} {% endfor %}],
+						label: "Total Usage", 
+						fill: false,
+						borderColor: '#20B2AA',
+						tension: 0.1,
+						backgroundColor: "#3090C7",
 					}]
+				},
+				options: {
+					title: {
+						display: true,
+							text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
+						},
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
 				}
-			}
 			})
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>

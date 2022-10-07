@@ -38,13 +38,9 @@ def porter(request):
     return render(request, "landing.html")
 
 # @unauthenticated_user
-
-
 def lp(request):
     return render(request, "landing.html")
 # @unauthenticated_user
-
-
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -64,8 +60,6 @@ def signin(request):
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
 # @login_required(login_url='login')
-
-
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -124,8 +118,6 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 # @login_required(login_url='login')
-
-
 def dashboard(request):
     user = request.user
     context = {
@@ -157,9 +149,9 @@ def ledger(request, id):
         trans = Transactions.objects.filter(acctID=u.consumer_id)
         asc_trans = trans.order_by('year','month','transactionid')
         bal = 0
-        p = 0
         current = 0
         for i in range(len(asc_trans)):
+            p = 0
             if i == 0:
                 prev = 0
             if asc_trans[i].transType == 'Billing':
@@ -211,10 +203,11 @@ def ledger(request, id):
                 else:
                     p = p + current
             prev = p
-
+    year = date.today().year
     context = {
         'u': u,
         'table': table,
+        'year':year,
     }
     return render(request, 'ledger.html', context)
 
@@ -306,7 +299,7 @@ def inputreading(request, id, year):
         transid = lastid
         usage = 0
         prev = lastreading
-        reading = prev
+        reading = 0
         style = ''
         next = False
         # print(str(i)+" "+str(j+1))
@@ -321,7 +314,7 @@ def inputreading(request, id, year):
                 else:
                     next = False
                 lastreading = reading
-                style = '-success'
+                style = 'table-success'
                 j+=1
         # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
@@ -504,10 +497,6 @@ def inputreading(request, id, year):
         'years': years
     }
     return render(request, 'input-meter-reading.html', context)
-
-
-# def landing(request):
-#     return render(request,'landing.html')
 
 
 def bills_list(request):
