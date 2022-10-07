@@ -29,7 +29,6 @@ from django.db.models import F, Sum
 from django.db.models import F, Sum, FloatField
 from django.db.models.functions import Coalesce
 
-
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -65,10 +64,8 @@ def signout(request):
     messages.success(request, 'Logout successful')
     return redirect('login')
 
-
 def home(request):
     return render(request, 'home.html')
-
 
 def user_creation(request):
     form = SystemUserForm()
