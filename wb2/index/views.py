@@ -26,6 +26,7 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
+from .decorators import unauthenticated_user
 
 
 def porter(request):
@@ -35,10 +36,11 @@ def porter(request):
     balance()
     return render(request, "landing.html")
 
-# @unauthenticated_user
+@unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
-# @unauthenticated_user
+
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -57,7 +59,8 @@ def signin(request):
         else:
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
-# @login_required(login_url='login')
+
+@login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -113,7 +116,7 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
@@ -121,7 +124,7 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
-
+@login_required(login_url='login')
 def ledger(request, id):
     table = []
 
@@ -257,7 +260,7 @@ def password_reset_form(request):
 
     return render(request, 'password_reset_form')
 
-
+@login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -267,6 +270,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 
+@login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -513,6 +517,10 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
+# def landing(request):
+#     return render(request,'landing.html')
+
+@login_required(login_url='login')
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()
@@ -522,17 +530,17 @@ def bills_list(request):
     }
     return render(request, 'billslist.html', context)
 
-
+@login_required(login_url='login')
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
-
+@login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
-
+@login_required(login_url='login')
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -574,7 +582,7 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-
+@login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -582,7 +590,7 @@ def stopmeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=date.today().year)
 
-
+@login_required(login_url='login')
 def sysuser(request):
     table = []
 
@@ -620,7 +628,7 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-
+@login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -637,7 +645,7 @@ def userupdate(request, id):
 
     return render(request, 'userupdate.html', context)
 
-
+@login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -673,6 +681,8 @@ def deleteUser(request, id):
 
 def about(request):
     return render(request, 'about.html')
+    
+
 
 
 def payment(request, id):
@@ -693,7 +703,7 @@ def payment(request, id):
     return redirect('ledger', id=id)
 
 
-    # data reports 
+@login_required(login_url='login') 
 def barangayreport(request, year):
     years = []
     bang = BarangayRecord.objects.all()
