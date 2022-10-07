@@ -33,12 +33,6 @@ a.menu:hover{
 .col-lg-4.col-md-4.col-sm-4.text-center:hover {
   color: #a0c5cf !important;
 }
-
-.page-section{
-  padding: 30px 0;
-  background-color: #E6ECEB;
-}
-
 .col-md-4.col-sm-12.text-center:hover {
   color: #a0c5cf !important;
 }
@@ -46,8 +40,12 @@ a.nav-link:hover {
   background-color: #63CDD7 !important;
 }
 .page-section {
-  padding: 200px 0 50px 0;
+  padding: 150px 0 50px 0;
   background-color: #E6ECEB;
+}
+.nav-item active{
+  opacity: 1;
+  background: red;
 }
 
 @media (max-width: 575px) {
@@ -55,10 +53,10 @@ a.nav-link:hover {
     text-align: left !important;
   }
   button.btn.btn-dark {
-    font-size: 15px !important;
+    font-size: 12px !important;
   }
   button.btn.btn-primary {
-    font-size: 15px !important;
+    font-size: 12px !important;
   }
   .menu_header{
     display: none;
@@ -88,7 +86,6 @@ a.nav-link:hover {
     display: none;
   }
 }
-
 @media (min-width: 992px){
   .navbar-expand-lg .navbar-collapse {
     display: none!important;
