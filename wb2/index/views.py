@@ -771,7 +771,14 @@ def view_barangay(request, id, year):
 
 
 def usage_report_data(request, year):
-
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+        print(i)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -799,6 +806,8 @@ def usage_report_data(request, year):
     context = {
         'tu_mon': tu_mon,
         'tu_bay': tu_bay,
+        'cur_year': year,
+        'years': years,
 
     }
     return render(request, 'usage_report_data.html', context)
@@ -822,5 +831,4 @@ def barangay_by_monthly(request, id, year):
     context = {
         'bbm': bbm
     }
-    print(year)
     return render(request, 'usage_report_data.html', context)
