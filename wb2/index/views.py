@@ -805,7 +805,7 @@ def usage_report_data(request, year):
 
 
 def barangay_by_monthly(request, id, year):
-    bbm = BarangayRecord.objects.get(barangayrec_id=id, year=year).aggregate(
+    bbm = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -822,4 +822,5 @@ def barangay_by_monthly(request, id, year):
     context = {
         'bbm': bbm
     }
-    return render(request, "barangay_by_monthly.html", context)
+    print(year)
+    return render(request, 'usage_report_data.html', context)

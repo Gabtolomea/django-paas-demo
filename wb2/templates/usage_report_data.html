@@ -17,7 +17,7 @@
         data: {
            labels: xValues,
         datasets: [{
-          label: "Total Usage",
+          label: "MonthlyTotal Usage: Year {{tu_mon.year}}",
             fill: false,
             borderColor: '#20B2AA',
             tension: 0.1,
@@ -40,7 +40,7 @@
 
   <section>
     <canvas id="barangay" width="800" height="150"></canvas>
-    <canvas id="monlth_view" width="800" height="150"></canvas>
+    <canvas id="monthly_views" width="800" height="150"></canvas>
     <br>
     <br>
     <br>
@@ -91,44 +91,60 @@
    };
 
    // render init block
+   const ctx = document.getElementById('barangay');
    const barangay = new Chart(
-     document.getElementById('barangay'),
-     config
-   );
+      ctx,
+      config
+    );
+  
+   //data2 start here
+      var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      var yValues = ['{{bbm.jan}}', '{{bbm.feb}}', '{{bbm.mar}}', '{{bbm.apr}}', '{{bbm.may}}', '{{bbm.jun}}', '{{bbm.jul}}', '{{bbm.aug}}', '{{bbm.sept}}', '{{bbm.oct}}', '{{bbm.nov}}', '{{bbm.dec}}'];
 
+   const data2 = { labels: xValues,
+        datasets: [{
+          label: "Total Usage",
+            fill: false,
+            borderColor: '#20B2AA',
+            tension: 0.1,
+            backgroundColor: "#3090C7",
+          data: yValues
+      }]
+    };
 
-   const data2 = {
-     labels: [{%for tu_bay in tu_bay %}'{{tu_bay.barangaycode}}', {% endfor %}],
-     datasets: [{
-       label: 'Barangay Usage',
-       data: [{%for tu_bay in tu_bay %}'{{ tu_bay.sum }}', {% endfor %}],
-       backgroundColor:'rgba(255, 26, 104, 0.2)',
-    
-       
-       borderColor:
-         'rgba(255, 26, 104, 1)',
-       borderWidth: 1
-     }]
-   };
+    // config 
+    const config2 = {
+      type: 'line',
+      data: data2,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
 
-   // config 
-   const config2 = {
-     type: 'bar',
-     data: data2
-     options: {
-       scales: {
-         y: {
-           beginAtZero: true
-         }
-       }
-     }
-   };
+    // render init block
+    const monthly_views = new Chart(
+      document.getElementById('monthly_views'),
+      config2
+    );
 
-   // render init block
-   const monlth_view = new Chart(
-     document.getElementById('monlth_view'),
-     config2
-   );
+    function clickHandler (click){
+      const points = barangay.getElementsAtEventForMode(click, 'nearest',{
+      intersect: true}, true);
+      if(points.length){
+        console.log(points.length)
+        console.log(points[0].element.$context.raw)
+
+        monthly_views.config.data.datasets[0].data =points[0].element.$context.raw;
+        monthly_views.update();
+      }
+    };
+    ctx.onclick =clickHandler
+    </script>
+
    </script>
 </body>
 
