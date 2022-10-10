@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'index',
     'chartjs',
+    'active_link',
 ]
 
 MIDDLEWARE = [
