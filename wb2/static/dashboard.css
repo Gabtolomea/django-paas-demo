@@ -1,13 +1,15 @@
 html {
     height: 100%;
 }
+
 body {
     font-family: Arial;
     height: auto;
     background-color: #E6ECEB !important;
     color: #ffffff;
 }
-header{
+
+header {
     position: sticky;
     top: 0;
     background-color: #262222;
@@ -15,32 +17,36 @@ header{
     font-size: 20px;
     margin: auto;
     left: 0;
-    z-index: 1;
+    z-index:     1;
     height: 70px;
 }
 
-.header_toggle{
+.header_toggle {
     background: transparent;
     border: 0 !important;
     padding: 0 10px !important;
     color: #63CDD7;
 }
 
-button#first_toggle:hover{
+button#first_toggle:hover {
     background: #63CDD7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
 
-button#second_toggle:hover{
+button#second_toggle:hover {
     background: #63CDD7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
-i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.fa-right-from-bracket:hover{
+
+i.fa-solid.fa-bell:hover,
+i.fa-solid.fa-magnifying-glass-plus:hover,
+i.fa-solid.fa-right-from-bracket:hover {
     color: white;
 }
-.logout{
+
+.logout {
     position: absolute;
     left: 95.14%;
     right: 3.15%;
@@ -49,7 +55,8 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     color: #63CDD7;
 
 }
-.notif{
+
+.notif {
     position: absolute;
     left: 91.25%;
     right: 7.23%;
@@ -57,7 +64,8 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     bottom: 50px;
     color: #63CDD7;
 }
-.search{
+
+.search {
     position: absolute;
     left: 87.15%;
     right: 11.11%;
@@ -66,6 +74,7 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     color: #63CDD7;
 
 }
+
 .modal_side_nav_li{
     color:#E6ECEB;
     font-weight: bold;
@@ -86,22 +95,27 @@ li.modal_side_nav_li:hover {
     font-size: 10px;
     white-space: nowrap;
 }
+
 li.side_nav_li:hover {
     background: #a0c5cf;
 }
-ul{
+
+ul {
     margin-top: 10px;
-    margin-left:-27px;
+    margin-left: -27px;
 }
-.sidenav_text{
+
+.sidenav_text {
     padding-left: 20px;
     font-size: 16px;
     font-weight:700;
 }
-.online_water{
+
+.online_water {
     padding-left: 100px;
-    color:white
+    color: white
 }
+
 .user_info{
     font-size: 14px;
     color: #E6ECEB;
@@ -109,8 +123,9 @@ ul{
     text-align: center;
     margin-top: 40px;
 }
-p{
-    font-size:40px;
+
+p {
+    font-size: 40px;
     margin-left: -13px;
 }
 
@@ -119,14 +134,14 @@ body {
     font-family: Arial;
 }
 
-.header_toggle{
+.header_toggle {
     background: transparent;
     border: 0 !important;
     padding: 0 10px !important;
     color: #63CDD7;
 }
 
-button#first_toggle:hover{
+button#first_toggle:hover {
     background: #63CDD7 !important;
     color: #ffffff !important;
     border-radius: 5px;
@@ -142,10 +157,14 @@ button#third_toggle:hover {
     color: #ffffff !important;
     border-radius: 5px;
 }
-i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.fa-right-from-bracket:hover{
+
+i.fa-solid.fa-bell:hover,
+i.fa-solid.fa-magnifying-glass-plus:hover,
+i.fa-solid.fa-right-from-bracket:hover {
     color: white;
 }
-.logout{
+
+.logout {
     position: absolute;
     left: 95.14%;
     right: 3.15%;
@@ -154,7 +173,8 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     color: #63CDD7;
 
 }
-.notif{
+
+.notif {
     position: absolute;
     left: 91.25%;
     right: 7.23%;
@@ -162,7 +182,8 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
     bottom: 50px;
     color: #63CDD7;
 }
-.search{
+
+.search {
     position: absolute;
     left: 87.15%;
     right: 11.11%;
@@ -174,26 +195,30 @@ i.fa-solid.fa-bell:hover, i.fa-solid.fa-magnifying-glass-plus:hover, i.fa-solid.
 
 ul{
     margin-top: 10px;
-    margin-left:-27px;
+    margin-left: -27px;
 }
-.sidenav_text{
+
+.sidenav_text {
     padding-left: 20px;
     font-size: 16px;
     font-weight:700;
 }
-.online_water{
+
+.online_water {
     padding-left: 100px;
-    color:white
+    color: white
 }
-.dev{
-    color:#E6ECEB;
+
+.dev {
+    color: #E6ECEB;
     font-weight: bold;
     margin-left: 120px;
     margin-top: 100px;
-    font-size:20px;
+    font-size: 20px;
 }
-p{
-    font-size:40px;
+
+p {
+    font-size: 40px;
     margin-left: -13px;
 }
 
@@ -273,8 +298,9 @@ p{
     transform: rotate(-45deg) translate(8px, -7px);
     transition: .5s;
 }
+
 .nav {
-    height: 70px; 
+    height: 70px;
     margin-left: 60px;
     background-color: #ccc;
     opacity: 0;
@@ -285,6 +311,7 @@ p{
     -ms-transition: all 0.75s ease;
     transition: all 0.75s ease;
 }
+
 .menu-open {
     width: calc(100% - 60px);
     margin-left: 60px;
@@ -292,11 +319,12 @@ p{
     opacity: 1;
     transition: all 0.75s ease;
 }
+
 .main_content{
     padding-left: 320px;
 }
-.btn-wb-back{
-    background: #091d36!important;
+.btn-wb-back {
+    background: #091d36 !important;
     color: white !important;
     font-weight: 500 !important;
 }
@@ -306,9 +334,9 @@ button.btn.btn-wb-back:hover {
     color: white !important;
 }
 
-.btn-wb-copy{
-    background: #0093B7 !important; 
-    color: white !important; 
+.btn-wb-copy {
+    background: #0093B7 !important;
+    color: white !important;
     font-weight: 500 !important;
 }
 
@@ -316,15 +344,15 @@ button.btn.btn-wb-copy:hover {
     background: #a0c5cf !important;
 }
 
-.mb-3{
+.mb-3 {
     font-size: 40px;
 }
 
-.wb_tbody{
+.wb_tbody {
     background-color: white;
 }
 
-.wb_thead{
+.wb_thead {
     position: sticky;
     top: 0;
     background-color: #63CDD7;
@@ -334,7 +362,7 @@ button.btn.btn-wb-copy:hover {
 }
 
 .table {
-    font-family: Arial; 
+    font-family: Arial;
 }
 
 
@@ -345,18 +373,18 @@ button.btn.btn-wb-copy:hover {
     left: 0px;
     background: #0093B7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    transition :all 1s ease;
- }
- .remove_sidebar {
+    transition: all 1s ease;
+}
+
+.remove_sidebar {
     position: absolute;
     width: 0;
     height: 100%;
     left: 0px;
-    transition :all 1s ease;
+    transition: all 1s ease;
     opacity: 0;
     z-index: -1;
  }
-
  .main_content{
     padding-left: 320px !important;
     transition :all 1s ease;
@@ -377,6 +405,6 @@ button.btn.btn-wb-copy:hover {
     }
   }
 
-
-
-
+  #loading-image {
+    z-index: 100;
+  }

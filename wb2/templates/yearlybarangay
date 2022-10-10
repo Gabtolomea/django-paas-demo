@@ -1,0 +1,27 @@
+<div>
+<table>
+    <thead>
+        <tr>
+            <th>Barangay</th>
+            <th>Total Usage (Cubic Meter)</th>
+            <th>Total Receivable</th>
+            <th>Total Collection</th>
+            <th>Collection Rate</th>
+        </tr>
+    </thead>
+
+<tbody>
+    {% for br in br %}
+    <tr>
+        <td>{{br.barangaycode}}</td>
+        <td>{{br.total_usage}}</td>
+        <td>{{br.total_rec}}</td>
+        <td>{{br.total_paid}}</td>
+        <td>{{br.percent}} %</td>
+        
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+</div>
