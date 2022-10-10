@@ -832,3 +832,51 @@ def barangay_by_monthly(request, id, year):
         'bbm': bbm
     }
     return render(request, 'usage_report_data.html', context)
+
+def revenue_report(request, year):
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+    
+    # Total Collection	
+    rev_col = BarangayRecord.objects.filter(year=year).aggregate(
+        jan=Sum('total_paid_jan'),
+        feb=Sum('total_paid_feb'),
+        mar=Sum('total_paid_mar'),
+        apr=Sum('total_paid_apr'),
+        may=Sum('total_paid_may'),
+        jun=Sum('total_paid_jun'),
+        jul=Sum('total_paid_jul'),
+        aug=Sum('total_paid_aug'),
+        sept=Sum('total_paid_sept'),
+        oct=Sum('total_paid_oct'),
+        nov=Sum('total_paid_nov'),
+        dec=Sum('total_paid_dec'),
+    )
+    # Total Receivables
+    rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
+        jan=Sum('total_due_jan') - Sum('total_paid_jan'),
+        feb=Sum('total_due_feb') - Sum('total_paid_jan'),
+        mar=Sum('total_due_mar') - Sum('total_paid_jan'),
+        apr=Sum('total_due_apr') - Sum('total_paid_jan'),
+        may=Sum('total_due_may') - Sum('total_paid_jan'),
+        jun=Sum('total_due_jun') - Sum('total_paid_jan'),
+        jul=Sum('total_due_jul') - Sum('total_paid_jan'),
+        aug=Sum('total_due_aug') - Sum('total_paid_jan'),
+        sept=Sum('total_due_sept') - Sum('total_paid_jan'),
+        oct=Sum('total_due_oct') - Sum('total_paid_jan'),
+        nov=Sum('total_due_nov') - Sum('total_paid_jan'),
+        dec=Sum('total_due_dec') - Sum('total_paid_jan'),
+    )
+
+    context = {
+        'rev_col': rev_col,
+        'rev_rec': rev_rec,
+        'cur_year': year,
+        'years': years,
+    }
+    return render( request, 'revenue_report.html',  context)

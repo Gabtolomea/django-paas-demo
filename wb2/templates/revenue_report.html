@@ -1,20 +1,45 @@
 <!DOCTYPE html>
 <html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<div>
+  <div>
+      <label for="exampleInputBarangay">Select Year</label>
+      <form id="yearselection" action="">
+          <select class="form-select" aria-label="selector" onchange="change()">
+              <option value="{{cur_year}}">{{cur_year}}</option>
+          </select>
+          {% for i in years reversed %}
+          <option value="{{i}}">{{i}}</option>
+          {% endfor %}
+          </select>
+      </form>
+      <script>
+          yearselection = document.getElementById("yearselection")
+          selector = document.getElementById("selector")
+          function change() {
+              yearselection.action = selector.value
+              yearselection.submit()
+              console.log("selction testing")
+          }
+      </script>
+  </div>
+
+</div>
 <body>
+  
 
 <canvas id="myChart" width="800" height="150"></canvas>
 
 <script>
 var xValues = ["January", "February", "March", "April","May","June","July","August","September","October","November","December"];
-var yValues = ['{{bbm.jan}}','{{bbm.feb}}','{{bbm.mar}}','{{bbm.apr}}','{{bbm.may}}','{{bbm.jun}}','{{bbm.jul}}','{{bbm.aug}}','{{bbm.sept}}','{{bbm.oct}}','{{bbm.nov}}','{{bbm.dec}}'];
+var yValues = ['{{rev_col.jan}}','{{rev_col.feb}}','{{rev_col.mar}}','{{rev_col.apr}}','{{rev_col.may}}','{{rev_col.jun}}','{{rev_col.jul}}','{{rev_col.aug}}','{{rev_col.sept}}','{{rev_col.oct}}','{{rev_col.nov}}','{{rev_col.dec}}'];
 
 new Chart("myChart", {
   type: "line",
   data: {
     labels: xValues,
     datasets: [{
-      label: "Total Usage",
+      label: "Total Collection",
             fill: false,
             borderColor: '#20B2AA',
             tension: 0.1,
@@ -26,13 +51,55 @@ new Chart("myChart", {
     legend: {display: false},
     title: {
       display: true,
-      text: "Monthly Total Usage"
+      text: "Monthly Total Collection"
     }
   }
 });
 </script>
 
-
+<section>
+  <canvas id="receivable" width="800" height="150"></canvas>
+  <br>
+  <br>
+  <br>
+</section>
+<script>
+  var xValues = ["January", "February", "March", "April","May","June","July","August","September","October","November","December"];
+  var yValues = ['{{rev_rec.jan}}','{{rev_rec.feb}}','{{rev_rec.mar}}','{{rev_rec.apr}}','{{rev_rec.may}}','{{rev_rec.jun}}','{{rev_rec.jul}}','{{rev_rec.aug}}','{{rev_rec.sept}}','{{rev_rec.oct}}','{{rev_rec.nov}}','{{rev_rec.dec}}'];
+  var yneVal = []
+  for(var i = 0;i < yValues.length;i++){
+            if(yValues[i] == 0){
+              yneVal.push(null)
+            }else{
+              yneVal.push(yValues[i])
+            }
+          }
+  new Chart("receivable", {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [{
+        label: "Total receivable",
+              fill: false,
+              borderColor: '#20B2AA',
+              tension: 0.1,
+              backgroundColor: "#3090C7",
+        data: yneVal,
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+      title: {
+        display: true,
+        text: "Monthly Total receivable"
+      }
+    }
+  });
+  </script>
+  
 </body>
 </html>
 
