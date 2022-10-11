@@ -767,6 +767,13 @@ def view_barangay(request, id):
     }
     return render(request, 'view_barangay.html', context)
 
+def unsettled_bill(request):
+    ub = ConsumerInfo.objects.all()
+    context = {
+        'ub':ub
+    }
+    return render(request, 'unsettled_bill.html', context)
+
 
 def usage_report_data(request, year):
     years = []
