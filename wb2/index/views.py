@@ -833,6 +833,7 @@ def barangay_by_monthly(request, id, year):
     }
     return render(request, 'usage_report_data.html', context)
 
+
 def revenue_report(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -841,8 +842,8 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-    
-    # Total Collection	
+
+    # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
         feb=Sum('total_paid_feb'),
@@ -858,6 +859,7 @@ def revenue_report(request, year):
         dec=Sum('total_paid_dec'),
     )
     # Total Receivables
+
     rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_due_jan') - Sum('total_paid_jan'),
         feb=Sum('total_due_feb') - Sum('total_paid_jan'),
@@ -873,10 +875,13 @@ def revenue_report(request, year):
         dec=Sum('total_due_dec') - Sum('total_paid_jan'),
     )
 
+    
+
     context = {
         'rev_col': rev_col,
         'rev_rec': rev_rec,
         'cur_year': year,
         'years': years,
+
     }
-    return render( request, 'revenue_report.html',  context)
+    return render(request, 'revenue_report.html',  context)
