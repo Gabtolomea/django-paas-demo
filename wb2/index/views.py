@@ -885,3 +885,8 @@ def revenue_report(request, year):
         'years': years,
     }
     return render( request, 'revenue_report.html',  context)
+
+
+# def view_utang(request):
+
+#     return render(request)
