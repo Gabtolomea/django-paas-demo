@@ -98,6 +98,7 @@ bar = [
 usage_rec = usage_record()
 def porter_out(tables):
     penalty = Penalty()
+    penalty.penaltycode = 'P001'
     penalty.penalty_after = 0
     penalty.penalty_rate = 0
     penalty.penalty_info = ''
@@ -121,8 +122,8 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
-        con_info.penaltyid = Penalty.objects.get(id=1)
+        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7]) 
+        con_info.penaltycode = Penalty.objects.get(penaltycode='P001')
         con_info.status = tables[0][i][8]
         con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
