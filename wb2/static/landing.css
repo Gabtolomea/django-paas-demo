@@ -96,9 +96,3 @@ body .menu_header>.active>a{
   }
 }
 
-@media (max-width: 350px){
-   a { font-size: 5px;}
-}
-@media (min-width: 351px){
-   a { font-size: 10px;}
-}

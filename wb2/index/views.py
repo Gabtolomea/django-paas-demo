@@ -36,11 +36,11 @@ def porter(request):
     balance()
     return render(request, "landing.html")
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -60,7 +60,7 @@ def signin(request):
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -117,7 +117,7 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
@@ -125,7 +125,7 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def ledger(request, id):
     table = []
 
@@ -260,7 +260,7 @@ def password_reset_form(request):
 
     return render(request, 'password_reset_form')
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -270,7 +270,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -681,7 +681,7 @@ def deleteUser(request, id):
 
 def about(request):
     return render(request, 'about.html')
-    
+
 
 
 
