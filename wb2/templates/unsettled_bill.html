@@ -55,13 +55,13 @@
                 {% for ub in ub %}
                 <tr class="showOnHover">
                     <td class="{{t.style}}">{{ub.consumer_id}}</td>
-                    <td class="{{t.style}}">{{ub.lastname}} {{firsname}} {{middlename}}</td>
+                    <td class="{{t.style}}">{{ub.lastname}} {{ub.firstname}} {{ub.middlename}}</td>
                     <td class="{{t.style}}">{{ub.meternumber}}</td>
                     <td class="{{t.style}}">{{ub.installation_address}}</td>
                     <td class="{{t.style}}">{{ub.current_bal}}</td>
                     <td class="{{t.style}}">
                         <a href="#"><button class="hide btn btn-success btn-sm rounded-0" data-toggle="modal"
-                                type="button" data-placement="top" title="View">
+                                type="button" data-placement="top" title="View" >
                                 <i class="fa-solid fa-eye"></i></button></a>
 
                         </a>
