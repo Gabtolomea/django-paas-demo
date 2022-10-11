@@ -25,11 +25,13 @@ urlpatterns = [
     path('userupdate/<id>/', views.userupdate, name='userupdate'),
     path('deleteUser/<id>/', views.deleteUser, name='deleteUser'),
     path('about', views.about, name='about'),
-    path('barangayreport/<year>', views.barangayreport, name='barangayreport'),
-    path('barangayreport/<year>/view_barangay/<id>/', views.view_barangay, name='view_barngay'),
-    path('usage_report_data/<year>/', views.usage_report_data, name='usage_report_data'),
-    path('usage_report_data/<year>/barangay_by_monthly/<id>/', views.barangay_by_monthly, name='barangay_by_monthly'),
+    path('barangayreport/<int:year>', views.barangayreport, name='barangayreport'),
+    path('view_barangay/<id>/', views.view_barangay, name='view_barangay'),
+    path('usage_report_data/<int:year>', views.usage_report_data, name='usage_report_data'),
+    path('usage_report_data/<int:year>/barangay_by_monthly/<id>/', views.barangay_by_monthly, name='barangay_by_monthly'),
     path('payment/<id>/', views.payment, name='payment'),
+    path('revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
+    path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills')
     # path('inputreadingtesting', views.inputreadingtesting, name='inputreadingtesting'),
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),

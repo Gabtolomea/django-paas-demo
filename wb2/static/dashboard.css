@@ -201,7 +201,8 @@ i.fa-solid.fa-right-from-bracket:hover {
 }
  
 li.side_nav_li:hover {
-    background: #a0c5cf;
+    background: rgb(241, 241, 241);
+    color: #007694;
 }
 
 .sidenav_text {
@@ -294,11 +295,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     font-size: medium;
     white-space: nowrap;
 }
- 
-li.side_nav_li:hover {
-    background: #a0c5cf;
-}
- 
+
 ul {
     margin-top: 10px;
     margin-left: -27px;
@@ -521,6 +518,45 @@ button.btn.btn-wb-copy:hover {
     background-color: #fff;
     z-index: 99;
   }
+<<<<<<< HEAD
+=======
+ 
+  #loading-image {
+    z-index: 100;
+  }
+ 
+  .active{
+    background-color: #005E75;
+    color: #fff;
+  }
+/* @media(max-width: 720px) {
+    .toggle_desktop{
+        display: none;
+    }
+    .toggle_mobile{
+        display: inline !important;
+    }
+    .sidebar {
+       width: 0;
+       transition :all 1s ease;
+       opacity: 0;
+    }
+    .main_content{
+        padding-left: 20px !important;
+        transition :all 1s ease;
+    }
+    .mobile_header_font{
+        font-size: 25px;
+    }
+    .mobile_header_nav{
+        display: none;
+    }
+    i.fa.fa-bars {
+        font-size: 24px;
+    }
+} */
+ 
+>>>>>>> dc7eadee3e952082f57365f91d36624d25c09a26
 
   #loading-image{
     z-index: 100;

@@ -342,9 +342,8 @@ def inputreading(request, id, year):
         except ObjectDoesNotExist:
             con_b_rec = BarangayRecord()
         else:
-            con_b_rec = BarangayRecord.objects.get(
-                barangaycode_id=consumer.installation_address_id, year=year)
-        readings = []
+            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+            readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
             readings.append(int(r))
@@ -682,9 +681,6 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
-
-
-
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -703,7 +699,7 @@ def payment(request, id):
     return redirect('ledger', id=id)
 
 
-# @login_required(login_url='login') 
+# @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -751,16 +747,30 @@ def barangayreport(request, year):
     return render(request, 'waterusage.html', context)
 
 
-def view_barangay(request, id, year):
-    bang = BarangayRecord.objects.get(barangayrec_id=id, year=year)
+def view_barangay(request, id):
+    bang = BarangayRecord.objects.get(barangayrec_id=id)
     context = {
         'bang': bang
     }
     return render(request, 'view_barangay.html', context)
 
+def unsettled_bill(request):
+    ub = ConsumerInfo.objects.all()
+    context = {
+        'ub':ub
+    }
+    return render(request, 'unsettled_bill.html', context)
+
 
 def usage_report_data(request, year):
-
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+        print(i)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -788,13 +798,15 @@ def usage_report_data(request, year):
     context = {
         'tu_mon': tu_mon,
         'tu_bay': tu_bay,
+        'cur_year': year,
+        'years': years,
 
     }
     return render(request, 'usage_report_data.html', context)
 
 
 def barangay_by_monthly(request, id, year):
-    bbm = BarangayRecord.objects.get(barangayrec_id=id, year=year).aggregate(
+    bbm = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -811,4 +823,52 @@ def barangay_by_monthly(request, id, year):
     context = {
         'bbm': bbm
     }
-    return render(request, "barangay_by_monthly.html", context)
+    return render(request, 'usage_report_data.html', context)
+
+def revenue_report(request, year):
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+
+    # Total Collection
+    rev_col = BarangayRecord.objects.filter(year=year).aggregate(
+        jan=Sum('total_paid_jan'),
+        feb=Sum('total_paid_feb'),
+        mar=Sum('total_paid_mar'),
+        apr=Sum('total_paid_apr'),
+        may=Sum('total_paid_may'),
+        jun=Sum('total_paid_jun'),
+        jul=Sum('total_paid_jul'),
+        aug=Sum('total_paid_aug'),
+        sept=Sum('total_paid_sept'),
+        oct=Sum('total_paid_oct'),
+        nov=Sum('total_paid_nov'),
+        dec=Sum('total_paid_dec'),
+    )
+    # Total Receivables
+    rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
+        jan=Sum('total_due_jan') - Sum('total_paid_jan'),
+        feb=Sum('total_due_feb') - Sum('total_paid_jan'),
+        mar=Sum('total_due_mar') - Sum('total_paid_jan'),
+        apr=Sum('total_due_apr') - Sum('total_paid_jan'),
+        may=Sum('total_due_may') - Sum('total_paid_jan'),
+        jun=Sum('total_due_jun') - Sum('total_paid_jan'),
+        jul=Sum('total_due_jul') - Sum('total_paid_jan'),
+        aug=Sum('total_due_aug') - Sum('total_paid_jan'),
+        sept=Sum('total_due_sept') - Sum('total_paid_jan'),
+        oct=Sum('total_due_oct') - Sum('total_paid_jan'),
+        nov=Sum('total_due_nov') - Sum('total_paid_jan'),
+        dec=Sum('total_due_dec') - Sum('total_paid_jan'),
+    )
+
+    context = {
+        'rev_col': rev_col,
+        'rev_rec': rev_rec,
+        'cur_year': year,
+        'years': years,
+    }
+    return render( request, 'revenue_report.html',  context)
