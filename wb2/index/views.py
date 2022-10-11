@@ -337,7 +337,7 @@ def inputreading(request, id, year):
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
 
-    con_penalty = Penalty.objects.get(id=consumer.penaltyid.id)
+    con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
     cummulative = get_cummulative(id)
     interest = 0
     usage = 0
@@ -521,6 +521,7 @@ def inputreading(request, id, year):
         'years': years
     }
     return render(request, 'input-meter-reading.html', context)
+
 
 
 # def landing(request):
@@ -775,6 +776,7 @@ def unsettled_bill(request):
     return render(request, 'unsettled_bill.html', context)
 
 
+    
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -887,6 +889,25 @@ def revenue_report(request, year):
     return render( request, 'revenue_report.html',  context)
 
 
-# def view_utang(request):
+def unsettled_bill(request):
+    ub = ConsumerInfo.objects.all()
+    context = {
+        'ub':ub
+    }
+    return render(request, 'unsettled_bill.html', context)
 
-#     return render(request)
+
+def view_unsettled_bills(request, id):
+    uv = ConsumerInfo.objects.get(consumer_id=id)
+    table = []
+    class view_utang():
+        def __init__(self, month, reading, reading_date, consumption,total_bill,total_amount_paid):
+            self.month = month
+            self.reading = reading
+            self.reading_date = reading_date
+            self.consumption = consumption
+            self.total_bill = total_bill
+            self.total_amount_paid = total_amount_paid
+    
+    context ={'uv':uv}
+    return render(request, 'view_unsettled_bills.html', context)
