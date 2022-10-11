@@ -1,0 +1,30 @@
+{% extends 'dashboard.html' %}
+
+{% load static %}
+
+
+{% block view_unsettled_bills %}
+<table>
+    <thead>
+        <tr>
+            <th>Account ID</th>
+            <th>Meter Number</th>
+            <th>Name</th>
+            <th>Address</th>
+        </tr>
+    {% for uv in uv %}
+    <tr>
+        <td>{{uv.consumer_id}}</td>
+        <td>{{uv.lastname}} {{uv.firsname}} {{uv.middlename}}</td>
+        <td>{{uv.}}</td>
+        <td>uv.</td>
+    </tr>
+    {% endfor %}
+</thead>
+</table>
+
+{%  endblock view_unsettled_bills %}
+
+
+
+
