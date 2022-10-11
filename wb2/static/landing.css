@@ -3,7 +3,7 @@ html{
     max-height: 100%;
 }
 .menu_header{
-    background:black;
+    background:#045163;
     color:white;
     padding: 8px;
 }
@@ -20,22 +20,17 @@ button#first_toggle:hover{
 }
 
 button.btn.btn-dark:hover {
-  background: #a0c5cf !important;
-  border-radius: 10px;
+  background: #0093B7!important;
+  
 }
 button.btn.btn-primary:hover {
-  background: #a0c5cf !important;
-  border-radius: 10px;
+  background: #0093B7!important;
+  
 }
 a.menu:hover{
   color: #a0c5cf !important;
 }
-.col-lg-4.col-md-4.col-sm-4.text-center:hover {
-  color: #a0c5cf !important;
-}
-.col-md-4.col-sm-12.text-center:hover {
-  color: #a0c5cf !important;
-}
+
 a.nav-link:hover {
   background-color: #63CDD7 !important;
 }
@@ -44,13 +39,6 @@ a.nav-link:hover {
   background-color: #E6ECEB;
 }
 
-.menu_header{
-  position: relative;
-}
-
-body .menu_header>.active>a{
-  background-color:red!important;
-}
 @media (max-width: 575px) {
   .water_billing_mobile_header{
     text-align: left !important;
