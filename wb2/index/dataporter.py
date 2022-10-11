@@ -520,7 +520,7 @@ def billing_out():
             dec.transType = 'Billing'
             dec.usage = u.usage_dec
             dec.save()
-    
+
 def balance():
     for i in ConsumerInfo.objects.all():
         user = ConsumerInfo.objects.get(consumer_id = i.consumer_id)
@@ -535,18 +535,7 @@ def balance():
         user.current_bal = math.ceil(bal*100)/100
         user.save()
 
-def get_balance(id):
-    user = ConsumerInfo.objects.get(consumer_id = id)
-    trans = Transactions.objects.filter(acctID = id)
-    asc_trans = trans.order_by('year', 'month','transactionid')
-    bal = 0
-    for i in range(len(asc_trans)):
-        if asc_trans[i].transType == 'Billing':
-            bal+=asc_trans[i].bill
-        elif asc_trans[i].transType == 'Payment':
-            bal=bal-asc_trans[i].payment
-    user.current_bal = math.ceil(bal*100)/100
-    user.save()
+
 
 def get_cummulative(id):
     user = ConsumerInfo.objects.get(consumer_id = id)

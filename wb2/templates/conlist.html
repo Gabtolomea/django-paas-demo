@@ -2,10 +2,30 @@
 {% load static %}
 
 {% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<style>
+	.hide{
+       opacity: 0;
+	   transition: 0.3s all ease-in-out;
+
+	}
+	.showOnHover:hover .hide{
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+	td,th{
+		text-align: center;
+	}
+	.inputid{
+		text-align: center;
+	}
+</style>
 {% endblock style %}
 {% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#table').DataTable({
@@ -30,15 +50,15 @@
             <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
                 <thead class="wb_thead">
                     <tr>
-                        <th style="min-width: 100px;">Account ID</th>                        
+                        <th style="min-width: 100px;">Account ID</th>
                         <th style="min-width: 100px;">Name</th>
-                        <th style="min-width: 100px;">Address</th> 
+                        <th style="min-width: 100px;">Address</th>
                         <th style="min-width: 100px;">Meter Number</th>
                     </tr>
                 </thead>
                 <tbody class="wb_tbody">
                     {% for con in consumer_list %}
-                    <tr>
+                    <tr class="showOnHover ">
                         <td>{{con.consumer_id}}</td>
                         <td>{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
                         <td>{{con.installation_address}}</td>
@@ -46,7 +66,7 @@
                             <ul class="list-inline m-0">
                                 <li>{{con.meternumber}}</li>
                                 <li class="list-inline-item">
-                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
+                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="hide btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
                                 </li>
                             </ul>
                         </td>

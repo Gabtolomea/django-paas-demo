@@ -51,7 +51,6 @@ class Penalty(models.Model):
 
 
 class Discount(models.Model):
-    discount_id = models.CharField(primary_key=True, max_length=20)
     discount_rate = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
@@ -114,7 +113,7 @@ class ConsumerInfo(models.Model):
     initialmeterreading = models.IntegerField()
     rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
     status = models.IntegerField()
-    penaltyflag = models.BooleanField()
+    penaltycounter = models.IntegerField(null=True)
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
@@ -124,10 +123,15 @@ class ConsumerInfo(models.Model):
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
+    cummulative = models.FloatField(default=0)
+    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
+    
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
         ('Payment','Payment'),
+        ('Penalty','Penalty'),
+        ('Discount','Discount'),
     )
     transactionid = models.AutoField(primary_key=True)
     date = models.DateField(null=True, blank=True)
@@ -136,8 +140,8 @@ class Transactions(models.Model):
     meterReading = models.IntegerField(blank=True, null=True)
     usage = models.IntegerField(blank=True, null=True)
     ratescode = models.CharField(max_length=20, blank=True, null=True)
-    # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
-    # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
+    penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
+    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
     bill = models.FloatField(null=True)
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)

@@ -74,30 +74,18 @@ i.fa-solid.fa-right-from-bracket:hover {
     color: #63CDD7;
  
 }
-
-.modal_side_nav_li{
-    color:#E6ECEB;
+ 
+.side_nav_li {
+    padding: 15px 0 15px 120px;
+    color: #E6ECEB;
     font-weight: bold;
-    font-size: 10px;
-    white-space: nowrap;
-}
-.modal_side_nav_li_text{
-    padding:10px 0 10px 10px;
-    display: block;
-}
-li.modal_side_nav_li:hover {
-    background: #a0c5cf;
-}
-.side_nav_li{
-    padding:10px 0 10px 100px;
-    color:#E6ECEB;
-    font-weight: bold;
-    font-size: 10px;
+    font-size: medium;
     white-space: nowrap;
 }
  
 li.side_nav_li:hover {
-    background: #a0c5cf;
+    background: rgb(241, 241, 241);
+    color: #007694;
 }
  
 ul {
@@ -107,18 +95,17 @@ ul {
  
 .sidenav_text {
     padding-left: 20px;
-
-    font-size: 16px;
-    font-weight:700;
+    font-size: 20px;
+    font-weight: 700;
 }
  
 .online_water {
     padding-left: 100px;
     color: white
 }
-
-.user_info{
-    font-size: 14px;
+ 
+.user_info {
+    font-size: 20px;
     color: #E6ECEB;
     font-weight: bold;
     text-align: center;
@@ -147,14 +134,8 @@ button#first_toggle:hover {
     color: #ffffff !important;
     border-radius: 5px;
 }
-
-
-button#second_toggle:hover{
-    background: #63CDD7 !important;
-    color: #ffffff !important;
-    border-radius: 5px;
-}
-button#third_toggle:hover {
+ 
+button#second _toggle:hover {
     background: #63CDD7 !important;
     color: #ffffff !important;
     border-radius: 5px;
@@ -194,6 +175,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     color: #63CDD7;
  
 }
+ 
 .side_nav_li {
     padding: 15px 0 15px 120px;
     color: #E6ECEB;
@@ -201,11 +183,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     font-size: medium;
     white-space: nowrap;
 }
- 
-li.side_nav_li:hover {
-    background: #a0c5cf;
-}
- 
+
 ul {
     margin-top: 10px;
     margin-left: -27px;
@@ -213,10 +191,8 @@ ul {
  
 .sidenav_text {
     padding-left: 20px;
-
-    font-size: 16px;
-    font-weight:700;
-
+    font-size: 20px;
+    font-weight: 700;
 }
  
 .online_water {
@@ -236,7 +212,10 @@ p {
     font-size: 40px;
     margin-left: -13px;
 }
-
+ 
+ 
+ 
+ 
 .toggle-button {
     position: absolute;
     width: 50px;
@@ -334,10 +313,9 @@ p {
     opacity: 1;
     transition: all 0.75s ease;
 }
-
-
-.main_content{
-    padding-left: 320px;
+ 
+.main_content {
+    padding-left: 420px;
 }
  
 .btn-wb-back {
@@ -371,8 +349,6 @@ button.btn.btn-wb-copy:hover {
  
 .wb_thead {
     position: sticky;
-
-    top: 0;
     background-color: #63CDD7;
     text-align: center;
     color: white;
@@ -382,10 +358,12 @@ button.btn.btn-wb-copy:hover {
 .table {
     font-family: Arial;
 }
-
+ 
+ 
+ 
 .sidebar {
     position: fixed;
-    width: 300px;
+    width: 400px;
     height: 100%;
     left: 0px;
     background: #0093B7;
@@ -402,26 +380,63 @@ button.btn.btn-wb-copy:hover {
     opacity: 0;
     z-index: -1;
  }
-
-
- .main_content{
-    padding-left: 320px !important;
-    transition :all 1s ease;
+ 
+.main_content {
+    padding-left: 420px !important;
+    transition: all 1s ease;
 }
- .remove_main_content{
-    transition :all 1s ease;
+ 
+.remove_main_content {
+    padding-left: 20px;
+    transition: all 1s ease;
 }
-@media (max-width: 393px) {
-    span.station {
-        display: flex !important;
-        justify-content: center !important;
-    }
-    button.btn.btn-wb-copy {
-        font-size: 10px;
-    }
-    button.btn.btn-wb-back {
-        font-size: 10px;
-    }
+#loading {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    background-color: #fff;
+    z-index: 99;
   }
-
+ 
+  #loading-image {
+    z-index: 100;
+  }
+ 
+  .active{
+    background-color: #005E75;
+    color: #fff;
+  }
+/* @media(max-width: 720px) {
+    .toggle_desktop{
+        display: none;
+    }
+    .toggle_mobile{
+        display: inline !important;
+    }
+    .sidebar {
+       width: 0;
+       transition :all 1s ease;
+       opacity: 0;
+    }
+    .main_content{
+        padding-left: 20px !important;
+        transition :all 1s ease;
+    }
+    .mobile_header_font{
+        font-size: 25px;
+    }
+    .mobile_header_nav{
+        display: none;
+    }
+    i.fa.fa-bars {
+        font-size: 24px;
+    }
+} */
+ 
 
