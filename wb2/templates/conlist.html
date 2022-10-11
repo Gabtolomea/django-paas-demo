@@ -1,7 +1,6 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
-
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
@@ -57,22 +56,9 @@
                         <th style="min-width: 100px;">Meter Number</th>
                     </tr>
                 </thead>
-                <tbody class="showOnHover wb_tbody">
-                    <tr>
-                        <td>{{con.consumer_id}}</td>
-                        <td>{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
-                        <td>{{con.installation_address}}</td>
-                        <td class="{{t.style}}">
-                            <ul class="list-inline m-0">
-                                <li>2573467</li>
-                                <li class="list-inline-item">
-                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="hide btn btn-success btn-sm rounded-0 " data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
+                <tbody class="wb_tbody">
                     {% for con in consumer_list %}
-                    <tr>
+                    <tr class="showOnHover ">
                         <td>{{con.consumer_id}}</td>
                         <td>{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
                         <td>{{con.installation_address}}</td>
@@ -80,7 +66,7 @@
                             <ul class="list-inline m-0">
                                 <li>{{con.meternumber}}</li>
                                 <li class="list-inline-item">
-                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
+                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="hide btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
                                 </li>
                             </ul>
                         </td>

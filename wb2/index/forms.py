@@ -55,12 +55,18 @@ class sysup(ModelForm):
         ("3", "Engineer's Office"),
         ("4", "Mayor's Office"),
     )
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
     authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
+
     # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
     class Meta:
         model = SystemUsers
         fields =(  
-        'password',
         'first_name',
         'last_name',
         'email',
@@ -74,6 +80,7 @@ class sysup(ModelForm):
         'mobilenum',
         'profilepic',
         'authorizedapprover',)
+
 
 
 class ConsumerCreationForm(ModelForm):
