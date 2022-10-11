@@ -84,7 +84,8 @@ i.fa-solid.fa-right-from-bracket:hover {
 }
  
 li.side_nav_li:hover {
-    background: #a0c5cf;
+    background: rgb(241, 241, 241);
+    color: #007694;
 }
  
 ul {
@@ -182,11 +183,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     font-size: medium;
     white-space: nowrap;
 }
- 
-li.side_nav_li:hover {
-    background: #a0c5cf;
-}
- 
+
 ul {
     margin-top: 10px;
     margin-left: -27px;
@@ -411,6 +408,10 @@ button.btn.btn-wb-copy:hover {
     z-index: 100;
   }
  
+  .active{
+    background-color: #005E75;
+    color: #fff;
+  }
 /* @media(max-width: 720px) {
     .toggle_desktop{
         display: none;
