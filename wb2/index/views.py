@@ -899,13 +899,6 @@ def unsettled_bill(request):
 
 def view_unsettled_bills(request, id):
     year = []
-    q = BarangayRecord.objects.all()
-    for i in q:
-        if i.year not in years:
-            years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
-
     uv = ConsumerInfo.objects.get(consumer_id=id)   
     table = []
     class view_utang():
@@ -917,7 +910,6 @@ def view_unsettled_bills(request, id):
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
     
-    context ={'uv':uv,
-              'years':years
+    context ={'uv':uv
 }
     return render(request, 'view_unsettled_bills.html', context)
