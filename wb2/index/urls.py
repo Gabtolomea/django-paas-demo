@@ -32,7 +32,7 @@ urlpatterns = [
     path('payment/<id>/', views.payment, name='payment'),
     path('revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills'),
-    path('view_unsettled_bills/',views.view_unsettled_bills, name='view_unsettled_bills')
+    path('view_unsettled_bills/',views.unsettled_bill, name='view_unsettled_bills')
 
 
     # path('inputreadingtesting', views.inputreadingtesting, name='inputreadingtesting'),
