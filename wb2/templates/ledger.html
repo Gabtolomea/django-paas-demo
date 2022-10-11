@@ -4,6 +4,18 @@
 Account Ledger
 {% endblock title %}
 {% block ledger %}
+
+<style>
+	.hide{
+       opacity: 0;
+	   transition: 0.3s all ease-in-out;
+
+	}
+	.showOnHover:hover .hide{
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+</style>
 <div class="container-fluid p-0">
 	<div class="table_responsive" style="max-height: 922px;">
 		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
@@ -16,13 +28,13 @@ Account Ledger
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
+				<tr class="showOnHover">
 					<td class="table-light">{{u.consumer_id}}</td>
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light">{{u.meternumber}}</td>
 					<td class="table-light">{{u.current_bal}}
 						<!-- <div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;"> -->
-							<button id="" type="button" class="btn btn-success" data-toggle="modal"
+							<button id="" type="button" class="hide btn btn-success" data-toggle="modal"
 								data-target="#payment" style="float:right;">Pay</button>
 						<!-- </div> -->
 					</td>

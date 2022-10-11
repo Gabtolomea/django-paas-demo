@@ -63,10 +63,10 @@
                         <td>{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
                         <td>{{con.installation_address}}</td>
                         <td class="{{t.style}}">
-                            <ul class="list-inline m-0">
-                                <li>{{con.meternumber}}</li>
-                                <li class="list-inline-item">
-                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="hide btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
+                            <ul class="list-inline m-0" >
+                                <li>{{con.meternumber}}
+                                <!-- <li class="list-inline-item"> -->
+                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="hide btn btn-success btn-sm rounded-0"  style="float: right;" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
                                 </li>
                             </ul>
                         </td>
