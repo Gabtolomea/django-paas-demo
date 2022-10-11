@@ -43,11 +43,14 @@ a.nav-link:hover {
   padding: 150px 0 50px 0;
   background-color: #E6ECEB;
 }
-.nav-item active{
-  opacity: 1;
-  background: red;
+
+.menu_header{
+  position: relative;
 }
 
+body .menu_header>.active>a{
+  background-color:red!important;
+}
 @media (max-width: 575px) {
   .water_billing_mobile_header{
     text-align: left !important;
@@ -93,9 +96,3 @@ a.nav-link:hover {
   }
 }
 
-@media (max-width: 350px){
-   a { font-size: 5px;}
-}
-@media (min-width: 351px){
-   a { font-size: 10px;}
-}

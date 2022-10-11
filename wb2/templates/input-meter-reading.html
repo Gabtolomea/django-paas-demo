@@ -25,7 +25,7 @@ Input Reading
 </style>
 <div class="container-fluid p-0">
 	<div class="table_responsive" style="max-height: 922px;">
-		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+		<table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr class="header">
 					<th scope="col" style="min-width:110px">Account ID</th>
@@ -154,6 +154,30 @@ Input Reading
 				}
 			</script>
 		</table>
+		<table id="newtable" style="display: none;" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>Month</th>
+					<th>Consumption</th>
+					<th>Meter Reading</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for t in table %}
+					<tr>
+						<td>
+							{{t.month}}
+						</td>
+						<td>
+							{{t.usage}}
+						</td>
+						<td>
+							{{t.reading}}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 		<br>
 		<br>
 		<center>
@@ -164,7 +188,7 @@ Input Reading
 	</div>
 	<div class="container align-items-center">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-		<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+		<canvas id="myChart" style="width:100%;max-width:600px" width="1200" height="600"></canvas>
 		<script>
 			var labels = [{%for i in table %} '{{i.month}}', {% endfor %}];
 			var chart = new Chart("myChart", {
@@ -172,12 +196,12 @@ Input Reading
 				data: {
 					labels: labels,
 					datasets: [{
-						data: [{% for i in table %} {% if i.usage %} '{{i.usage}}', {% endif %} {% endfor %}],
-						label: "Total Usage", 
-						fill: false,
-						borderColor: '#20B2AA',
-						tension: 0.1,
-						backgroundColor: "#3090C7",
+						data: [{%for i in table %}{% if i.usage %} '{{i.usage}}', {% endif %}{% endfor %}],
+							label: "Total Usage",
+							fill: false,
+							borderColor: '#20B2AA',
+							tension: 0.1,
+							backgroundColor: "#3090C7",
 					}]
 				},
 				options: {
@@ -186,7 +210,7 @@ Input Reading
 							text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
 						},
 					scales: {
-						yAxes: [{
+						xAxes: [{
 							ticks: {
 								beginAtZero: true
 							}
@@ -209,6 +233,8 @@ Input Reading
 		var htmlstring = '';
 		var tempVarToCheckPageHeight = 0;
 		var pageHeight = 0;
+		canvas = document.getElementById("myChart")
+   		canvasImg = canvas.toDataURL("image/jpeg", 1.0);
 
 		pageHeight = doc.internal.pageSize.height;
 		specialElementHandlers = {
@@ -236,39 +262,38 @@ Input Reading
 		doc.text(420, y = y + 30, "Copy of Consumer's Meter Reading ");
 		doc.setLineWidth(2);
 		doc.setFontSize(15);
-		// doc.autoTable({
-		// 	html: '#dtBasicExample',
-		// 	theme: 'striped',
-		// 	startY: y = y + 20,
-		// })
-		// y = y + 40
+		doc.autoTable({
+			html: '#dtBasicExample',
+			theme: 'striped',
+			startY: y = y + 20,
+		})
+		y = y + 40
 		doc.setLineWidth(2);
 		doc.setFontSize(14);
-		var tables = document.getElementsByClassName("table-sm")
-		for (i = 0; i < 13; i++) {
 
-			doc.autoTable(columns, rows,{
-				html: tables[i],
-				startY: y = y + 15,
-				theme: 'grid',
-				pageBreak: 'auto',
-				columnStyles: {
-					0: {
-						cellWidth: 75,
-					},					
-				},
-				styles: {
-					minCellHeight: 20
-				},
-			})
-			y = doc.lastAutoTable.finalY
-			console.log(y);
-			if (y > 600) {
-				doc.addPage()
-				y = 20
-			}
+		doc.autoTable({
+			html: '#newtable',
+			startY: y = y + 15,
+			theme: 'striped',
+			pageBreak: 'auto',
+			columnStyles: {
+				0: {
+					cellWidth: 75,
+				},					
+			},
+			styles: {
+				minCellHeight: 20
+			},
+		})
+		y = doc.lastAutoTable.finalY
+		doc.setFillColor(255, 255,255);
+		doc.rect(x, y, 400, 200, "F");
+		doc.addImage(canvasImg, 'JPEG', x+40, y, 400, 200)
+		console.log(y);
+		if (y > 600) {
+			doc.addPage()
+			y = 20
 		}
-
 		console.log("testing")
 		doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
 	}				
