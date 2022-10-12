@@ -681,9 +681,6 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
-
-
-
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -702,7 +699,7 @@ def payment(request, id):
     return redirect('ledger', id=id)
 
 
-# @login_required(login_url='login') 
+# @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -744,7 +741,7 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        
+
 
     }
     return render(request, 'waterusage.html', context)
@@ -836,8 +833,8 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-    
-    # Total Collection	
+
+    # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
         feb=Sum('total_paid_feb'),

@@ -1,53 +1,80 @@
 {% extends 'dashboard.html' %}
 
-{% load static %}
-
 {% block title %}
 Unsettled Bills
 {% endblock title %}
 
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+
+<style>
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
+    }
+
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+
+    }
+</style>
+{% endblock style %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+{% endblock script %}
 {% block unsettled_bills %}
-<div>
-    <h1 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Unsettled Bills</h1>
+<h1 class="mb-3 text-center">Unsettled Bills</h1>
+<div class="container-fluid p-0">
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+            <thead class="wb_thead">
+                <tr style="background-color:#63CDD7; color: white;">
+                    <th>Account ID</th>
+                    <th>Name</th>
+                    <th>Meter Number</th>
+                    <th>Address</th>
+                    <th>Current Balance</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+            <tbody class="wb_tbody">
+                {% for ub in ub %}
+                <tr class="showOnHover">
+                    <td class="{{t.style}}">{{ub.consumer_id}}</td>
+                    <td class="{{t.style}}">{{ub.lastname}} {{ub.firstname}} {{ub.middlename}}</td>
+                    <td class="{{t.style}}">{{ub.meternumber}}</td>
+                    <td class="{{t.style}}">{{ub.installation_address}}</td>
+                    <td class="{{t.style}}">{{ub.current_bal}}</td>
+                    <td class="{{t.style}}">
+                        <a href="#"><button class="hide btn btn-success btn-sm rounded-0" data-toggle="modal"
+                                type="button" data-placement="top" title="View" >
+                                <i class="fa-solid fa-eye"></i></button></a>
+
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
 </div>
-
-<table>
-    <thead>
-        <tr>
-            <th>Account ID</th>
-            <th>Name</th>
-            <th>Meter Number</th>
-            <th>Address</th>
-            <th>Current Balance</th>
-            <th>View</th>
-        </tr>
-        <tbody>
-            {% for ub in ub %}
-            <tr>
-                <td>{{ub.consumer_id}}</td>
-                <td>{{ub.lastname}} {{firsname}} {{middlename}}</td>
-                <td>{{ub.meternumber}}</td>
-                <td>{{ub.installation_address}}</td>
-                <td>{{ub.current_bal}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </thead>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {% endblock unsettled_bills %}
-
