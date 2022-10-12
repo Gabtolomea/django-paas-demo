@@ -1,4 +1,6 @@
 import calendar
+from datetime import datetime
+
 from dis import dis
 from email import errors
 from multiprocessing import context
@@ -888,7 +890,7 @@ def view_unsettled_bills(request, id, year):
     years = []
     table = []
     uv = ConsumerInfo.objects.get(consumer_id=id) 
-    yr = Transactions.objects.all()
+    yr = Transactions.objects.filter(acctID_id=id, transType='Billing')
     for i in yr:
         if i.year not in years:
             if i.year is not None:
@@ -896,21 +898,25 @@ def view_unsettled_bills(request, id, year):
     if int(year) in years:
         years.remove(int(year))
     class view_utang():
-        def __init__(self, month, reading, reading_date, consumption,total_bill,total_amount_paid):
+        def __init__(self, month, reading, reading_date, usage,total_bill,total_amount_paid):
             self.month = month
             self.reading = reading
             self.reading_date = reading_date
-            self.consumption = consumption
+            self.consumption = usage
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
-    if Transactions.objects.filter(acctID_id=id).exists():
+    if ConsumerInfo.objects.filter(pk=id).exists():
+        c = ConsumerInfo.objects.get(pk=id)
+        vm = Transactions.objects.filter(acctID=c.consumer_id)
         month = Transactions.objects.all()
         for i in range(1,13):
-            month = calendar.month_name[i] 
+            month = calendar.month_name[i]
             
 
     context ={'uv':uv,
             'years':years,
             'current':year,
-            'table':table}
+            'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
+
+  

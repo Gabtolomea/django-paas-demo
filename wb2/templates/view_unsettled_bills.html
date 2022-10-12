@@ -47,12 +47,17 @@
       <th style="width: 25% !important;">Reading</th>
       <th style="width: 25% !important;">Reading Date</th>
       <th style="width: 25% !important;">Consumption</th>
+      <th style="width: 25% !important;">Total Bill</th>
+      <th style="width: 25% !important;">Total Amount Paid</th>
+
     </tr>
   </thead>
   <tbody class="wb_tbody">
+    {% for t in table %}
     <tr>
-      
+      <td>{{t.month}}</td>
     </tr>
+    {% endfor %}
     </tbody>
 {%  endblock view_unsettled_bills %}
 
