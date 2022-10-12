@@ -36,11 +36,9 @@ def porter(request):
     balance()
     return render(request, "landing.html")
 
-
 # @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
-
 
 # @unauthenticated_user
 def signin(request):
@@ -61,7 +59,6 @@ def signin(request):
         else:
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
-
 
 # @login_required(login_url='login')
 def signout(request):
@@ -120,7 +117,6 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
-
 # @login_required(login_url='login')
 def dashboard(request):
     user = request.user
@@ -128,7 +124,6 @@ def dashboard(request):
         'user': user
     }
     return render(request, 'dashboard.html', context)
-
 
 # @login_required(login_url='login')
 def ledger(request, id):
@@ -198,12 +193,12 @@ def ledger(request, id):
                 style = 'text-primary table-primary'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
-            date = asc_trans[i].date
+            mdate = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage,
+            new_row = ledgerclass(transid, mdate, prev, cur, usage,
                                   bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
@@ -264,7 +259,6 @@ def password_reset_form(request):
     #     form = SystemUserForm(request.POST)
 
     return render(request, 'password_reset_form')
-
 
 # @login_required(login_url='login')
 def meterreading(request):
@@ -537,18 +531,15 @@ def bills_list(request):
     }
     return render(request, 'billslist.html', context)
 
-
 # @login_required(login_url='login')
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
-
 # @login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
-
 
 # @login_required(login_url='login')
 def consumercreation(request):
@@ -591,7 +582,6 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-
 # @login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
@@ -599,7 +589,6 @@ def stopmeter(request, id):
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
     return redirect('inputreading', id=id, year=date.today().year)
-
 
 # @login_required(login_url='login')
 def sysuser(request):
@@ -639,7 +628,6 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-
 # @login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
@@ -656,7 +644,6 @@ def userupdate(request, id):
     }
 
     return render(request, 'userupdate.html', context)
-
 
 # @login_required(login_url='login')
 def user_edit(request, id):
@@ -755,7 +742,7 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        
+
 
     }
     return render(request, 'waterusage.html', context)
@@ -848,8 +835,8 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-    
-    # Total Collection	
+
+    # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
         feb=Sum('total_paid_feb'),

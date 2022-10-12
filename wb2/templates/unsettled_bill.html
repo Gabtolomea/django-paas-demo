@@ -1,19 +1,53 @@
 {% extends 'dashboard.html' %}
 
-{% load static %}
-
 {% block title %}
 Unsettled Bills
 {% endblock title %}
 
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+
+<style>
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
+    }
+
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+
+    }
+</style>
+{% endblock style %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+{% endblock script %}
 {% block unsettled_bills %}
 <div>
     <h1 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Unsettled Bills</h1>
 </div>
 
-<table >
-    <thead class="wb_thead">
-        <tr >
+<table>
+    <thead>
+        <tr>
             <th>Account ID</th>
             <th>Name</th>
             <th>Meter Number</th>
@@ -50,4 +84,3 @@ Unsettled Bills
 
 
 {% endblock unsettled_bills %}
-
