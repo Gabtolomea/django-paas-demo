@@ -1,4 +1,3 @@
-
 html {
     height: 100%;
 }
@@ -75,123 +74,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     color: #63CDD7;
 
 }
-.modal_side_nav_li{
-    color:#E6ECEB;
-    font-weight: bold;
-    font-size: 10px;
-    white-space: nowrap;
-}
-.modal_side_nav_li_text{
-    padding:10px 0 10px 10px;
-    display: block;
-}
-li.modal_side_nav_li:hover {
-    background: #a0c5cf;
-}
-.side_nav_li{
-    padding:10px 0 10px 100px;
-    color:#E6ECEB;
-    font-weight: bold;
-    font-size: 10px;
-    white-space: nowrap;
-}
 
-li.side_nav_li:hover {
-    background: #a0c5cf;
-}
-
-ul {
-    margin-top: 10px;
-    margin-left: -27px;
-}
-
-.sidenav_text {
-    padding-left: 20px;
-    font-size: 16px;
-    font-weight:700;
-}
-
-.online_water {
-    padding-left: 100px;
-    color: white
-}
-
-.user_info{
-    font-size: 14px;
-    color: #E6ECEB;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 40px;
-}
-
-p {
-    font-size: 40px;
-    margin-left: -13px;
-}
-
-
-body {
-    font-family: Arial;
-}
-
-.header_toggle {
-    background: transparent;
-    border: 0 !important;
-    padding: 0 10px !important;
-    color: #63CDD7;
-}
-
-button#first_toggle:hover {
-    background: #63CDD7 !important;
-    color: #ffffff !important;
-    border-radius: 5px;
-}
-
-button#second_toggle:hover{
-    background: #63CDD7 !important;
-    color: #ffffff !important;
-    border-radius: 5px;
-}
-button#third_toggle:hover {
-    background: #63CDD7 !important;
-    color: #ffffff !important;
-    border-radius: 5px;
-}
-
-i.fa-solid.fa-bell:hover,
-i.fa-solid.fa-magnifying-glass-plus:hover,
-i.fa-solid.fa-right-from-bracket:hover {
-    color: white;
-}
-
-.logout {
-    position: absolute;
-    left: 95.14%;
-    right: 3.15%;
-    top: 13px;
-    bottom: 50px;
-    color: #63CDD7;
-
-}
-
-.notif {
-    position: absolute;
-    left: 91.25%;
-    right: 7.23%;
-    top: 13px;
-    bottom: 50px;
-    color: #63CDD7;
-}
-
-.search {
-    position: absolute;
-    left: 87.15%;
-    right: 11.11%;
-    top: 13px;
-    bottom: 50px;
-    color: #63CDD7;
-
-}
 .side_nav_li {
     padding: 15px 0 15px 120px;
     color: #E6ECEB;
@@ -205,10 +88,15 @@ li.side_nav_li:hover {
     color: #005e75;
 }
 
+ul {
+    margin-top: 10px;
+    margin-left: -27px;
+}
+
 .sidenav_text {
     padding-left: 20px;
-    font-size: 16px;
-    font-weight:700;
+    font-size: 20px;
+    font-weight: 700;
 }
 
 .online_water {
@@ -217,7 +105,7 @@ li.side_nav_li:hover {
 }
 
 .user_info {
-    font-size: 15px;
+    font-size: 20px;
     color: #E6ECEB;
     font-weight: bold;
     text-align: center;
@@ -425,8 +313,9 @@ p {
     opacity: 1;
     transition: all 0.75s ease;
 }
-.main_content{
-    padding-left: 420px !important;
+
+.main_content {
+    padding-left: 420px;
 }
 
 .btn-wb-back {
@@ -460,12 +349,12 @@ button.btn.btn-wb-copy:hover {
 
 .wb_thead {
     position: sticky;
-    top: 0;
     background-color: #63CDD7;
     text-align: center;
     color: white;
     white-space: nowrap !important
 }
+
 .table {
     font-family: Arial;
 }
@@ -490,34 +379,23 @@ button.btn.btn-wb-copy:hover {
     transition: all 1s ease;
     opacity: 0;
     z-index: -1;
- }
- .main_content{
+}
+
+.main_content {
     padding-left: 420px !important;
-    transition :all 1s ease;
-}
- .remove_main_content{
-    transition :all 1s ease;
+    transition: all 1s ease;
 }
 
-@media (max-width: 393px) {
-    span.station {
-        display: flex !important;
-        justify-content: center !important;
-    }
-    button.btn.btn-wb-copy {
-        font-size: 10px;
-    }
-    button.btn.btn-wb-back {
-        font-size: 10px;
-    }
-
+.remove_main_content {
+    padding-left: 20px;
+    transition: all 1s ease;
 }
 
 #loading {
     position: fixed;
     display: flex;
-    justify-content: center !important;
-    align-items: center !important;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     top: 0;
@@ -525,8 +403,8 @@ button.btn.btn-wb-copy:hover {
     opacity: 1;
     background-color: #fff;
     z-index: 99;
-  }
- 
+}
+
 #loading-image {
     z-index: 100;
 }
@@ -562,4 +440,3 @@ button.btn.btn-wb-copy:hover {
         font-size: 24px;
     }
 } */
-

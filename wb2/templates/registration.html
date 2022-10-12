@@ -1,7 +1,7 @@
 {% extends 'dashboard.html' %}
 
 {% block title %}
-Registration Form
+Registration Form 
 {% endblock title %}
 {% block style %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -15,12 +15,6 @@ Registration Form
         height: auto;
         background-image: linear-gradient(white, #63CDD7);
     }
-    h3{
-        font-size: 30px;
-    }
-    label{
-        font-size: 20px;
-    }
     .form-header {
         font-family: Arial;
         margin: 0px 0px 16px;
@@ -31,8 +25,7 @@ Registration Form
         color: #ffffff;
     }
     .wrapper {
-        font-size:20px ;
-        font-family: Arial;
+        font: 16px Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
         background: #63CDD7;
@@ -68,12 +61,12 @@ Registration Form
             <form action="user_creation" method="POST" class="signup-form">
                 {% csrf_token %}
                 <div class="container">
-                    <div class=" shadow wrapper">
+                    <div class=" shadow wrapper m-4">
                         <div class="form-header">
                             <center><h1>Registration Form</h1></center>
                         </div>
                         <div class="row form-group w-100 m-auto">
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                                 {% if form.errors %}
                                     {% for error in form.firstname.errors %}
                                     <div class="alert alert-danger">
@@ -84,8 +77,8 @@ Registration Form
                                 <label for="">First Name*</label>
                                 {{form.firstname}}
                             </div>
-
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+ 
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                                 {% if form.errors %}
                                     {% for error in form.midname.errors %}
                                     <div class="alert alert-danger">
@@ -96,8 +89,8 @@ Registration Form
                                 <label for="">Middle Name*</label>
                                 {{form.midname}}
                             </div>
-
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+ 
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                                 {% if form.errors %}
                                     {% for error in form.lastname.errors %}
                                     <div class="alert alert-danger">
@@ -108,8 +101,8 @@ Registration Form
                                 <label for="">Last Name*</label>
                                 {{form.lastname}}
                             </div>
-
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+ 
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                                 {% if form.errors %}
                                     {% for error in form.mobilenum.errors %}
                                     <div class="alert alert-danger">
@@ -120,7 +113,7 @@ Registration Form
                                 <label for="">Mobile Number*</label>
                                 {{form.mobilenum}}
                             </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                                     {% if form.errors %}
                                         {% for error in form.email.errors %}
                                         <div class="alert alert-danger">
@@ -131,7 +124,7 @@ Registration Form
                                     <label for="">Email*</label>
                                     {{form.email}}
                                 </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                                     {% if form.errors %}
                                         {% for error in form.username.errors %}
                                         <div class="alert alert-danger">
@@ -143,9 +136,9 @@ Registration Form
                                     {{form.username}}
                                 </div>
                         </div>
-
+ 
                         <div class="row form-group w-100 m-auto">
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
                                 {% if form.errors %}
                                     {% for error in form.password1.errors %}
                                     <div class="alert alert-danger">
@@ -156,7 +149,7 @@ Registration Form
                                 <label for="">Password*</label>
                                 {{form.password1}}
                             </div>
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
                                 {% if form.errors %}
                                     {% for error in form.password2.errors %}
                                     <div class="alert alert-danger">
@@ -168,9 +161,9 @@ Registration Form
                                 {{form.password2}}
                             </div>
                         </div>
-
+ 
                         <div class="row m-auto w-100">
-                            <div class="col-lg-6 col-md-6 col-sm-12 ">
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
                                 <h3>Type of User</h3>
                                 {{form.is_admin}}
                                 <label for="id_is_admin">ADMIN</label><br>
@@ -184,10 +177,10 @@ Registration Form
                                 <label for="id_is_reader">METER READER</label><br>
                             </div>
                         </div>
-                        <div class="row w-100 m-auto m-2">
-
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-
+                        <div class="row w-100 m-auto mb-3">
+ 
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+ 
                                 {% if form.errors %}
                                     {% for error in form.authorizedapprover.errors %}
                                     <div class="alert alert-danger">
@@ -206,7 +199,7 @@ Registration Form
                                     </div>
                                     {% endfor %}
                                 {% endif %}
-
+ 
                                 <label for="formFile" class="form-label">Profile Picture*</label>
                                 {{form.profilepic}}
                                 </div>
@@ -216,9 +209,7 @@ Registration Form
                 </div>
         </form>
     </section>
-
+ 
 {% endblock registration %}
-
-
-
+ 
 

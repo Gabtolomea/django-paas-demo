@@ -121,7 +121,7 @@ select{
             <label style="font-size: 17px; font-weight: bold;" for="exampleInputBarangay">Select Year:</label>
             <select name="urlsme" onchange='this.form.submit();'>
                 {% for record in record %}
-              <option selected>{{ .year}}</option>
+              <option selected>{{record.year}}</option>
             
               <option >{{record.year}}</option>
               {%endfor%}

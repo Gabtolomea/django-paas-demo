@@ -38,7 +38,7 @@ sorted_tables = []
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="database2021",
+    password="yjh434ctuG@-@",
     database="lgu_ginatilan_db"
 )
 mycursor = mydb.cursor()
