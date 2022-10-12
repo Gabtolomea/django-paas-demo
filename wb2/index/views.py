@@ -160,7 +160,7 @@ def ledger(request, id):
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
                 connectionType = Rates.objects.get(
-                    rate_id=asc_trans[i].ratescode)
+                rate_id=asc_trans[i].ratescode)
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -887,6 +887,14 @@ def unsettled_bill(request):
 def view_unsettled_bills(request, id, year):
     years = []
     table = []
+    uv = ConsumerInfo.objects.get(consumer_id=id) 
+    yr = Transactions.objects.all()
+    for i in yr:
+        if i.year not in years:
+            if i.year is not None:
+                years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
     class view_utang():
         def __init__(self, month, reading, reading_date, consumption,total_bill,total_amount_paid):
             self.month = month
@@ -895,18 +903,14 @@ def view_unsettled_bills(request, id, year):
             self.consumption = consumption
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
-    yr = Transactions.objects.all()
-    for i in yr:
-        if i.year not in years:
-            if i.year is not None:
-                years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
-        if year is None:
-            years.remove(year)
-    uv = ConsumerInfo.objects.get(consumer_id=id)     
-    
+    if Transactions.objects.filter(acctID_id=id).exists():
+        month = Transactions.objects.all()
+        for i in range(1,13):
+            month = calendar.month_name[i] 
+            
+
     context ={'uv':uv,
             'years':years,
-            'current':year}
+            'current':year,
+            'table':table}
     return render(request, 'view_unsettled_bills.html', context)
