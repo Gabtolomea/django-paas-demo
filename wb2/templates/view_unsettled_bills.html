@@ -21,14 +21,11 @@
     </tr>
 </thead>
 </table>
-
 <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year:
 </label>
-
-
 <form id="yearselection" action="">
   <select class="form-select" id="selector" onchange="change()">
-    <option value="{{yr}}">{{yr}}</option>
+    <option value="{{current}}">{{current}}</option>
     {% for i in years reversed %}
     <option value="{{i}}">{{i}}</option>
     {% endfor %}
@@ -42,7 +39,21 @@
     yearselection.submit('')
   }
 </script>
-
+<br>
+<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
+  <thead class="wb_thead" >
+    <tr class="header ">
+      <th style="width: 25% !important;">Month</th>
+      <th style="width: 25% !important;">Reading</th>
+      <th style="width: 25% !important;">Reading Date</th>
+      <th style="width: 25% !important;">Consumption</th>
+    </tr>
+  </thead>
+  <tbody class="wb_tbody">
+    <tr>
+      
+    </tr>
+    </tbody>
 {%  endblock view_unsettled_bills %}
 
 

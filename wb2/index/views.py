@@ -160,7 +160,7 @@ def ledger(request, id):
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
                 connectionType = Rates.objects.get(
-                    rate_id=asc_trans[i].ratescode)
+                rate_id=asc_trans[i].ratescode)
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -288,8 +288,7 @@ def inputreading(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    trans = Transactions.objects.filter(
-        acctID_id=id, transType='Billing', year=year)
+    trans = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
     j = 0
@@ -710,6 +709,7 @@ def barangayreport(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
+        print(years)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -884,19 +884,41 @@ def revenue_report(request, year):
   
 
 
-# def view_unsettled_bills(request, id):
-#     year = []
-#     uv = ConsumerInfo.objects.get(consumer_id=id)   
-#     table = []
-#     class view_utang():
-#         def __init__(self, month, reading, reading_date, consumption,total_bill,total_amount_paid):
-#             self.month = month
-#             self.reading = reading
-#             self.reading_date = reading_date
-#             self.consumption = consumption
-#             self.total_bill = total_bill
-#             self.total_amount_paid = total_amount_paid
-    
-#     context ={'uv':uv
-# }
-#     return render(request, 'view_unsettled_bills.html', context)
+def unsettled_bill(request):
+    ub = ConsumerInfo.objects.all()
+    context = {
+        'ub':ub
+    }
+    return render(request, 'unsettled_bill.html', context)
+
+
+def view_unsettled_bills(request, id, year):
+    years = []
+    table = []
+    uv = ConsumerInfo.objects.get(consumer_id=id) 
+    yr = Transactions.objects.all()
+    for i in yr:
+        if i.year not in years:
+            if i.year is not None:
+                years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+    class view_utang():
+        def __init__(self, month, reading, reading_date, consumption,total_bill,total_amount_paid):
+            self.month = month
+            self.reading = reading
+            self.reading_date = reading_date
+            self.consumption = consumption
+            self.total_bill = total_bill
+            self.total_amount_paid = total_amount_paid
+    if Transactions.objects.filter(acctID_id=id).exists():
+        month = Transactions.objects.all()
+        for i in range(1,13):
+            month = calendar.month_name[i] 
+            
+
+    context ={'uv':uv,
+            'years':years,
+            'current':year,
+            'table':table}
+    return render(request, 'view_unsettled_bills.html', context)
