@@ -1,5 +1,4 @@
 {% extends 'dashboard.html' %}
-{% load static %}
 {% block title %}
 Account Ledger
 {% endblock title %}
@@ -32,7 +31,6 @@ Account Ledger
 	</div>
 </div>
 <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
-
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<form action="" method="post"> {% comment %} {% url 'payment' u.consumer_id %} {% endcomment %}

@@ -63,7 +63,7 @@
                     </td>
                     <td class="{{t.style}} showOnHover">
                         {{m.installation_address}}
-                        <a class="hide btn btn-success btn-sm rounded-0" href="{{m.consumer_id}}/{{year}}">
+                        <a class="hide btn btn-success btn-sm rounded-0" href="{% url 'inputreading' m.consumer_id year %}">
                             <i class="fa fa-edit"></i>
                         </a>
                     </td>

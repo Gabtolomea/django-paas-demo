@@ -37,12 +37,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -63,7 +63,7 @@ def signin(request):
     return render(request, 'login.html')
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -121,7 +121,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
@@ -130,7 +130,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def ledger(request, id):
     table = []
 
@@ -266,7 +266,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -276,7 +276,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -337,7 +337,7 @@ def inputreading(request, id, year):
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
 
-    con_penalty = Penalty.objects.get(id=consumer.penaltyid.id)
+    con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
     cummulative = get_cummulative(id)
     interest = 0
     usage = 0
@@ -348,9 +348,8 @@ def inputreading(request, id, year):
         except ObjectDoesNotExist:
             con_b_rec = BarangayRecord()
         else:
-            con_b_rec = BarangayRecord.objects.get(
-                barangaycode_id=consumer.installation_address_id, year=year)
-        readings = []
+            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+            readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
             readings.append(int(r))
@@ -527,7 +526,7 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()
@@ -538,19 +537,19 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -592,7 +591,7 @@ def consumercreation(request):
     return render(request, 'consumercreation.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -601,7 +600,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def sysuser(request):
     table = []
 
@@ -640,7 +639,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -658,7 +657,7 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -695,7 +694,6 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
-
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -714,7 +712,7 @@ def payment(request, id):
     return redirect('ledger', id=id)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -756,18 +754,25 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-
+        
 
     }
     return render(request, 'waterusage.html', context)
 
 
-def view_barangay(request, id, year):
-    bang = BarangayRecord.objects.get(barangayrec_id=id, year=year)
+def view_barangay(request, id):
+    bang = BarangayRecord.objects.get(barangayrec_id=id)
     context = {
         'bang': bang
     }
     return render(request, 'view_barangay.html', context)
+
+def unsettled_bill(request):
+    ub = ConsumerInfo.objects.all()
+    context = {
+        'ub':ub
+    }
+    return render(request, 'unsettled_bill.html', context)
 
 
 def usage_report_data(request, year):
