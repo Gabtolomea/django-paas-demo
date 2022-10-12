@@ -866,27 +866,28 @@ def revenue_report(request, year):
     # Total Receivables
 
     rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
-        jan=Sum('total_due_jan') - Sum('total_paid_jan'),
-        feb=Sum('total_due_feb') - Sum('total_paid_jan'),
-        mar=Sum('total_due_mar') - Sum('total_paid_jan'),
-        apr=Sum('total_due_apr') - Sum('total_paid_jan'),
-        may=Sum('total_due_may') - Sum('total_paid_jan'),
-        jun=Sum('total_due_jun') - Sum('total_paid_jan'),
-        jul=Sum('total_due_jul') - Sum('total_paid_jan'),
-        aug=Sum('total_due_aug') - Sum('total_paid_jan'),
-        sept=Sum('total_due_sept') - Sum('total_paid_jan'),
-        oct=Sum('total_due_oct') - Sum('total_paid_jan'),
-        nov=Sum('total_due_nov') - Sum('total_paid_jan'),
-        dec=Sum('total_due_dec') - Sum('total_paid_jan'),
+        jan=Sum('total_due_jan')- Sum('total_paid_jan'),
+        feb=Sum('total_due_feb')- Sum('total_paid_jan'),
+        mar=Sum('total_due_mar')- Sum('total_paid_jan'),
+        apr=Sum('total_due_apr')- Sum('total_paid_jan'),
+        may=Sum('total_due_may')- Sum('total_paid_jan'),
+        jun=Sum('total_due_jun')- Sum('total_paid_jan'),
+        jul=Sum('total_due_jul')- Sum('total_paid_jan'),
+        aug=Sum('total_due_aug')- Sum('total_paid_jan'),
+        sept=Sum('total_due_sept')- Sum('total_paid_jan'),
+        oct=Sum('total_due_oct')- Sum('total_paid_jan'),
+        nov=Sum('total_due_nov')- Sum('total_paid_jan'),
+        dec=Sum('total_due_dec')- Sum('total_paid_jan'),
     )
 
-    
+        
 
     context = {
         'rev_col': rev_col,
         'rev_rec': rev_rec,
         'cur_year': year,
         'years': years,
+     
 
     }
     return render(request, 'revenue_report.html',  context)
