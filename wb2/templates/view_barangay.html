@@ -111,6 +111,9 @@ select{
   width: 70px;
   border-radius: 25px;
 }
+a:hover {
+ cursor:pointer;
+}
 
 
 </style>
@@ -253,11 +256,9 @@ select{
       </tbody>
 </table>
 
-{% url 'barangayreport' as url %}
-<a class="button2 btn-primary" href="{% url 'barangayreport' 2022%}" role="button" onclick="alert('Are you sure you want to go back?')">BACK</a>
+<a class="button2 btn-primary"  role="button" onclick="history.back()">BACK</a>
 
-<!-- <button type="button" onclick="alert('Hello world!')"><a
-  href="{&'url barangayreport'%}/bang.year">BACK</a></button> -->
+
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
