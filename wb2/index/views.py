@@ -517,6 +517,7 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
+
 # def landing(request):
 #     return render(request,'landing.html')
 
@@ -763,6 +764,7 @@ def unsettled_bill(request):
     return render(request, 'unsettled_bill.html', context)
 
 
+    
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -879,3 +881,22 @@ def revenue_report(request, year):
 
     }
     return render(request, 'revenue_report.html',  context)
+  
+
+
+# def view_unsettled_bills(request, id):
+#     year = []
+#     uv = ConsumerInfo.objects.get(consumer_id=id)   
+#     table = []
+#     class view_utang():
+#         def __init__(self, month, reading, reading_date, consumption,total_bill,total_amount_paid):
+#             self.month = month
+#             self.reading = reading
+#             self.reading_date = reading_date
+#             self.consumption = consumption
+#             self.total_bill = total_bill
+#             self.total_amount_paid = total_amount_paid
+    
+#     context ={'uv':uv
+# }
+#     return render(request, 'view_unsettled_bills.html', context)
