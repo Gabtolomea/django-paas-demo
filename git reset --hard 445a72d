@@ -1,0 +1,83 @@
+[33m842c337[m[33m ([m[1;36mHEAD -> [m[1;32mryla[m[33m, [m[1;31morigin/ryla[m[33m)[m HEAD@{0}: commit: efefwef
+[33m4b63b03[m HEAD@{1}: commit (merge): Merge branch 'charlie' into ryla
+[33mec185ae[m HEAD@{2}: commit: gwrtwwerw
+[33m3273943[m HEAD@{3}: commit: dfsfewrrfdff
+[33m4582e77[m HEAD@{4}: commit (merge): Merge branch 'jazzy' into ryla
+[33mb3bd027[m HEAD@{5}: commit: safasfasf
+[33m1f469d3[m HEAD@{6}: commit (merge): Merge branch 'jazzy' into ryla
+[33m660bd25[m HEAD@{7}: commit: wait
+[33mbd63730[m HEAD@{8}: checkout: moving from patrick to ryla
+[33maa12a24[m[33m ([m[1;31morigin/patrick[m[33m, [m[1;32mpatrick[m[33m)[m HEAD@{9}: checkout: moving from ryla to patrick
+[33mbd63730[m HEAD@{10}: reset: moving to HEAD
+[33mbd63730[m HEAD@{11}: reset: moving to HEAD
+[33mbd63730[m HEAD@{12}: reset: moving to HEAD
+[33mbd63730[m HEAD@{13}: reset: moving to HEAD
+[33mbd63730[m HEAD@{14}: commit: mana reprot graph
+[33m445a72d[m HEAD@{15}: commit: black na ang chart print sa inputreading
+[33m085c675[m HEAD@{16}: commit (merge): Merge branch 'jazzy' into ryla
+[33m9f05db9[m HEAD@{17}: checkout: moving from jazzy to ryla
+[33mdbed9f3[m HEAD@{18}: commit: wefef
+[33mf7510a6[m HEAD@{19}: commit (merge): Merge branch 'jazzy' of https://github.com/bsitpc223/waterbilling2.0 into jazzy
+[33ma354a03[m HEAD@{20}: commit: erterrgffsdsfsdfsfsfsf
+[33m4089bca[m HEAD@{21}: checkout: moving from charlie to jazzy
+[33m68c70b0[m HEAD@{22}: checkout: moving from ryla to charlie
+[33m9f05db9[m HEAD@{23}: checkout: moving from jazzy to ryla
+[33m4089bca[m HEAD@{24}: checkout: moving from ryla to jazzy
+[33m9f05db9[m HEAD@{25}: checkout: moving from jazzy to ryla
+[33m4089bca[m HEAD@{26}: reset: moving to HEAD
+[33m4089bca[m HEAD@{27}: checkout: moving from ryla to jazzy
+[33m9f05db9[m HEAD@{28}: commit (merge): Merge branch 'jazzy' into ryla
+[33mf3955d1[m HEAD@{29}: checkout: moving from charlie to ryla
+[33m27ee8f7[m HEAD@{30}: commit: gsdggdfgg
+[33mcc6fb83[m HEAD@{31}: checkout: moving from ryla to charlie
+[33mf3955d1[m HEAD@{32}: checkout: moving from jazzy to ryla
+[33m4089bca[m HEAD@{33}: reset: moving to HEAD
+[33m4089bca[m HEAD@{34}: commit: sssgsgrg
+[33ma496e14[m HEAD@{35}: reset: moving to HEAD
+[33ma496e14[m HEAD@{36}: checkout: moving from ryla to jazzy
+[33mf3955d1[m HEAD@{37}: commit: sgdrfdhgdhhlh
+[33mc9257fa[m HEAD@{38}: reset: moving to HEAD
+[33mc9257fa[m HEAD@{39}: reset: moving to HEAD
+[33mc9257fa[m HEAD@{40}: reset: moving to HEAD
+[33mc9257fa[m HEAD@{41}: commit: wala ko kaayu na new ani
+[33ma42c37d[m HEAD@{42}: commit: Revenue_report. html ang new nako na tabling
+[33m2d8ee34[m HEAD@{43}: commit: year selection and months d mo sum kuwang
+[33m897946b[m HEAD@{44}: commit: homana nag report ug charting peru naa pa ni cya problem
+[33me54c056[m HEAD@{45}: commit: fksdkfds
+[33m9e8d295[m HEAD@{46}: checkout: moving from charlie to ryla
+[33m7ddfd1a[m HEAD@{47}: commit: ghkr
+[33m0258673[m HEAD@{48}: checkout: moving from ryla to charlie
+[33m9e8d295[m HEAD@{49}: checkout: moving from charlie to ryla
+[33m0258673[m HEAD@{50}: commit: 32523
+[33mc917a1a[m HEAD@{51}: checkout: moving from ryla to charlie
+[33m9e8d295[m HEAD@{52}: checkout: moving from jazzy to ryla
+[33ma496e14[m HEAD@{53}: commit: hsdh
+[33m686e4b0[m HEAD@{54}: checkout: moving from ryla to jazzy
+[33m9e8d295[m HEAD@{55}: checkout: moving from jazzy to ryla
+[33m686e4b0[m HEAD@{56}: checkout: moving from ryla to jazzy
+[33m9e8d295[m HEAD@{57}: commit (merge): Merge branch 'jazzy' into ryla
+[33mdd56451[m HEAD@{58}: checkout: moving from jazzy to ryla
+[33m686e4b0[m HEAD@{59}: checkout: moving from ryla to jazzy
+[33mdd56451[m HEAD@{60}: commit: hahaha
+[33m4d601b9[m HEAD@{61}: commit: working chart in chart
+[33mda10548[m HEAD@{62}: commit: I think this is fix but the urls are wonky
+[33mdbfef4f[m HEAD@{63}: merge origin/jazzy: Fast-forward
+[33mfc51652[m HEAD@{64}: commit: display na
+[33m8471dd8[m HEAD@{65}: commit: hi
+[33ma2e8d79[m HEAD@{66}: commit (merge): Merge remote-tracking branch 'origin/patrick' into ryla
+[33mcdc1d38[m HEAD@{67}: commit: hellow
+[33m5224bff[m HEAD@{68}: merge origin/jazzy: Merge made by the 'ort' strategy.
+[33m8801dda[m HEAD@{69}: commit: commit
+[33me02dc31[m HEAD@{70}: reset: moving to HEAD
+[33me02dc31[m HEAD@{71}: reset: moving to HEAD
+[33me02dc31[m HEAD@{72}: reset: moving to HEAD
+[33me02dc31[m HEAD@{73}: commit: d mo display huhay
+[33m7e371d2[m HEAD@{74}: commit: unsay problema aning akung barangayreport
+[33m34454ae[m HEAD@{75}: commit: redirecting bar to link inay hahaha
+[33m7dc2f4e[m HEAD@{76}: commit: d mo display ang akung barangayreport .html
+[33me58a8e9[m HEAD@{77}: commit: Patrick kaning views_barangay html
+[33m097ba6f[m HEAD@{78}: commit: hgjs
+[33m9b4a6e2[m HEAD@{79}: checkout: moving from charlie to ryla
+[33mdbd11b1[m HEAD@{80}: commit: hala ako n
+[33m7822388[m HEAD@{81}: checkout: moving from main to charlie
+[33mbc60457[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{82}: clone: from https://github.com/bsitpc223/waterbilling2.0.git

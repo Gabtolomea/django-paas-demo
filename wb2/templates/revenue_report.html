@@ -33,8 +33,16 @@
 
   <script>
     var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var yValues = ['{{rev_col.jan}}', '{{rev_col.feb}}', '{{rev_col.mar}}', '{{rev_col.apr}}', '{{rev_col.may}}', '{{rev_col.jun}}', '{{rev_col.jul}}', '{{rev_col.aug}}', '{{rev_col.sept}}', '{{rev_col.oct}}', '{{rev_col.nov}}', '{{rev_col.dec}}'];
-
+    y  = ['{{rev_col.jan}}', '{{rev_col.feb}}', '{{rev_col.mar}}', '{{rev_col.apr}}', '{{rev_col.may}}', '{{rev_col.jun}}', '{{rev_col.jul}}', '{{rev_col.aug}}', '{{rev_col.sept}}', '{{rev_col.oct}}', '{{rev_col.nov}}', '{{rev_col.dec}}'];
+    var yValues = []     
+          for(var i = 0;i < y.length;i++){
+            if(y[i] <= 0){
+              yValues.push(null)
+            }else{
+              yValues.push(y[i])
+            }
+            
+          }       
     new Chart("myChart", {
       type: "line",
       data: {
@@ -66,8 +74,18 @@
   </section>
   <script>
     var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var yValues = ['{{rev_rec.jan}}', '{{rev_rec.feb}}', '{{rev_rec.mar}}', '{{rev_rec.apr}}', '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}', '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}'];
-    new Chart("receivable", {
+     y = ['{{rev_rec.jan}}', '{{rev_rec.feb}}', '{{rev_rec.mar}}', '{{rev_rec.apr}}', '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}', '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}'];
+     var yValues = []     
+          for(var i = 0;i < y.length;i++){
+            if(y[i] <= 0){
+              yValues.push(null)
+            }else{
+              yValues.push(y[i])
+            }
+            
+          }       
+    
+     new Chart("receivable", {
       type: "line",
       data: {
         labels: xValues,
@@ -88,9 +106,14 @@
         }
       }
       }
-  );
+      
+    );
+  
+  
+
  
   </script>
+
 
 </body>
 
