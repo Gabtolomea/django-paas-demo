@@ -22,6 +22,9 @@
         transition: 0.3s all ease-in-out;
 
     }
+    .showOnHover {
+        white-space: nowrap;
+    }
 
 </style>
 {% endblock style %}
@@ -72,8 +75,6 @@
                                 <a href="{%url 'deleteUser' t.username%}"><button class=" hide btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete this System User( {{ t.username }} )?')" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
                              </td>
                         </tr>
-
-
                         {%endfor%}
                     </tbody>
 
