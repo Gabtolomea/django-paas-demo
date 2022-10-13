@@ -62,7 +62,7 @@
     <h1>CONSUMER LIST</h1>
 </center>
 <a href="{% url 'consumercreation' %}">
-    <button class="btn button2" >Add New Consumer</button>
+    <button class="btn button2">Add New Consumer</button>
 </a>
 <br>
 <br>
@@ -84,15 +84,18 @@
                     <td style="text-align: left;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
                     <td>{{con.installation_address}}</td>
                     <td class="{{t.style}}">
-                        <ul class="list-inline m-0">
-                            <li>{{con.meternumber}}
-                                <a href="{% url 'userupdate' con.consumer_id %}">
-                                    <button class="hide btn btn-success btn-sm rounded-0" style="float: right;" data-toggle="modal" type="button" data-placement="top" title="Edit">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                </a>
-                            </li>
-                        </ul>
+                        {{con.meternumber}}
+                        <a href="{% url 'userupdate' con.consumer_id %}">
+                            <button class="hide btn btn-success btn-sm rounded-0" style="float: right;"
+                                data-toggle="modal" type="button" data-placement="top" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                        </a>
+                        <a href="{%url 'deleteconsumer' con.consumer_id %}"><button
+                            class=" hide btn btn-danger btn-sm rounded-0" type="button"
+                            onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
+                            data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
+                
                     </td>
                 </tr>
                 {% endfor %}

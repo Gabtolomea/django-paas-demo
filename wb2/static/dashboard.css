@@ -96,9 +96,6 @@ li.modal_side_nav_li:hover {
     white-space: nowrap;
 }
 
-li.side_nav_li:hover {
-    background: #a0c5cf;
-}
 
 ul {
     margin-top: 10px;
@@ -203,6 +200,13 @@ i.fa-solid.fa-right-from-bracket:hover {
 li.side_nav_li:hover {
     background: #bfecf7;
     color: #005e75;
+    transition: all 0.15s;
+}
+li.side_nav_li {
+    background: #0093b7;
+    color: #E6ECEB;
+    transition: all 0.15s;
+    transition-timing-function: ease-in-out;
 }
 
 .sidenav_text {
@@ -531,7 +535,7 @@ button.btn.btn-wb-copy:hover {
     z-index: 100;
 }
 
-.active {
+li.active {
     background-color: #005E75;
     color: #fff;
 }

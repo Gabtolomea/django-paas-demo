@@ -170,14 +170,14 @@
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
 
+        {% block bills_list %}
+        {% endblock bills_list %}
+
         {% block ledger %}
         {% endblock ledger%}
 
         {% block meterreading %}
         {% endblock meterreading%}
-
-        {% block bills_list %}
-        {% endblock bills_list %}
 
         {% block consumer_list %}
         {% endblock consumer_list %}
@@ -198,6 +198,8 @@
         {% endblock unsettled_bills %}
         {%  block view_unsettled_bills %}
         {%  endblock view_unsettled_bills %}
+        {%  block sysuserupdate %}
+        {%  endblock sysuserupdate %}
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
