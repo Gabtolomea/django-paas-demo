@@ -5,21 +5,38 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
-	.hide{
-       opacity: 0;
-	   transition: 0.3s all ease-in-out;
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
 
-	}
-	.showOnHover:hover .hide{
-		opacity: 1;
-		transition: 0.3s all ease-in-out;
-	}
-	td,th{
-		text-align: center;
-	}
-	.inputid{
-		text-align: center;
-	}
+    }
+
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+    }
+
+    td,
+    th {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .inputid {
+        text-align: center;
+    }
+
+    .button2 {
+        background-color: #63CDD7;
+        color: white;
+        font-weight: bold;
+        width: 30%;
+        text-decoration: none;
+        padding: 8px 32px;
+        margin: 4px 2px;
+        border-radius: 30px;
+        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+    }
 </style>
 {% endblock style %}
 {% block script %}
@@ -29,49 +46,61 @@
 <script>
     $(document).ready(function () {
         $('#table').DataTable({
-			order: [[1, 'asc']],
-                stateSave: true,
-                lengthMenu: [
-                    [10, 25, 50, -1],
-                    [10, 25, 50, 'All'],
-                ],
-		});
+            order: [[1, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
     });
 </script>
 {% endblock script %}
 
 {% block consumer_list %}
-    <center><h1>CONSUMER LIST</h1></center>
-    <a class="btn btn-primary" href="{% url 'consumercreation' %}" role="button">Add New Consumer</a>
-    <br>
-    <br>
-    <div class="container-fluid p-0">
-        <div class="table-responsive">
-            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%" style="white-space: nowrap;">
-                <thead class="wb_thead">
-                    <tr>
-                        <th style="min-width: 100px;">Account ID</th>
-                        <th style="min-width: 100px;">Name</th>
-                        <th style="min-width: 100px;">Address</th>
-                        <th style="min-width: 100px;">Meter Number</th>
-                    </tr>
-                </thead>
-                <tbody class="wb_tbody">
-                    {% for con in consumer_list %}
-                    <tr class="showOnHover ">
-                        <td>{{con.consumer_id}}</td>
-                        <td>{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
-                        <td>{{con.installation_address}}</td>
-                        <td class="{{t.style}}">
-                            <ul class="list-inline m-0" >
-                                <li>{{con.meternumber}}
-                                <!-- <li class="list-inline-item"> -->
-                                    <a href="/userupdate/{{ con.consumer_id }}/"><button class="hide btn btn-success btn-sm rounded-0"  style="float: right;" data-toggle="modal" type="button" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                     {% endfor %}
-                    </tbody>
-
+<center>
+    <h1>CONSUMER LIST</h1>
+</center>
+<a href="{% url 'consumercreation' %}">
+    <button class="btn button2">Add New Consumer</button>
+</a>
+<br>
+<br>
+<div class="container-fluid p-0">
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+            <thead class="wb_thead">
+                <tr>
+                    <th style="min-width: 100px;">Account ID</th>
+                    <th style="min-width: 100px;">Name</th>
+                    <th style="min-width: 100px;">Address</th>
+                    <th style="min-width: 100px;">Meter Number</th>
+                </tr>
+            </thead>
+            <tbody class="wb_tbody">
+                {% for con in consumer_list %}
+                <tr class="showOnHover ">
+                    <td>{{con.consumer_id}}</td>
+                    <td style="text-align: left;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
+                    <td>{{con.installation_address}}</td>
+                    <td class="{{t.style}}">
+                        {{con.meternumber}}
+                        <a href="{% url 'userupdate' con.consumer_id %}">
+                            <button class="hide btn btn-success btn-sm rounded-0" style="float: right;"
+                                data-toggle="modal" type="button" data-placement="top" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                        </a>
+                        <a href="{%url 'deleteconsumer' con.consumer_id %}"><button
+                            class=" hide btn btn-danger btn-sm rounded-0" type="button"
+                            onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
+                            data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
+                
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock consumer_list %}
