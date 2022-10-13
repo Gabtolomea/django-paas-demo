@@ -83,8 +83,9 @@
 
     <header>
         {% for message in messages %}
-        <div
-            class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+        <div id="login"
+            class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
+            style="margin-left: 750px; margin-right: 750px; padding-left: 55px; position: absolute; border-radius: 10px;">
             <strong>{{message.tags|title}}!</strong> {{message}}
             <a href="#" class="close" data-dismiss="alert"
                 style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
@@ -308,6 +309,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+
+    <script>
+        var login = document.getElementById('login');
+    
+        function closeModal(){
+            login.style.display = "none";
+        }
+        setTimeout(closeModal,5000)
+    </script>
+
 {% block script %}
 {% endblock script %}
 

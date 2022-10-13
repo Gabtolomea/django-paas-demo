@@ -35,13 +35,13 @@ alltables = [
 
 sorted_tables = []
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="database2021",
-    database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# mydb = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="database2021",
+#     database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 def porter():
     porter_in()
     porter_out(sorted_tables)
