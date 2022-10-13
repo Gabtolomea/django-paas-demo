@@ -53,12 +53,18 @@
     </tr>
   </thead>
   <tbody class="wb_tbody">
-    {% for t in table %}
-    <tr>
-      <td>{{t.month}}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
+  </tbody>
+  {% for t in table %}
+  <tr>
+    <td>{{t.month}}</td>
+    <td>{{t.reading}}</td>
+    <td>{{t.reading_date}}</td>
+    <td>{{t.consumption}}</td>
+    <td>{{t.total_bill}}</td>
+    <td>{{t.total_amount_paid}}</td>
+  </tr>
+  {% endfor %}
+</table>
 {%  endblock view_unsettled_bills %}
 
 
