@@ -875,6 +875,7 @@ def revenue_report(request, year):
     return render( request, 'revenue_report.html',  context)
 
 
-# def view_utang(request):
-
-#     return render(request)
+def deleteconsumer(request, id):
+    con = ConsumerInfo.objects.get(consumer_id = id)
+    con.delete()
+    return redirect('consumer_list')
