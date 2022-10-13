@@ -84,7 +84,7 @@
     <header>
         {% for message in messages %}
         <div id="login"
-            class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
+            class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
             style="margin-left: 750px; margin-right: 750px; padding-left: 55px; position: absolute; border-radius: 10px;">
             <strong>{{message.tags|title}}!</strong> {{message}}
             <a href="#" class="close" data-dismiss="alert"
@@ -314,11 +314,12 @@
 
     <script>
         var login = document.getElementById('login');
-    
-        function closeModal(){
-            login.style.display = "none";
-        }
-        setTimeout(closeModal,5000)
+        setTimeout(function closeModal(){
+            login.classList.add("op-0")
+        },3000)
+        setTimeout(function dispnone(){
+            login.style.display = "none"
+        },4000)
     </script>
 
 {% block script %}
