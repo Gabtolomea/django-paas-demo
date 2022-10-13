@@ -6,7 +6,7 @@
             <label for="exampleInputBarangay">Select Year</label>
             <select name="urlsme" onchange='this.form.submit();'>
                 {% for record in record %}
-              <option selected>{{record.year}}</option>
+              <option selected>{{ .year}}</option>
             
               <option >{{record.year}}</option>
               {%endfor%}

@@ -31,9 +31,8 @@ urlpatterns = [
     path('usage_report_data/<int:year>/barangay_by_monthly/<id>/', views.barangay_by_monthly, name='barangay_by_monthly'),
     path('revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills'),
-    path('view_unsettled_bills/',views.unsettled_bill, name='view_unsettled_bills'),
-    path('forgetpassword', views.forgetpassword,name='forgetpassword'),
-    path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),name="password_reset_confirm"),
+    path('view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills')
+
 
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
