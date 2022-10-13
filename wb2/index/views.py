@@ -26,6 +26,7 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
+from django.db.models.functions import Coalesce
 from .decorators import unauthenticated_user
 
 
@@ -348,7 +349,8 @@ def inputreading(request, id, year):
         except ObjectDoesNotExist:
             con_b_rec = BarangayRecord()
         else:
-            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+            con_b_rec = BarangayRecord.objects.get(
+                barangaycode_id=consumer.installation_address_id, year=year)
             readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
@@ -694,6 +696,7 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
+
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -754,28 +757,27 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        
+
 
     }
     return render(request, 'waterusage.html', context)
 
 
-
-
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
-   
+
     context = {
         'bang': bang,
-      
-    
+
+
     }
     return render(request, 'view_barangay.html', context)
+
 
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
-        'ub':ub
+        'ub': ub
     }
     return render(request, 'unsettled_bill.html', context)
 
@@ -887,11 +889,12 @@ def revenue_report(request, year):
 
     
 
-    context = {
+    context={
         'rev_col': rev_col,
         'rev_rec': rev_rec,
         'cur_year': year,
         'years': years,
+       
 
     }
     return render(request, 'revenue_report.html',  context)
