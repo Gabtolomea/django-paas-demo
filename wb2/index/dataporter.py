@@ -35,13 +35,13 @@ alltables = [
 
 sorted_tables = []
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="database2021",
-    database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# mydb = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="database2021",
+#     database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 def porter():
     porter_in()
     porter_out(sorted_tables)
@@ -122,7 +122,7 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7]) 
+        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
         con_info.penaltycode = Penalty.objects.get(penaltycode='P001')
         con_info.status = tables[0][i][8]
         con_info.penaltycounter = tables[0][i][11]
@@ -305,7 +305,7 @@ def porter_out(tables):
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])
         usage_rec.amountpaid_str_apr =	i[163]
         usage_rec.amountpaid_str_aug = i[164]
         usage_rec.amountpaid_str_dec = i[165]
@@ -324,7 +324,7 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
-    
+
 def billing_out():
     u_rec = usage_record.objects.all()
     for u in u_rec:

@@ -6,7 +6,7 @@
 {% block view_unsettled_bills %}
 <table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
     <thead class="header">
-        <tr>
+        <tr style="background-color: #63CDD7; color: white;">
             <th scope="col" style="min-width:110px">Account ID</th>
             <th scope="col" style="min-width:110px">Meter Number</th>
             <th scope="col" style="min-width:110px">Name</th>
@@ -21,10 +21,10 @@
     </tr>
 </thead>
 </table>
-<label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year:
+<label for="years" style="font-size: 18px; font-weight: normal; margin-left: 25px;  font-weight: bold; ">Select Year:
 </label>
 <form id="yearselection" action="">
-  <select class="form-select" id="selector" onchange="change()">
+  <select class="form-select" id="selector" onchange="change()" style="width: 10%;">
     <option value="{{current}}">{{current}}</option>
     {% for i in years reversed %}
     <option value="{{i}}">{{i}}</option>
