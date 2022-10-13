@@ -1,4 +1,6 @@
 import calendar
+from datetime import datetime
+
 from dis import dis
 from email import errors
 from multiprocessing import context
@@ -160,7 +162,7 @@ def ledger(request, id):
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
                 connectionType = Rates.objects.get(
-                    rate_id=asc_trans[i].ratescode)
+                rate_id=asc_trans[i].ratescode)
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -288,8 +290,7 @@ def inputreading(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    trans = Transactions.objects.filter(
-        acctID_id=id, transType='Billing', year=year)
+    trans = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
     j = 0
@@ -330,6 +331,7 @@ def inputreading(request, id, year):
         # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
+        print(table)
 
     con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
     cummulative = get_cummulative(id)
@@ -515,6 +517,7 @@ def inputreading(request, id, year):
         'years': years
     }
     return render(request, 'input-meter-reading.html', context)
+
 
 
 # def landing(request):
@@ -709,6 +712,7 @@ def barangayreport(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
+        print(years)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -763,6 +767,7 @@ def unsettled_bill(request):
     return render(request, 'unsettled_bill.html', context)
 
 
+    
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -875,6 +880,70 @@ def revenue_report(request, year):
     return render( request, 'revenue_report.html',  context)
 
 
-# def view_utang(request):
+def unsettled_bill(request):
+    ub = ConsumerInfo.objects.all()
+    context = {
+        'ub':ub
+    }
+    return render(request, 'unsettled_bill.html', context)
 
-#     return render(request)
+
+def view_unsettled_bills(request, id, year):
+    years = []
+    table = []
+    uv = ConsumerInfo.objects.get(consumer_id=id) 
+    class view_utang():
+        def __init__(self, month, reading, reading_date, usage,total_bill,total_amount_paid):
+            self.month = month
+            self.reading = reading
+            self.reading_date = reading_date
+            self.consumption = usage
+            self.total_bill = total_bill
+            self.total_amount_paid = total_amount_paid
+    con = ConsumerInfo.objects.get(consumer_id=id)
+    alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
+    billing = Transactions.objects.filter(acctID_id=id, transType='Billing',  year=year)
+    payment = Transactions.objects.filter(acctID_id=id, transType = 'Payment', year = year)
+    pcount = len(payment)
+    count = len(billing)
+    j = 0
+    if billing[0].date.month == 1:
+        j = 1   
+    for i in alltran:
+            if i.year not in years:
+                if i.year is not None:
+                    years.append(i.year)
+    if int(year) in years:
+            years.remove(int(year))
+    # --------------------------#
+    j = 0
+    c = 0
+    for i in range(1,13):
+        month = calendar.month_name[i]
+        usage = 0
+        reading = 0
+        total_bill = 0
+        reading_date = ''
+        total_amount_paid = 0
+        if c < pcount and pcount !=0:
+            if i == payment[c].month:
+                total_amount_paid= payment[c].payment
+                c+=1
+        if j < count and count != 0:
+            if i == billing[j].month:
+                usage = billing[j].usage
+                reading = billing[j].meterReading
+                reading_date = billing[j].date
+                total_bill = billing[j].bill
+                j += 1
+
+        a = view_utang(month, reading, reading_date, usage,total_bill,total_amount_paid)    
+        table.append(a)
+
+    context ={'uv':uv,
+            'years':years,
+            'current':year,
+            'table':table,}
+    return render(request, 'view_unsettled_bills.html', context)
+
+  
