@@ -887,7 +887,7 @@ def revenue_report(request, year):
         dec=Sum('total_due_dec') - Sum('total_paid_jan'),
     )
 
-    
+   
 
     context={
         'rev_col': rev_col,
