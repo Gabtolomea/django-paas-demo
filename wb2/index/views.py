@@ -880,6 +880,10 @@ def revenue_report(request, year):
     return render( request, 'revenue_report.html',  context)
 
 
+def deleteconsumer(request, id):
+    con = ConsumerInfo.objects.get(consumer_id = id)
+    con.delete()
+    return redirect('consumer_list')
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
