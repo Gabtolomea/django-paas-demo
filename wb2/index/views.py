@@ -645,7 +645,7 @@ def userupdate(request, id):
 
     }
 
-    return render(request, 'userupdate.html', context)
+    return render(request, 'consumercreation.html', context)
 
 # @login_required(login_url='login')
 def user_edit(request, id):
@@ -701,7 +701,8 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-
+def br(request):
+    return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
