@@ -1,5 +1,24 @@
-<!DOCTYPE html>
-<html>
+{% extends 'dashboard.html' %}
+
+{% block title %}
+Usage Report
+{% endblock title %}
+
+{% block style %}
+
+  <style>
+
+      .select{
+        font-weight: bold;
+        font-size: 20px;
+        font-style: normal;
+        float: left;
+        width: 140px;
+      }
+  </style>
+
+  {% endblock style %}
+  {% block usage_report_data %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -7,7 +26,7 @@
 <div class="container">
 <div>
   <div>
-      <label style="font-weight: bold; font-size: 20px; font-style: normal;" for="exampleInputBarangay">Select Year :</label>
+      <label class="select"style="font-weight: bold; font-size: 20px; font-style: normal;" for="exampleInputBarangay">Select Year :</label>
       <form id="yearselection" action="">
           <select class="form-select" aria-label="selector" onchange="change()">
               <option value="{{cur_year}}">{{cur_year}}</option>
@@ -178,4 +197,6 @@
 </div>
 </body>
 
-</html>
+
+{% endblock usage_report_data %}
+

@@ -1,4 +1,13 @@
 
+{% extends 'dashboard.html' %}
+
+{% block title %}
+Barangay Record
+{% endblock title %}
+
+{% block style %}
+
+
 <style>
   html{
       background-color: #F2F3F2;
@@ -114,6 +123,9 @@ select{
 
 
 </style>
+
+  {% endblock style %}
+  {% block view_barangay %}
 
   <center class="header"><label>Barangay Yearly Records for Year {{bang.barangaycode}}</label></center>
     <div class = "col-sm-offset-7 col-sm-5">
@@ -282,3 +294,5 @@ select{
 
 
   </script>
+
+  {% endblock view_barangay %}
