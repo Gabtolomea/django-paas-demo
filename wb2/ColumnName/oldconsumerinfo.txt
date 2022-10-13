@@ -1,0 +1,8 @@
+"oldconsumerinfo"
+    con_id
+    firstname
+    middlename
+    lastname
+    con_category
+    meternumber
+    address

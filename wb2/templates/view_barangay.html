@@ -1,0 +1,168 @@
+
+<div>
+  <labe>Barangay Yearly Records for Year {{bang.barangaycode}}</labe>
+    <div class = "col-sm-offset-7 col-sm-5">
+        <div class="form-group">
+            <label for="exampleInputBarangay">Select Year</label>
+            <select name="urlsme" onchange='this.form.submit();'>
+                {% for record in record %}
+              <option selected>{{record.year}}</option>
+            
+              <option >{{record.year}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <noscript><input type="submit" value="Submit" href="/{{br.year}}"></noscript>
+  </div>
+
+  <body onload ="collection_rate()">
+<table>
+    <thead>
+        <tr>
+            <th>Billing Cycle Cutoff Month</th>
+            <th>Total Usage (Cubic Meter)</th>
+            <th>Total Receivable</th>
+            <th>Total Collection</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+            <p>January</p>
+          </td>
+          
+          <td>{{bang.total_usage_jan|floatformat:1}}</td>
+          <td>{{bang.total_due_jan|floatformat:1}}</td>
+          <td>{{bang.total_paid_jan|floatformat:1}}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>February</p>
+          </td>
+         
+          <td>{{bang.total_usage_feb|floatformat:1}}</td>
+          <td>{{bang.total_due_feb|floatformat:1}}</td>
+          <td>{{bang.total_paid_feb|floatformat:1}}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>March</p>
+          </td>
+      
+          <td>{{bang.total_usage_mar|floatformat:1}}</td>
+          <td>{{bang.total_due_mar|floatformat:1 }}</td>
+          <td>{{bang.total_paid_mar|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>April</p>
+          </td>
+         
+          <td>{{bang.total_usage_apr|floatformat:1  }}</td>
+          <td>{{bang.total_due_apr|floatformat:1 }}</td>
+          <td>{{bang.total_paid_apr|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>May</p>
+          </td>
+      
+          <td>{{bang.total_usage_may|floatformat:1  }}</td>
+          <td>{{bang.total_due_may|floatformat:1 }}</td>
+          <td>{{bang.total_paid_may|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>June</p>
+          </td>
+         
+          <td>{{bang.total_usage_jun|floatformat:1  }}</td>
+          <td>{{bang.total_due_jun|floatformat:1 }}</td>
+          <td>{{bang.total_paid_jun|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>July</p>
+          </td>
+         
+          <td>{{bang.total_usage_jul|floatformat:1  }}</td>
+          <td>{{bang.total_due_jul|floatformat:1 }}</td>
+          <td>{{bang.total_paid_jul|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>August</p>
+          </td>
+       
+          <td>{{bang.total_usage_aug|floatformat:1  }}</td>
+          <td>{{bang.total_due_aug|floatformat:1 }}</td>
+          <td>{{bang.total_paid_aug|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>September</p>
+          </td>
+          
+          <td>{{bang.total_usage_sept|floatformat:1  }}</td>
+          <td>{{bang.total_due_sept|floatformat:1 }}</td>
+          <td>{{bang.total_paid_sept|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>October</p>
+          </td>
+         
+          <td>{{bang.total_usage_oct|floatformat:1  }}</td>
+          <td>{{bang.total_due_oct|floatformat:1 }}</td>
+          <td>{{bang.total_paid_oct|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>November</p>
+          </td>
+        
+          <td>{{bang.total_usage_nov|floatformat:1  }}</td>
+          <td>{{bang.total_due_nov|floatformat:1 }}</td>
+          <td>{{bang.total_paid_nov|floatformat:1 }}</td>
+        </tr>
+        <tr>
+          <td>
+            <p>December</p>
+          </td>
+         
+          <td>{{bang.total_usage_dec|floatformat:1  }}</td>
+          <td>{{bang.total_due_dec|floatformat:1 }}</td>
+          <td>{{bang.total_paid_dec|floatformat:1 }}</td>
+        </tr>
+      </tbody>
+</table>
+<button type="button" onclick="alert('Hello world!')"><a
+  href="{&'url barangayreport'%}/bang.year">BACK</a></button>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+    function collection_rate(){
+      total_paid = document.getElementsByClassName("total_paid")
+      total_due = document.getElementsByClassName("total_due")
+      rate = document.getElementsByClassName("rate")
+
+      for (let index = 0; index < rate.length; index++) {
+        int_total_due = parseInt(total_due[index].innerHTML)
+        int_total_paid = parseInt(total_paid[index].innerHTML)
+        temporary_rate = (int_total_paid / int_total_due)* 100
+        if (temporary_rate!==temporary_rate){
+          rate[index].innerHTML = "0.0%"
+        }else{
+          rate[index].innerHTML = temporary_rate.toFixed(2)+ "%"
+        }
+        console.log("test")
+      }
+    }
+
+
+  </script>
+
+
+</div>

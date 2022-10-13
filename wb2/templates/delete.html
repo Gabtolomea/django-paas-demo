@@ -1,0 +1,16 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block deleteUser %}
+
+<form action="" method="POST">
+{% csrf_token %}
+    <a href="{% url 'sysuser' %}">Cancel</a>
+
+    <input type="submit" name = "Confirm">
+
+</form>
+
+
+
+{% endblock deleteUser %}
