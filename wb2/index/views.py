@@ -951,3 +951,10 @@ def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id = id)
     con.delete()
     return redirect('consumer_list')
+
+def settingspage(request):
+    constype = Rates.objects.all()
+    print(constype)
+    
+    context={'constype':constype}
+    return render(request, 'systemsettings.html', context)
