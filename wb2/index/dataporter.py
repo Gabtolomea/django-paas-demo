@@ -39,16 +39,10 @@ mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="database2021",
-    database="lgu_ginatilan_db"
+    database="lgu_ginatilan_db",
+    auth_plugin='mysql_native_password'
 )
 mycursor = mydb.cursor()
-def porter():
-    porter_in()
-    porter_out(sorted_tables)
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
-    return
 
 
 def porter_in():
