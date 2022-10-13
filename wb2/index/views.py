@@ -947,3 +947,7 @@ def view_unsettled_bills(request, id, year):
     return render(request, 'view_unsettled_bills.html', context)
 
   
+def deleteconsumer(request, id):
+    con = ConsumerInfo.objects.get(consumer_id = id)
+    con.delete()
+    return redirect('consumer_list')
