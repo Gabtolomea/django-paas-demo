@@ -1,9 +1,0 @@
-"ratestable"
-    rateid
-    minimumreading
-    minimumreading_charge
-    rateafterminimum
-    ratepenalty
-    ratepenaltyfrequency
-    paymentchedday
-    

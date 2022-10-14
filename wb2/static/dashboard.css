@@ -513,7 +513,10 @@ li.active {
     background-color: #005E75;
     color: #fff;
 }
-
+.message.op-0{
+    opacity: 0;
+    transition: opacity 1s;
+}
 /* @media(max-width: 720px) {
     .toggle_desktop{
         display: none;
