@@ -571,10 +571,10 @@ def consumercreation(request):
         picture = request.POST['picture']
         meternumber = request.POST['meternumber']
         initialmeterreading = request.POST['initialmeterreading']
-        installation_address = request.POST['installation']
+        installation_address = request.POST['installation_address']
         rateid = request.POST['rateid']
         if form.is_valid():
-            cr = ConsumerInfo
+            cr = ConsumerInfo()
             cr.firstname = firstname
             cr.middlename = middlename
             cr.lastname = lastname
@@ -589,6 +589,8 @@ def consumercreation(request):
             cr.initialmeterreading = initialmeterreading
             cr.installation_address = installation_address
             cr.rateid = rateid
+            cr.save()
+            return redirect('consumer_list')
     context = {
         'form': form,
         'errors': form.errors,
