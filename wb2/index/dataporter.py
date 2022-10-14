@@ -35,13 +35,14 @@ alltables = [
 
 sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="database2021",
-#     database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="yjh434ctuG@-@",
+    database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
+
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -113,8 +114,8 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
-        con_info.penaltycode = None
+        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7]) 
+        con_info.penaltycode = "P001"
         con_info.status = tables[0][i][8]
         con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
