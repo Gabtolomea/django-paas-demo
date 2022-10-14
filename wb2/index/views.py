@@ -904,13 +904,10 @@ def revenue_report(request, year):
     return render( request, 'revenue_report.html',  context)
 
 
-<<<<<<<<< Temporary merge branch 1
-=========
 def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id = id)
     con.delete()
     return redirect('consumer_list')
->>>>>>>>> Temporary merge branch 2
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
@@ -978,10 +975,11 @@ def view_unsettled_bills(request, id, year):
     return render(request, 'view_unsettled_bills.html', context)
 
   
-<<<<<<<<< Temporary merge branch 1
 def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id = id)
     con.delete()
     return redirect('consumer_list')
-=========
->>>>>>>>> Temporary merge branch 2
+
+def settingspage(request):
+    
+    return render(request)
