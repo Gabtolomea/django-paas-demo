@@ -66,7 +66,7 @@ class sysup(ModelForm):
     # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
     class Meta:
         model = SystemUsers
-        fields =(  
+        fields =(
         'first_name',
         'last_name',
         'email',
@@ -98,7 +98,7 @@ class ConsumerCreationForm(ModelForm):
     sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=CHOICES)
     sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}),required=False)
     meternumber = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
     installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Barangays.objects.all())
