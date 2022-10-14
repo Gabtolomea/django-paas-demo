@@ -58,7 +58,7 @@
                     </a>
                 </li>
                 <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none" >
+                    <a class="modal_side_nav_li_text" href="{% url 'barangayreport' 2022%}" style="color: white; text-decoration: none" >
                         <i class="fa fa-line-chart fa-2x"></i>
                         <span class="sidenav_text">Reports</span>
                     </a>
@@ -148,7 +148,7 @@
                     <span class="sidenav_text">Consumers</span>
                 </li>
             </a>
-            <a href="{% url 'br' %}" style="color: white; text-decoration: none">
+            <a href="{% url 'barangayreport' 2022%}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'br' 'active' %}">
                     <i class="fa fa-line-chart fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
@@ -181,13 +181,14 @@
 
         {% block consumer_list %}
         {% endblock consumer_list %}
-
+ 
 
         {% block sysuser %}
         {% endblock sysuser %}
 
         {% block consumercreation %}
         {% endblock consumercreation %}
+        
         {% block deleteUser %}
         {% endblock deleteUser %}
         {% block registration %}
@@ -200,6 +201,9 @@
         {%  endblock view_unsettled_bills %}
         {%  block sysuserupdate %}
         {%  endblock sysuserupdate %}
+        {% block settingspage %}
+        {% endblock settingspage %}
+
 
         
 

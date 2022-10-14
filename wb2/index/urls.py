@@ -24,15 +24,16 @@ urlpatterns = [
     path('sysuser/<id>/', views.user_edit, name='user_edit'),
     path('deleteUser/<id>/', views.deleteUser, name='deleteUser'),
     path('about', views.about, name='about'),
-    path('barangayreport', views.br, name='br'),
+    # path('barangayreport', views.br, name='br'),
     path('barangayreport/<int:year>', views.barangayreport, name='barangayreport'),
     path('view_barangay/<id>/', views.view_barangay, name='view_barangay'),
     path('usage_report_data/<int:year>', views.usage_report_data, name='usage_report_data'),
     path('usage_report_data/<int:year>/barangay_by_monthly/<id>/', views.barangay_by_monthly, name='barangay_by_monthly'),
     path('revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills'),
-    path('view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills')
-
+    path('view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
+    path('settingspage', views.settingspage, name='settingspage')
+    
 
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
