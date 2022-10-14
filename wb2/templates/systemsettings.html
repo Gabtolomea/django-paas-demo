@@ -8,4 +8,40 @@ System Settings
 {% block settingspage %}
 
 
+<h2>Consumer Type</h2>
+<br>
+<table>
+    <thead>
+        <tr>
+            <td>Rate Id</td>
+            <td>Connection Type</td>
+            <td>Minimum Reading</td>
+            <td>Minimum Reading Charge</td>
+            <td>Rate After Minumum</td>
+            <td>Rate Penalty</td>
+            <td>Rate Penalty Frequency</td>
+            <td>Date Added</td>
+            <td>Date Modified</td>
+            <td>Added By</td>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for c in ctype %}
+    <tr>
+        <td>{{c.rate_id}}</td>
+        <td>{{c.connectionType}}</td>
+        <td>{{c.minReading}}</td>
+        <td>{{c.minReadingCharge}}</td>
+        <td>{{c.rateAfterMin}}</td>
+        <td>{{c.ratePenalty}}</td>
+        <td>{{c.ratePenaltyFreq}}</td>
+        <td>{{c.date_added}}</td>
+        <td>{{c.date_mod}}</td>
+        <td>{{c.added_by_id}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 {%endblock settingspage%}

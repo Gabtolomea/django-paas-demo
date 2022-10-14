@@ -981,5 +981,6 @@ def deleteconsumer(request, id):
     return redirect('consumer_list')
 
 def settingspage(request):
-    
-    return render(request)
+    ctype = Rates.objects.all()
+    context = {'ctype':ctype}
+    return render(request, 'systemsettings.html', context)
