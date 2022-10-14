@@ -176,7 +176,7 @@
                     <span class="sidenav_text">User Accounts</span>
                 </li>
             </a>
-            <a href="{% url 'barangayreport' 2022 %}" style="color: white; text-decoration: none">
+            <a href="{% url 'barangayreport' 2022%}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'barangayreport' 'active' %}">
                     <i class="fa-solid fa-newspaper fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
@@ -230,20 +230,16 @@
 
         {% block sysuser %}
         {% endblock sysuser %}
-
-        {% block consumercreation %}
-        {% endblock consumercreation %}
-        {% block deleteUser %}
-        {% endblock deleteUser %}
-        {% block registration %}
-        {% endblock registration %}
+        
         {% block waterusage %}
         {% endblock waterusage %}
-        {% block unsettled_bills %}
-        {% endblock unsettled_bills %}
-        {%  block view_unsettled_bills %}
-        {%  endblock view_unsettled_bills %}
 
+        {% block usage_report_data %}
+        {% endblock usage_report_data %}
+
+        {% block view_barangay %}
+        {% endblock view_barangay %}
+ 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
