@@ -790,7 +790,7 @@ def usage_report_data(request, year):
             taon.append(i.year)
     if int(year) in taon:
         taon.remove(int(year))
-        print(taon)
+        print(year)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),

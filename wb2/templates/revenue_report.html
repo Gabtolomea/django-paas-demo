@@ -32,7 +32,7 @@
 
 
     <canvas id="myChart" width="800" height="150"></canvas>
-    <strong id="totalpaidmonthly">Collection for year {{cur_year}} :  Php:{{report.total_paid_ytd}}</strong>
+    <strong id="totalpaidmonthly">Collection for year {{cur_year}} : Php:{{report.total_paid_ytd}}</strong>
     <script>
       var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       y = ['{{rev_col.jan}}', '{{rev_col.feb}}', '{{rev_col.mar}}', '{{rev_col.apr}}', '{{rev_col.may}}', '{{rev_col.jun}}', '{{rev_col.jul}}', '{{rev_col.aug}}', '{{rev_col.sept}}', '{{rev_col.oct}}', '{{rev_col.nov}}', '{{rev_col.dec}}'];
@@ -60,15 +60,15 @@
           }]
         },
         options: {
-          
+
           legend: { display: false },
           title: {
             display: true,
             text: "Monthly Total Collection"
-            
+
           }
         }
-        
+
       });
     </script>
 
@@ -90,7 +90,7 @@
         }
 
       }
-     
+
 
       new Chart("receivable", {
         type: "line",
@@ -141,29 +141,47 @@
       var nov_amount = parseFloat("{{ rev_col.nov|floatformat:2}}") + parseFloat("{{rev_rec.nov|floatformat:2}}")
       var dec_amount = parseFloat("{{ rev_col.dec|floatformat:2}}") + parseFloat("{{rev_rec.dec|floatformat:2}}")
 
+    const numberformat = new Intl.NumberFormat(undefined, {
+              style: 'currency',
+              currency: 'PHP',
+              currencyDisplay: 'code',
 
-      var arr = [
+            });
+      arr = [
 
-        ['January', '{{rev_col.jan|floatformat:2}}', '{{rev_rec.jan|floatformat:2}}', jan_amount],
-        ['Febuary', '{{rev_col.feb|floatformat:2}}', '{{rev_rec.feb|floatformat:2}}', feb_amount],
-        ['March', '{{rev_col.mar|floatformat:2}}', '{{rev_rec.mar|floatformat:2}}', mar_amount],
-        ['April', '{{rev_col.apr|floatformat:2}}', '{{rev_rec.apr|floatformat:2}}', apr_amount],
-        ['May', '{{rev_col.may|floatformat:2}}', '{{rev_rec.may|floatformat:2}}', may_amount],
-        ['June', '{{rev_col.jun|floatformat:2}}', '{{rev_rec.jun|floatformat:2}}', jun_amount],
-        ['July', '{{rev_col.jul|floatformat:2}}', '{{rev_rec.jul|floatformat:2}}', jul_amount],
-        ['August', '{{rev_col.aug|floatformat:2}}', '{{rev_rec.aug|floatformat:2}}', aug_amount],
-        ['September', '{{rev_col.sept|floatformat:2}}', '{{rev_rec.sept|floatformat:2}}', sept_amount],
-        ['October', '{{rev_col.oct|floatformat:2}}', '{{rev_rec.oct|floatformat:2}}', oct_amount],
-        ['November', '{{rev_col.nov|floatformat:2}}', '{{rev_rec.nov|floatformat:2}}', nov_amount],
-        ['December', '{{rev_col.dec|floatformat:2}}', '{{rev_rec.dec|floatformat:2}}', dec_amount],
-      ]
+              ['January', numberformat.format('{{rev_col.jan}}'), numberformat.format('{{rev_rec.jan}}'), numberformat.format(jan_amount)],
+              ['Febuary', numberformat.format('{{rev_col.feb}}'), numberformat.format('{{rev_rec.feb}}'), numberformat.format(feb_amount)],
+              ['March', numberformat.format('{{rev_col.mar}}'), numberformat.format('{{rev_rec.mar}}'), numberformat.format(mar_amount)],
+              ['April', numberformat.format('{{rev_col.apr}}'), numberformat.format('{{rev_rec.apr}}'), numberformat.format(apr_amount)],
+              ['May', numberformat.format('{{rev_col.may}}'), numberformat.format('{{rev_rec.may}}'), numberformat.format(may_amount)],
+              ['June', numberformat.format('{{rev_col.jun}}'), numberformat.format('{{rev_rec.jun}}'), numberformat.format(jun_amount)],
+              ['July', numberformat.format('{{rev_col.jul}}'), numberformat.format('{{rev_rec.jul}}'), numberformat.format(jul_amount)],
+              ['August', numberformat.format('{{rev_col.aug}}'), numberformat.format('{{rev_rec.aug}}'), numberformat.format(aug_amount)],
+              ['September', numberformat.format('{{rev_col.sept}}'), numberformat.format('{{rev_rec.sept}}'), numberformat.format(sept_amount)],
+              ['October', numberformat.format('{{rev_col.oct}}'), numberformat.format('{{rev_rec.oct}}'), numberformat.format(oct_amount)],
+              ['November', numberformat.format('{{rev_col.nov}}'), numberformat.format('{{rev_rec.nov}}'), numberformat.format(nov_amount)],
+              ['December', numberformat.format('{{rev_col.dec}}'), numberformat.format('{{rev_rec.dec}}'), numberformat.format(dec_amount)],
+            ]
+
+      // var arr = [
+
+      //   ['January', '{{rev_col.jan|floatformat:2}}', '{{rev_rec.jan|floatformat:2}}', jan_amount],
+      //   ['Febuary', '{{rev_col.feb|floatformat:2}}', '{{rev_rec.feb|floatformat:2}}', feb_amount],
+      //   ['March', '{{rev_col.mar|floatformat:2}}', '{{rev_rec.mar|floatformat:2}}', mar_amount],
+      //   ['April', '{{rev_col.apr|floatformat:2}}', '{{rev_rec.apr|floatformat:2}}', apr_amount],
+      //   ['May', '{{rev_col.may|floatformat:2}}', '{{rev_rec.may|floatformat:2}}', may_amount],
+      //   ['June', '{{rev_col.jun|floatformat:2}}', '{{rev_rec.jun|floatformat:2}}', jun_amount],
+      //   ['July', '{{rev_col.jul|floatformat:2}}', '{{rev_rec.jul|floatformat:2}}', jul_amount],
+      //   ['August', '{{rev_col.aug|floatformat:2}}', '{{rev_rec.aug|floatformat:2}}', aug_amount],
+      //   ['September', '{{rev_col.sept|floatformat:2}}', '{{rev_rec.sept|floatformat:2}}', sept_amount],
+      //   ['October', '{{rev_col.oct|floatformat:2}}', '{{rev_rec.oct|floatformat:2}}', oct_amount],
+      //   ['November', '{{rev_col.nov|floatformat:2}}', '{{rev_rec.nov|floatformat:2}}', nov_amount],
+      //   ['December', '{{rev_col.dec|floatformat:2}}', '{{rev_rec.dec|floatformat:2}}', dec_amount],
+      // ]
+         
       var body = arr.map(subArr => subArr.map(el => el < 0 ? 0 : el));// remove negative (in my case null #) in array.
+            //cURRENCY AND RETURN 0 IS MY PROBLEM HERE
       console.log(body)
-
-      //currncly format
-      
-      //                 }
-
 
 
       //print details
@@ -179,7 +197,7 @@
         margin: { top: 20, bottom: 20 },
         avoidPageSplit: true,
         body: body,
-        columnStyles: {halign: "right"},
+        columnStyles: { halign: "right" },
         theme: 'striped',
         startY: 70,
 
@@ -190,12 +208,12 @@
       doc.save('testing.pdf')
 
     }
-   
+
 
 
   </script>
   <script>
-    
+
   </script>
 </body>
 
