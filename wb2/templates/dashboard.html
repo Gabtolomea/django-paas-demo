@@ -2,12 +2,12 @@
 {% load active_link_tags %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>
         {% block title %}
         {% endblock title %}
     </title>
-    <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -24,63 +24,88 @@
     <div id="loading">
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
     </div>
-  <!-- Modal -->
-  <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-dark border-0">
-            <span class="mobile_header_font" style="color:white;font-weight: 700;"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body sidebar w-100">
-            <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x"></i>
-                <p style="font-size: 30px">Developer</p>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark border-0">
+                    <span class="mobile_header_font" style="color:white;font-weight: 700;"> ONLINE WATER BILLING <span
+                            class="station" style="color: #63CDD7;">STATION</span></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body sidebar w-100">
+                    <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x"></i>
+                        <p style="font-size: 30px">Developer</p>
+                    </div>
+                    <ul class="list-unstyled" style="padding-left: 30px;">
+                        {% url 'bills_list' as url %}
+                            <a class="modal_side_nav_li_text" href="{{ url }}" style="color: white; text-decoration: none;">
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                                <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                                <span class="sidenav_text">Billing</span>
+                        </li>
+                            </a>
+                        {% url 'meterreading' as url %}
+                            <a class="modal_side_nav_li_text" href="{{url}}" style="color: white; text-decoration: none ">
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                                <i class="fa fa-tachometer fa-2x"></i>
+                                <span class="sidenav_text">Meter Reading</span>
+                        </li>
+                            </a>
+                        
+                        {% url 'consumer_list' as url %}
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                            <a class="modal_side_nav_li_text" href="{{url}}" style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-user fa-2x"></i>
+                                <span class="sidenav_text">User Accounts</span>
+                            </a>
+                        </li>
+                        {% url 'barangayreport' as url %}
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                            <a class="modal_side_nav_li_text" href="{{url}}" style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-newspaper fa-2x"></i>
+                                <span class="sidenav_text">Reports</span>
+                            </a>
+                        </li>
+                        {% url 'barangayreport' as url %}
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-thumbs-up fa-2x"></i>
+                                <span class="sidenav_text">Approve Application</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-user-group fa-2x"></i>
+                                <span class="sidenav_text">Users Management</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-user-plus fa-2x"></i>
+                                <span class="sidenav_text">User Creation</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-book fa-2x"></i>
+                                <span class="sidenav_text">Rates Management</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li {% if request.path == url %}active{% endif %}">
+                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                                <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                                <span class="sidenav_text">Account Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <ul class="list-unstyled" style="padding-left: 30px;">
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none;">
-                        <i class="fa-solid fa-money-bill-wave fa-2x"></i>
-                        <span class="sidenav_text">Billing</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none ">
-                        <i class="fa fa-tachometer fa-2x"></i>
-                        <span class="sidenav_text">Meter Reading</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
-                        <i class="fa-solid fa-user fa-2x"></i>
-                        <span class="sidenav_text">Consumers</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none" >
-                        <i class="fa fa-line-chart fa-2x"></i>
-                        <span class="sidenav_text">Reports</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
-                        <i class="fa-solid fa-user-group fa-2x"></i>
-                        <span class="sidenav_text"> System Users</span>
-                    </a>
-                </li>
-                <li  class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
-                        <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
-                        <span class="sidenav_text">Account Settings</span>
-                    </a>
-                </li>
-            </ul>
         </div>
-      </div>
     </div>
-  </div>
-
     <header>
         {% for message in messages %}
         <div
@@ -109,22 +134,25 @@
                         class="station" style="color: #63CDD7;">STATION</span></span>
             </div>
 
-                <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
-                    <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
-                        <i class="fa-solid fa-bell"></i>
-                    </a>
-                    <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
-                        <i class="fa-solid fa-magnifying-glass-plus"></i>
-                    </a>
-                    <a href="{% url 'signout' %}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </a>
-                </div>
+            <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
+
+
+                <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
+                    <i class="fa-solid fa-bell"></i>
+                </a>
+                <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </a>
+                <a href="{% url 'signout' %}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
             </div>
+        </div>
     </header>
-    <div class="sidebar" style="height: auto !important; min-height: 100%;" id="side_nav">
-        <div class="user_info">
-            <i class="fa-solid fa-circle-user fa-8x"></i>
+
+
+    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
+        <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
             <p style="font-size: 30px">Developer</p>
 
         </div>
@@ -145,7 +173,7 @@
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
                     <i class="fa-solid fa-user fa-2x"></i>
-                    <span class="sidenav_text">Consumers</span>
+                    <span class="sidenav_text">User Accounts</span>
                 </li>
             </a>
             <a href="{% url 'br' %}" style="color: white; text-decoration: none">
@@ -154,10 +182,28 @@
                     <span class="sidenav_text">Reports</span>
                 </li>
             </a>
+            <a href="/" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link '/' 'active' %}">
+                    <i class="fa-solid fa-thumbs-up fa-2x"></i>
+                    <span class="sidenav_text">Approve Application</span>
+                </li>
+            </a>
             <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
                     <i class="fa-solid fa-user-group fa-2x"></i>
-                    <span class="sidenav_text">System Users</span>
+                    <span class="sidenav_text">Users Management</span>
+                </li>
+            </a>
+            <a href="{% url 'user_creation' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'user_creation' 'active' %}">
+                    <i class="fa-solid fa-user-plus fa-2x"></i>
+                    <span class="sidenav_text">User Creation</span>
+                </li>
+            </a>
+            <a href="/" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link '/' 'active' %}">
+                    <i class="fa-solid fa-book fa-2x"></i>
+                    <span class="sidenav_text">Rates Management</span>
                 </li>
             </a>
             <a href="/" style="color: white; text-decoration: none">
@@ -181,7 +227,6 @@
 
         {% block consumer_list %}
         {% endblock consumer_list %}
- 
 
         {% block sysuser %}
         {% endblock sysuser %}
@@ -295,7 +340,7 @@
                     });
                 }
             });
-        });
+        });        
     </script>
 
 </body>

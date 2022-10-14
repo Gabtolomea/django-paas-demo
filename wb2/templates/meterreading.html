@@ -1,10 +1,6 @@
 {% extends 'dashboard.html' %}
 {% load static %}
-
-{% block title %}
-Meter Reading
-{% endblock title %}
-
+ 
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
@@ -13,11 +9,11 @@ Meter Reading
         opacity: 0;
         transition: 0.3s all ease-in-out;
     }
-
+ 
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
-
+       
     }
 </style>
 {% endblock style %}
@@ -44,7 +40,7 @@ Meter Reading
     <div class="table-responsive">
         <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
             <thead class="wb_thead">
-
+ 
                 <tr>
                     <th style="min-width: 100px;">Account ID</th>
                     <th style="min-width: 100px;">Name</th>
@@ -52,7 +48,7 @@ Meter Reading
                     <th style="min-width: 100px;">Address</th>
                 </tr>
             </thead>
-
+ 
             <tbody class=" wb_tbody">
                 {% for m in meterred %}
                 <tr class="showOnHover">
@@ -67,7 +63,7 @@ Meter Reading
                     </td>
                     <td class="{{t.style}} showOnHover">
                         {{m.installation_address}}
-                        <a class="hide btn btn-success btn-sm rounded-0" href="{{m.consumer_id}}/{{year}}" style="float: right;">
+                        <a class="hide btn btn-success btn-sm rounded-0" href="{% url 'inputreading' m.consumer_id year %}">
                             <i class="fa fa-edit"></i>
                         </a>
                     </td>
@@ -77,6 +73,6 @@ Meter Reading
         </table>
     </div>
 </div>
-
+ 
 {% endblock meterreading %}
 
