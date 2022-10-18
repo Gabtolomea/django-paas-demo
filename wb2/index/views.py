@@ -30,7 +30,6 @@ from django.db.models.functions import Coalesce
 from .decorators import unauthenticated_user
 
 
-
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -784,14 +783,14 @@ def unsettled_bill(request):
 
 
 def usage_report_data(request, year):
-    taon = []
-    v = BarangayRecord.objects.all()
-    for i in v:
-        if i.year not in taon:
-            taon.append(i.year)
-    if int(year) in taon:
-        taon.remove(int(year))
-        print(year)
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+        print(years)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -820,7 +819,7 @@ def usage_report_data(request, year):
         'tu_mon': tu_mon,
         'tu_bay': tu_bay,
         'cur_year': year,
-        'years': taon
+        'years': years,
 
     }
     return render(request, 'usage_report_data.html', context)
@@ -849,13 +848,13 @@ def barangay_by_monthly(request, id, year):
 
 def revenue_report(request, year):
     years = []
-    tuig = BarangayRecord.objects.all()
-    for j in tuig:
-        if j.year not in years:
-            years.append(j.year)
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-
+        print(years)
     # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
@@ -889,18 +888,17 @@ def revenue_report(request, year):
         dec=Sum('total_due_dec') - Sum('total_paid_jan'),
     )
     
-    filt = dict((i, j) for i, j in rev_rec.items() if j >= 0) 
+    filt = dict((i, j) for i, j in rev_rec.items() if j >= 0)
     values = filt.values()
     rec = sum(values) 
-    #filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
+    # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
     
-    print(rec)
-    
+    print(rec)   
 
     context={
         'rev_col': rev_col,
         'rev_rec': filt,
-        'cur_year': year,
+       'cur_year': year,
         'years': years,
         'col':col,
         'rec' : rec
