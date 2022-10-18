@@ -69,7 +69,7 @@ def signin(request):
 # @login_required(login_url='login')
 def signout(request):
     logout(request)
-    messages.success(request, 'Logout successful')
+    messages.success(request, ' Logout Successful ')
     return redirect('login')
 
 
