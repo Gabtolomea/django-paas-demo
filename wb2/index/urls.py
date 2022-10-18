@@ -19,10 +19,12 @@ urlpatterns = [
     path('consumercreation', views.consumercreation,name='consumercreation'),
     path('bills_list/', views.bills_list, name='bills_list'),
     path('consumer_list/', views.consumer_list, name='consumer_list'),
+    path('consumer_list/consumercreation', views.consumercreation,name='consumercreation'),
+    path('consumer_list/<int:id>/', views.userupdate, name='userupdate'),
+    path('deleteconsumer/<int:id>', views.deleteconsumer,name='deleteconsumer'),
     path('sysuser/', views.sysuser,name='sysuser'),
-    path('stopmeter/<id>/', views.stopmeter, name='stopmeter'),
-    path('user_edit/<id>/', views.user_edit, name='user_edit'),
-    path('userupdate/<id>/', views.userupdate, name='userupdate'),
+    path('user_creation', views.user_creation,name='user_creation'),
+    path('sysuser/<id>/', views.user_edit, name='user_edit'),
     path('deleteUser/<id>/', views.deleteUser, name='deleteUser'),
     path('about', views.about, name='about'),
     path('barangayreport/<int:year>/', views.barangayreport, name='barangayreport'),
@@ -32,7 +34,8 @@ urlpatterns = [
     path('payment/<id>/', views.payment, name='payment'),
     path('revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills'),
-    path('view_unsettled_bills/',views.unsettled_bill, name='view_unsettled_bills')
+    path('view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills')
+
 
 
     # path('inputreadingtesting', views.inputreadingtesting, name='inputreadingtesting'),

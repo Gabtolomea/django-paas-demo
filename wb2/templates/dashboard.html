@@ -176,9 +176,9 @@
                     <span class="sidenav_text">User Accounts</span>
                 </li>
             </a>
-            <a href="{% url 'barangayreport' 2022%}" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link 'barangayreport' 'active' %}">
-                    <i class="fa-solid fa-newspaper fa-2x"></i>
+            <a href="{% url 'br' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'br' 'active' %}">
+                    <i class="fa fa-line-chart fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
                 </li>
             </a>
@@ -216,14 +216,14 @@
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
 
+        {% block bills_list %}
+        {% endblock bills_list %}
+
         {% block ledger %}
         {% endblock ledger%}
 
         {% block meterreading %}
         {% endblock meterreading%}
-
-        {% block bills_list %}
-        {% endblock bills_list %}
 
         {% block consumer_list %}
         {% endblock consumer_list %}
