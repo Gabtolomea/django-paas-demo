@@ -1,6 +1,8 @@
 {% extends 'dashboard.html'%}
 
-
+{% block title %}
+Consumer Creation
+{% endblock title %}
 {% block consumercreation %}
 <style>
     html{
@@ -133,16 +135,6 @@
 </body>
 
 {% endblock consumercreation %}
-{% block script %}
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-   Swal.fire(
-  'Good job!',
-  'You clicked the button!',
-  'success'
-)
-</script>
-    {% endblock script %}
 
 

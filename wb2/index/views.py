@@ -112,7 +112,7 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('dashboard')
+            return redirect('sysuser')
     context = {
         'form': form,
         'errors': form.errors,
@@ -663,7 +663,7 @@ def user_edit(request, id):
             fss.save(upload.name, upload)
             # sys.profilepic = pic
             sys.save()
-
+        messages.success(request, 'Successfully Submitted!')
         return redirect('sysuser')
     context = {
         'sys': sys,
