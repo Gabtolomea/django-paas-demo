@@ -42,15 +42,18 @@ class Rates(models.Model):
         return self.connectionType
 
 class Penalty(models.Model):
-    penalty_id = models.CharField(primary_key=True, max_length=20)
+    penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty_after =  models.IntegerField(default = 0)#months
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+    def __str__(self) -> str:
+        return self.penaltycode
 
 
 class Discount(models.Model):
+    discountcode = models.CharField(primary_key=True, max_length=20)
     discount_rate = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
@@ -124,6 +127,7 @@ class ConsumerInfo(models.Model):
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
     cummulative = models.FloatField(default=0)
+    penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
     discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
     
 class Transactions(models.Model):

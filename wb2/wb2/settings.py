@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
+ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1']
 
 # Application definition
 
@@ -72,7 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'wb2.wsgi.application'
-
+SESSION_COOKIE_PATH = "/wb2"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
