@@ -30,7 +30,7 @@ Usage Report
         <select class="form-select" id="selector" onchange="change()">
           <option value="{{cur_year}}">{{cur_year}}</option>
         {% for i in years reversed %}
-        <option values="{{i}}">{{i}}</option>
+        <option value="{{i}}">{{i}}</option>
         {% endfor %}
         </select>
       </form>
@@ -38,7 +38,7 @@ Usage Report
         yearselection = document.getElementById("yearselection")
         selector = document.getElementById("selector")
         function change() {
-          yearselection.action = selector.values
+          yearselection.action = selector.value
           yearselection.submit()
           console.log("selction testing")
           

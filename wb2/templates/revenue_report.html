@@ -11,7 +11,7 @@
         <select class="form-select" id="selector" onchange="change()">
           <option value="{{cur_year}}">{{cur_year}}</option>
         {% for i in years reversed %}
-        <option values="{{i}}">{{i}}</option>
+        <option value="{{i}}">{{i}}</option>
         {% endfor %}
         </select>
       </form>
@@ -19,7 +19,7 @@
         yearselection = document.getElementById("yearselection")
         selector = document.getElementById("selector")
         function change() {
-          yearselection.action = selector.values
+          yearselection.action = selector.value
           yearselection.submit()
           console.log("selction testing")
           
@@ -150,10 +150,11 @@
       var dec_amount = ("{{rev_col.dec}}") + ("{{rev_rec.dec}}") 
 
       /// Currency formatter
-    const numberformat = new Intl.NumberFormat(undefined, {
+    const numberformat = new Intl.NumberFormat('en-PH', {
               style: 'currency',
               currency: 'PHP',
-              currencyDisplay: 'code',
+              currencyDisplay: 'code'
+              
 
             });
       var body = [

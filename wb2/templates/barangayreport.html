@@ -1,10 +1,10 @@
-<form method='POST'>
+
     {% csrf_token %}
     <div>
         <div class="col-sm-offset-7 col-sm-5">
             <div class="form-group">
                 <label for="exampleInputBarangay">Select Year</label>
-                <form id="yearselection" action="">
+                <form id="yearselection" action="GET">
                     <select class="form-select" aria-label="selector" onchange="change()">
                         <option value="{{cur_year}}">{{cur_year}}</option>
                     
@@ -94,4 +94,3 @@
         </script>
 
     </div>
-</form>
