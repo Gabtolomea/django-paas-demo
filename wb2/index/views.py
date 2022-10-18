@@ -889,7 +889,7 @@ def revenue_report(request, year):
         dec=Sum('total_due_dec') - Sum('total_paid_jan'),
     )
     
-    filt = dict((i, j) for i, j in rev_rec.items() if j >= 0)
+    filt = dict((i, j) for i, j in rev_rec.items() if j >= 0) 
     values = filt.values()
     rec = sum(values) 
     #filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
