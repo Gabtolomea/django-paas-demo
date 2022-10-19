@@ -2,7 +2,9 @@
 {% load static %}
 {% static "images" as images %}
 
-
+{% block title %}
+System User
+{% endblock title %}
 {% block style %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
@@ -97,19 +99,20 @@
         </section>
     </section>
 </section>
-
-{% endblock sysuser %}
-
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-
-    function fireSweetAlert() {
-        Swal.fire(
-            'Good job!',
-            'You clicked the button!',
-            'success'
-        )
-    }
-
+  function fireSweetAlert() {
+    {% for message in messages %}
+        {% if message %}
+            Swal.fire(
+                'Good job!',
+                '{{ message }}',
+                'success'
+            )
+        {% endif %}
+    {% endfor %}
+  }
   </script>
+{% endblock sysuser %}
+
 
