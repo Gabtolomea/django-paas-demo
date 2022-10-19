@@ -1,6 +1,7 @@
 
 
 {% load static %}
+{% load active_link_tags %}
 <!DOCTYPE html>
 <html lang="en">
  
@@ -187,8 +188,8 @@
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
 
-        {% block bills_list %}
-        {% endblock bills_list %}
+        {% block billslist %}
+        {% endblock billslist %}
 
         {% block ledger %}
         {% endblock ledger%}
