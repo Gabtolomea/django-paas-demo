@@ -69,7 +69,7 @@ def signin(request):
 # @login_required(login_url='login')
 def signout(request):
     logout(request)
-    messages.success(request, ' Logout Successful ')
+    messages.success(request, 'Logout successful')
     return redirect('login')
 
 
@@ -116,7 +116,7 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('sysuser')
+            return redirect('dashboard')
     context = {
         'form': form,
         'errors': form.errors,
@@ -571,10 +571,10 @@ def consumercreation(request):
         picture = request.POST['picture']
         meternumber = request.POST['meternumber']
         initialmeterreading = request.POST['initialmeterreading']
-        installation_address = request.POST['installation_address']
+        installation_address = request.POST['installation']
         rateid = request.POST['rateid']
         if form.is_valid():
-            cr = ConsumerInfo()
+            cr = ConsumerInfo
             cr.firstname = firstname
             cr.middlename = middlename
             cr.lastname = lastname
@@ -589,8 +589,6 @@ def consumercreation(request):
             cr.initialmeterreading = initialmeterreading
             cr.installation_address = installation_address
             cr.rateid = rateid
-            cr.save()
-            return redirect('consumer_list')
     context = {
         'form': form,
         'errors': form.errors,
@@ -789,7 +787,6 @@ def unsettled_bill(request):
     return render(request, 'unsettled_bill.html', context)
 
 
-    
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -798,7 +795,7 @@ def usage_report_data(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(i)
+        print(years)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -821,7 +818,7 @@ def usage_report_data(request, year):
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
         F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')
     )
-    ).order_by()
+    )
 
     context = {
         'tu_mon': tu_mon,
@@ -901,7 +898,7 @@ def revenue_report(request, year):
     rec = sum(values) 
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
     
-    print(rec)   
+   
 
     context={
         'rev_col': rev_col,
@@ -932,7 +929,7 @@ def unsettled_bill(request):
 def view_unsettled_bills(request, id, year):
     years = []
     table = []
-    uv = ConsumerInfo.objects.get(consumer_id=id)
+    uv = ConsumerInfo.objects.get(consumer_id=id) 
     class view_utang():
         def __init__(self, month, reading, reading_date, usage,total_bill,total_amount_paid):
             self.month = month
@@ -949,7 +946,7 @@ def view_unsettled_bills(request, id, year):
     count = len(billing)
     j = 0
     if billing[0].date.month == 1:
-        j = 1
+        j = 1   
     for i in alltran:
             if i.year not in years:
                 if i.year is not None:
@@ -978,7 +975,7 @@ def view_unsettled_bills(request, id, year):
                 total_bill = billing[j].bill
                 j += 1
 
-        a = view_utang(month, reading, reading_date, usage,total_bill,total_amount_paid)
+        a = view_utang(month, reading, reading_date, usage,total_bill,total_amount_paid)    
         table.append(a)
 
     context ={'uv':uv,
@@ -988,10 +985,6 @@ def view_unsettled_bills(request, id, year):
     return render(request, 'view_unsettled_bills.html', context)
 
   
-def deleteconsumer(request, id):
-    con = ConsumerInfo.objects.get(consumer_id = id)
-    con.delete()
-    return redirect('consumer_list')
 
 def settingspage(request):
     ctype = Rates.objects.all()
