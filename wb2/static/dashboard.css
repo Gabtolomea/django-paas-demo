@@ -1,3 +1,4 @@
+
 html {
     height: 100%;
 }
@@ -73,6 +74,26 @@ i.fa-solid.fa-right-from-bracket:hover {
     bottom: 50px;
     color: #63CDD7;
 
+}
+.modal_side_nav_li{
+    color:#E6ECEB;
+    font-weight: bold;
+    font-size: 10px;
+    white-space: nowrap;
+}
+.modal_side_nav_li_text{
+    padding:10px 0 10px 10px;
+    display: block;
+}
+li.modal_side_nav_li:hover {
+    background: #a0c5cf;
+}
+.side_nav_li{
+    padding:10px 0 10px 100px;
+    color:#E6ECEB;
+    font-weight: bold;
+    font-size: 10px;
+    white-space: nowrap;
 }
 
 
@@ -188,15 +209,10 @@ li.side_nav_li {
     transition-timing-function: ease-in-out;
 }
 
-ul {
-    margin-top: 10px;
-    margin-left: -27px;
-}
-
 .sidenav_text {
     padding-left: 20px;
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight:700;
 }
 
 .online_water {
@@ -205,7 +221,7 @@ ul {
 }
 
 .user_info {
-    font-size: 20px;
+    font-size: 15px;
     color: #E6ECEB;
     font-weight: bold;
     text-align: center;
@@ -413,9 +429,8 @@ p {
     opacity: 1;
     transition: all 0.75s ease;
 }
-
-.main_content {
-    padding-left: 420px;
+.main_content{
+    padding-left: 420px !important;
 }
 
 .btn-wb-back {
@@ -449,12 +464,12 @@ button.btn.btn-wb-copy:hover {
 
 .wb_thead {
     position: sticky;
+    top: 0;
     background-color: #63CDD7;
     text-align: center;
     color: white;
     white-space: nowrap !important
 }
-
 .table {
     font-family: Arial;
 }
@@ -479,23 +494,34 @@ button.btn.btn-wb-copy:hover {
     transition: all 1s ease;
     opacity: 0;
     z-index: -1;
-}
-
-.main_content {
+ }
+ .main_content{
     padding-left: 420px !important;
-    transition: all 1s ease;
+    transition :all 1s ease;
+}
+ .remove_main_content{
+    transition :all 1s ease;
 }
 
-.remove_main_content {
-    padding-left: 20px;
-    transition: all 1s ease;
+@media (max-width: 393px) {
+    span.station {
+        display: flex !important;
+        justify-content: center !important;
+    }
+    button.btn.btn-wb-copy {
+        font-size: 10px;
+    }
+    button.btn.btn-wb-back {
+        font-size: 10px;
+    }
+
 }
 
 #loading {
     position: fixed;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center !important;
+    align-items: center !important;
     width: 100%;
     height: 100%;
     top: 0;
@@ -503,8 +529,8 @@ button.btn.btn-wb-copy:hover {
     opacity: 1;
     background-color: #fff;
     z-index: 99;
-}
-
+  }
+ 
 #loading-image {
     z-index: 100;
 }
@@ -543,3 +569,4 @@ li.active {
         font-size: 24px;
     }
 } */
+

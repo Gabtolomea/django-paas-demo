@@ -1,13 +1,14 @@
 
+<form method='POST'>
     {% csrf_token %}
     <div>
         <div class="col-sm-offset-7 col-sm-5">
             <div class="form-group">
                 <label for="exampleInputBarangay">Select Year</label>
-                <form id="yearselection" action="GET">
+                <form id="yearselection" action="">
                     <select class="form-select" aria-label="selector" onchange="change()">
                         <option value="{{cur_year}}">{{cur_year}}</option>
-                    
+                    </select>
                     {% for i in years reversed %}
                     <option value="{{i}}">{{i}}</option>
                     {% endfor %}
@@ -15,7 +16,7 @@
                 </form>
                 <script>
                     yearselection = document.getElementById("yearselection")
-                    selector = document.getElementById("selector")
+                    selector = document.getElementById("selector").innerHTML = "barangayreport/{{bang.year}}/"
                     function change() {
                         yearselection.action = selector.value
                         yearselection.submit()
@@ -94,3 +95,4 @@
         </script>
 
     </div>
+</form>
