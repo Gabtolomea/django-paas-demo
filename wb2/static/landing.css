@@ -70,6 +70,9 @@ a.nav-link:hover {
   .screen_size_sm{
     display: none;
   }
+  .about_font_size{
+    font-size: 20px !important;
+  }
 }
 
 @media (max-width: 991px) {
