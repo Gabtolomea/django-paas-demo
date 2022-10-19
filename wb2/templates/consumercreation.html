@@ -133,7 +133,22 @@ Consumer Creation
 
 
 </body>
-
+{% block script %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function fireSweetAlert() {
+    {% for message in messages %}
+        {% if message %}
+            Swal.fire(
+                'Good job!',
+                '{{ message }}',
+                'success'
+            )
+        {% endif %}
+    {% endfor %}
+  }
+  </script>
+{% endblock script %}
 {% endblock consumercreation %}
 
 
