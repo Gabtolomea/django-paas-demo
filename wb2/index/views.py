@@ -898,7 +898,7 @@ def revenue_report(request, year):
     rec = sum(values) 
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
     
-    print(rec)   
+   
 
     context={
         'rev_col': rev_col,
