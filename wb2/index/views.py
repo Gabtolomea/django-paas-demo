@@ -787,7 +787,7 @@ def unsettled_bill(request):
     return render(request, 'unsettled_bill.html', context)
 
 
-    
+
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -893,14 +893,14 @@ def revenue_report(request, year):
         dec=Sum('total_due_dec') - Sum('total_paid_jan'),
     )
 
-   
+
 
     context={
         'rev_col': rev_col,
         'rev_rec': rev_rec,
         'cur_year': year,
         'years': years,
-       
+
 
     }
     return render( request, 'revenue_report.html',  context)
@@ -976,7 +976,7 @@ def view_unsettled_bills(request, id, year):
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
 
-  
+
 def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id = id)
     con.delete()
