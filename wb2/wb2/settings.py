@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'index',
     'chartjs',
     'active_link',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [

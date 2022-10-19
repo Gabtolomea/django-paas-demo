@@ -5,38 +5,21 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
-    .hide {
-        opacity: 0;
-        transition: 0.3s all ease-in-out;
+	.hide{
+       opacity: 0;
+	   transition: 0.3s all ease-in-out;
 
-    }
-
-    .showOnHover:hover .hide {
-        opacity: 1;
-        transition: 0.3s all ease-in-out;
-    }
-
-    td,
-    th {
-        padding: 10px;
-        text-align: center;
-    }
-
-    .inputid {
-        text-align: center;
-    }
-
-    .button2 {
-        background-color: #63CDD7;
-        color: white;
-        font-weight: bold;
-        width: 30%;
-        text-decoration: none;
-        padding: 8px 32px;
-        margin: 4px 2px;
-        border-radius: 30px;
-        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
-    }
+	}
+	.showOnHover:hover .hide{
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+	td,th{
+		text-align: center;
+	}
+	.inputid{
+		text-align: center;
+	}
 </style>
 {% endblock style %}
 {% block script %}
@@ -46,13 +29,13 @@
 <script>
     $(document).ready(function () {
         $('#table').DataTable({
-            order: [[1, 'asc']],
-            stateSave: true,
-            lengthMenu: [
-                [10, 25, 50, -1],
-                [10, 25, 50, 'All'],
-            ],
-        });
+			order: [[1, 'asc']],
+                stateSave: true,
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, 'All'],
+                ],
+		});
     });
 </script>
 {% endblock script %}

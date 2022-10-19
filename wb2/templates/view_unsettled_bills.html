@@ -4,21 +4,22 @@
 
 
 {% block view_unsettled_bills %}
-<table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
-    <thead class="header">
+<table>
+    <thead>
         <tr>
-            <th scope="col" style="min-width:110px">Account ID</th>
-            <th scope="col" style="min-width:110px">Meter Number</th>
-            <th scope="col" style="min-width:110px">Name</th>
-            <th scope="col" style="min-width:110px">Address</th>
+            <th>Account ID</th>
+            <th>Meter Number</th>
+            <th>Name</th>
+            <th>Address</th>
         </tr>
+    {% for uv in uv %}
     <tr>
         <td>{{uv.consumer_id}}</td>
-        <td>{{uv.meternumber}}</td>
-        <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
-        <td>{{uv.installation_address}}</td>
-
+        <td>{{uv.lastname}} {{uv.firsname}} {{uv.middlename}}</td>
+        <td>{{uv.}}</td>
+        <td>uv.</td>
     </tr>
+    {% endfor %}
 </thead>
 </table>
 <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year:
