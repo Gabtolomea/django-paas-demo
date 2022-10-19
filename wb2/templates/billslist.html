@@ -1,12 +1,15 @@
 {% extends 'dashboard.html' %}
 {% load static %}
-{% load humanize %}
+
+{% block title %}
+Billing
+{% endblock title %}
 
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
-    a {
+    a{
         text-decoration: none;
         color: inherit;
     }
@@ -16,7 +19,6 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-
     <script>
         $(document).ready(function () {
             $('#table').DataTable({
@@ -29,12 +31,12 @@
 		});
         });
     </script>
-{% endblock script %}
+    {% endblock script %}
 {% block bills_list %}
 <h1 class="mb-3 text-center">Bills List</h1>
     <div class="container-fluid p-0">
         <div class="table-responsive">
-            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%" style="white-space: nowrap;">
+            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
                 <thead class="wb_thead">
                     <tr>
                         <th style="min-width: 100px;">Account ID</th>
@@ -56,4 +58,5 @@
                         </tr>
                         {% endfor %}
                     </tbody>
+
 {% endblock bills_list %}

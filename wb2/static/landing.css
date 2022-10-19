@@ -3,7 +3,7 @@ html{
     max-height: 100%;
 }
 .menu_header{
-    background:#165665;
+    background:#045163;
     color:white;
     font-size: 15px;
 }
@@ -20,32 +20,23 @@ button#first_toggle:hover{
 }
 
 button.btn.btn-dark:hover {
-  background: #a0c5cf !important;
-  border-radius: 10px;
+  background: #0093B7!important;
+
 }
 button.btn.btn-primary:hover {
-  background: #a0c5cf !important;
-  border-radius: 10px;
+  background: #0093B7!important;
+
 }
 a.menu:hover{
   color: #a0c5cf !important;
 }
-.col-lg-4.col-md-4.col-sm-4.text-center:hover {
-  color: #a0c5cf !important;
-}
-.col-md-4.col-sm-12.text-center:hover {
-  color: #a0c5cf !important;
-}
+
 a.nav-link:hover {
   background-color: #63CDD7 !important;
 }
 .page-section {
   padding: 150px 0 50px 0;
   background-color: #E6ECEB;
-}
-.nav-item active{
-  opacity: 1;
-  background: red;
 }
 
 @media (max-width: 575px) {
@@ -96,9 +87,3 @@ a.nav-link:hover {
   }
 }
 
-@media (max-width: 350px){
-   a { font-size: 5px;}
-}
-@media (min-width: 351px){
-   a { font-size: 10px;}
-}

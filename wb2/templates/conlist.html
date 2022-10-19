@@ -8,9 +8,9 @@ Consumer List
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
-	.hide{
-       opacity: 0;
-	   transition: 0.3s all ease-in-out;
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
 
     }
 
@@ -50,13 +50,13 @@ Consumer List
 <script>
     $(document).ready(function () {
         $('#table').DataTable({
-			order: [[1, 'asc']],
-                stateSave: true,
-                lengthMenu: [
-                    [10, 25, 50, -1],
-                    [10, 25, 50, 'All'],
-                ],
-		});
+            order: [[1, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
     });
 </script>
 
