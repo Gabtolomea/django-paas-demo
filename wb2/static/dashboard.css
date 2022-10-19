@@ -200,13 +200,13 @@ i.fa-solid.fa-right-from-bracket:hover {
 li.side_nav_li:hover {
     background: #bfecf7;
     color: #005e75;
-    transition: all 0.15s;
+    transition: all ease-in-out;
 }
 li.side_nav_li {
     background: #0093b7;
     color: #E6ECEB;
     transition: all 0.15s;
-    transition-timing-function: ease-in-out;
+    transition: all ease-in-out;
 }
 
 .sidenav_text {
@@ -544,31 +544,4 @@ li.active {
     background-color: #005E75;
     color: #fff;
 }
-
-/* @media(max-width: 720px) {
-    .toggle_desktop{
-        display: none;
-    }
-    .toggle_mobile{
-        display: inline !important;
-    }
-    .sidebar {
-       width: 0;
-       transition :all 1s ease;
-       opacity: 0;
-    }
-    .main_content{
-        padding-left: 20px !important;
-        transition :all 1s ease;
-    }
-    .mobile_header_font{
-        font-size: 25px;
-    }
-    .mobile_header_nav{
-        display: none;
-    }
-    i.fa.fa-bars {
-        font-size: 24px;
-    }
-} */
 
