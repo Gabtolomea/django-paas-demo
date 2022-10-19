@@ -391,4 +391,8 @@ class revenuecode(models.Model):
 #     date_added = models.DateField(auto_now_add=True)
 #     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
-# class 
+# class Discount(models.Model):
+#     discountcode =models.CharField(primary_key = True, max_length = 20)
+#     disc_rate = models.FloatField()
+#     date_added = models.DateField(auto_now_add = True)
+#     added_by = models.ForeignKey(SystemUsers, on_delete = models.SET_NULL, null = True)
