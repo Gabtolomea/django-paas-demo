@@ -116,7 +116,7 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('dashboard')
+            return redirect('sysuser')
     context = {
         'form': form,
         'errors': form.errors,
