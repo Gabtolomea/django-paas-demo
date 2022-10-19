@@ -87,10 +87,6 @@
 
 
 
-                    
-                    
-
-
                     {% for message in messages %}
                     <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
                         <strong>{{message.tags|title}}!</strong> {{message}}
