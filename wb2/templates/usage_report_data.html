@@ -20,31 +20,30 @@ Usage Report
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-
+{% csrf_token %}
+<div class="container">
 <div>
-  {% csrf_token %}
-  <div class="col-sm-offset-7 col-sm-5">
-    <div class="form-group">
-      <label for="exampleInputBarangay">Select Year</label>
-      <form id="yearselection" action="GET">
-        <select class="form-select" id="selector" onchange="change()">
-          <option value="{{cur_year}}">{{cur_year}}</option>
-        {% for i in years reversed %}
-        <option value="{{i}}">{{i}}</option>
-        {% endfor %}
-        </select>
+  <div>
+      <label class="select"style="font-weight: bold; font-size: 20px; font-style: normal;" for="exampleInputBarangay">Select Year :</label>
+      <form id="yearselection" action="">
+          <select class="form-select" aria-label="selector" onchange="change()">
+              <option value="{{cur_year}}">{{cur_year}}</option>
+          </select>
+          {% for i in years reversed %}
+          <option value="{{i}}">{{i}}</option>
+          {% endfor %}
+          </select>
       </form>
       <script>
-        yearselection = document.getElementById("yearselection")
-        selector = document.getElementById("selector")
-        function change() {
-          yearselection.action = selector.value
-          yearselection.submit()
-          console.log("selction testing")
-          
-        }
+          yearselection = document.getElementById("yearselection")
+          selector = document.getElementById("selector")
+          function change() {
+              yearselection.action = selector.value
+              yearselection.submit()
+              console.log("selction testing")
+          }
       </script>
-    </div>
+  </div>
 
   </div>
 
@@ -179,8 +178,7 @@ Usage Report
         data: data2,
         options: {
           scales: {
-            y: {
-              beginAtZero: true
+ZZ
             }
           }
         }
