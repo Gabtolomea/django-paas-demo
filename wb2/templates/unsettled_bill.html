@@ -78,43 +78,4 @@ Unsettled Bills
         </table>
     </div>
 </div>
-
-<table>
-    <thead>
-        <tr>
-            <th>Account ID</th>
-            <th>Name</th>
-            <th>Meter Number</th>
-            <th>Address</th>
-            <th>Current Balance</th>
-            <th>View</th>
-        </tr>
-        <tbody>
-            {% for ub in ub %}
-            <tr>
-                <td>{{ub.consumer_id}}</td>
-                <td>{{ub.lastname}} {{firsname}} {{middlename}}</td>
-                <td>{{ub.meternumber}}</td>
-                <td>{{ub.installation_address}}</td>
-                <td>{{ub.current_bal}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </thead>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {% endblock unsettled_bills %}

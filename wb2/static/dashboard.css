@@ -434,9 +434,6 @@ p {
     opacity: 1;
     transition: all 0.75s ease;
 }
-.main_content{
-    padding-left: 420px !important;
-}
 
 .btn-wb-back {
     background: #091d36 !important;
@@ -501,7 +498,7 @@ button.btn.btn-wb-copy:hover {
     z-index: -1;
  }
  .main_content{
-    padding-left: 420px !important;
+    padding-left: 320px !important;
     transition :all 1s ease;
 }
  .remove_main_content{
