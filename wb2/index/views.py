@@ -717,7 +717,8 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-
+def reports(request):
+    return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
