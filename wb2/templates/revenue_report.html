@@ -1,38 +1,42 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <div>
-  <div>
-    <label for="exampleInputBarangay">Select Year</label>
-    <form id="yearselection" action="">
-      <select class="form-select" aria-label="selector" onchange="change()">
-        <option value="{{cur_year}}">{{cur_year}}</option>
-      </select>
-      {% for i in years reversed %}
-      <option value="{{i}}">{{i}}</option>
-      {% endfor %}
-      </select>
-    </form>
-    <script>
-      yearselection = document.getElementById("yearselection")
-      selector = document.getElementById("selector")
-      function change() {
-        yearselection.action = selector.value
-        yearselection.submit()
-        console.log("selction testing")
-      }
-    </script>
-  </div>
-
-</div>
+  {% csrf_token %}
+  <div class="col-sm-offset-7 col-sm-5">
+    <div class="form-group">
+      <label for="exampleInputBarangay">Select Year</label>
+      <form id="yearselection" action="GET">
+        <select class="form-select" id="selector" onchange="change()">
+          <option value="{{cur_year}}">{{cur_year}}</option>
+        {% for i in years reversed %}
+        <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+        </select>
+      </form>
+      <script>
+        yearselection = document.getElementById("yearselection")
+        selector = document.getElementById("selector")
+        function change() {
+          yearselection.action = selector.value
+          yearselection.submit()
+          console.log("selction testing")
+          
+        }
+      </script>
+    </div>
 
 <body>
   <div id="reportPage">
     <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button>
+    <br>
 
-
+   <center><strong id="totalpaidmonthly">Total Monthly Collection for The  Year of {{cur_year}} : Php: {{col|intcomma}}</strong></center>
     <canvas id="myChart" width="800" height="150"></canvas>
-    <strong id="totalpaidmonthly">Collection for year {{cur_year}} :  Php:{{report.total_paid_ytd}}</strong>
+ 
+
+    
     <script>
       var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       y = ['{{rev_col.jan}}', '{{rev_col.feb}}', '{{rev_col.mar}}', '{{rev_col.apr}}', '{{rev_col.may}}', '{{rev_col.jun}}', '{{rev_col.jul}}', '{{rev_col.aug}}', '{{rev_col.sept}}', '{{rev_col.oct}}', '{{rev_col.nov}}', '{{rev_col.dec}}'];
@@ -60,27 +64,31 @@
           }]
         },
         options: {
-          
+
           legend: { display: false },
           title: {
             display: true,
             text: "Monthly Total Collection"
-            
+
           }
         }
-        
+
       });
     </script>
 
     <section>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <center><strong id="totalpaidmonthly">Total Monthly Collictables for The  Year of {{cur_year}} : Php: {{rec|intcomma}}</strong></center>
       <canvas id="receivable" width="800" height="150"></canvas>
-      <br>
-      <br>
-      <br>
+      
     </section>
     <script>
       var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      y = ['{{rev_rec.jan}}', '{{rev_rec.feb}}', '{{rev_rec.mar}}', '{{rev_rec.apr}}', '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}', '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}'];
+      var y = ['{{rev_rec.jan}}', '{{rev_rec.feb}}', '{{rev_rec.mar}}', '{{rev_rec.apr}}', '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}', '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}'];
       var yValues = []
       for (var i = 0; i < y.length; i++) {
         if (y[i] <= 0) {
@@ -90,7 +98,7 @@
         }
 
       }
-     
+
 
       new Chart("receivable", {
         type: "line",
@@ -128,58 +136,62 @@
     function this_record() {
 
 
-      var jan_amount = parseFloat("{{ rev_col.jan|floatformat:2}}") + parseFloat("{{rev_rec.jan|floatformat:2}}")
-      var feb_amount = parseFloat("{{ rev_col.feb|floatformat:2}}") + parseFloat("{{rev_rec.feb|floatformat:2}}")
-      var mar_amount = parseFloat("{{ rev_col.mar|floatformat:2}}") + parseFloat("{{rev_rec.mar|floatformat:2}}")
-      var apr_amount = parseFloat("{{ rev_col.apr|floatformat:2}}") + parseFloat("{{rev_rec.apr|floatformat:2}}")
-      var may_amount = parseFloat("{{ rev_col.may|floatformat:2}}") + parseFloat("{{rev_rec.may|floatformat:2}}")
-      var jun_amount = parseFloat("{{ rev_col.jun|floatformat:2}}") + parseFloat("{{rev_rec.jun|floatformat:2}}")
-      var jul_amount = parseFloat("{{ rev_col.jul|floatformat:2}}") + parseFloat("{{rev_rec.jul|floatformat:2}}")
-      var aug_amount = parseFloat("{{ rev_col.aug|floatformat:2}}") + parseFloat("{{rev_rec.aug|floatformat:2}}")
-      var sept_amount = parseFloat("{{ rev_col.sept|floatformat:2}}") + parseFloat("{{rev_rec.sept|floatformat:2}}")
-      var oct_amount = parseFloat("{{ rev_col.oct|floatformat:2}}") + parseFloat("{{rev_rec.oct|floatformat:2}}")
-      var nov_amount = parseFloat("{{ rev_col.nov|floatformat:2}}") + parseFloat("{{rev_rec.nov|floatformat:2}}")
-      var dec_amount = parseFloat("{{ rev_col.dec|floatformat:2}}") + parseFloat("{{rev_rec.dec|floatformat:2}}")
+      var jan_amount = ("{{rev_col.jan}}") + ("{{rev_rec.jan}}") 
+      var feb_amount = ("{{rev_col.feb}}") + ("{{rev_rec.feb}}") 
+      var mar_amount = ("{{rev_col.mar}}") + ("{{rev_rec.mar}}") 
+      var apr_amount = ("{{rev_col.apr}}") + ("{{rev_rec.apr}}") 
+      var may_amount = ("{{rev_col.may}}") + ("{{rev_rec.may}}") 
+      var jun_amount = ("{{rev_col.jun}}") + ("{{rev_rec.jun}}") 
+      var jul_amount = ("{{rev_col.jul}}") + ("{{rev_rec.jul}}") 
+      var aug_amount = ("{{rev_col.aug}}") + ("{{rev_rec.aug}}") 
+      var sept_amount = ("{{rev_col.sept}}") + ("{{rev_rec.sept}}") 
+      var oct_amount = ("{{rev_col.oct}}") + ("{{rev_rec.oct}}") 
+      var nov_amount = ("{{rev_col.nov}}") + ("{{rev_rec.nov}}") 
+      var dec_amount = ("{{rev_col.dec}}") + ("{{rev_rec.dec}}") 
 
+      /// Currency formatter
+    const numberformat = new Intl.NumberFormat('en-PH', {
+              style: 'currency',
+              currency: 'PHP',
+              currencyDisplay: 'code'
+              
 
-      var arr = [
+            });
+      var body = [
 
-        ['January', '{{rev_col.jan|floatformat:2}}', '{{rev_rec.jan|floatformat:2}}', jan_amount],
-        ['Febuary', '{{rev_col.feb|floatformat:2}}', '{{rev_rec.feb|floatformat:2}}', feb_amount],
-        ['March', '{{rev_col.mar|floatformat:2}}', '{{rev_rec.mar|floatformat:2}}', mar_amount],
-        ['April', '{{rev_col.apr|floatformat:2}}', '{{rev_rec.apr|floatformat:2}}', apr_amount],
-        ['May', '{{rev_col.may|floatformat:2}}', '{{rev_rec.may|floatformat:2}}', may_amount],
-        ['June', '{{rev_col.jun|floatformat:2}}', '{{rev_rec.jun|floatformat:2}}', jun_amount],
-        ['July', '{{rev_col.jul|floatformat:2}}', '{{rev_rec.jul|floatformat:2}}', jul_amount],
-        ['August', '{{rev_col.aug|floatformat:2}}', '{{rev_rec.aug|floatformat:2}}', aug_amount],
-        ['September', '{{rev_col.sept|floatformat:2}}', '{{rev_rec.sept|floatformat:2}}', sept_amount],
-        ['October', '{{rev_col.oct|floatformat:2}}', '{{rev_rec.oct|floatformat:2}}', oct_amount],
-        ['November', '{{rev_col.nov|floatformat:2}}', '{{rev_rec.nov|floatformat:2}}', nov_amount],
-        ['December', '{{rev_col.dec|floatformat:2}}', '{{rev_rec.dec|floatformat:2}}', dec_amount],
-      ]
-      var body = arr.map(subArr => subArr.map(el => el < 0 ? 0 : el));// remove negative (in my case null #) in array.
-      console.log(body)
+              ['January', numberformat.format('{{rev_col.jan}}'), numberformat.format('{{rev_rec.jan}}'), numberformat.format(jan_amount)],
+              ['Febuary', numberformat.format('{{rev_col.feb}}'), numberformat.format('{{rev_rec.feb}}'), numberformat.format(feb_amount)],
+              ['March', numberformat.format('{{rev_col.mar}}'), numberformat.format('{{rev_rec.mar}}'), numberformat.format(mar_amount)],
+              ['April', numberformat.format('{{rev_col.apr}}'), numberformat.format('{{rev_rec.apr}}'), numberformat.format(apr_amount)],
+              ['May', numberformat.format('{{rev_col.may}}'), numberformat.format('{{rev_rec.may}}'), numberformat.format(may_amount)],
+              ['June', numberformat.format('{{rev_col.jun}}'), numberformat.format('{{rev_rec.jun}}'), numberformat.format(jun_amount)],
+              ['July', numberformat.format('{{rev_col.jul}}'), numberformat.format('{{rev_rec.jul}}'), numberformat.format(jul_amount)],
+              ['August', numberformat.format('{{rev_col.aug}}'), numberformat.format('{{rev_rec.aug}}'), numberformat.format(aug_amount)],
+              ['September', numberformat.format('{{rev_col.sept}}'), numberformat.format('{{rev_rec.sept}}'), numberformat.format(sept_amount)],
+              ['October', numberformat.format('{{rev_col.oct}}'), numberformat.format('{{rev_rec.oct}}'), numberformat.format(oct_amount)],
+              ['November', numberformat.format('{{rev_col.nov}}'), numberformat.format('{{rev_rec.nov}}'), numberformat.format(nov_amount)],
+              ['December', numberformat.format('{{rev_col.dec}}'), numberformat.format('{{rev_rec.dec}}'), numberformat.format(dec_amount)],
+            ]
 
-      //currncly format
       
-      //                 }
-
+      
+      console.log(body)
 
 
       //print details
-      var doc = new jsPDF('p', 'pt', 'a4');
+      var doc = new jsPDF('l', 'pt', 'a4');
       var y = 10;
       var x = 20;
       doc.setLineWidth(2);
       doc.setFontSize(15);
       doc.setFillColor(255, 255, 255);
-      doc.text(200, y = y + 30, "Revenue Detailed Report");
+      doc.text(270, y = y + 20, "Revenue Detailed Report for the Year {{cur_year}}");
       doc.autoTable({
         head: [['Month', 'Collected', 'Collectable', 'Total']],
         margin: { top: 20, bottom: 20 },
         avoidPageSplit: true,
         body: body,
-        columnStyles: {halign: "right"},
+        columnStyles: { halign: "right" },
         theme: 'striped',
         startY: 70,
 
@@ -190,12 +202,12 @@
       doc.save('testing.pdf')
 
     }
-   
+
 
 
   </script>
   <script>
-    
+
   </script>
 </body>
 

@@ -719,7 +719,8 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-
+def reports(request):
+    return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
@@ -796,7 +797,7 @@ def usage_report_data(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(i)
+        print(years)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -860,7 +861,7 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-
+        print(years)
     # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
@@ -876,8 +877,9 @@ def revenue_report(request, year):
         nov=Sum('total_paid_nov'),
         dec=Sum('total_paid_dec'),
     )
+    values = rev_col.values()
+    col= sum(values)
     # Total Receivables
-
     rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_due_jan') - Sum('total_paid_jan'),
         feb=Sum('total_due_feb') - Sum('total_paid_jan'),
@@ -893,13 +895,21 @@ def revenue_report(request, year):
         dec=Sum('total_due_dec') - Sum('total_paid_jan'),
     )
 
+    filt = dict((i, j) for i, j in rev_rec.items() if j >= 0)
+    values = filt.values()
+    rec = sum(values)
+    # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
 
+    print(rec)
 
     context={
         'rev_col': rev_col,
-        'rev_rec': rev_rec,
-        'cur_year': year,
+        'rev_rec': filt,
+       'cur_year': year,
         'years': years,
+        'col':col,
+        'rec' : rec
+
 
 
     }
@@ -976,13 +986,3 @@ def view_unsettled_bills(request, id, year):
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
 
-
-def deleteconsumer(request, id):
-    con = ConsumerInfo.objects.get(consumer_id = id)
-    con.delete()
-    return redirect('consumer_list')
-
-def settingspage(request):
-    ctype = Rates.objects.all()
-    context = {'ctype':ctype}
-    return render(request, 'systemsettings.html', context)

@@ -145,11 +145,11 @@
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
                     <i class="fa-solid fa-user fa-2x"></i>
-                    <span class="sidenav_text">Consumers</span>
+                    <span class="sidenav_text">Consumer Users</span>
                 </li>
             </a>
-            <a href="{% url 'barangayreport' 2022%}" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link 'br' 'active' %}">
+            <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'reports' 'active' %}">
                     <i class="fa fa-line-chart fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
                 </li>
@@ -181,14 +181,14 @@
 
         {% block consumer_list %}
         {% endblock consumer_list %}
- 
+
 
         {% block sysuser %}
         {% endblock sysuser %}
 
         {% block consumercreation %}
         {% endblock consumercreation %}
-        
+
         {% block deleteUser %}
         {% endblock deleteUser %}
         {% block registration %}
@@ -201,12 +201,6 @@
         {%  endblock view_unsettled_bills %}
         {%  block sysuserupdate %}
         {%  endblock sysuserupdate %}
-        {% block settingspage %}
-        {% endblock settingspage %}
-
-
-        
-
 
 
     </div>

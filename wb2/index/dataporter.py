@@ -114,7 +114,7 @@ def porter_out(tables):
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
         con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
-        con_info.penaltycode = Penalty.objects.get(penaltycode='P001')
+        con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.status = tables[0][i][8]
         con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
