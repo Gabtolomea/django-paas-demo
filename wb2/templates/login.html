@@ -1,4 +1,7 @@
 <!--{% load static %}-->
+{% block title %}
+Log In
+{% endblock title %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,22 +26,9 @@
         transition: opacity 1s;
     }
 
-    @media (max-width: 350px){
-        h5 { font-size: 10px;}
-    }
-    @media (min-width: 351px){
-        h5 { font-size: 20px;}
-    }
-
-    @media only screen and (max-width: 350px){
-        .btn{
-            width: 100;
-           }
-    }
-
-    @media (max-width: 575px){
-        button.btn{
-          font-size: 11px !important;
+    @media (max-width: 350px) {
+        h4 {
+            font-size: 16px;
         }
     }
 
@@ -101,35 +91,31 @@
                 <center>
                     <div class="form-group m-2 w-75">
                         <input type="username" name="username" style="border-radius: 20px;" class="form-control"
-                        placeholder="Email Address">
+                            placeholder="Email Address">
                     </div>
 
                     <div class="form-group m-2 w-75">
                         <input type="password" name="password" style="border-radius: 20px;" class="form-control"
-                        placeholder="Password">
+                            placeholder="Password">
                     </div>
 
                     <div class="button-container">
                         <button style="background-color:#0093B7; color:white;  border-radius:25px; width: 75%;"
-                        type="submit" class="btn">Sign In</button style>
+                            type="submit" class="btn">Sign In</button style>
                     </div>
 
                     <div class="FP ">
                         <a href="/" style="color: #0093B7; font-size: 15px;">Forgot Password?</a>
                     </div>
 
-
-
-
-
-
-
                     {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == "error" %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible">
+                    <div id="logout" class="message alert alert-{% if message.tags == " error" %}danger{% else
+                        %}{{message.tags}}{% endif %} alert-dismissible"
+                        style="position: absolute; bottom: 425px; margin-left: 75px; border-radius: 10px;">
                         <strong>{{message.tags|title}}!</strong> {{message}}
                         <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "
-                        error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;")
-                        aria-label="close">&times;</a>
+                            error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;")
+                            aria-label="close">&times;</a>
                     </div>
                     {% endfor %}
                 </center>
@@ -147,4 +133,14 @@
         crossorigin="anonymous"></script>
 
 </body>
+<script>
+    var logout = document.getElementById('logout');
+    setTimeout(function closeModal() {
+        logout.classList.add("op-0")
+    }, 3000)
+    setTimeout(function dispnone() {
+        logout.style.display = "none"
+    }, 4000)
+</script>
+
 </html>
