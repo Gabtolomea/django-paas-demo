@@ -1,12 +1,39 @@
+{% extends 'dashboard.html' %}
+
 {% load humanize %}
-<!DOCTYPE html>
-<html>
+
+
+{% block title %}
+Revenue Report
+{% endblock title %}
+
+
+{% block style %}
+<style>
+  
+  .header{
+    font-weight: bold;
+    margin-top: 40px;
+  }
+
+  h3{
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 35px;
+  }
+</style>
+{% endblock style %}
+
+{% block revenue_report %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <div>
   {% csrf_token %}
-  <div class="col-sm-offset-7 col-sm-5">
+
+ <center><h3>Revenue Reports</h3></center>
+  <div>
     <div class="form-group">
-      <label for="exampleInputBarangay">Select Year</label>
+     <label class="header" for="exampleInputBarangay">Select Year: </label>
       <form id="yearselection" action="GET">
         <select class="form-select" id="selector" onchange="change()">
           <option value="{{cur_year}}">{{cur_year}}</option>
@@ -29,7 +56,22 @@
 
 <body>
   <div id="reportPage">
-    <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button>
+    
+    
+    {% comment %} <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button> {% endcomment %}
+
+    <div class="row">
+      <div class="col-md-4 col-lg-2">
+        <button type="button" id="postbtn" onclick="this_record() "class="btn btn-info  btn-block" style="border-radius: 25px; margin-top: 30px;">Get a Copy</button>
+      </div><!-- /col -->
+    </div><!-- /row -->
+    
+    {% comment %} <div class="button-container"> {% endcomment %}
+      {% comment %} <button type="button" id="postbtn" onclick="this_record()" style="background-color:  #63CDD7; color:black;  border-radius:25px; width: 10%; margin-top: 30px;" {% endcomment %}
+           {% comment %} class="btn">Get Copy</button> {% endcomment %}
+
+  {% comment %} </div> {% endcomment %}
+
     <br>
 
    <center><strong>Total Monthly Collection for The  Year of {{cur_year}}: </strong></center>
@@ -212,6 +254,4 @@
 
   </script>
 </body>
-
-
 {% endblock revenue_report %}
