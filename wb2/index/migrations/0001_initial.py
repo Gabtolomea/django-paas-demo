@@ -97,7 +97,7 @@ class Migration(migrations.Migration):
                 ('penalty_after', models.IntegerField(default=0)),
                 ('penalty_rate', models.FloatField(default=0)),
                 ('penalty_info', models.TextField(blank=True, max_length=300, null=True)),
-                ('date_added', models.DateField(auto_now_add=True)),
+                ('date_added', models.DateField(auto_now_add=True, null=True)),
                 ('added_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
             ],
         ),

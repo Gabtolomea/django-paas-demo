@@ -5,7 +5,7 @@ html{
 .menu_header{
     background:#045163;
     color:white;
-    padding: 8px;
+    font-size: 15px;
 }
 button#first_toggle:hover{
   background: #63CDD7 !important;
@@ -60,6 +60,9 @@ a.nav-link:hover {
   }
   .screen_size_sm{
     display: none;
+  }
+  .about_font_size{
+    font-size: 20px !important;
   }
 }
 

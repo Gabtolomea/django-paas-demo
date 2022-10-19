@@ -42,15 +42,6 @@ sorted_tables = []
 #     database="lgu_ginatilan_db"
 # )
 # mycursor = mydb.cursor()
-def porter():
-    porter_in()
-    porter_out(sorted_tables)
-    porter_in()
-    porter_out(sorted_tables)
-    billing_out()
-    return
-
-
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -122,8 +113,8 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7]) 
-        con_info.penaltycode = None
+        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
+        con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.status = tables[0][i][8]
         con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
@@ -138,12 +129,8 @@ def porter_out(tables):
         trans.payment = tables[6][i][1]
         trans.processedBy = tables[6][i][5]
         trans.or_number = tables[6][i][3]
-        if tables[6][i][2].month == 1:
-            trans.month = 12
-            trans.year = tables[6][i][2].year-1
-        else:
-            trans.month = tables[6][i][2].month-1
-            trans.year = tables[6][i][2].year
+        trans.year = tables[6][i][2].year
+        trans.month = tables[6][i][2].month
         trans.save()
     for i in tables[1]:
         usage_rec.accountid =	i[0]
@@ -309,7 +296,7 @@ def porter_out(tables):
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])
         usage_rec.amountpaid_str_apr =	i[163]
         usage_rec.amountpaid_str_aug = i[164]
         usage_rec.amountpaid_str_dec = i[165]
@@ -328,7 +315,7 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
-    
+
 def billing_out():
     u_rec = usage_record.objects.all()
     for u in u_rec:
@@ -640,4 +627,3 @@ def b_rec_out(i):
     b_rec.total_paid_dec = i[40]
     b_rec.total_usage_dec = i[41]
     b_rec.save()
-
