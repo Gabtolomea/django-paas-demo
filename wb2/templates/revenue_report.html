@@ -1,5 +1,63 @@
-<!DOCTYPE html>
-<html>
+{% extends 'dashboard.html' %}
+
+{% block title %}
+Revenue Report Page
+{% endblock title %}
+
+
+
+{% block style %}
+<style>
+
+  
+
+h3{
+  font-size: 40px;
+  font-weight: bold;
+ text-align: center;
+ 
+ margin-bottom: 30px;
+
+
+
+@media (max-width: 350px){
+  h4 { font-size: 16px;}
+}
+@media (min-width: 351px){
+  h4 { font-size: 32px;}
+}
+
+@media only screen and (max-width: 350px){
+  .btn{
+      width: 100;     
+     }    
+}
+
+@media (max-width: 575px){
+  button.btn{
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 350px){
+  ::placeholder {font-size: 10px;}
+}
+
+@media (min-width: 351px){
+  ::placeholder {font-size: 15px; }
+}
+
+
+
+</style>
+
+
+{% endblock style %}
+{% block revenue_report %}
+
+
+<h3>Revenue Report</h3>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <div>
   <div>
@@ -28,7 +86,11 @@
 
 <body>
   <div id="reportPage">
-    <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button>
+   <!--<button type="button" id="postbtn" onclick="this_record()" style="background:  #63CDD7;">Get a Copy</button>-->
+   <div class="button-container">
+    <button type="button" id="postbtn" onclick="this_record()" class="btn" style="background-color:#0093B7; color:white;  border-radius:25px; width: 10%;">Get a Copy</buttontype=>
+</div>
+
 
 
     <canvas id="myChart" width="800" height="150"></canvas>
@@ -217,4 +279,5 @@
   </script>
 </body>
 
-</html>
+
+{% endblock revenue_report %}
