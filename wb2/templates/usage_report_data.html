@@ -5,20 +5,18 @@ Usage Report
 {% endblock title %}
 
 {% block style %}
+<style>
+  .select {
+    font-weight: bold;
+    font-size: 20px;
+    font-style: normal;
+    float: left;
+    width: 140px;
+  }
+</style>
 
-  <style>
-
-      .select{
-        font-weight: bold;
-        font-size: 20px;
-        font-style: normal;
-        float: left;
-        width: 140px;
-      }
-  </style>
-
-  {% endblock style %}
-  {% block usage_report_data %}
+{% endblock style %}
+{% block usage_report_data %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -47,165 +45,169 @@ Usage Report
       </script>
   </div>
 
-</div>
+  </div>
 
-<body>
-  <center><h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4></center>
-  <canvas id="myChart" width="800" height="150"></canvas>
+  <body>
+    <center>
+      <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
+    </center>
+    <canvas id="myChart" width="800" height="150"></canvas>
 
-  <script>
-    var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var yValues = ['{{tu_mon.jan}}', '{{tu_mon.feb}}', '{{tu_mon.mar}}', '{{tu_mon.apr}}', '{{tu_mon.may}}', '{{tu_mon.jun}}', '{{tu_mon.jul}}', '{{tu_mon.aug}}', '{{tu_mon.sept}}', '{{tu_mon.oct}}', '{{tu_mon.nov}}', '{{tu_mon.dec}}'];
+    <script>
+      var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      var yValues = ['{{tu_mon.jan}}', '{{tu_mon.feb}}', '{{tu_mon.mar}}', '{{tu_mon.apr}}', '{{tu_mon.may}}', '{{tu_mon.jun}}', '{{tu_mon.jul}}', '{{tu_mon.aug}}', '{{tu_mon.sept}}', '{{tu_mon.oct}}', '{{tu_mon.nov}}', '{{tu_mon.dec}}'];
 
-    new Chart("myChart", {
-      type: "line",
+      new Chart("myChart", {
+        type: "line",
 
-      data: {
+        data: {
+          labels: xValues,
+          datasets: [{
+            label: "Details",
+            fill: false,
+            borderColor: '#20B2AA',
+            tension: 0.1,
+            backgroundColor: "#3090C7",
+            data: yValues
+          }]
+        },
+        options: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: "Monthly Total Usage"
+          }
+        },
+
+      });
+    </script>
+
+
+    <section>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <center>
+        <h4><strong>Barangay Total Usage: Year {{cur_year}}</strong></h4>
+      </center>
+      <canvas id="barangay" width="800" height="150"></canvas>
+      <br>
+      <br>
+      <br>
+      <center>
+        <h6><strong>Monthly Usage Per Barangay(Select Barangay Bar): Year {{cur_year}}</strong></h6>
+      </center>
+      <canvas id="monthly_views" width="1000" height="150"></canvas>
+      <br>
+      <br>
+      <br>
+    </section>
+
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // setup 
+      const data = {
+        labels: [{%for tu_bay in tu_bay %}'{{tu_bay.barangaycode}}', {% endfor %}],
+      datasets: [{
+        label: 'Details',
+        data: [{%for tu_bay in tu_bay %}'{{ tu_bay.sum }}', {% endfor %}],
+        backgroundColor: [
+          'rgba(255, 26, 104, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(0, 0, 0, 0.2)'
+        ],
+          borderColor: [
+            'rgba(255, 26, 104, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(0, 0, 0, 1)'
+          ],
+            borderWidth: 1
+     }]
+   };
+
+      // config 
+      const config = {
+        type: 'bar',
+        data,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      };
+
+      // render init block
+      const ctx = document.getElementById('barangay');
+      const barangay = new Chart(
+        ctx,
+        config
+      );
+
+      //data2 start here
+      var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      var yValues = ['{{bbm.jan}}', '{{bbm.feb}}', '{{bbm.mar}}', '{{bbm.apr}}', '{{bbm.may}}', '{{bbm.jun}}', '{{bbm.jul}}', '{{bbm.aug}}', '{{bbm.sept}}', '{{bbm.oct}}', '{{bbm.nov}}', '{{bbm.dec}}'];
+
+      const data2 = {
         labels: xValues,
         datasets: [{
-          label: "Details",
+          label: "Total Usage",
           fill: false,
           borderColor: '#20B2AA',
           tension: 0.1,
           backgroundColor: "#3090C7",
           data: yValues
         }]
-      },
-      options: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: "Monthly Total Usage"
-        }
-      },
+      };
 
-    });
-  </script>
-
- 
-  <section>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <center><h4><strong>Barangay Total Usage: Year {{cur_year}}</strong></h4></center>
-    <canvas id="barangay" width="800" height="150"></canvas>
-    <br>
-    <br>
-    <br>
-    <center><h6><strong>Monthly Usage Per Barangay(Select Barangay Bar): Year {{cur_year}}</strong></h6></center>
-    <canvas id="monthly_views" width="1000" height="150"></canvas>
-    <br>
-    <br>
-    <br>
-  </section>
-
-
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    // setup 
-    const data = {
-      labels: [{%for tu_bay in tu_bay %}'{{tu_bay.barangaycode}}', {% endfor %}],
-    datasets: [{
-      label: 'Details',
-      data: [{%for tu_bay in tu_bay %}'{{ tu_bay.sum }}', {% endfor %}],
-      backgroundColor: [
-        'rgba(255, 26, 104, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(0, 0, 0, 0.2)'
-      ],
-        borderColor: [
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(0, 0, 0, 1)'
-        ],
-          borderWidth: 1
-     }]
-   };
-
-    // config 
-    const config = {
-      type: 'bar',
-      data,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
+      // config 
+      const config2 = {
+        type: 'line',
+        data: data2,
+        options: {
+          scales: {
+ZZ
+            }
           }
         }
-      }
-    };
+      };
 
-    // render init block
-    const ctx = document.getElementById('barangay');
-    const barangay = new Chart(
-      ctx,
-      config
-    );
+      // render init block
+      const monthly_views = new Chart(
+        document.getElementById('monthly_views'),
+        config2
+      );
 
-    //data2 start here
-    var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var yValues = ['{{bbm.jan}}', '{{bbm.feb}}', '{{bbm.mar}}', '{{bbm.apr}}', '{{bbm.may}}', '{{bbm.jun}}', '{{bbm.jul}}', '{{bbm.aug}}', '{{bbm.sept}}', '{{bbm.oct}}', '{{bbm.nov}}', '{{bbm.dec}}'];
+      function clickHandler(click) {
+        const points = barangay.getElementsAtEventForMode(click, 'nearest', {
+          intersect: true
+        }, true);
+        if (points.length) {
+          console.log(points.length)
+          console.log(points[0].element.$context.raw)
 
-    const data2 = {
-      labels: xValues,
-      datasets: [{
-        label: "Total Usage",
-        fill: false,
-        borderColor: '#20B2AA',
-        tension: 0.1,
-        backgroundColor: "#3090C7",
-        data: yValues
-      }]
-    };
-
-    // config 
-    const config2 = {
-      type: 'line',
-      data: data2,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
+          monthly_views.config.data.datasets[0].data = points[0].element.$context.raw;
+          monthly_views.update();
         }
-      }
-    };
+      };
+      ctx.onclick = clickHandler
+    </script>
 
-    // render init block
-    const monthly_views = new Chart(
-      document.getElementById('monthly_views'),
-      config2
-    );
-
-    function clickHandler(click) {
-      const points = barangay.getElementsAtEventForMode(click, 'nearest', {
-        intersect: true
-      }, true);
-      if (points.length) {
-        console.log(points.length)
-        console.log(points[0].element.$context.raw)
-
-        monthly_views.config.data.datasets[0].data = points[0].element.$context.raw;
-        monthly_views.update();
-      }
-    };
-    ctx.onclick = clickHandler
-  </script>
-
-  </script>
+    </script>
 </div>
 </body>
 
 
 {% endblock usage_report_data %}
-
