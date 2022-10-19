@@ -188,7 +188,10 @@ Input Reading
 	</div>
 	<div class="container align-items-center">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-		<canvas id="myChart" style="width:100%;max-width:600px" width="1200" height="600"></canvas>
+		<canvas id="myChart"  width="800" height="250"></canvas>
+		<br>
+		<br>
+		<br>
 		<script>
 			var labels = [{%for i in table %} '{{i.month}}', {% endfor %}];
 			var chart = new Chart("myChart", {
@@ -234,7 +237,7 @@ Input Reading
 		var tempVarToCheckPageHeight = 0;
 		var pageHeight = 0;
 		canvas = document.getElementById("myChart")
-   		canvasImg = canvas.toDataURL("image/jpeg", 1.0);
+   		canvasImg = canvas.toDataURL("image/png", 1.0);
 
 		pageHeight = doc.internal.pageSize.height;
 		specialElementHandlers = {

@@ -1,7 +1,7 @@
 {% extends 'dashboard.html' %}
 
 {% block title %}
-Water Usage
+water usage
 {% endblock title %}
 
 {% block style %}
@@ -19,10 +19,6 @@ Water Usage
     padding: 0;
     width: 100%;
     table-layout: fixed;
-  }
-  .form-select{
-    width: 10%;
-    margin-left: 30px;
   }
 
   table caption {
@@ -183,7 +179,7 @@ Water Usage
       {% for br in br %}
       <tr>
         <td data-label="Barangay" style="background-color: #DBF3FA;"><a
-            href="/view_barangay/{{br.barangayrec_id}}">{{br.barangaycode}}</a></td>
+            href="{% url 'view_barangay' br.barangayrec_id %}">{{br.barangaycode}}</a></td>
         <td data-label="Total Usage(Cu. Meter)" style="background-color: #D3D3D3">{{br.total_usage|floatformat:1}}</td>
         <td data-label="Total Receivables" class="total_paid" style="background-color: #D3D3D3">
           {{br.total_rec|floatformat:1}}</td>
