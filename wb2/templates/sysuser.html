@@ -78,8 +78,8 @@ System User
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            {%for t in table%}
+                        {%for t in table%}
+                        <tr class="showOnHover">
                             <td> {{t.username }}</td>
                             <td>{{t.first_name }} {{t.mid_name}} {{t.last_name }}</td>
                             <td>{{t.email }}</td>
@@ -103,7 +103,7 @@ System User
         </section>
     </section>
 </section>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   function fireSweetAlert() {
     {% for message in messages %}
@@ -116,7 +116,7 @@ System User
         {% endif %}
     {% endfor %}
   }
-  </script>
+  </script> -->
 {% endblock sysuser %}
 
 
