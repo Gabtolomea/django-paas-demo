@@ -560,10 +560,10 @@ def consumercreation(request):
         picture = request.POST['picture']
         meternumber = request.POST['meternumber']
         initialmeterreading = request.POST['initialmeterreading']
-        installation_address = request.POST['installation_address']
+        installation_address = request.POST['installation']
         rateid = request.POST['rateid']
         if form.is_valid():
-            cr = ConsumerInfo()
+            cr = ConsumerInfo
             cr.firstname = firstname
             cr.middlename = middlename
             cr.lastname = lastname
@@ -578,8 +578,6 @@ def consumercreation(request):
             cr.initialmeterreading = initialmeterreading
             cr.installation_address = installation_address
             cr.rateid = rateid
-            cr.save()
-            return redirect('consumer_list')
     context = {
         'form': form,
         'errors': form.errors,
@@ -769,6 +767,7 @@ def unsettled_bill(request):
     return render(request, 'unsettled_bill.html', context)
 
 
+
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -950,4 +949,5 @@ def view_unsettled_bills(request, id, year):
             'current':year,
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
+
 
