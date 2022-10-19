@@ -173,37 +173,19 @@
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
                     <i class="fa-solid fa-user fa-2x"></i>
-                    <span class="sidenav_text">User Accounts</span>
+                    <span class="sidenav_text">Consumer Users</span>
                 </li>
             </a>
-            <a href="{% url 'barangayreport' 2022%}" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link 'barangayreport' 'active' %}">
-                    <i class="fa-solid fa-newspaper fa-2x"></i>
+            <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'reports' 'active' %}">
+                    <i class="fa fa-line-chart fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
-                </li>
-            </a>
-            <a href="/" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link '/' 'active' %}">
-                    <i class="fa-solid fa-thumbs-up fa-2x"></i>
-                    <span class="sidenav_text">Approve Application</span>
                 </li>
             </a>
             <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
                     <i class="fa-solid fa-user-group fa-2x"></i>
-                    <span class="sidenav_text">Users Management</span>
-                </li>
-            </a>
-            <a href="{% url 'user_creation' %}" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link 'user_creation' 'active' %}">
-                    <i class="fa-solid fa-user-plus fa-2x"></i>
-                    <span class="sidenav_text">User Creation</span>
-                </li>
-            </a>
-            <a href="/" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link '/' 'active' %}">
-                    <i class="fa-solid fa-book fa-2x"></i>
-                    <span class="sidenav_text">Rates Management</span>
+                    <span class="sidenav_text">System Users</span>
                 </li>
             </a>
             <a href="/" style="color: white; text-decoration: none">
@@ -216,14 +198,14 @@
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
 
+        {% block bills_list %}
+        {% endblock bills_list %}
+
         {% block ledger %}
         {% endblock ledger%}
 
         {% block meterreading %}
         {% endblock meterreading%}
-
-        {% block bills_list %}
-        {% endblock bills_list %}
 
         {% block consumer_list %}
         {% endblock consumer_list %}
@@ -233,6 +215,12 @@
         
         {% block waterusage %}
         {% endblock waterusage %}
+        {% block unsettled_bills %}
+        {% endblock unsettled_bills %}
+        {%  block view_unsettled_bills %}
+        {%  endblock view_unsettled_bills %}
+        {%  block sysuserupdate %}
+        {%  endblock sysuserupdate %}
 
         {% block usage_report_data %}
         {% endblock usage_report_data %}

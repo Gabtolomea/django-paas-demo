@@ -75,6 +75,99 @@ i.fa-solid.fa-right-from-bracket:hover {
 
 }
 
+
+ul {
+    margin-top: 10px;
+    margin-left: -27px;
+}
+
+.sidenav_text {
+    padding-left: 20px;
+    font-size: 16px;
+    font-weight:700;
+}
+
+.online_water {
+    padding-left: 100px;
+    color: white
+}
+
+.user_info{
+    font-size: 14px;
+    color: #E6ECEB;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 40px;
+}
+
+p {
+    font-size: 40px;
+    margin-left: -13px;
+}
+
+
+body {
+    font-family: Arial;
+}
+
+.header_toggle {
+    background: transparent;
+    border: 0 !important;
+    padding: 0 10px !important;
+    color: #63CDD7;
+}
+
+button#first_toggle:hover {
+    background: #63CDD7 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
+}
+
+button#second_toggle:hover{
+    background: #63CDD7 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
+}
+button#third_toggle:hover {
+    background: #63CDD7 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
+}
+
+i.fa-solid.fa-bell:hover,
+i.fa-solid.fa-magnifying-glass-plus:hover,
+i.fa-solid.fa-right-from-bracket:hover {
+    color: white;
+}
+
+.logout {
+    position: absolute;
+    left: 95.14%;
+    right: 3.15%;
+    top: 13px;
+    bottom: 50px;
+    color: #63CDD7;
+
+}
+
+.notif {
+    position: absolute;
+    left: 91.25%;
+    right: 7.23%;
+    top: 13px;
+    bottom: 50px;
+    color: #63CDD7;
+}
+
+.search {
+    position: absolute;
+    left: 87.15%;
+    right: 11.11%;
+    top: 13px;
+    bottom: 50px;
+    color: #63CDD7;
+
+}
 .side_nav_li {
     padding: 15px 0 15px 120px;
     color: #E6ECEB;
@@ -86,6 +179,13 @@ i.fa-solid.fa-right-from-bracket:hover {
 li.side_nav_li:hover {
     background: #bfecf7;
     color: #005e75;
+    transition: all 0.15s;
+}
+li.side_nav_li {
+    background: #0093b7;
+    color: #E6ECEB;
+    transition: all 0.15s;
+    transition-timing-function: ease-in-out;
 }
 
 ul {
@@ -409,7 +509,7 @@ button.btn.btn-wb-copy:hover {
     z-index: 100;
 }
 
-.active {
+li.active {
     background-color: #005E75;
     color: #fff;
 }
