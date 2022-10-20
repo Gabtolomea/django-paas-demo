@@ -148,20 +148,20 @@
         </div>
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
-                <li class="side_nav_li">
+                <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
                     <i class="fa-solid fa-money-bill-wave fa-2x"></i>
                     <span class="sidenav_text">Billing</span>
                 </li>
             </a>
             <a href="{% url 'meterreading' %}" style="color: white; text-decoration: none ">
-                <li class="side_nav_li">
+                <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span class="sidenav_text">Meter Reading</span>
  
                 </li>
             </a>
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
-                <li class="side_nav_li">
+                <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
                     <i class="fa-solid fa-user fa-2x"></i>
                     <span class="sidenav_text">Consumer Users</span>
                 </li>
@@ -173,7 +173,7 @@
                 </li>
             </a>
             <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
-                <li class="side_nav_li">
+                <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
                     <i class="fa-solid fa-user-group fa-2x"></i>
                     <span class="sidenav_text">System Users</span>
                 </li>
