@@ -3,41 +3,41 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-   
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Consumer Type</title>
 </head>
-
 <body>
-    <form method='post'>
-        {% csrf_token %}
-        <h1> Add New Consumer Type</h1>
-        <label>New Consumer Type:</label>
-        {{form.contype}}
-        <br>
-        <br>
-        <label>New Minimum Water Reading:</label>
-        {{form.minReading}}
-        <br>
-        <br>
-        <label>New Minimum Water Reading Charge:</label>
-        {{form.minReadingCharge}}
-        <br>
-        <br>
-        <label>New Rate After Minimum Reading:</label>
-        {{form.rateAfterMin}}
-        <br>
-        <br>
-        <label>Added by (System Username):</label>
-        {{form.added_by}}
+ <form method="POST" action="">
+    {% csrf_token %}
+    <h1> Add New Consumer Type</h1>
+    <label>New Consumer Type:</label>
+    {{form.contype}}
+<br>
+<br>
+    <label>New Minimum Water Reading:</label>
+    {{form.minReading}}
+    <br>
+    <br>
+    <label>New Minimum Water Reading Charge:</label>  
+    {{form.minReadingCharge}}
+    <br>
+    <br>
+    <label>New Rate After Minimum Reading:</label>
+    {{form.rateAfterMin}}
+    <br>
+    <br>
+    <label>Added by (System Username):</label>
+    {{form.added_by}}
+    
+    <br>
+    <br>
 
-        <br>
-        <br>
-
-        <input type="submit" name="Submit">
-
-    </form>
+    <input type="submit" name="Submit">
+  
+</form>
 
 </body>
 
