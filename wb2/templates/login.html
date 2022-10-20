@@ -1,15 +1,14 @@
-<!--{% load static %}-->
-{% block title %}
-Log In
-{% endblock title %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login </title>
     <link rel="stylesheet" type="text/css" href="{% static 'login.css'%}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
@@ -109,13 +108,13 @@ Log In
                     </div>
 
                     {% for message in messages %}
-                    <div id="logout" class="message alert alert-{% if message.tags == " error" %}danger{% else
-                        %}{{message.tags}}{% endif %} alert-dismissible"
-                        style="position: absolute; bottom: 425px; margin-left: 75px; border-radius: 10px;">
+                    <div id="logout"
+                        class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
+                        style="margin-left: 70px; padding-left: 50px; position: absolute; border-radius: 10px; bottom: 400px;">
                         <strong>{{message.tags|title}}!</strong> {{message}}
-                        <a href="#" class="close" data-dismiss="alert" style="color: var(--bs-{% if message.tags == "
-                            error" %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;")
-                            aria-label="close">&times;</a>
+                        <a href="#" class="close" data-dismiss="alert"
+                        style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
+                        aria-label="close">&times;</a>
                     </div>
                     {% endfor %}
                 </center>
