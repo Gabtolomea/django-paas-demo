@@ -61,7 +61,6 @@
           }]
         },
         options: {
-          legend: { display: false },
           title: {
             display: true,
             text: "Monthly Total Collection"
@@ -191,12 +190,19 @@
         theme: 'striped',
         startY: 70,
       })
-    doc.text(270, y = y + 348, "Total Monthly Collection for The  Year of {{cur_year}}");
-    
+    doc.setFontSize(8)
+    doc.text(290, y = y + 360, "Total Monthly Collection for The  Year of {{cur_year}}");
     y = doc.lastAutoTable.finalY
 		doc.setFillColor(255, 255,255);
 		doc.addImage(canvasImg, 'JPEG', x+75, y+70, 700, 200)
-		console.log(y);
+    
+    doc.setFontSize(8)
+    doc.text(290, y = y + 360, "Total Monthly Collectibles for The  Year of {{cur_year}}");
+    y = doc.lastAutoTable.finalY
+		doc.setFillColor(255, 255,255);
+		doc.addImage(canvasImg, 'JPEG', x+75, y+70, 700, 200)
+  
+    console.log(y);
 		if (y > 600) {
 			doc.addPage()
 			y = 20
