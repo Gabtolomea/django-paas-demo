@@ -144,6 +144,25 @@ class Userinfoupdate(ModelForm):
             'picture'
         )
 
+class ConscumertypecreationForm (ModelForm):
+    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+    minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+    rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+    added_by = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=SystemUsers.objects.all())
+
+    class Meta():
+        model = ConsumerType
+        fields = (
+            'contype',
+            'minReading',
+            'minReadingCharge',
+            'rateAfterMin',
+            'added_by'
+        )
+
+
+
 # class RatesForm(ModelForm):
 #     class Meta:
 #         model = Rates
