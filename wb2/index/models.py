@@ -28,7 +28,6 @@ class SystemUsers(AbstractUser):
 
 class Rates(models.Model):
     rate_id = models.CharField(primary_key=True, max_length=20)
-    connectionType = models.CharField(max_length=20, blank=True, null=True)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
@@ -37,9 +36,6 @@ class Rates(models.Model):
     date_added = models.DateField(auto_now_add=True)
     date_mod = models.DateField(auto_now=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self) -> str:
-        return self.connectionType
 
 class Penalty(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
