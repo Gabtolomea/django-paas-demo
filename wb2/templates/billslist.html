@@ -30,7 +30,7 @@
     });
 </script>
 {% endblock script %}
-{% block bills_list %}
+{% block billslist %}
 <body >
 <h1 class="mb-3 text-center">Bills List</h1>
 <div class="container-fluid p-0">
@@ -54,7 +54,7 @@
                     <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}}
                             {{bill.middlename}}</a></td>
                     <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
-                    <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369; {{bill.current_bal|intcomma}}</a></td>
+                    <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;  {{bill.current_bal|floatformat:2|intcomma}}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -62,4 +62,4 @@
         </body>
         
 
-            {% endblock bills_list %}
+            {% endblock billslist %}

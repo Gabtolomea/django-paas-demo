@@ -167,8 +167,7 @@ def ledger(request, id):
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
-                connectionType = Rates.objects.get(
-                    rate_id=asc_trans[i].ratescode)
+                connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid)
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -381,15 +380,13 @@ def inputreading(request, id, year):
                     t.meterReading = i
                     t.usage = i - lastreading
                     usage = i - lastreading
-                    t.ratescode = consumer.rateid_id
-                    rate = Rates.objects.get(rate_id=consumer.rateid_id)
+                    t.contypeid = consumer.rateid_id
+                    rate = ConsumerType.objects.get(contypeidid=consumer.rateid_id)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                     else:
-                        xcubic = t.usage - rate.minReading
-                        xmincharge = xcubic * rate.rateAfterMin
-                        bill = xmincharge + rate.minReadingCharge
-                        t.bill = xmincharge + rate.minReadingCharge
+                        bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                        t.bill = bill
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
@@ -420,34 +417,27 @@ def inputreading(request, id, year):
                         t.save()
                 else:
                     # print("update transaction")
-                    t = Transactions.objects.get(
-                        acctID_id=id, transType='Billing', year=year, month=d)
-                    lastreading = Transactions.objects.get(
-                        acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
+                    t = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d)
+                    lastreading = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
                     try:
-                        Transactions.objects.get(
-                            acctID_id=id, transType='Billing', year=year, month=d+1)
+                        Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d+1)
                     except ObjectDoesNotExist:
                         print("asdf")
                     else:
-                        next = Transactions.objects.get(
-                            acctID_id=id, transType='Billing', year=year, month=d+1)
+                        next = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d+1)
                         next.usage = next.meterReading - i
                         next.save()
 
-                    lastreading = Transactions.objects.get(
-                        acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
+                    lastreading = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
                     t.meterReading = i
                     t.date = date.today()
                     t.usage = i - lastreading
                     usage = i - lastreading
-                    rate = Rates.objects.get(rate_id=t.ratescode)
+                    rate = ConsumerType.objects.get(contypeidid=t.contypeid)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                     else:
-                        xcubic = t.usage - rate.minReading
-                        xmincharge = xcubic * rate.rateAfterMin
-                        t.bill = xmincharge + rate.minReadingCharge
+                        t.bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
                     t.processedBy = user.username
 
                     t.save()

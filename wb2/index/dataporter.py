@@ -68,7 +68,7 @@ def rearrange(var):
 con_info = ConsumerInfo()
 b_rec = BarangayRecord()
 sys_user = SystemUsers()
-rt = Rates()
+rt = ConsumerType()
 trans = Transactions()
 bar = [
     'Anao',
@@ -92,6 +92,7 @@ def porter_out(tables):
     penalty.penaltycode = 'P001'
     penalty.penalty_after = 0
     penalty.penalty_rate = 0
+    penalty.daysappliedafter = 0
     penalty.penalty_info = ''
     penalty.save()
     for i in bar:
@@ -113,7 +114,7 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7]) 
+        con_info.contypeid = ConsumerType.objects.get(contypeid="C00"+tables[0][i][7]) 
         con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.status = tables[0][i][8]
         con_info.penaltycounter = tables[0][i][11]
@@ -326,7 +327,7 @@ def billing_out():
         if u.totalbill_jan != 0:
             jan = Transactions()
             jan.acctID = u.consumerid
-            jan.ratescode = u.rateid
+            jan.contypeid = "C00"+u.rateid
             jan.meterReading = u.reading_jan
             date_str = u.reading_date_jan
             if date_str!=" " and date_str!="":
@@ -343,7 +344,7 @@ def billing_out():
         if u.totalbill_feb != 0:
             feb = Transactions()
             feb.acctID = u.consumerid
-            feb.ratescode = u.rateid
+            feb.contypeid = "C00"+u.rateid
             feb.meterReading = u.reading_feb
             date_str = u.reading_date_feb
             if date_str!=" " and date_str!="":
@@ -359,7 +360,7 @@ def billing_out():
         if u.totalbill_mar != 0:
             mar = Transactions()
             mar.acctID = u.consumerid
-            mar.ratescode = u.rateid
+            mar.contypeid = "C00"+u.rateid
             mar.meterReading = u.reading_mar
             date_str = u.reading_date_mar
             if date_str!=" " and date_str!="":
@@ -375,7 +376,7 @@ def billing_out():
         if u.totalbill_apr != 0:
             apr = Transactions()
             apr.acctID = u.consumerid
-            apr.ratescode = u.rateid
+            apr.contypeid = "C00"+u.rateid
             apr.meterReading = u.reading_apr
             date_str = u.reading_date_apr
             if date_str!=" " and date_str!="":
@@ -391,7 +392,7 @@ def billing_out():
         if u.totalbill_may != 0:
             may = Transactions()
             may.acctID = u.consumerid
-            may.ratescode = u.rateid
+            may.contypeid = "C00"+u.rateid
             may.meterReading = u.reading_may
             date_str = u.reading_date_may
             if date_str!=" " and date_str!="":
@@ -407,7 +408,7 @@ def billing_out():
         if u.totalbill_jun != 0:
             jun = Transactions()
             jun.acctID = u.consumerid
-            jun.ratescode = u.rateid
+            jun.contypeid = "C00"+u.rateid
             jun.meterReading = u.reading_jun
             date_str = u.reading_date_jun
             if date_str!=" " and date_str!="":
@@ -423,7 +424,7 @@ def billing_out():
         if u.totalbill_jul != 0:
             jul = Transactions()
             jul.acctID = u.consumerid
-            jul.ratescode = u.rateid
+            jul.contypeid = "C00"+u.rateid
             jul.meterReading = u.reading_jul
             date_str = u.reading_date_jul
             if date_str!=" " and date_str!="":
@@ -439,7 +440,7 @@ def billing_out():
         if u.totalbill_aug != 0:
             aug = Transactions()
             aug.acctID = u.consumerid
-            aug.ratescode = u.rateid
+            aug.contypeid = "C00"+u.rateid
             aug.meterReading = u.reading_aug
             date_str = u.reading_date_aug
             if date_str!=" " and date_str!="":
@@ -455,7 +456,7 @@ def billing_out():
         if u.totalbill_sept != 0:
             sept = Transactions()
             sept.acctID = u.consumerid
-            sept.ratescode = u.rateid
+            sept.contypeid = "C00"+u.rateid
             sept.meterReading = u.reading_sept
             date_str = u.reading_date_sept
             if date_str!=" " and date_str!="":
@@ -471,7 +472,7 @@ def billing_out():
         if u.totalbill_oct != 0:
             oct = Transactions()
             oct.acctID = u.consumerid
-            oct.ratescode = u.rateid
+            oct.contypeid = "C00"+u.rateid
             oct.meterReading = u.reading_oct
             date_str = u.reading_date_oct
             if date_str!=" " and date_str!="":
@@ -488,7 +489,7 @@ def billing_out():
         if u.totalbill_nov != 0:
             nov = Transactions()
             nov.acctID = u.consumerid
-            nov.ratescode = u.rateid
+            nov.contypeid = "C00"+u.rateid
             nov.meterReading = u.reading_nov
             date_str = u.reading_date_nov
             if date_str!=" " and date_str!="":
@@ -504,7 +505,7 @@ def billing_out():
         if u.totalbill_dec != 0:
             dec = Transactions()
             dec.acctID = u.consumerid
-            dec.ratescode = u.rateid
+            dec.contypeid = "C00"+u.rateid
             dec.meterReading = u.reading_dec
             date_str = u.reading_date_dec
             if date_str!=" " and date_str!="":
@@ -575,16 +576,14 @@ def sys_user_out(i):
     sys_user.authorizedapprover = i[9]
     sys_user.save()
 def rt_out(i):
-    rt.rate_id = int(i[0])
+    rt.contypeid = "C00"+i[0]
     rt.minReading = i[1]
     rt.minReadingCharge = i[2]
     rt.rateAfterMin = i[3]
-    rt.ratePenalty = i[4]
-    rt.ratePenaltyFreq = i[5]
     if i[0] == '1':
-        rt.connectionType = 'Residential'
+        rt.contype = 'Residential'
     elif i[0] == '2':
-        rt.connectionType = 'Commercial'
+        rt.contype = 'Commercial'
     rt.added_by = None
     rt.date_added=date.today()
     rt.date_mod = date.today()

@@ -1,3 +1,5 @@
+<html>
+
 {% load humanize %}
 <style>
   html{
@@ -96,7 +98,7 @@
   }
 
   .button2{
-    background-color: #63CDD7;
+    background-color: #0E86D4;
     color: white;
     font-weight: bold;
     width: 30%;
@@ -118,8 +120,23 @@ a:hover {
 
 </style>
 
-  <center class="header"><strong><label>Barangay {{bang.barangaycode}} Monthly Records for The Year {{bang.year}}</label></strong></center>
   
+
+  <center class="header"><label>Barangay Yearly Records for Year {{bang.barangaycode}}</label></center>
+    <div class = "col-sm-offset-7 col-sm-5">
+        <div class="form-group">
+            <label style="font-size: 17px; font-weight: bold;" for="exampleInputBarangay">Select Year:</label>
+            <select name="urlsme" onchange='this.form.submit();'>
+                {% for record in record %}
+              <option selected>{{record.year}}</option>
+            
+              <option >{{record.year}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <noscript><input type="submit" value="Submit" href="/{{br.year}}"></noscript>
+  </div>
+
   <body onload ="collection_rate()">
 <table style="margin-bottom: 30px; margin-top: 30px;">
     <thead>
@@ -243,9 +260,11 @@ a:hover {
       </tbody>
 </table>
 
-<a class="button2 btn-primary"  role="button" onclick="history.back()">BACK</a>
 
+<a class="button2 btn-primary" href="{&'url barangayreport'%}/bang.year" role="button" onclick="alert('Are you sure you want to go back?')">BACK</a>
 
+<!--<button type="button" onclick="alert('Hello world!')"><a
+  href="{&'url barangayreport'%}/bang.year">BACK</a></button>-->
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -270,6 +289,4 @@ a:hover {
 
 
   </script>
-
-
-</div>
+</html>
