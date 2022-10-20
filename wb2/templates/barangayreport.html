@@ -1,4 +1,4 @@
-
+{% load humanize %}
     {% csrf_token %}
     <div>
         <div class="col-sm-offset-7 col-sm-5">
@@ -46,8 +46,8 @@
                                 <a href="view_barangay/{{br.barangayrec_id}}">{{br.barangaycode}}</a>
                             </td>
                             <td>{{br.total_usage|floatformat:1}}</td>
-                            <td class="total_paid">{{br.total_rec|floatformat:1}}</td>
-                            <td class="total_due">{{br.total_paid|floatformat:1}}</td>
+                            <td class="total_paid">&#8369;  {{br.total_rec|floatformat:2|intcomma}}</td>
+                            <td class="total_due">&#8369;  {{br.total_paid|floatformat:2|intcomma}}</td>
                             <td class="rate"></td>
                         </tr>
                         {% endfor %}
@@ -60,8 +60,8 @@
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td class="total_paid">{{td.tr|floatformat:1}}</td>
-                            <td class="total_due">{{td.tp|floatformat:1}}</td>
+                            <td class="total_paid">&#8369;  {{td.tr|floatformat:2|intcomma}}</td>
+                            <td class="total_due">&#8369;  {{td.tp|floatformat:2|intcomma}}</td>
                             <td class="rate"></td>
                         </tr>
 

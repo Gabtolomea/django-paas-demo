@@ -3,6 +3,18 @@
 Account Ledger
 {% endblock title %}
 {% block ledger %}
+<style>
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
+    }
+ 
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+       
+    }
+</style>
 <div class="container-fluid p-0">
 	<div class="table_responsive" style="max-height: 922px;">
 		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
@@ -15,15 +27,13 @@ Account Ledger
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
+				<tr class="showOnHover">
 					<td class="table-light">{{u.consumer_id}}</td>
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light">{{u.meternumber}}</td>
 					<td class="table-light">{{u.current_bal}}
-						<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-							<button id="" type="button" class="btn btn-success" data-toggle="modal"
-								data-target="#payment">Pay</button>
-						</div>
+							<button id="" type="button" class=" hide btn btn-success" data-toggle="modal"
+								data-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
@@ -64,12 +74,9 @@ Account Ledger
 		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back">Back</button></a>
 	</div>
 	<div class="col-lg-6 col-md-6 col-sm-6">
-		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back">Input Reading</button></a>
+		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float: right;">Input Reading</button></a>
 	</div>
-	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-		<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy">Get a Copy
-		</button>
-	</div>
+	
 </div>
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
@@ -111,6 +118,10 @@ Account Ledger
 			</tbody>
 		</table id="tabs">
 	</div>
+</div>
+<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
+	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy">Get a Copy
+	</button>
 </div>
 </div id="elementH">
 

@@ -760,7 +760,8 @@ def barangayreport(request, year):
 
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
-
+    
+    
     context = {
         'bang': bang,
 
@@ -888,7 +889,7 @@ def revenue_report(request, year):
     rec = sum(values) 
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
     
-    print(rec)   
+   
 
     context={
         'rev_col': rev_col,

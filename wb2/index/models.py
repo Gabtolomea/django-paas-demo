@@ -374,3 +374,21 @@ class revenuecode(models.Model):
     penalty_after = models.IntegerField(default = 0)#months
     fix_amount_penalty = models.FloatField(default = 0)
     percentage_penalty = models.FloatField(default = 0)
+
+# class consumertype(models.Model):
+#     cons_name = models.CharField(primary_key = True, max_length=20)
+#     con_rate = models.FloatField()
+#     date_added = models.DateField(auto_now_add=True)
+#     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
+# class penalty(models.Model):
+#     penalty_id = models.AutoField(primary_key=True)
+#     pen_flatrate = models.FloatField()
+#     date_added = models.DateField(auto_now_add=True)
+#     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
+# class Discount(models.Model):
+#     discountcode =models.CharField(primary_key = True, max_length = 20)
+#     disc_rate = models.FloatField()
+#     date_added = models.DateField(auto_now_add = True)
+#     added_by = models.ForeignKey(SystemUsers, on_delete = models.SET_NULL, null = True)

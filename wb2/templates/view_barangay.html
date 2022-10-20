@@ -1,4 +1,6 @@
+<html>
 
+{% load humanize %}
 <style>
   html{
       background-color: #F2F3F2;
@@ -96,7 +98,7 @@
   }
 
   .button2{
-    background-color: #63CDD7;
+    background-color: #0E86D4;
     color: white;
     font-weight: bold;
     width: 30%;
@@ -118,8 +120,23 @@ a:hover {
 
 </style>
 
-  <center class="header"><strong><label>Barangay Yearly Records for Year {{bang.year}}</label></strong></center>
   
+
+  <center class="header"><label>Barangay Yearly Records for Year {{bang.barangaycode}}</label></center>
+    <div class = "col-sm-offset-7 col-sm-5">
+        <div class="form-group">
+            <label style="font-size: 17px; font-weight: bold;" for="exampleInputBarangay">Select Year:</label>
+            <select name="urlsme" onchange='this.form.submit();'>
+                {% for record in record %}
+              <option selected>{{record.year}}</option>
+            
+              <option >{{record.year}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <noscript><input type="submit" value="Submit" href="/{{br.year}}"></noscript>
+  </div>
+
   <body onload ="collection_rate()">
 <table style="margin-bottom: 30px; margin-top: 30px;">
     <thead>
@@ -138,8 +155,8 @@ a:hover {
           </td>
           
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_jan|floatformat:1}}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_jan|floatformat:1}}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_jan|floatformat:1}}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_jan|floatformat:2|intcomma}}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_jan|floatformat:2|intcomma}}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -147,8 +164,8 @@ a:hover {
           </td>
          
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_feb|floatformat:1}}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_feb|floatformat:1}}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_feb|floatformat:1}}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_feb|floatformat:2|intcomma}}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_feb|floatformat:2|intcomma}}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -156,8 +173,8 @@ a:hover {
           </td>
       
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_mar|floatformat:1}}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_mar|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_mar|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_mar|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_mar|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -165,8 +182,8 @@ a:hover {
           </td>
          
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_apr|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_apr|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_apr|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_apr|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_apr|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;"> 
@@ -174,8 +191,8 @@ a:hover {
           </td>
       
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_may|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_may|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_may|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_may|floatformat:2|intcomma}}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_may|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -183,8 +200,8 @@ a:hover {
           </td>
          
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_jun|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_jun|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_jun|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_jun|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_jun|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -192,8 +209,8 @@ a:hover {
           </td>
          
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_jul|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_jul|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_jul|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_jul|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_jul|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -201,8 +218,8 @@ a:hover {
           </td>
        
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_aug|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_aug|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_aug|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_aug|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_aug|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -210,8 +227,8 @@ a:hover {
           </td>
           
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_sept|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_sept|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_sept|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_sept|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_sept|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -219,8 +236,8 @@ a:hover {
           </td>
          
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_oct|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_oct|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_oct|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_oct|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_oct|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -228,8 +245,8 @@ a:hover {
           </td>
         
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_nov|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_nov|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_nov|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_nov|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_nov|floatformat:2|intcomma }}</td>
         </tr>
         <tr>
           <td data-label="Billing Cycle Cutoff Month"style="background-color: #DBF3FA;">
@@ -237,15 +254,17 @@ a:hover {
           </td>
          
           <td data-label="Total Usage(Cubic Meter)"style="background-color: #DBF3FA;">{{bang.total_usage_dec|floatformat:1  }}</td>
-          <td data-label="Total Receivable"style="background-color: #DBF3FA;">{{bang.total_due_dec|floatformat:1 }}</td>
-          <td data-label="Total Collection"style="background-color: #DBF3FA;">{{bang.total_paid_dec|floatformat:1 }}</td>
+          <td data-label="Total Receivable"style="background-color: #DBF3FA;">&#8369;  {{bang.total_due_dec|floatformat:2|intcomma }}</td>
+          <td data-label="Total Collection"style="background-color: #DBF3FA;">&#8369;  {{bang.total_paid_dec|floatformat:2|intcomma }} </td>
         </tr>
       </tbody>
 </table>
 
-<a class="button2 btn-primary"  role="button" onclick="history.back()">BACK</a>
 
+<a class="button2 btn-primary" href="{&'url barangayreport'%}/bang.year" role="button" onclick="alert('Are you sure you want to go back?')">BACK</a>
 
+<!--<button type="button" onclick="alert('Hello world!')"><a
+  href="{&'url barangayreport'%}/bang.year">BACK</a></button>-->
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -270,6 +289,4 @@ a:hover {
 
 
   </script>
-
-
-</div>
+</html>

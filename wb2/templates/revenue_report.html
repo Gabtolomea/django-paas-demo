@@ -1,12 +1,53 @@
+{% extends 'dashboard.html' %}
+
 {% load humanize %}
-<!DOCTYPE html>
-<html>
+
+
+{% block title %}
+Revenue Report
+{% endblock title %}
+
+
+{% block style %}
+<style>
+  
+  .header{
+    font-weight: bold;
+    margin-top: 40px;
+  }
+
+  h3{
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 450px){
+    h3 { font-size: 18px;}
+}
+@media (min-width: 451px){
+    h3 { font-size: 35px;}
+}
+
+
+@media (max-width: 450px){
+  label { font-size: 12px;}
+}
+@media (min-width: 451px){
+  label { font-size: 20px;}
+}
+</style>
+{% endblock style %}
+
+{% block revenue_report %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <div>
   {% csrf_token %}
-  <div class="col-sm-offset-7 col-sm-5">
+
+ <center><h3>Revenue Reports</h3></center>
+  <div>
     <div class="form-group">
-      <label for="exampleInputBarangay">Select Year</label>
+     <label class="header" for="exampleInputBarangay">Select Year: </label>
       <form id="yearselection" action="GET">
         <select class="form-select" id="selector" onchange="change()">
           <option value="{{cur_year}}">{{cur_year}}</option>
@@ -29,10 +70,26 @@
 
 <body>
   <div id="reportPage">
-    <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button>
+    
+    
+    {% comment %} <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button> {% endcomment %}
+
+    <div class="row">
+      <div class="col-md-4 col-lg-2">
+        <button type="button" id="postbtn" onclick="this_record() "class="btn btn-info  btn-block" style="border-radius: 25px; margin-top: 30px;">Get a Copy</button>
+      </div><!-- /col -->
+    </div><!-- /row -->
+    
+    {% comment %} <div class="button-container"> {% endcomment %}
+      {% comment %} <button type="button" id="postbtn" onclick="this_record()" style="background-color:  #63CDD7; color:black;  border-radius:25px; width: 10%; margin-top: 30px;" {% endcomment %}
+           {% comment %} class="btn">Get Copy</button> {% endcomment %}
+
+  {% comment %} </div> {% endcomment %}
+
     <br>
 
-   <center><strong id="totalpaidmonthly">Total Monthly Collection for The  Year of {{cur_year}} : Php: {{col|intcomma}}</strong></center>
+   <center><strong>Total Monthly Collection for The  Year of {{cur_year}}: </strong></center>
+   <center><strong>&#8369;  {{col|floatformat:2|intcomma}}</strong></center>
     <canvas id="myChart" width="800" height="150"></canvas>
  
 
@@ -82,7 +139,8 @@
       <br>
       <br>
       <br>
-      <center><strong id="totalpaidmonthly">Total Monthly Collictables for The  Year of {{cur_year}} : Php: {{rec|intcomma}}</strong></center>
+      <center><strong>Total Monthly Collictables for The  Year of {{cur_year}}:</strong></center>
+      <center><strong>&#8369;  {{rec|floatformat:2|intcomma}}</strong></center>
       <canvas id="receivable" width="800" height="150"></canvas>
       
     </section>
@@ -136,18 +194,41 @@
     function this_record() {
 
 
-      var jan_amount = ("{{rev_col.jan}}") + ("{{rev_rec.jan}}") 
-      var feb_amount = ("{{rev_col.feb}}") + ("{{rev_rec.feb}}") 
-      var mar_amount = ("{{rev_col.mar}}") + ("{{rev_rec.mar}}") 
-      var apr_amount = ("{{rev_col.apr}}") + ("{{rev_rec.apr}}") 
-      var may_amount = ("{{rev_col.may}}") + ("{{rev_rec.may}}") 
-      var jun_amount = ("{{rev_col.jun}}") + ("{{rev_rec.jun}}") 
-      var jul_amount = ("{{rev_col.jul}}") + ("{{rev_rec.jul}}") 
-      var aug_amount = ("{{rev_col.aug}}") + ("{{rev_rec.aug}}") 
-      var sept_amount = ("{{rev_col.sept}}") + ("{{rev_rec.sept}}") 
-      var oct_amount = ("{{rev_col.oct}}") + ("{{rev_rec.oct}}") 
-      var nov_amount = ("{{rev_col.nov}}") + ("{{rev_rec.nov}}") 
-      var dec_amount = ("{{rev_col.dec}}") + ("{{rev_rec.dec}}") 
+      var jan_amount = parseFloat("{{rev_col.jan}}") + parseFloat("{{rev_rec.jan}}")
+          jan_amount = jan_amount ? jan_amount : 0; 
+
+      var feb_amount = parseFloat("{{rev_col.feb}}") + parseFloat("{{rev_rec.feb}}")
+          feb_amount = feb_amount ? feb_amount : 0;
+
+      var mar_amount = parseFloat("{{rev_col.mar}}") + parseFloat("{{rev_rec.mar}}") 
+          mar_amount = mar_amount ? mar_amount : 0;
+
+      var apr_amount = parseFloat("{{rev_col.apr}}") + parseFloat("{{rev_rec.apr}}")
+          apr_amount = apr_amount ? apr_amount : 0;
+
+      var may_amount = parseFloat("{{rev_col.may}}") + parseFloat("{{rev_rec.may}}")
+          may_amount = may_amount ? may_amount : 0;
+
+      var jun_amount = parseFloat("{{rev_col.jun}}") + parseFloat("{{rev_rec.jun}}") 
+          jun_amount = jun_amount ? jun_amount : 0; 
+
+      var jul_amount = parseFloat("{{rev_col.jul}}") + parseFloat("{{rev_rec.jul}}")
+          jul_amount = jul_amount ? jul_amount : 0;
+
+      var aug_amount = parseFloat("{{rev_col.aug}}") + parseFloat("{{rev_rec.aug}}") 
+          aug_amount = aug_amount ? aug_amount : 0;
+
+      var sept_amount = parseFloat("{{rev_col.sept}}") + parseFloat("{{rev_rec.sept}}") 
+          sept_amount = sept_amount ? sept_amount : 0;
+          
+      var oct_amount = parseFloat("{{rev_col.oct}}") + parseFloat("{{rev_rec.oct}}")
+          oct_amount = oct_amount ? oct_amount : 0;
+
+      var nov_amount = parseFloat("{{rev_col.nov}}") + parseFloat("{{rev_rec.nov}}")
+          nov_amount = nov_amount ? nov_amount : 0;
+
+      var dec_amount = parseFloat("{{rev_col.dec}}") + parseFloat("{{rev_rec.dec}}") 
+          dec_amount = dec_amount ? dec_amount : 0;
 
       /// Currency formatter
     const numberformat = new Intl.NumberFormat('en-PH', {
@@ -157,7 +238,7 @@
               
 
             });
-      var body = [
+       var body = [
 
               ['January', numberformat.format('{{rev_col.jan}}'), numberformat.format('{{rev_rec.jan}}'), numberformat.format(jan_amount)],
               ['Febuary', numberformat.format('{{rev_col.feb}}'), numberformat.format('{{rev_rec.feb}}'), numberformat.format(feb_amount)],
@@ -172,7 +253,7 @@
               ['November', numberformat.format('{{rev_col.nov}}'), numberformat.format('{{rev_rec.nov}}'), numberformat.format(nov_amount)],
               ['December', numberformat.format('{{rev_col.dec}}'), numberformat.format('{{rev_rec.dec}}'), numberformat.format(dec_amount)],
             ]
-
+    
       
       
       console.log(body)
@@ -198,8 +279,8 @@
 
       })
 
-      console.log("testing")
-      doc.save('testing.pdf')
+      console.log(jan_amount)
+      doc.save('Revenue-Detailed-Report.pdf')
 
     }
 
@@ -210,5 +291,4 @@
 
   </script>
 </body>
-
-</html>
+{% endblock revenue_report %}
