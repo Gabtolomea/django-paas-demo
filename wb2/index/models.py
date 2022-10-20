@@ -26,13 +26,12 @@ class SystemUsers(AbstractUser):
         return self.username
 
 
-class Rates(models.Model):
-    rate_id = models.CharField(primary_key=True, max_length=20)
+class ConsumerType(models.Model):
+    contypeid = models.CharField(primary_key=True, max_length=20)
+    contype = models.CharField(max_length=20)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
-    ratePenalty = models.IntegerField()
-    ratePenaltyFreq = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)
     date_mod = models.DateField(auto_now=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
@@ -43,6 +42,7 @@ class Penalty(models.Model):
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
     date_added = models.DateField(auto_now_add=True)
+    daysappliedafter = models.IntegerField(default=0)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
     def __str__(self) -> str:
         return self.penaltycode
@@ -110,7 +110,7 @@ class ConsumerInfo(models.Model):
     homeaddress = models.CharField(max_length=50, blank=True)
     installation_address = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     initialmeterreading = models.IntegerField()
-    rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
+    contypeid = models.ForeignKey(ConsumerType,on_delete=models.CASCADE)#consumertype
     status = models.IntegerField()
     penaltycounter = models.IntegerField(null=True)
     stopmeterflag = models.BooleanField()
@@ -139,7 +139,7 @@ class Transactions(models.Model):
     transType = models.CharField(max_length=20, choices=TRANS_TYPE)
     meterReading = models.IntegerField(blank=True, null=True)
     usage = models.IntegerField(blank=True, null=True)
-    ratescode = models.CharField(max_length=20, blank=True, null=True)
+    contypeid = models.CharField(max_length=20, blank=True, null=True)#consumertype
     penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
     discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
     bill = models.FloatField(null=True)
@@ -375,20 +375,3 @@ class revenuecode(models.Model):
     fix_amount_penalty = models.FloatField(default = 0)
     percentage_penalty = models.FloatField(default = 0)
 
-# class consumertype(models.Model):
-#     cons_name = models.CharField(primary_key = True, max_length=20)
-#     con_rate = models.FloatField()
-#     date_added = models.DateField(auto_now_add=True)
-#     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
-
-# class penalty(models.Model):
-#     penalty_id = models.AutoField(primary_key=True)
-#     pen_flatrate = models.FloatField()
-#     date_added = models.DateField(auto_now_add=True)
-#     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
-
-# class Discount(models.Model):
-#     discountcode =models.CharField(primary_key = True, max_length = 20)
-#     disc_rate = models.FloatField()
-#     date_added = models.DateField(auto_now_add = True)
-#     added_by = models.ForeignKey(SystemUsers, on_delete = models.SET_NULL, null = True)

@@ -102,7 +102,7 @@ class ConsumerCreationForm(ModelForm):
     meternumber = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
     installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Barangays.objects.all())
-    rateid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Rates.objects.all())
+    rateid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=ConsumerType.objects.all())
 
     class Meta():
         model = ConsumerInfo
@@ -135,7 +135,7 @@ class Userinfoupdate(ModelForm):
             'homeaddress',
             'installation_address',
             'initialmeterreading',
-            'rateid',
+            'contypeid',
             'mobilenum',
             'email',
             'birthdate',
