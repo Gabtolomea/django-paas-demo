@@ -973,10 +973,3 @@ def view_unsettled_bills(request, id, year):
             'current':year,
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
-
-  
-
-def settingspage(request):
-    ctype = Rates.objects.all()
-    context = {'ctype':ctype}
-    return render(request, 'systemsettings.html', context)
