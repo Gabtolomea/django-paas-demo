@@ -3,6 +3,7 @@
 Account Ledger
 {% endblock title %}
 {% block ledger %}
+{% load humanize %}
 <style>
     .hide {
         opacity: 0;
@@ -31,7 +32,7 @@ Account Ledger
 					<td class="table-light">{{u.consumer_id}}</td>
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light">{{u.meternumber}}</td>
-					<td class="table-light">{{u.current_bal}}
+					<td class="table-light">&#8369;  {{u.current_bal|floatformat:2|intcomma}}
 							<button id="" type="button" class=" hide btn btn-success" data-toggle="modal"
 								data-target="#payment" style="float: right;">Pay</button>
 					</td>
@@ -108,11 +109,11 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{{t.bill}}</td>
-					<td class="{{t.style}}">{{t.payment}}</td>
+					<td class="{{t.style}}">&#8369;  {{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">&#8369;  {{t.payment|floatformat:2|intcomma}}</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">{{t.bal}}</td>
+					<td class="{{t.style}}">&#8369;  {{t.bal|floatformat:2|intcomma}}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
