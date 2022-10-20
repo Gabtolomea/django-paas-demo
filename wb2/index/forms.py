@@ -143,6 +143,27 @@ class Userinfoupdate(ModelForm):
             'sitio',
             'picture'
         )
+    
+# class addPenalty(ModelForm):
+#     penaltycode = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+#     penaltyrate = forms.NumberInput(widget=forms.NumberInput(attrs={'class': 'form-control'}))
+#     addedby = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+        # class Meta:
+        #     models = 
+
+class addDiscount(ModelForm):
+    discountcode = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta():
+        model = Discount
+        fields = (
+            'discountcode',
+            'discount_rate',
+            'added_by'
+        )
 
 # class RatesForm(ModelForm):
 #     class Meta:
