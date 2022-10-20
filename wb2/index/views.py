@@ -975,3 +975,24 @@ def view_unsettled_bills(request, id, year):
     return render(request, 'view_unsettled_bills.html', context)
 
   
+def new_consumertype (request):
+    form = ConscumertypecreationForm()
+    if request.method =="POST":
+        form = ConscumertypecreationForm(request.POST)
+        contype = request.POST['contype']
+        minReading = request.POST['minReading']
+        minReadingCharge = request.POST['minReadingCharge']
+        rateAfterMin = request.POST['rateAfterMin']
+        added_by = request.POST['added_by']
+        if form.is_valid():
+            ct = ConsumerType
+            ct.contype = contype
+            ct.minReading = minReading
+            ct.minReadingCharge = minReadingCharge
+            ct.rateAfterMin = rateAfterMin
+            ct.added_by = added_by
+    context = {
+            'form': form,
+            'errors': form.errors
+        }
+    return render(request,'new_consumertype.html', context)
