@@ -257,13 +257,13 @@ Revenue Report
       console.log(body)
 
       //print details
-      var doc = new jsPDF('l', 'pt', 'a4');
+      var doc = new jsPDF('p', 'pt', 'a4');
       var y = 10;
       var x = 20;
       doc.setLineWidth(2);
       doc.setFontSize(15);
       doc.setFillColor(255, 255, 255);
-      doc.text(270, y = y + 20, "Revenue Detailed Report for the Year {{cur_year}}");
+      doc.text(150, y = y + 20, "Revenue Detailed Report for the Year {{cur_year}}");
       doc.autoTable({
         head: [['Month', 'Collected', 'Collectable', 'Total']],
         margin: { top: 20, bottom: 20 },
@@ -273,17 +273,16 @@ Revenue Report
         theme: 'striped',
         startY: 70,
       })
-    doc.setFontSize(8)
-    doc.text(290, y = y + 360, "Total Monthly Collection for The  Year of {{cur_year}}");
+    doc.setFontSize(12)
+    doc.text(80,y = y + 370, "Total Monthly Collection and Total Monthly Collectibles for The  Year of {{cur_year}}");
     y = doc.lastAutoTable.finalY
 		doc.setFillColor(255, 255,255);
-		doc.addImage(canvasImg, 'JPEG', x+75, y+70, 700, 200)
+		doc.addImage(canvasImg, 'JPEG', x+55, y+70, 480, 180)
     
     doc.setFontSize(8)
-    doc.text(290, y = y + 360, "Total Monthly Collectibles for The  Year of {{cur_year}}");
     y = doc.lastAutoTable.finalY
 		doc.setFillColor(255, 255,255);
-		doc.addImage(canvasImg, 'JPEG', x+75, y+70, 700, 200)
+		doc.addImage(canvasImgs, 'JPEG', x+55, y+270, 480, 180)
   
     console.log(y);
 		if (y > 600) {

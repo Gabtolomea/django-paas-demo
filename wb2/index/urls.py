@@ -4,6 +4,7 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
+
 urlpatterns = [
     path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),

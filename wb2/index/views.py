@@ -38,12 +38,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -65,7 +65,7 @@ def signin(request):
     return render(request, 'login.html')
 
 
-@login_required(login_url='signin')
+# @login_required(login_url='signin')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -128,7 +128,7 @@ def user_creation(request):
 #     return render(request, 'dashboard.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def ledger(request, id):
     table = []
 
@@ -263,7 +263,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -273,7 +273,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -516,7 +516,7 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-@login_required(login_url='signin')
+# @login_required(login_url='login')
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()
@@ -527,19 +527,19 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -581,7 +581,7 @@ def consumercreation(request):
     return render(request, 'consumercreation.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -590,7 +590,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def sysuser(request):
     table = []
 
@@ -629,7 +629,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -647,7 +647,7 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -976,17 +976,17 @@ def view_unsettled_bills(request, id, year):
 
 def discount(request):
     form = addDiscount()
+    discountid = len(Discount.objects.all())
     if request.method == "POST":
         form = addDiscount(request.POST)
-        discountcode = request.POST['discountcode']
+        discountid = request.POST['discountid']
         discount_rate = request.POST['discount_rate']
-        added_by = request.POST['added_by']
         if form.is_valid():
             addD = Discount
-            addD.discountcode = discountcode
+            addD.discountid = discountid
             addD.discount_rate = discount_rate
-            addD.added_by = added_by
-            
+            addD.added_by = request.user
+            addD.save()
     context = {
         'form': form,
         'errors': form.errors,
@@ -994,7 +994,7 @@ def discount(request):
     return render(request, 'discount.html', context)
      
     
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def new_consumertype (request):
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
