@@ -979,13 +979,23 @@ def view_unsettled_bills(request, id, year):
 #     if request.method == "POST":
 #         form = addPenalty(request.POST)
 
-def addDiscount(request):
+def discount(request):
     form = addDiscount()
     if request.method == "POST":
         form = addDiscount(request.POST)
         discountcode = request.POST['discountcode']
         discount_rate = request.POST['discount_rate']
         added_by = request.POST['added_by']
-     
+        if form.is_valid():
+            addD = Discount
+            addD.discountcode = discountcode
+            addD.discount_rate = discount_rate
+            addD.added_by = added_by
+            
+    context = {
+        'form': form,
+        'errors': form.errors,
+                }
+    return render(request, 'discount.html', context)
      
     

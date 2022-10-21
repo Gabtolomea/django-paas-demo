@@ -36,6 +36,7 @@ urlpatterns = [
     path('reports/revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills'),
     path('reports/view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
+    path('discount',views.discount, name='discount')
 
 
 
