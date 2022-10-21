@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize'
 ]
 
-LOGIN_URL = "login"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -146,3 +146,5 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = 'images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
+LOGIN_URL = '/login'

@@ -30,6 +30,7 @@ from django.db.models import F, Sum
 from .decorators import unauthenticated_user
 
 
+
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -119,13 +120,13 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @login_required(login_url='login')
-# def dashboard(request):
-#     user = request.user
-#     context = {
-#         'user': user
-#     }
-#     return render(request, 'dashboard.html', context)
+@login_required(login_url='login')
+def dashboard(request):
+    user = request.user
+    context = {
+        'user': user
+    }
+    return render(request, 'dashboard.html', context)
 
 
 @login_required(login_url='login')
@@ -516,7 +517,7 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-@login_required(login_url='signin')
+@login_required(login_url='login')
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()
