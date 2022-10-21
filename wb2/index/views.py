@@ -8,7 +8,6 @@ from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -28,7 +27,6 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
-from django.db.models.functions import Coalesce
 from .decorators import unauthenticated_user
 
 
@@ -40,12 +38,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -57,6 +55,7 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
                 login(request, user)
+                print(user)
                 messages.success(request, 'Logged in')
                 return redirect('bills_list')
             else:
@@ -66,15 +65,11 @@ def signin(request):
     return render(request, 'login.html')
 
 
-# @login_required(login_url='login')
+@login_required(login_url='signin')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
-
-
-def home(request):
-    return render(request, 'home.html')
 
 
 def user_creation(request):
@@ -125,15 +120,15 @@ def user_creation(request):
 
 
 # @login_required(login_url='login')
-def dashboard(request):
-    user = request.user
-    context = {
-        'user': user
-    }
-    return render(request, 'dashboard.html', context)
+# def dashboard(request):
+#     user = request.user
+#     context = {
+#         'user': user
+#     }
+#     return render(request, 'dashboard.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def ledger(request, id):
     table = []
 
@@ -268,7 +263,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -278,7 +273,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -521,7 +516,7 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-# @login_required(login_url='login')
+@login_required(login_url='signin')
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()
@@ -532,19 +527,19 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -586,7 +581,7 @@ def consumercreation(request):
     return render(request, 'consumercreation.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -595,7 +590,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def sysuser(request):
     table = []
 
@@ -634,7 +629,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -652,7 +647,7 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -709,7 +704,7 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -974,23 +969,26 @@ def view_unsettled_bills(request, id, year):
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
 
-  
+@login_required(login_url='login')
 def new_consumertype (request):
     form = ConscumertypecreationForm()
+    contypecount = len(ConsumerType.objects.all())
+    print(request.user)
     if request.method =="POST":
         form = ConscumertypecreationForm(request.POST)
         contype = request.POST['contype']
         minReading = request.POST['minReading']
         minReadingCharge = request.POST['minReadingCharge']
         rateAfterMin = request.POST['rateAfterMin']
-        added_by = request.POST['added_by']
         if form.is_valid():
-            ct = ConsumerType
+            ct = ConsumerType()
+            ct.contypeid = "C00"+str(contypecount+1)
             ct.contype = contype
             ct.minReading = minReading
             ct.minReadingCharge = minReadingCharge
             ct.rateAfterMin = rateAfterMin
-            ct.added_by = added_by
+            ct.added_by = request.user
+            ct.save()
     context = {
             'form': form,
             'errors': form.errors

@@ -145,11 +145,10 @@ class Userinfoupdate(ModelForm):
         )
 
 class ConscumertypecreationForm (ModelForm):
-    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
-    minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
-    minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
-    rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
-    added_by = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=SystemUsers.objects.all())
+    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'min':0}))
+    minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
+    minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
+    rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
 
     class Meta():
         model = ConsumerType
@@ -157,8 +156,7 @@ class ConscumertypecreationForm (ModelForm):
             'contype',
             'minReading',
             'minReadingCharge',
-            'rateAfterMin',
-            'added_by'
+            'rateAfterMin'
         )
 
 
