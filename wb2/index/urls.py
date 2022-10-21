@@ -17,7 +17,6 @@ urlpatterns = [
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
     path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),name="password_reset_confirm"),
     path('consumercreation', views.consumercreation,name='consumercreation'),
-    path('bills_list/', views.bills_list, name='bills_list'),
     path('consumer_list/', views.consumer_list, name='consumer_list'),
     path('consumer_list/consumercreation', views.consumercreation,name='consumercreation'),
     path('consumer_list/<int:id>/', views.userupdate, name='userupdate'),
@@ -36,7 +35,8 @@ urlpatterns = [
     path('reports/revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills'),
     path('reports/view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
-    path('discount',views.discount, name='discount')
+    path('discount',views.discount, name='discount'),
+    path('new_consumertype', views.new_consumertype, name='new_consumertype'),
 
 
 

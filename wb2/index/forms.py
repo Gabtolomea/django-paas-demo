@@ -165,6 +165,23 @@ class addDiscount(ModelForm):
             'added_by'
         )
 
+class ConscumertypecreationForm (ModelForm):
+    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'min':0}))
+    minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
+    minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
+    rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
+
+    class Meta():
+        model = ConsumerType
+        fields = (
+            'contype',
+            'minReading',
+            'minReadingCharge',
+            'rateAfterMin'
+        )
+
+
+
 # class RatesForm(ModelForm):
 #     class Meta:
 #         model = Rates
