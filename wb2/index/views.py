@@ -66,7 +66,7 @@ def signin(request):
     return render(request, 'login.html')
 
 
-@login_required(login_url='signin')
+@login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
