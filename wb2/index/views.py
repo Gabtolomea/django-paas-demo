@@ -8,7 +8,6 @@ from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -28,8 +27,8 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
-from django.db.models.functions import Coalesce
 from .decorators import unauthenticated_user
+
 
 
 def porter(request):
@@ -40,12 +39,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -57,6 +56,7 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
                 login(request, user)
+                print(user)
                 messages.success(request, 'Logged in')
                 return redirect('bills_list')
             else:
@@ -66,15 +66,11 @@ def signin(request):
     return render(request, 'login.html')
 
 
-# @login_required(login_url='login')
+@login_required(login_url='signin')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
-
-
-def home(request):
-    return render(request, 'home.html')
 
 
 def user_creation(request):
@@ -124,7 +120,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {
@@ -133,7 +129,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def ledger(request, id):
     table = []
 
@@ -167,8 +163,7 @@ def ledger(request, id):
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
-                connectionType = Rates.objects.get(
-                    rate_id=asc_trans[i].ratescode)
+                connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid)
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -269,7 +264,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -279,7 +274,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -381,15 +376,13 @@ def inputreading(request, id, year):
                     t.meterReading = i
                     t.usage = i - lastreading
                     usage = i - lastreading
-                    t.ratescode = consumer.rateid_id
-                    rate = Rates.objects.get(rate_id=consumer.rateid_id)
+                    t.contypeid = consumer.rateid_id
+                    rate = ConsumerType.objects.get(contypeidid=consumer.rateid_id)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                     else:
-                        xcubic = t.usage - rate.minReading
-                        xmincharge = xcubic * rate.rateAfterMin
-                        bill = xmincharge + rate.minReadingCharge
-                        t.bill = xmincharge + rate.minReadingCharge
+                        bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                        t.bill = bill
                     t.payment = 0
                     t.processedBy = user.username
                     t.save()
@@ -420,34 +413,27 @@ def inputreading(request, id, year):
                         t.save()
                 else:
                     # print("update transaction")
-                    t = Transactions.objects.get(
-                        acctID_id=id, transType='Billing', year=year, month=d)
-                    lastreading = Transactions.objects.get(
-                        acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
+                    t = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d)
+                    lastreading = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
                     try:
-                        Transactions.objects.get(
-                            acctID_id=id, transType='Billing', year=year, month=d+1)
+                        Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d+1)
                     except ObjectDoesNotExist:
                         print("asdf")
                     else:
-                        next = Transactions.objects.get(
-                            acctID_id=id, transType='Billing', year=year, month=d+1)
+                        next = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d+1)
                         next.usage = next.meterReading - i
                         next.save()
 
-                    lastreading = Transactions.objects.get(
-                        acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
+                    lastreading = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=d-1).meterReading
                     t.meterReading = i
                     t.date = date.today()
                     t.usage = i - lastreading
                     usage = i - lastreading
-                    rate = Rates.objects.get(rate_id=t.ratescode)
+                    rate = ConsumerType.objects.get(contypeidid=t.contypeid)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                     else:
-                        xcubic = t.usage - rate.minReading
-                        xmincharge = xcubic * rate.rateAfterMin
-                        t.bill = xmincharge + rate.minReadingCharge
+                        t.bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
                     t.processedBy = user.username
 
                     t.save()
@@ -531,7 +517,7 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()
@@ -542,19 +528,19 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -596,7 +582,7 @@ def consumercreation(request):
     return render(request, 'consumercreation.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -605,7 +591,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def sysuser(request):
     table = []
 
@@ -644,7 +630,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -662,7 +648,7 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -719,7 +705,7 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -898,7 +884,7 @@ def revenue_report(request, year):
     rec = sum(values) 
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
     
-    print(rec)   
+   
 
     context={
         'rev_col': rev_col,
@@ -984,3 +970,29 @@ def view_unsettled_bills(request, id, year):
             'current':year,
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
+
+@login_required(login_url='login')
+def new_consumertype (request):
+    form = ConscumertypecreationForm()
+    contypecount = len(ConsumerType.objects.all())
+    print(request.user)
+    if request.method =="POST":
+        form = ConscumertypecreationForm(request.POST)
+        contype = request.POST['contype']
+        minReading = request.POST['minReading']
+        minReadingCharge = request.POST['minReadingCharge']
+        rateAfterMin = request.POST['rateAfterMin']
+        if form.is_valid():
+            ct = ConsumerType()
+            ct.contypeid = "C00"+str(contypecount+1)
+            ct.contype = contype
+            ct.minReading = minReading
+            ct.minReadingCharge = minReadingCharge
+            ct.rateAfterMin = rateAfterMin
+            ct.added_by = request.user
+            ct.save()
+    context = {
+            'form': form,
+            'errors': form.errors
+        }
+    return render(request,'new_consumertype.html', context)

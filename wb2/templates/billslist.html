@@ -94,7 +94,7 @@
                     <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}}
                             {{bill.middlename}}</a></td>
                     <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
-                    <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369; {{bill.current_bal|intcomma}}</a></td>
+                    <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;  {{bill.current_bal|floatformat:2|intcomma}}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
