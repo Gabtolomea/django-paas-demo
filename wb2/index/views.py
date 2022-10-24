@@ -770,7 +770,7 @@ def unsettled_bill(request):
     context = {
         'year':year,
         'ub': ub
-    }
+    }    
     return render(request, 'unsettled_bill.html', context)
 
 
