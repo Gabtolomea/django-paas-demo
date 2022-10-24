@@ -76,7 +76,7 @@ Revenue Report
 
     <div class="row">
       <div class="col-md-4 col-lg-2">
-        <button type="button" id="postbtn" onclick="this_record() "class="btn btn-info  btn-block" style="border-radius: 25px; margin-top: 30px;">Get a Copy</button>
+        <button type="button" id="postbtn" onclick="this_record() "class="btn btn-info  btn-block" style="border-radius: 25px; margin-top: 30px; color: white;">Get a Copy</button>
       </div><!-- /col -->
     </div><!-- /row -->
     
@@ -88,7 +88,7 @@ Revenue Report
 
     <br>
 
-   <center><strong>Total Monthly Collection for The  Year of {{cur_year}}: </strong></center>
+   <center><strong style="font-weight: bold; font-style: italic;">Total Monthly Collection for The  Year of {{cur_year}}: </strong></center>
    <center><strong>&#8369;  {{col|floatformat:2|intcomma}}</strong></center>
     <canvas id="myChart" width="800" height="150"></canvas>
  
@@ -139,7 +139,7 @@ Revenue Report
       <br>
       <br>
       <br>
-      <center><strong>Total Monthly Collictables for The  Year of {{cur_year}}:</strong></center>
+      <center><strong style="font-weight: bold; font-style: italic;">Total Monthly Collictables for The  Year of {{cur_year}}:</strong></center>
       <center><strong>&#8369;  {{rec|floatformat:2|intcomma}}</strong></center>
       <canvas id="receivable" width="800" height="150"></canvas>
       
