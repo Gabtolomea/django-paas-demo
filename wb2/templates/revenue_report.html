@@ -257,13 +257,13 @@ Revenue Report
       console.log(body)
 
       //print details
-      var doc = new jsPDF('p', 'pt', 'a4');
+      var doc = new jsPDF('p', 'pt', 'legal');
       var y = 10;
       var x = 20;
       doc.setLineWidth(2);
       doc.setFontSize(15);
       doc.setFillColor(255, 255, 255);
-      doc.text(150, y = y + 20, "Revenue Detailed Report for the Year {{cur_year}}");
+      doc.text(150, y = y + 45, "Revenue Detailed Report for the Year {{cur_year}}");
       doc.autoTable({
         head: [['Month', 'Collected', 'Collectable', 'Total']],
         margin: { top: 20, bottom: 20 },
@@ -271,25 +271,37 @@ Revenue Report
         body: body,
         columnStyles: { align: "right" },
         theme: 'striped',
-        startY: 70,
+        startY: 80,
       })
-    doc.setFontSize(12)
-    doc.text(80,y = y + 370, "Total Monthly Collection and Total Monthly Collectibles for The  Year of {{cur_year}}");
-    y = doc.lastAutoTable.finalY
-		doc.setFillColor(255, 255,255);
-		doc.addImage(canvasImg, 'JPEG', x+55, y+70, 480, 180)
     
-    doc.setFontSize(8)
+      //first graph
+    doc.setFontSize(12)
+    doc.setFont("BankGothic Md BT","bold")
+    doc.text(181,y = y + 360, "Total Monthly Collection for The  Year of {{cur_year}}:");
+    
+    doc.setFontSize(11.5)
+    doc.setFont("Bahnschrift", "bold")
+    doc.text(258, y = y + 20,"{{col|floatformat:2|intcomma}} PHP");
     y = doc.lastAutoTable.finalY
-		doc.setFillColor(255, 255,255);
-		doc.addImage(canvasImgs, 'JPEG', x+55, y+270, 480, 180)
+
+		doc.setFillColor(248, 253,180);
+		doc.addImage(canvasImg, 'PNG', x+17, y+90, 550, 160)
+    
+    //second graph
+    doc.setFont("BankGothic Md BT","bold")
+    doc.text(181,y = y + 314, "Total Monthly Collectibles for The  Year of {{cur_year}}:");
+
+    doc.setFont("Bahnschrift", "bold")
+    doc.text(258, y = y + 20,"{{rec|floatformat:2|intcomma}} PHP");
+    y = doc.lastAutoTable.finalY
+		doc.setFillColor(248, 253,180);
+		doc.addImage(canvasImgs, 'PNG', x+17, y+345, 550, 160)
   
     console.log(y);
 		if (y > 600) {
 			doc.addPage()
 			y = 20
 		}
-      doc.setFontSize(12)
       console.log("testing")
       doc.save('Revenue-Detailed-Report.pdf')
 
