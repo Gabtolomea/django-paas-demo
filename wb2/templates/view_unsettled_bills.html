@@ -5,24 +5,22 @@
 
 {% block view_unsettled_bills %}
 <table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
-    <thead class="header">
-        <tr>
-            <th scope="col" style="min-width:110px">Account ID</th>
-            <th scope="col" style="min-width:110px">Meter Number</th>
-            <th scope="col" style="min-width:110px">Name</th>
-            <th scope="col" style="min-width:110px">Address</th>
-        </tr>
+  <thead class="header">
     <tr>
-        <td>{{uv.consumer_id}}</td>
-        <td>{{uv.meternumber}}</td>
-        <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
-        <td>{{uv.installation_address}}</td>
-
+      <th scope="col" style="min-width:110px">Account ID</th>
+      <th scope="col" style="min-width:110px">Meter Number</th>
+      <th scope="col" style="min-width:110px">Name</th>
+      <th scope="col" style="min-width:110px">Address</th>
     </tr>
-</thead>
+    <tr>
+      <td>{{uv.consumer_id}}</td>
+      <td>{{uv.meternumber}}</td>
+      <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
+      <td>{{uv.installation_address}}</td>
+    </tr>
+  </thead>
 </table>
-<label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year:
-</label>
+<label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">SelectYear:</label>
 <form id="yearselection" action="">
   <select class="form-select" id="selector" onchange="change()">
     <option value="{{current}}">{{current}}</option>
@@ -41,7 +39,7 @@
 </script>
 <br>
 <table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
-  <thead class="wb_thead" >
+  <thead class="wb_thead">
     <tr class="header ">
       <th style="width: 25% !important;">Month</th>
       <th style="width: 25% !important;">Reading</th>
@@ -49,7 +47,6 @@
       <th style="width: 25% !important;">Consumption</th>
       <th style="width: 25% !important;">Total Bill</th>
       <th style="width: 25% !important;">Total Amount Paid</th>
-
     </tr>
   </thead>
   <tbody class="wb_tbody">
