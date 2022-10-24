@@ -918,6 +918,7 @@ def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id = id)
     con.delete()
     return redirect('consumer_list')
+
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
@@ -929,7 +930,7 @@ def unsettled_bill(request):
 def view_unsettled_bills(request, id, year):
     years = []
     table = []
-    uv = ConsumerInfo.objects.get(consumer_id=id) 
+    uv = ConsumerInfo.objects.get(consumer_id=id)
     class view_utang():
         def __init__(self, month, reading, reading_date, usage,total_bill,total_amount_paid):
             self.month = month
@@ -946,7 +947,7 @@ def view_unsettled_bills(request, id, year):
     count = len(billing)
     j = 0
     if billing[0].date.month == 1:
-        j = 1   
+        j = 1
     for i in alltran:
             if i.year not in years:
                 if i.year is not None:
@@ -975,7 +976,7 @@ def view_unsettled_bills(request, id, year):
                 total_bill = billing[j].bill
                 j += 1
 
-        a = view_utang(month, reading, reading_date, usage,total_bill,total_amount_paid)    
+        a = view_utang(month, reading, reading_date, usage,total_bill,total_amount_paid)
         table.append(a)
 
     context ={'uv':uv,
@@ -983,5 +984,3 @@ def view_unsettled_bills(request, id, year):
             'current':year,
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
-
-  

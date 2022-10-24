@@ -9,17 +9,34 @@
        opacity: 0;
 	   transition: 0.3s all ease-in-out;
 
-	}
-	.showOnHover:hover .hide{
-		opacity: 1;
-		transition: 0.3s all ease-in-out;
-	}
-	td,th{
-		text-align: center;
-	}
-	.inputid{
-		text-align: center;
-	}
+    }
+
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+    }
+
+    td,
+    th {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .inputid {
+        text-align: center;
+    }
+
+    .button2 {
+        background-color:#091d36;
+        font-size: 12px;
+        color: white;
+        border-radius: 30px;
+        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+    }
+    button.btn.button2:hover {
+    background: #3a4e7a !important;
+    color: white;
+}
 </style>
 {% endblock style %}
 {% block script %}
@@ -64,7 +81,7 @@
                 {% for con in consumer_list %}
                 <tr class="showOnHover ">
                     <td>{{con.consumer_id}}</td>
-                    <td style="text-align: left;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
+                    <td style="text-align: left; white-space: nowrap;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
                     <td>{{con.installation_address}}</td>
                     <td class="{{t.style}}">
                         {{con.meternumber}}
