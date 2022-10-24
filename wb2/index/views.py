@@ -1019,3 +1019,7 @@ def new_consumertype (request):
             'errors': form.errors
         }
     return render(request,'new_consumertype.html', context)
+
+def billing(request):
+    
+    return render(request, 'billpdf.html')
