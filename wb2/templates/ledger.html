@@ -15,14 +15,14 @@ Account Ledger
 	}
 </style>
 <div class="container-fluid p-0">
-	<div class="table_responsive" style="max-height: 922px;">
-		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+	<div class="table-responsive">
+		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr class="header">
-					<th scope="col" style="min-width:110px">Account ID</th>
-					<th scope="col" style="min-width:120px">Name</th>
-					<th scope="col" style="min-width:100px">Meter Number</th>
-					<th scope="col" style="min-width:100px">Current Balance</th>
+					<th scope="col" style="min-width:25px">Account ID</th>
+					<th scope="col" style="min-width:25px">Name</th>
+					<th scope="col" style="min-width:25px">Meter Number</th>
+					<th scope="col" style="min-width:25px">Current Balance</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -68,12 +68,12 @@ Account Ledger
 		</div>
 	</div>
 </div>
-<div class="row w-100 m-auto">
-	<div class="col-lg-6 col-md-6 col-sm-6">
-		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back">Back</button></a>
+<div class="row w-100 m-auto pt-2">
+	<div class="col-lg-2 col-md-2 col-sm-2 col-2">
+		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back" style="float:left; font-size: 11px !important; border-radius: 11px; ">Back</button></a>
 	</div>
-	<div class="col-lg-6 col-md-6 col-sm-6">
-		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right;">Input Reading</button></a>
+	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
+		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
 	</div>
 
 </div>
@@ -118,8 +118,8 @@ Account Ledger
 		</table id="tabs">
 	</div>
 </div>
-<div class="col-lg-6 col-md-6 col-sm-6" >
-	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy" style="float:right;">Get a Copy
+<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;" >
+	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy" style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
 	</button>
 </div>
 </div id="elementH">

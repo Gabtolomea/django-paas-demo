@@ -30,16 +30,16 @@ Consumer List
     }
 
     .button2 {
-        background-color: #63CDD7;
+        background-color:#091d36;
+        font-size: 12px;
         color: white;
-        font-weight: bold;
-        width: 15%;
-        text-decoration: none;
-        padding: 8px 32px;
-        margin: 4px 2px;
         border-radius: 30px;
         box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
     }
+    button.btn.button2:hover {
+    background: #3a4e7a !important;
+    color: white;
+}
 </style>
 {% endblock style %}
 {% block script %}
@@ -84,7 +84,7 @@ Consumer List
                 {% for con in consumer_list %}
                 <tr class="showOnHover ">
                     <td>{{con.consumer_id}}</td>
-                    <td style="text-align: left;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
+                    <td style="text-align: left; white-space: nowrap;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
                     <td>{{con.installation_address}}</td>
                     <td class="{{t.style}}">
                         {{con.meternumber}}

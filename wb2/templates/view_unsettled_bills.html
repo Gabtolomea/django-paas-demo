@@ -7,11 +7,11 @@
 <div class="table-responsive">
 <table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
     <thead class="header">
-        <tr style="background-color: #63CDD7;">
-            <th scope="col" style="min-width:110px">Account ID</th>
-            <th scope="col" style="min-width:110px">Meter Number</th>
-            <th scope="col" style="min-width:110px">Name</th>
-            <th scope="col" style="min-width:110px">Address</th>
+        <tr style="background-color: #63CDD7; color: white;">
+            <th scope="col" style="min-width: 25px">Account ID</th>
+            <th scope="col" style="min-width: 25px">Meter Number</th>
+            <th scope="col" style="min-width: 25px">Name</th>
+            <th scope="col" style="min-width: 25px">Address</th>
         </tr>
     <tr>
         <td>{{uv.consumer_id}}</td>
@@ -42,31 +42,34 @@
   }
 </script>
 <br>
-<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
-  <thead class="wb_thead" >
-    <tr class="header ">
-      <th style="width: 25% !important;">Month</th>
-      <th style="width: 25% !important;">Reading</th>
-      <th style="width: 25% !important;">Reading Date</th>
-      <th style="width: 25% !important;">Consumption</th>
-      <th style="width: 25% !important;">Total Bill</th>
-      <th style="width: 25% !important;">Total Amount Paid</th>
-
-    </tr>
-  </thead>
-  <tbody class="wb_tbody">
-  </tbody>
-  {% for t in table %}
-  <tr>
-    <td>{{t.month}}</td>
-    <td>{{t.reading}}</td>
-    <td>{{t.reading_date}}</td>
-    <td>{{t.consumption}}</td>
-    <td>{{t.total_bill}}</td>
-    <td>{{t.total_amount_paid}}</td>
-  </tr>
-  {% endfor %}
-</table>
+<div class="container-fluid p-0">
+	<div class="table-responsive">
+      <table id="table" class="table table-bordered table-sm table-responsive" cellspacing="0" width="100%" border-spacing: 0;>
+          <thead class="wb_thead" >
+        <tr class="header ">
+          <th style="width: 25% !important;">Month</th>
+          <th style="width: 25% !important;">Reading</th>
+          <th style="width: 25% !important;">Reading Date</th>
+          <th style="width: 25% !important;">Consumption</th>
+          <th style="width: 25% !important;">Total Bill</th>
+          <th style="width: 25% !important;">Total Amount Paid</th>
+        </tr>
+          </thead>
+              <tbody class="wb_tbody">
+              </tbody>
+            {% for t in table %}
+            <tr>
+              <td>{{t.month}}</td>
+              <td>{{t.reading}}</td>
+              <td>{{t.reading_date}}</td>
+              <td>{{t.consumption}}</td>
+              <td>{{t.total_bill}}</td>
+              <td>{{t.total_amount_paid}}</td>
+            </tr>
+            {% endfor %}
+    </table>
+  </div>
+</div>
 {%  endblock view_unsettled_bills %}
 
 
