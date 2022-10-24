@@ -767,6 +767,7 @@ def view_barangay(request, id):
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     year = date.today().year
+    print(year)
     context = {
         'year':year,
         'ub': ub
