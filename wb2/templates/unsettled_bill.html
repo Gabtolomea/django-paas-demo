@@ -31,7 +31,7 @@ Unsettled Bills
                     <td>{{ub.installation_address}}</td>
                     <td>{{ub.current_bal}}</td>
                     <td>
-                        <a href="#">
+                        <a href="{%url 'view_unsettled_bills' ub.consumer_id year%}">
                             <button class="hide btn btn-success btn-sm rounded-0" style="float: left;" data-toggle="modal" type="button" data-placement="top" title="View">
                                 <i class="fa-solid fa-eye"></i>
                             </button>

@@ -766,7 +766,9 @@ def view_barangay(request, id):
 
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
+    year = date.today().year
     context = {
+        'year':year,
         'ub': ub
     }
     return render(request, 'unsettled_bill.html', context)
@@ -1021,5 +1023,9 @@ def new_consumertype (request):
     return render(request,'new_consumertype.html', context)
 
 def billing(request):
+    b = ConsumerInfo.objects.all()
     
-    return render(request, 'billpdf.html')
+    context = {
+        'b':b
+    }
+    return render(request,'billpdf.html', context)

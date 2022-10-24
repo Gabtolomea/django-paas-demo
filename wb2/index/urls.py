@@ -38,6 +38,7 @@ urlpatterns = [
     path('reports/view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
     path('discount',views.discount, name='discount'),
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
+    path('billing', views.billing, name='billing')
 
 
 
