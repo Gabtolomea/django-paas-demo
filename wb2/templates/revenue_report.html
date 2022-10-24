@@ -281,7 +281,7 @@ Revenue Report
     
     doc.setFontSize(11.5)
     doc.setFont("Bahnschrift", "bold")
-    doc.text(258, y = y + 20,"{{col|floatformat:2|intcomma}} PHP");
+    doc.text(258, y = y + 20,"PHP {{col|floatformat:2|intcomma}}");
     y = doc.lastAutoTable.finalY
 
 		doc.setFillColor(248, 253,180);
@@ -292,7 +292,7 @@ Revenue Report
     doc.text(181,y = y + 314, "Total Monthly Collectibles for The  Year of {{cur_year}}:");
 
     doc.setFont("Bahnschrift", "bold")
-    doc.text(258, y = y + 20,"{{rec|floatformat:2|intcomma}} PHP");
+    doc.text(258, y = y + 20,"PHP {{rec|floatformat:2|intcomma}}");
     y = doc.lastAutoTable.finalY
 		doc.setFillColor(248, 253,180);
 		doc.addImage(canvasImgs, 'PNG', x+17, y+345, 550, 160)
