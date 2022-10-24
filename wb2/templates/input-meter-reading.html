@@ -42,7 +42,7 @@ Input Reading
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
+				<tr class="showOnHover">
 					<td>{{consumer.consumer_id}}</td>
 					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
 					<td style="text-align:center;">{{consumer.meternumber}}</td>
@@ -57,7 +57,7 @@ Input Reading
 								<i class="fa fa-play"></i> ENABLE
 							</button>
 							{% else %}
-							<button class="btn btn-danger btn-sm rounded-3" type="submit"
+							<button class="hide btn btn-danger btn-sm rounded-3" type="submit"
 								onclick="return confirm('Stop {{consumer.firstname}}\'s Meter?')" title="Stop" style="text-align-last: right;">
 								<i class="fa fa-stop"></i> STOP
 							</button>
@@ -116,7 +116,7 @@ Input Reading
 							{{t.usage}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
-								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}} 
+								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}}
 								{% if t.next %}max="{{t.next}}" {%endif%} value="{{t.reading}}">
 						</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
@@ -227,7 +227,7 @@ Input Reading
 			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script type="text/javascript">
-			
+
 	function print() {
 		var doc = new jsPDF('landscape', 'pt', 'legal');
 		var htmlstring = '';
@@ -279,7 +279,7 @@ Input Reading
 			columnStyles: {
 				0: {
 					cellWidth: 75,
-				},					
+				},
 			},
 			styles: {
 				minCellHeight: 20
@@ -296,7 +296,7 @@ Input Reading
 		}
 		console.log("testing")
 		doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
-	}				
+	}
 		</script>
 	</div>
 </div>
