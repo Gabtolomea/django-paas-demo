@@ -10,6 +10,7 @@
         {% block title %}
         {% endblock title %}
     </title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -220,6 +221,12 @@
         {%  endblock view_unsettled_bills %}
         {%  block sysuserupdate %}
         {%  endblock sysuserupdate %}
+        {% block settingspage %}
+        {% endblock settingspage %}
+
+
+        
+
 
         {% block revenue_report %}
         {% endblock revenue_report %}
@@ -319,7 +326,7 @@
                     });
                 }
             });
-        });        
+        });
     </script>
  
 </body><script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>

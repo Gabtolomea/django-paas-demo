@@ -42,12 +42,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -67,7 +67,6 @@ def signin(request):
         else:
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
-
 
 
 def signout(request):
@@ -650,7 +649,7 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -973,6 +972,31 @@ def view_unsettled_bills(request, id, year):
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
 
+# def addPenalty(request):
+#     form = addPenalty()
+#     if request.method == "POST":
+#         form = addPenalty(request.POST)
+
+def discount(request):
+    form = addDiscount()
+    discountid = len(Discount.objects.all())
+    if request.method == "POST":
+        form = addDiscount(request.POST)
+        discountid = request.POST['discountid']
+        discount_rate = request.POST['discount_rate']
+        if form.is_valid():
+            addD = Discount
+            addD.discountid = discountid
+            addD.discount_rate = discount_rate
+            addD.added_by = request.user
+            addD.save()
+    context = {
+        'form': form,
+        'errors': form.errors,
+                }
+    return render(request, 'discount.html', context)
+     
+    
 # @login_required(login_url='login')
 def new_consumertype (request):
     form = ConscumertypecreationForm()

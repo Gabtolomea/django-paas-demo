@@ -35,14 +35,13 @@ alltables = [
 
 sorted_tables = []
 
-mydb = mysql.connector.connect(
-   host="localhost",
-   user="root",
-   password="yjh434ctuG@-@",
-   database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
-
+# mydb = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="database2021",
+#     database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -302,7 +301,7 @@ def porter_out(tables):
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])   
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])
         usage_rec.amountpaid_str_apr =	i[163]
         usage_rec.amountpaid_str_aug = i[164]
         usage_rec.amountpaid_str_dec = i[165]
@@ -321,7 +320,7 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
-    
+
 def billing_out():
     u_rec = usage_record.objects.all()
     for u in u_rec:
@@ -631,4 +630,3 @@ def b_rec_out(i):
     b_rec.total_paid_dec = i[40]
     b_rec.total_usage_dec = i[41]
     b_rec.save()
-
