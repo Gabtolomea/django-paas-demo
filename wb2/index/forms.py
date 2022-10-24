@@ -144,17 +144,25 @@ class Userinfoupdate(ModelForm):
             'picture'
         )
     
-# class addPenalty(ModelForm):
-#     penaltycode = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-#     penaltyrate = forms.NumberInput(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-#     addedby = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+class addPenalty(ModelForm):
+    penalty_info = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    penalty_after = forms.NumberInput(attrs={'class': 'form-control', 'min':0})
+    daysappliedafter = forms.NumberInput(attrs={'class': 'form-control','min':0})
+    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-        # class Meta:
-        #     models = 
+    class Meta:
+            models = Penalty
+            fields = (
+                'penalty_info',
+                'penaltyrate',
+                'penalty_after',
+                'daysappliedafter',
+                'added_by'
+            )
 
 class addDiscount(ModelForm):
-    discountcode = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
     added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta():
@@ -166,7 +174,7 @@ class addDiscount(ModelForm):
         )
 
 class ConscumertypecreationForm (ModelForm):
-    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'min':0}))
+    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
     minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
     rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))

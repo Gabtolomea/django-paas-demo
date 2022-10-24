@@ -979,14 +979,13 @@ def view_unsettled_bills(request, id, year):
 
 def discount(request):
     form = addDiscount()
-    discountid = len(Discount.objects.all())
+    discountidcount = len(Discount.objects.all())
     if request.method == "POST":
         form = addDiscount(request.POST)
-        discountid = request.POST['discountid']
         discount_rate = request.POST['discount_rate']
         if form.is_valid():
-            addD = Discount
-            addD.discountid = discountid
+            addD = Discount()
+            addD.discountcode = "D00"+str(discountidcount+1)
             addD.discount_rate = discount_rate
             addD.added_by = request.user
             addD.save()
@@ -1001,7 +1000,6 @@ def discount(request):
 def new_consumertype (request):
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
-    print(request.user)
     if request.method =="POST":
         form = ConscumertypecreationForm(request.POST)
         contype = request.POST['contype']
@@ -1022,3 +1020,28 @@ def new_consumertype (request):
             'errors': form.errors
         }
     return render(request,'new_consumertype.html', context)
+
+def penalty (request):
+    form = addPenalty
+    penaltycounter = len(Penalty.objects.all())
+    if request.method =="POST":
+        form = addPenalty(request.POST)
+        penalty_info = request.POST['penalty_info']
+        penalty_rate = request.POST['penalty_rate']
+        penalty_after = request.POST['penalty_after']
+        daysappliedafter = request.POST['daysappliedafter']
+        if form.is_valid():
+            pen = Penalty()
+            pen.penaltycode = "P00"+str(penaltycounter+1)
+            pen.penalty_info = penalty_info
+            pen.penalty_rate = penalty_rate
+            pen.penalty_after = penalty_after
+            pen.daysappliedafter = daysappliedafter
+            pen.added_by = request.user
+            pen.save()
+    context = {
+        'form': form,
+        'errors': form.errors
+        }
+
+    return render(request, 'penalty.html', context)
