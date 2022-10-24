@@ -4,6 +4,7 @@ from .colnames import *
 from datetime import datetime
 import math
 import mysql.connector
+import base64
 
 tablenames = [
     "accountinfo",
@@ -550,13 +551,17 @@ def get_cummulative(id):
     return math.ceil(cum*100)/100
 
 def sys_user_out(i):
+    user = SystemUsers.objects.create
     sys_user.is_admin = False
     sys_user.is_teller = False
     sys_user.is_supervisor = False
     sys_user.is_manager = False
     sys_user.is_reader = False
     sys_user.username = i[0]
-    sys_user.password = i[1]
+    passAscii = base64.b64decode(i[1])
+    p = passAscii.decode("ascii")
+    print(p)
+    sys_user.password = p
     sys_user.first_name = i[2]
     sys_user.mid_name = i[3]
     sys_user.mobilenum = i[4]

@@ -65,7 +65,7 @@ def signin(request):
     return render(request, 'login.html')
 
 
-@login_required(login_url='signin')
+@login_required(login_url='login')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -516,7 +516,7 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-@login_required(login_url='signin')
+@login_required(login_url='login')
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()

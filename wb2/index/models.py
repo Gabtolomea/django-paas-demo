@@ -1,15 +1,12 @@
 
 from datetime import date
-from email.policy import default
-from operator import is_
-from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
-    password = models.BinaryField(max_length=450, blank=True, editable = True)  
+    password = models.BinaryField(max_length=450, blank=True, editable = True)
     username = models.CharField(primary_key=True, max_length=20)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
