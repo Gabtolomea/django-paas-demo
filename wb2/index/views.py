@@ -30,6 +30,10 @@ from django.db.models import F, Sum
 from .decorators import unauthenticated_user
 
 
+
+def login_redirect(request):
+    return redirect('login')
+
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -65,7 +69,6 @@ def signin(request):
     return render(request, 'login.html')
 
 
-# @login_required(login_url='signin')
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -120,13 +123,12 @@ def user_creation(request):
 
 
 # @login_required(login_url='login')
-# def dashboard(request):
-#     user = request.user
-#     context = {
-#         'user': user
-#     }
-#     return render(request, 'dashboard.html', context)
-
+def dashboard(request):
+    user = request.user
+    context = {
+        'user': user
+    }
+    return render(request, 'dashboard.html', context)
 
 # @login_required(login_url='login')
 def ledger(request, id):
@@ -263,7 +265,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-# @login_required(login_url='login')
+# @login_required
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -704,7 +706,8 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
-@login_required(login_url='login')
+
+# @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -773,6 +776,7 @@ def unsettled_bill(request):
         'ub': ub
     }    
     return render(request, 'unsettled_bill.html', context)
+
 
 def usage_report_data(request, year):
     years = []
@@ -978,14 +982,13 @@ def view_unsettled_bills(request, id, year):
 
 def discount(request):
     form = addDiscount()
-    discountid = len(Discount.objects.all())
+    discountidcount = len(Discount.objects.all())
     if request.method == "POST":
         form = addDiscount(request.POST)
-        discountid = request.POST['discountid']
         discount_rate = request.POST['discount_rate']
         if form.is_valid():
-            addD = Discount
-            addD.discountid = discountid
+            addD = Discount()
+            addD.discountcode = "D00"+str(discountidcount+1)
             addD.discount_rate = discount_rate
             addD.added_by = request.user
             addD.save()
@@ -1000,7 +1003,6 @@ def discount(request):
 def new_consumertype (request):
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
-    print(request.user)
     if request.method =="POST":
         form = ConscumertypecreationForm(request.POST)
         contype = request.POST['contype']
@@ -1022,10 +1024,47 @@ def new_consumertype (request):
         }
     return render(request,'new_consumertype.html', context)
 
+def penalty (request):
+    form = addPenalty
+    penaltycounter = len(Penalty.objects.all())
+    if request.method =="POST":
+        form = addPenalty(request.POST)
+        penalty_info = request.POST['penalty_info']
+        penalty_rate = request.POST['penalty_rate']
+        penalty_after = request.POST['penalty_after']
+        daysappliedafter = request.POST['daysappliedafter']
+        if form.is_valid():
+            pen = Penalty()
+            pen.penaltycode = "P00"+str(penaltycounter+1)
+            pen.penalty_info = penalty_info
+            pen.penalty_rate = penalty_rate
+            pen.penalty_after = penalty_after
+            pen.daysappliedafter = daysappliedafter
+            pen.added_by = request.user
+            pen.save()
+    context = {
+        'form': form,
+        'errors': form.errors
+        }
+
+    return render(request, 'penalty.html', context)
+
+    
 def billing(request):
     b = ConsumerInfo.objects.all()
+    date = datetime.now().date()
     
     context = {
-        'b':b
+        'b':b,
+        'date':date
     }
-    return render(request,'billpdf.html', context)
+    return render(request, 'pdf_bill.html', context)
+
+
+# def billing(request):
+#     b = ConsumerInfo.objects.all()
+    
+#     context = {
+#         'b':b
+#     }
+#     return render(request,'billpdf.html', context)

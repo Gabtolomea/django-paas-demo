@@ -4,14 +4,16 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
+
 urlpatterns = [
-    path('port',views.porter,name='porter'),
+    path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),
     path('login',views.signin,name='login'),
     path('user_creation', views.user_creation,name='user_creation'),
     path('signout', views.signout,name='signout'),
-    path('bills_list', views.bills_list, name='bills_list'),
+    path('bills_list/', views.bills_list, name='bills_list'),
     path('bills_list/<id>/', views.ledger,name='ledger'),
+    path('payment/<id>/', views.payment, name='payment'),
     path('meterreading/', views.meterreading,name='meterreading'),
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
@@ -35,14 +37,12 @@ urlpatterns = [
     path('reports/revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bill, name='unsettled_bills'),
     path('reports/view_unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
+    path('discount',views.discount, name='discount'),
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('penalty', views.penalty, name='penalty'),
-    path('billing', views.billing, name='billing'),
-    path('discount',views.discount, name='discount'),
+    path('billing',views.billing, name='billing')
 
 
-
-    # path('inputreadingtesting', views.inputreadingtesting, name='inputreadingtesting'),
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
