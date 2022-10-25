@@ -36,10 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'index',
     'chartjs',
     'active_link',
-    'django.contrib.humanize'
 ]
 
 LOGIN_URL = "login"

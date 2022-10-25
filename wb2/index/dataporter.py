@@ -42,6 +42,15 @@ sorted_tables = []
 #     database="lgu_ginatilan_db"
 # )
 # mycursor = mydb.cursor()
+def porter():
+    porter_in()
+    porter_out(sorted_tables)
+    porter_in()
+    porter_out(sorted_tables)
+    billing_out()
+    return
+
+
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -630,3 +639,4 @@ def b_rec_out(i):
     b_rec.total_paid_dec = i[40]
     b_rec.total_usage_dec = i[41]
     b_rec.save()
+
