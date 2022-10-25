@@ -5,7 +5,6 @@ html{
 .menu_header{
     background:#045163;
     color:white;
-    padding: 8px;
 }
 button#first_toggle:hover{
   background: #63CDD7 !important;
