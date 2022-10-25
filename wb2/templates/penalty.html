@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penalty</title>
 </head>
+<style>
+    #addPen {
+    display:none;
+}
+</style>
 <body>
     <h1> Penalty </h1>
 <div>
@@ -33,6 +38,14 @@
     {% endfor %}
 </tbody>
 </table>
+</div>
+
+<br>
+<br>
+<br>
+<button onclick="myFunction('addPen')">Add</button>
+
+<div id="addPen">
 <form method="POST" action="">
     {% csrf_token %}
     <h3> Add New Penalty</h3>
@@ -57,7 +70,16 @@
 <br>
 </form>
 </div>
-
+<script>
+    function myFunction(addPen) {
+    var x = document.getElementById(addPen);
+    if (x.style.display == "block") { 
+        x.style.display = "none"; 
+    } else { 
+        x.style.display = "block"; 
+    }
+}
+    </script>
 </body>
 
 </html>
