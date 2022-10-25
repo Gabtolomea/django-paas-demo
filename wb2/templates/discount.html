@@ -1,46 +1,118 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discount Rate</title>
-</head>
+
+<style>
+    #addPen {
+        display: none;
+    }
+
+    .button2 {
+        background-color: #63CDD7;
+        color: white;
+        font-weight: bold;
+        width: 15%;
+        text-decoration: none;
+        padding: 8px 32px;
+        margin: 4px 2px;
+        border-radius: 30px;
+        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+    }
+    .form-control{
+        width: 50% !important;
+    }
+
+
+</style>
+
+
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<style>
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+{% endblock style %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+{% endblock script %}
+
 <body>
-    <h1> Discount</h1>
-    <table>
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Discount Rate</th>
-            <th>Added By</th>
-            <th>Date Added</th>
-          </tr>
-        </thead>
-        <tbody>
-            {% for d in d %}
-            <tr>
-                <td>{{d.discountcode}}</td>
-                <td>{{d.discount_rate}}</td>
-                <td>{{d.added_by_id}}</td>
-                <td>{{d.date_added}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
- <form method="POST" action="">
-    {% csrf_token %}
-    <h3> Add New Discount Rate</h3>
-    <label>Rate:</label>
-    {{form.discount_rate}}
-<br>
-<br>
-  
+    <h1 class="mb-3 text-center"> Discount</h1>
+    <div class="container-fluid p-0">
+        <div class="table-responsive">
+            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+                <thead class="wb_thead">
+                    <tr style="background-color: #63CDD7; color: white;">
+                        <th>Code</th>
+                        <th>Discount Rate</th>
+                        <th>Added By</th>
+                        <th>Date Added</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in d %}
+                    <tr>
+                        <td>{{d.discountcode}}</td>
+                        <td>{{d.discount_rate}}</td>
+                        <td>{{d.added_by_id}}</td>
+                        <td>{{d.date_added}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <center><button onclick="myFunction('addPen')" class="btn button2" style="background-color: #63CDD7;
+            color: white; text-align: center;">Add</button></center>
+            <br>
+            <div id="addPen">
+                 <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="wrapper shadow"
+                        style=" margin: 5% auto !important; border-radius: 40px;  max-width: 600px; padding: 30px 0; background: #63CDD7;">
+                        <div class="discount" style="padding-right: 15px">
+                            <h3 style="text-align: center;"> Add New Discount Rate</h3>
+                            <br>
+                            <center><label style="font-weight: bold;">Rate:</label></center>
+                            <center>{{form.discount_rate}}</center>
+                            <center><input type="submit" name="Submit" style="background-color: #63CDD7;
+                                color: white;
+                                font-weight: bold;
+                                width: 20%;
+                                text-decoration: none;
+                                padding: 8px 32px;
+                                margin: 4px 2px;
+                                border-radius: 30px;
+                                box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+                                text-align: center;"></center>
+                        </div>
+                    </div>
 
-    <input type="submit" name="Submit">
-  
-</form>
+                </form>
 
-</body>
-
-</html>
+            </div>
+            <script>
+                function myFunction(addPen) {
+                    var x = document.getElementById(addPen);
+                    if (x.style.display == "block") {
+                        x.style.display = "none";
+                    } else {
+                        x.style.display = "block";
+                    }
+                }
+            </script>
