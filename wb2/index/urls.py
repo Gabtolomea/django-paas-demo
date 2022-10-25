@@ -40,6 +40,7 @@ urlpatterns = [
     path('discount',views.discount, name='discount'),
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('penalty', views.penalty, name='penalty'),
+    path('billing', views.billing, name='billing')
 
 
 
