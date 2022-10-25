@@ -1050,7 +1050,7 @@ def penalty (request):
     return render(request, 'penalty.html', context)
 
     
-def billing(request):
+def billing(request, id):
     b = ConsumerInfo.objects.all()
     date = datetime.now().date()
     
