@@ -6,69 +6,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penalty</title>
 </head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
     #addPen {
     display:none;
 }
+h1{
+    text-align: center;
+}
+h3{
+    text-align: center;
+}
+
+.container {
+        font-family: Arial;
+        color: #ffffff;
+    }
+
+.wrapper {
+        font-size: 20px;
+        font-family: Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+        background: #63CDD7;
+        border-radius: 40px;
+        padding: 50px;
+    }
+    .button2{
+        background-color: #63CDD7;
+        color: white;
+        font-weight: bold;
+        width: 15%;
+        text-decoration: none;
+        padding: 8px 32px;
+        margin: 4px 2px;
+        border-radius: 30px;
+        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+    }
+    .btn:first-child:hover,
+    :not(.btn-check)+.btn:hover {
+        background-color: white !important;
+        color: black;
+    }
+.button3{
+        background-color: #63CDD7;
+        color: white;
+        font-weight: bold;
+        width: 15%;
+        text-decoration: none;
+        padding: 8px 32px;
+        margin: 4px 2px;
+        border-radius: 30px;
+        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+    }
+    .btn:first-child:hover,
+    :not(.btn-check)+.btn:hover {
+        background-color: white !important;
+        color: black;
+    }
 </style>
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+{% endblock script %}
+
 <body>
     <h1> Penalty </h1>
-<div>
-    <table>
-<thead>
-  <tr>
-    <th>Code</th>
-    <th>Penalty After</th>
-    <th>Days before Applied</th>
-    <th>Details</th>
-    <th>Added By</th>
-    <th>Date Added</th>
-  </tr>
-</thead>
-<tbody>
-    {% for p in p %}
-    <tr>
-        <td>{{p.penaltycode}}</td>
-        <td>{{p.penalty_after}}</td>
-        <td>{{p.daysappliedafter}}</td>
-        <td> {{p.penalty_info}}</td>
-        <td>{{p.added_by_id}}</td>
-        <td>{{p.date_added}}</td>
-    </tr>
-    {% endfor %}
-</tbody>
-</table>
+<div class="container-fluid">
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+            <thead class="wb-thead">
+                <tr style="background: #63CDD7; color: white;">
+                    <th>Code</th>
+                    <th>Penalty After</th>
+                    <th>Days before Applied</th>
+                    <th>Details</th>
+                    <th>Added By</th>
+                    <th>Date Added</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in p %}
+                <tr>
+                    <td>{{p.penaltycode}}</td>
+                    <td>{{p.penalty_after}}</td>
+                    <td>{{p.daysappliedafter}}</td>
+                    <td> {{p.penalty_info}}</td>
+                    <td>{{p.added_by_id}}</td>
+                    <td>{{p.date_added}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <br>
 <br>
 <br>
-<button onclick="myFunction('addPen')">Add</button>
-
+<button onclick="myFunction('addPen')" class="btn button3">Add</button>
+<br>
 <div id="addPen">
-<form method="POST" action="">
-    {% csrf_token %}
-    <h3> Add New Penalty</h3>
-<label>Rate</label>
-{{form.penalty_rate}}
-
-<label>Penalty After</label>
-{{form.penalty_after}}
-
-<label>Days before Application</label>
-{{form.daysappliedafter}}
-
-<label>Details:</label><br>
-{{form.penalty_info}}
-<br>
-<br>
-
-
-    <input type="submit" name="Submit">
-<br>
-<br>
-<br>
-</form>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="container">
+            <div class="shadow wrapper">
+                <h3> Add New Penalty</h3>
+                <br>
+                <div class="row form-group w-100 m-auto">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                        <label>Rate</label>
+                        {{form.penalty_rate}}
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+                        <label>Penalty After</label>
+                        {{form.penalty_after}}
+                    </div>
+                    <center>
+                    <div class="col-lg-6 col-md-12 col-sm-12 ">
+                        <label>Days before Application</label>
+                        {{form.daysappliedafter}}
+                    </div>
+                    </center>
+                    <label>Details:</label><br>
+                    {{form.penalty_info}}
+                </div>
+                <br>
+                <center><button type="submit" id="footer-subscription-button" class="btn button2">Submit</button></center>
+            </div>
+        </div>
+    </form>
 </div>
 <script>
     function myFunction(addPen) {
