@@ -1,5 +1,5 @@
 {% extends 'dashboard.html' %}
-
+{% load humanize %}
 {% load static %}
 
 
@@ -60,8 +60,8 @@
     <td>{{t.reading}}</td>
     <td>{{t.reading_date}}</td>
     <td>{{t.consumption}}</td>
-    <td>{{t.total_bill}}</td>
-    <td>{{t.total_amount_paid}}</td>
+    <td>&#8369;  {{t.total_bill}}</td>
+    <td>&#8369;  {{t.total_amount_paid|floatformat:2|intcomma}}</td>
   </tr>
   {% endfor %}
 </table>

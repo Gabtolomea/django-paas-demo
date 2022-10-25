@@ -1050,10 +1050,3 @@ def penalty (request):
     return render(request, 'penalty.html', context)
 
 
-# def billing(request):
-#     b = ConsumerInfo.objects.all()
-    
-#     context = {
-#         'b':b
-#     }
-#     return render(request,'billpdf.html', context)

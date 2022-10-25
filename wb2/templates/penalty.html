@@ -4,16 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPenalty</title>
+    <title>Penalty</title>
 </head>
 <body>
  <form method="POST" action="">
     {% csrf_token %}
-    <h1> Add New Discount Rate</h1>
-    <label>About:</label>
-    {{form.penalty_info}}
-<br>
-<br>
+    <h1> Add New Penalty</h1>
 <label>Rate</label>
 {{form.penalty_rate}}
 <br>
@@ -24,6 +20,10 @@
 <br>
 <label>Days to Apply</label>
 {{form.daysappliedafter}}
+<br>
+<br>
+<label>Details:</label>
+{{form.penalty_info}}
 <br>
 <br>
 
