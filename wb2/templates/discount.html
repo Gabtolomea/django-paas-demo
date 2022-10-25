@@ -7,9 +7,30 @@
     <title>Discount Rate</title>
 </head>
 <body>
+    <h1> Discount</h1>
+    <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Discount Rate</th>
+            <th>Added By</th>
+            <th>Date Added</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for d in d %}
+            <tr>
+                <td>{{d.discountcode}}</td>
+                <td>{{d.discount_rate}}</td>
+                <td>{{d.added_by_id}}</td>
+                <td>{{d.date_added}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
  <form method="POST" action="">
     {% csrf_token %}
-    <h1> Add New Discount Rate</h1>
+    <h3> Add New Discount Rate</h3>
     <label>Rate:</label>
     {{form.discount_rate}}
 <br>

@@ -975,12 +975,10 @@ def view_unsettled_bills(request, id, year):
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
 
-# def addPenalty(request):
-#     form = addPenalty()
-#     if request.method == "POST":
-#         form = addPenalty(request.POST)
+
 
 def discount(request):
+    d = Discount.objects.all()
     form = addDiscount()
     discountidcount = len(Discount.objects.all())
     if request.method == "POST":
@@ -993,6 +991,7 @@ def discount(request):
             addD.added_by = request.user
             addD.save()
     context = {
+        'd'   : d,
         'form': form,
         'errors': form.errors,
                 }
@@ -1001,6 +1000,7 @@ def discount(request):
     
 # @login_required(login_url='login')
 def new_consumertype (request):
+    c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
     if request.method =="POST":
@@ -1019,12 +1019,14 @@ def new_consumertype (request):
             ct.added_by = request.user
             ct.save()
     context = {
+            'c'   : c,
             'form': form,
             'errors': form.errors
         }
     return render(request,'new_consumertype.html', context)
 
 def penalty (request):
+    p = Penalty.objects.all()
     form = addPenalty
     penaltycounter = len(Penalty.objects.all())
     if request.method =="POST":
@@ -1043,6 +1045,7 @@ def penalty (request):
             pen.added_by = request.user
             pen.save()
     context = {
+        'p'   : p,
         'form': form,
         'errors': form.errors
         }

@@ -7,30 +7,56 @@
     <title>Penalty</title>
 </head>
 <body>
- <form method="POST" action="">
+    <h1> Penalty </h1>
+<div>
+    <table>
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Penalty After</th>
+    <th>Days before Applied</th>
+    <th>Details</th>
+    <th>Added By</th>
+    <th>Date Added</th>
+  </tr>
+</thead>
+<tbody>
+    {% for p in p %}
+    <tr>
+        <td>{{p.penaltycode}}</td>
+        <td>{{p.penalty_after}}</td>
+        <td>{{p.daysappliedafter}}</td>
+        <td> {{p.penalty_info}}</td>
+        <td>{{p.added_by_id}}</td>
+        <td>{{p.date_added}}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+<form method="POST" action="">
     {% csrf_token %}
-    <h1> Add New Penalty</h1>
+    <h3> Add New Penalty</h3>
 <label>Rate</label>
 {{form.penalty_rate}}
-<br>
-<br>
+
 <label>Penalty After</label>
 {{form.penalty_after}}
-<br>
-<br>
-<label>Days to Apply</label>
+
+<label>Days before Application</label>
 {{form.daysappliedafter}}
-<br>
-<br>
-<label>Details:</label>
+
+<label>Details:</label><br>
 {{form.penalty_info}}
 <br>
 <br>
 
 
     <input type="submit" name="Submit">
-  
+<br>
+<br>
+<br>
 </form>
+</div>
 
 </body>
 

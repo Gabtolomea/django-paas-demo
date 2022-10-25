@@ -10,9 +10,36 @@
     <title> Consumer Type</title>
 </head>
 <body>
+    <h1>  Consumer Type</h1>
+    <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Consumer Type</th>
+            <th>Minimum Water Reading</th>
+            <th>Minimum Water Reading Charge</th>
+            <th>Rate After Minimum Reading</th>
+            <th>Added By</th>
+            <th>Date Added</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for c in c %}
+            <tr>
+                <td>{{c.contypeid}}</td>
+                <td>{{c.contype}}</td>
+                <td>{{c.minReading}}</td>
+                <td>{{c.minReadingCharge}}</td>
+                <td>{{c.rateAfterMin}}</td>
+                <td>{{c.added_by_id}}</td>
+                <td>{{c.date_added}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
  <form method="POST" action="">
     {% csrf_token %}
-    <h1> Add New Consumer Type</h1>
+    <h3> Add New Consumer Type</h3>
     <label>New Consumer Type:</label>
     {{form.contype}}
 <br>
