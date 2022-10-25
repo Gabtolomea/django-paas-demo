@@ -774,7 +774,6 @@ def unsettled_bill(request):
     }    
     return render(request, 'unsettled_bill.html', context)
 
-
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
