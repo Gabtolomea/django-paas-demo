@@ -983,7 +983,6 @@ def billing(request, id):
     d = datetime.now().today()
     prevdate = months[d.month]
     tr = ConsumerInfo.objects.get(consumer_id=id) 
-
     context = {
         'tr':tr,
         'prevread':prevdate,
