@@ -57,11 +57,8 @@
                                                 <li>
                                                     <i></i>Country: <strong>Philippines</strong>
                                                 </li>
-
                                                 <li>
-
-                                                    Phone:
-
+                                                    Phone: 
                                                 </li>
 
                                             </ul>
@@ -79,16 +76,16 @@
                                         <div>
                                             <ul>
                                                 <li>
-                                                    Name: <strong></strong>
+                                                    Name: <strong>{{tr.firstname}} {{tr.middlename}} {{tr.lastname}}</strong>
                                                 </li>
                                                 <li>
-                                                    Account ID: <strong></strong>
+                                                    Account ID: <strong>{{tr.consumer_id}}</strong>
                                                 </li>
                                                 <li>
-                                                    Meter Number: <strong></strong>
+                                                    Meter Number: <strong>{{tr.meternumber}}</strong>
                                                 </li>
                                                 <li>
-                                                    Address: <strong></strong>
+                                                    Address: <strong>{{tr.installation_address}}</strong>
                                                 </li>
 
                                                 <li>
@@ -99,16 +96,10 @@
                                                     <i></i>Country: <strong>Philippines</strong>
                                                 </li>
 
-                                                <li></li>
-
                                                 <li>
-                                                    Contact Info:
+                                                    Contact Info: <strong>{{tr.mobilenum}}</strong>
                                                 </li>
-                                                <li>
-                                                    <strong>{{context.mobile1}}</strong>
-                                                    <strong>{{context.mobile2}}</strong>
-                                                    <strong>{{context.email}}</strong>
-                                                </li>
+                                               
                                             </ul>
                                         </div>
                                     </div><!-- /.col -->
@@ -128,11 +119,13 @@
                                             <div>
                                                 <ul class="list-unstyled spaced">
                                                     <li>
-                                                        <i class="ace-icon fa fa-caret-right blue"></i>Month: <strong>{{prevread}}</strong>
+                                                        <i class="ace-icon fa fa-caret-right blue"></i>Month:
+                                                        <strong>{{prevread}}</strong>
                                                     </li>
 
                                                     <li>
-                                                        <i class="ace-icon fa fa-caret-right blue"></i>Posted on: <>{{date}}
+                                                        <i class="ace-icon fa fa-caret-right blue"></i>Posted on:
+                                                        <strong>{{date}}</strong>
                                                     </li>
 
                                                     <li>
@@ -232,7 +225,7 @@
                                                 <tr>
 
                                                     <td>Total Bill</td>
-                                                    <td class="hidden-xs"> Php.{{context.totalbill}} </td>
+                                                    <td class="hidden-xs"> Php.{{tr.cummulative}} </td>
 
 
                                                 </tr>
@@ -272,11 +265,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="space-6"></div>
-                                    <div class="well">
-
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -285,6 +273,9 @@
             </div>
         </div>
     </div>
+    </div>
+
+
 </body>
 
 </html>

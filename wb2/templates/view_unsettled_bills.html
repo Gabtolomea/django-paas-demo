@@ -13,13 +13,14 @@
             <th scope="col" style="min-width:110px">Name</th>
             <th scope="col" style="min-width:110px">Address</th>
         </tr>
+        <tbody class="wb_tbody">
     <tr>
         <td>{{uv.consumer_id}}</td>
         <td>{{uv.meternumber}}</td>
         <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
         <td>{{uv.installation_address}}</td>
-
     </tr>
+  </tbody>
 </thead>
 </table>
 </div>
@@ -56,7 +57,7 @@
         </tr>
           </thead>
               <tbody class="wb_tbody">
-              </tbody>
+             
             {% for t in table %}
             <tr>
               <td>{{t.month}}</td>
@@ -66,7 +67,8 @@
               <td>{{t.total_bill}}</td>
               <td>{{t.total_amount_paid}}</td>
             </tr>
-            {% endfor %}
+            {% endfor %} 
+          </tbody>
     </table>
   </div>
 </div>
