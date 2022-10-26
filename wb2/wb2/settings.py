@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'index',
     'chartjs',
     'active_link',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'ajax_datatable',
+
 ]
 
 

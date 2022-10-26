@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import base64
 from wb2 import settings
 from .forms import *
@@ -1051,5 +1052,32 @@ def penalty (request):
         }
 
     return render(request, 'penalty.html', context)
+
+def test(request):
+    user = request.user
+    bills = ConsumerInfo.objects.all().order_by('lastname','firstname','middlename')
+
+    paginate_by = request.GET.get('paginate_by', 10)
+    page = request.GET.get('page')
+
+
+    paginator = Paginator(bills, paginate_by)
+
+    try:
+        bills_list = paginator.page(page)
+    
+    except PageNotAnInteger:
+        bills_list = paginator.page(1)
+    
+    except EmptyPage:
+        bills_list = paginator.page(paginator.num_pages)
+
+    context = {
+        'paginate_by':paginate_by,
+        'bills_list': bills_list,
+        'user': user,
+    }
+    return render(request, 'test.html', context)
+
 
 
