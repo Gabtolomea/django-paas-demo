@@ -10,9 +10,31 @@ Usage Report
     font-weight: bold;
     font-size: 20px;
     font-style: normal;
-    float: left;
-    width: 140px;
   }
+
+  h4{
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  label{
+    margin-top: 30px;
+    font-weight: bold;
+  }
+
+  @media (max-width: 350px){
+    h4 { font-size: 10px;}
+}
+  @media (min-width: 351px){
+    h4 { font-size: 20px;}
+}
+
+@media (max-width: 350px){
+  label { font-size: 10px;}
+}
+@media (min-width: 351px){
+  label { font-size: 20px;}
+}
 </style>
 
 {% endblock style %}
@@ -23,9 +45,9 @@ Usage Report
 {% csrf_token %}
 <div>
   {% csrf_token %}
-  <div class="col-sm-offset-7 col-sm-5">
+  <div class="col-sm-offset-12 col-sm-12">
     <div class="form-group">
-      <label for="exampleInputBarangay">Select Year</label>
+      <label for="exampleInputBarangay">Select Year: </label>
       <form id="yearselection" action="GET">
         <select class="form-select" id="selector" onchange="change()">
           <option value="{{cur_year}}">{{cur_year}}</option>
@@ -52,7 +74,11 @@ Usage Report
     <center>
       <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
     </center>
+
+
+    <div class="chartbox">
     <canvas id="myChart" width="800" height="150"></canvas>
+    </div>
 
     <script>
       var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -106,9 +132,9 @@ Usage Report
       <br>
       <br>
       <center>
-        <h6><strong>Monthly Usage Per Barangay(Select Barangay Bar): Year {{cur_year}}</strong></h6>
+        <h4><strong>Monthly Usage Per Barangay(Select Barangay Bar): Year {{cur_year}}</strong></h4>
       </center>
-      <canvas id="monthly_views" width="1000" height="150"></canvas>
+      <canvas id="monthly_views" width="800" height="150"></canvas>
       <br>
       <br>
       <br>
