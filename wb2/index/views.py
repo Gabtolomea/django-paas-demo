@@ -128,13 +128,12 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('dashboard')
+            return redirect('sysuser')
     context = {
         'form': form,
         'errors': form.errors,
     }
     return render(request, 'registration.html', context)
-
 
 # @login_required(login_url='login')
 # def dashboard(request):
@@ -143,7 +142,6 @@ def user_creation(request):
 #         'user': user
 #     }
 #     return render(request, 'dashboard.html', context)
-
 
 # @login_required(login_url='login')
 def ledger(request, id):
@@ -212,12 +210,12 @@ def ledger(request, id):
                 style = 'text-primary table-primary'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
-            date = asc_trans[i].date
+            mdate = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage,
+            new_row = ledgerclass(transid, mdate, prev, cur, usage,
                                   bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
@@ -279,7 +277,6 @@ def password_reset_form(request):
 
     return render(request, 'password_reset_form')
 
-
 # @login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
@@ -308,8 +305,7 @@ def inputreading(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    trans = Transactions.objects.filter(
-        acctID_id=id, transType='Billing', year=year)
+    trans = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
     j = 0
@@ -363,8 +359,7 @@ def inputreading(request, id, year):
         except ObjectDoesNotExist:
             con_b_rec = BarangayRecord()
         else:
-            con_b_rec = BarangayRecord.objects.get(
-                barangaycode_id=consumer.installation_address_id, year=year)
+            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
             readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
@@ -530,9 +525,9 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
+
 # def landing(request):
 #     return render(request,'landing.html')
-
 
 
 # @login_required(login_url='login')
@@ -540,12 +535,10 @@ def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
-
 # @login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
-
 
 # @login_required(login_url='login')
 def consumercreation(request):
@@ -588,7 +581,6 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-
 # @login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
@@ -596,7 +588,6 @@ def stopmeter(request, id):
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
     return redirect('inputreading', id=id, year=date.today().year)
-
 
 # @login_required(login_url='login')
 def sysuser(request):
@@ -636,7 +627,6 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-
 # @login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
@@ -652,8 +642,7 @@ def userupdate(request, id):
 
     }
 
-    return render(request, 'userupdate.html', context)
-
+    return render(request, 'consumercreation.html', context)
 
 # @login_required(login_url='login')
 def user_edit(request, id):
@@ -671,7 +660,7 @@ def user_edit(request, id):
             fss.save(upload.name, upload)
             # sys.profilepic = pic
             sys.save()
-
+        messages.success(request, 'Successfully Submitted!')
         return redirect('sysuser')
     context = {
         'sys': sys,
@@ -692,7 +681,6 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
-
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -710,7 +698,7 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-def reports(request):
+def br(request):
     return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
@@ -721,6 +709,7 @@ def barangayreport(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
+        print(years)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -762,24 +751,20 @@ def barangayreport(request, year):
 
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
-    
-    
     context = {
-        'bang': bang,
-
-
+        'bang': bang
     }
     return render(request, 'view_barangay.html', context)
-
 
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
-        'ub': ub
+        'ub':ub
     }
     return render(request, 'unsettled_bill.html', context)
 
 
+    
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -788,7 +773,7 @@ def usage_report_data(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(years)
+        print(i)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -811,7 +796,7 @@ def usage_report_data(request, year):
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
         F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')
     )
-    )
+    ).order_by()
 
     context = {
         'tu_mon': tu_mon,
@@ -843,7 +828,6 @@ def barangay_by_monthly(request, id, year):
     }
     return render(request, 'usage_report_data.html', context)
 
-
 def revenue_report(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -852,7 +836,7 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(years)
+
     # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
@@ -868,8 +852,6 @@ def revenue_report(request, year):
         nov=Sum('total_paid_nov'),
         dec=Sum('total_paid_dec'),
     )
-    values = rev_col.values()
-    col= sum(values)
     # Total Receivables
     rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_due_jan') - Sum('total_paid_jan'),
@@ -893,16 +875,11 @@ def revenue_report(request, year):
     
    
 
-    context={
+    context = {
         'rev_col': rev_col,
-        'rev_rec': filt,
-       'cur_year': year,
+        'rev_rec': rev_rec,
+        'cur_year': year,
         'years': years,
-        'col':col,
-        'rec' : rec
-        
-       
-
     }
     return render( request, 'revenue_report.html',  context)
 

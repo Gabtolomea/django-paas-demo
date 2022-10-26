@@ -1,7 +1,7 @@
 {% extends 'dashboard.html' %}
 
 {% block title %}
-Registration Form 
+Registration Form
 {% endblock title %}
 {% block style %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -11,205 +11,220 @@ Registration Form
         height: auto;
         min-height: 100%;
     }
+
     body {
         height: auto;
         background-image: linear-gradient(white, #63CDD7);
     }
+
+    h3 {
+        font-size: 30px;
+    }
+
+    label {
+        font-size: 20px;
+    }
+
     .form-header {
         font-family: Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
+        text-align: center;
     }
+
     .container {
         font-family: Arial;
         color: #ffffff;
     }
+
     .wrapper {
-        font: 16px Arial;
+        font-size: 20px;
+        font-family: Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
         background: #63CDD7;
         border-radius: 40px;
         padding: 30px;
     }
+
     .approver {
         font: 16px Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
     }
-    .btn{
-    background-color: #0cb3c2;
-    color: #ffffff;
-    padding: 8px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    transition-duration: 0.4s;
-    cursor: pointer;
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
+    .btn {
+        background-color: #0cb3c2;
+        color: #ffffff;
+        padding: 8px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
     }
-    .btn:first-child:hover, :not(.btn-check)+.btn:hover{
-        background-color:white !important;
-        color:black;
+
+    .btn:first-child:hover,
+    :not(.btn-check)+.btn:hover {
+        background-color: white !important;
+        color: black;
     }
-    </style>
+</style>
 {% endblock style %}
 {% block registration %}
-        <section id="registration-page">
-            <form action="user_creation" method="POST" class="signup-form">
-                {% csrf_token %}
-                <div class="container">
-                    <div class=" shadow wrapper m-4">
-                        <div class="form-header">
-                            <center><h1>Registration Form</h1></center>
+<section id="registration-page">
+    <form action="user_creation" method="POST" class="signup-form">
+        {% csrf_token %}
+        <div class="container">
+            <div class=" shadow wrapper">
+                <div class="form-header">
+                    <h1>Registration Form</h1>
+                </div>
+                <div class="row form-group w-100 m-auto">
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.firstname.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
                         </div>
-                        <div class="row form-group w-100 m-auto">
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                {% if form.errors %}
-                                    {% for error in form.firstname.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <label for="">First Name*</label>
-                                {{form.firstname}}
-                            </div>
- 
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                {% if form.errors %}
-                                    {% for error in form.midname.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <label for="">Middle Name*</label>
-                                {{form.midname}}
-                            </div>
- 
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                {% if form.errors %}
-                                    {% for error in form.lastname.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <label for="">Last Name*</label>
-                                {{form.lastname}}
-                            </div>
- 
-                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                {% if form.errors %}
-                                    {% for error in form.mobilenum.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <label for="">Mobile Number*</label>
-                                {{form.mobilenum}}
-                            </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                    {% if form.errors %}
-                                        {% for error in form.email.errors %}
-                                        <div class="alert alert-danger">
-                                            <strong>{{ error|escape }}</strong>
-                                        </div>
-                                        {% endfor %}
-                                    {% endif %}
-                                    <label for="">Email*</label>
-                                    {{form.email}}
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                    {% if form.errors %}
-                                        {% for error in form.username.errors %}
-                                        <div class="alert alert-danger">
-                                            <strong>{{ error|escape }}</strong>
-                                        </div>
-                                        {% endfor %}
-                                    {% endif %}
-                                    <label for="">User ID*</label>
-                                    {{form.username}}
-                                </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">First Name*</label>
+                        {{form.firstname}}
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.midname.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
                         </div>
- 
-                        <div class="row form-group w-100 m-auto">
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                {% if form.errors %}
-                                    {% for error in form.password1.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <label for="">Password*</label>
-                                {{form.password1}}
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                {% if form.errors %}
-                                    {% for error in form.password2.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <label for="">Confirm Password*</label>
-                                {{form.password2}}
-                            </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">Middle Name*</label>
+                        {{form.midname}}
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.lastname.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
                         </div>
- 
-                        <div class="row m-auto w-100">
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                <h3>Type of User</h3>
-                                {{form.is_admin}}
-                                <label for="id_is_admin">ADMIN</label><br>
-                                {{form.is_teller}}
-                                <label for="id_is_teller">TELLER</label><br>
-                                {{form.is_supervisor}}
-                                <label for="id_is_supervisor">SUPERVISOR</label><br>
-                                {{form.is_manager}}
-                                <label for="id_is_manager">MANAGER</label><br>
-                                {{form.is_reader}}
-                                <label for="id_is_reader">METER READER</label><br>
-                            </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">Last Name*</label>
+                        {{form.lastname}}
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.mobilenum.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
                         </div>
-                        <div class="row w-100 m-auto mb-3">
- 
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
- 
-                                {% if form.errors %}
-                                    {% for error in form.authorizedapprover.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                    <label for="formFile" class="form-label">Authorized Approver*</label>
-                                    {{form.authorizedapprover}}
-                            </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                {% if form.errors %}
-                                    {% for error in form.profilepic.errors %}
-                                    <div class="alert alert-danger">
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
- 
-                                <label for="formFile" class="form-label">Profile Picture*</label>
-                                {{form.profilepic}}
-                                </div>
-                                <center><button type="submit" id="footer-subscription-button" class="btn" >Submit</button></center>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">Mobile Number*</label>
+                        {{form.mobilenum}}
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.email.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
                         </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">Email*</label>
+                        {{form.email}}
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.username.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">User ID*</label>
+                        {{form.username}}
                     </div>
                 </div>
-        </form>
-    </section>
- 
-{% endblock registration %}
- 
 
+                <div class="row form-group w-100 m-auto">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.password1.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">Password*</label>
+                        {{form.password1}}
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.password2.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="">Confirm Password*</label>
+                        {{form.password2}}
+                    </div>
+                </div>
+
+                <div class="row m-auto w-100">
+                    <div class="col-lg-6 col-md-6 col-sm-12 ">
+                        <h3>Type of User</h3>
+                        {{form.is_admin}}
+                        <label for="id_is_admin">ADMIN</label><br>
+                        {{form.is_teller}}
+                        <label for="id_is_teller">TELLER</label><br>
+                        {{form.is_supervisor}}
+                        <label for="id_is_supervisor">SUPERVISOR</label><br>
+                        {{form.is_manager}}
+                        <label for="id_is_manager">MANAGER</label><br>
+                        {{form.is_reader}}
+                        <label for="id_is_reader">METER READER</label><br>
+                    </div>
+                </div>
+                <div class="row w-100 m-auto m-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+
+                        {% if form.errors %}
+                        {% for error in form.authorizedapprover.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <label for="formFile" class="form-label">Authorized Approver*</label>
+                        {{form.authorizedapprover}}
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                        {% if form.errors %}
+                        {% for error in form.profilepic.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <label for="formFile" class="form-label">Profile Picture*</label>
+                        {{form.profilepic}}
+                    </div>
+                    <center><button type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+{% endblock registration %}
