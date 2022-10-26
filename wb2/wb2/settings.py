@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+# from index.loginrequiredmidware import LoginRequiredMiddleware
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,7 +53,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'index.loginrequiredmidware.LoginRequiredMiddleware',
 ]
+
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 60*60*24
+SESSION_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'wb2.urls'
 AUTH_USER_MODEL = 'index.SystemUsers'

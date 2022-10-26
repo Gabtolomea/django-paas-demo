@@ -28,7 +28,7 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
-
+# from .loginrequiredmidware import login_exempt
 
 def porter(request):
     porter_in()
@@ -54,8 +54,9 @@ def signin(request):
         if pkval.exists():
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
-                login(request, user)
-                print(user)
+                request.session['username'] = user.username
+                print(request.session['username'])
+                # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in')
                 return redirect('bills_list')
             else:
@@ -64,10 +65,26 @@ def signin(request):
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
 
+# @login_required
+def bills_list(request):
+    if request.session.has_key('username'):
+        user = request.session['username']
+    else:
+        user = "request.user"
+    bills_list = ConsumerInfo.objects.all()
+    context = {
+        'bills_list': bills_list,
+        'user': user,
+    }
+    return render(request, 'billslist.html', context)
 
-@login_required(login_url='login')
+
+# @login_required(login_url='login')
 def signout(request):
-    logout(request)
+    try:
+        del request.session['username']
+    except KeyError:
+        pass
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -128,7 +145,7 @@ def user_creation(request):
 #     return render(request, 'dashboard.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def ledger(request, id):
     table = []
 
@@ -263,7 +280,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -273,7 +290,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -516,30 +533,21 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-@login_required(login_url='login')
-def bills_list(request):
-    user = request.user
-    bills_list = ConsumerInfo.objects.all()
-    context = {
-        'bills_list': bills_list,
-        'user': user,
-    }
-    return render(request, 'billslist.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -581,7 +589,7 @@ def consumercreation(request):
     return render(request, 'consumercreation.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -590,7 +598,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=date.today().year)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def sysuser(request):
     table = []
 
@@ -629,7 +637,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -647,7 +655,7 @@ def userupdate(request, id):
     return render(request, 'userupdate.html', context)
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -704,7 +712,7 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -969,7 +977,7 @@ def view_unsettled_bills(request, id, year):
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def new_consumertype (request):
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
