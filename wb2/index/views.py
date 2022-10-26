@@ -1,6 +1,6 @@
 import calendar
 from datetime import datetime
-
+import datetime
 from dis import dis
 from email import errors
 from multiprocessing import context
@@ -1053,10 +1053,17 @@ def penalty (request):
 def billing(request):
     b = ConsumerInfo.objects.all()
     date = datetime.now().date()
-    
+    readingMonth = (datetime.now().month - 1) %12
+    months =(" Blank", "December", "January", "February", "March", "April", 
+    "May","June", "July","August","September","October","November")
+    d = datetime.now().today()
+    prevdate = months[d.month]
+    print(prevdate)
     context = {
         'b':b,
-        'date':date
+        'prevread':prevdate,
+        'date':date,
+        'read':readingMonth
     }
     return render(request, 'pdf_bill.html', context)
 
