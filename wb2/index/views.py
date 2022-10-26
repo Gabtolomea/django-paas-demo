@@ -989,7 +989,7 @@ def discount(request):
             addD = Discount()
             addD.discountcode = "D00"+str(discountidcount+1)
             addD.discount_rate = discount_rate
-            addD.added_by = request.user
+            addD.added_by = None
             addD.save()
     context = {
         'd'   : d,
@@ -1017,7 +1017,7 @@ def new_consumertype (request):
             ct.minReading = minReading
             ct.minReadingCharge = minReadingCharge
             ct.rateAfterMin = rateAfterMin
-            ct.added_by = request.user
+            ct.added_by = None
             ct.save()
     context = {
             'c'   : c,
@@ -1043,8 +1043,10 @@ def penalty (request):
             pen.penalty_rate = penalty_rate
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
-            pen.added_by = request.user
+            pen.added_by = None
             pen.save()
+        else:
+            print("way ayo")
     context = {
         'p'   : p,
         'form': form,
