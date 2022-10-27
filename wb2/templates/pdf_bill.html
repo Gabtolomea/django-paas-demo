@@ -126,7 +126,7 @@
                                                         <strong>{{date}}</strong>
                                                     </li>
                                                     <li>
-                                                        <i class="ace-icon fa fa-caret-right blue"></i>Posted by:
+                                                        <i class="ace-icon fa fa-caret-right blue"></i>Posted by: <strong>{{user}}</strong>
                                                     </li>
                                                     <li>
                                                         <i class="ace-icon fa fa-caret-right blue"></i>Payment Schedule:
@@ -153,7 +153,7 @@
                                                         Current Reading
                                                     </td>
                                                     <td class="hidden-xs">
-                                                        {{context.current_reading}} m3
+                                                        {{u.meterReading}} m3
                                                     </td>
 
                                                 </tr>
@@ -173,7 +173,7 @@
                                                 <tr>
 
                                                     <td>Usage</td>
-                                                    <td class="hidden-xs"> {{context.usage}} m3</td>
+                                                    <td class="hidden-xs"> {{u.usage}} m3</td>
 
 
                                                 </tr>
@@ -196,7 +196,9 @@
                                                         Bill
                                                     </td>
                                                     <td class="hidden-xs">
-                                                        Php.{{context.bill}}
+                                                        {% for b in bill %}
+                                                        Php.   {{b.payment}}
+                                                        {% endfor %}
                                                     </td>
 
                                                 </tr>
@@ -270,4 +272,3 @@
 </body>
 
 </html>
-

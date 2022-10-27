@@ -975,22 +975,6 @@ def view_unsettled_bills(request, id, year):
     return render(request, 'view_unsettled_bills.html', context)
 
 
-def billing(request, id):
-   
-    date = datetime.now().date()
-    months =("Blank", "December", "January", "February", "March", "April", 
-    "May","June", "July","August","September","October","November")
-    d = datetime.now().today()
-    prevdate = months[d.month]
-    tr = ConsumerInfo.objects.get(consumer_id=id) 
-    context = {
-        'tr':tr,
-        'prevread':prevdate,
-        'date':date,
-        }
-    return render(request, 'pdf_bill.html', context)
-
-
 # def addPenalty(request):
 #     form = addPenalty()
 #     if request.method == "POST":
@@ -1065,22 +1049,21 @@ def penalty (request):
 
     return render(request, 'penalty.html', context)
 
-    
-def billing(request, id):
-    b = ConsumerInfo.objects.all()
+
+def billing(request,id):
     date = datetime.now().date()
+    months =("Blank", "December", "January", "February", "March", "April", 
+    "May","June", "July","August","September","October","November")
+    user = request.user
+    d = datetime.now().today()
+    prevdate = months[d.month]
+    tr = ConsumerInfo.objects.get(consumer_id=id) 
+    bill = Transactions.objects.filter(acctID_id=tr.consumer_id, transType='payment')
     
     context = {
-        'b':b,
-        'date':date
-    }
+        'bill':bill,
+        'tr':tr,
+        'prevread':prevdate,
+        'date':date,
+        }
     return render(request, 'pdf_bill.html', context)
-
-
-# def billing(request):
-#     b = ConsumerInfo.objects.all()
-
-#     context = {
-#         'b':b
-#     }
-#     return render(request,'billpdf.html', context)
