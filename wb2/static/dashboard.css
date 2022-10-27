@@ -470,7 +470,7 @@ button.btn.btn-wb-copy:hover {
 
 .sidebar {
     position: fixed;
-    width: 400px;
+    width: 300px;
     height: 100%;
     left: 0px;
     background: #0093B7;
@@ -488,7 +488,7 @@ button.btn.btn-wb-copy:hover {
     z-index: -1;
  }
  .main_content{
-    padding-left: 420px !important;
+    padding-left: 320px !important;
     transition :all 1s ease;
 }
  .remove_main_content{
