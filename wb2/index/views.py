@@ -1,6 +1,6 @@
 import calendar
 from datetime import datetime
-
+import datetime
 from dis import dis
 from email import errors
 from multiprocessing import context
@@ -929,7 +929,6 @@ def view_unsettled_bills(request, id, year):
             self.consumption = usage
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
-    con = ConsumerInfo.objects.get(consumer_id=id)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
     billing = Transactions.objects.filter(acctID_id=id, transType='Billing',  year=year)
     payment = Transactions.objects.filter(acctID_id=id, transType = 'Payment', year = year)
@@ -974,6 +973,23 @@ def view_unsettled_bills(request, id, year):
             'current':year,
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
+
+
+def billing(request, id):
+   
+    date = datetime.now().date()
+    months =("Blank", "December", "January", "February", "March", "April", 
+    "May","June", "July","August","September","October","November")
+    d = datetime.now().today()
+    prevdate = months[d.month]
+    tr = ConsumerInfo.objects.get(consumer_id=id) 
+    context = {
+        'tr':tr,
+        'prevread':prevdate,
+        'date':date,
+        }
+    return render(request, 'pdf_bill.html', context)
+
 
 # def addPenalty(request):
 #     form = addPenalty()
@@ -1063,7 +1079,7 @@ def billing(request, id):
 
 # def billing(request):
 #     b = ConsumerInfo.objects.all()
-    
+
 #     context = {
 #         'b':b
 #     }
