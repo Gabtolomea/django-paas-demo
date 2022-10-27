@@ -183,7 +183,7 @@ Water Usage
       {% for br in br %}
       <tr>
         <td data-label="Barangay" style="background-color: #DBF3FA;"><a
-            href="/view_barangay/{{br.barangayrec_id}}">{{br.barangaycode}}</a></td>
+            href="/view_barangay/{{br.barangayrec_id}}" style="text-decoration: none;">{{br.barangaycode}}</a></td>
         <td data-label="Total Usage(Cu. Meter)" style="background-color: #D3D3D3">{{br.total_usage|floatformat:1}}</td>
         <td data-label="Total Receivables" class="total_paid" style="background-color: #D3D3D3">
           {{br.total_rec|floatformat:1}}</td>
