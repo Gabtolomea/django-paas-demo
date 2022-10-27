@@ -149,7 +149,6 @@ class addPenalty(ModelForm):
     penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
     penalty_after = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
     daysappliedafter = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta():
         model = Penalty
@@ -157,20 +156,16 @@ class addPenalty(ModelForm):
             'penalty_info',
             'penalty_rate',
             'penalty_after',
-            'daysappliedafter',
-            'added_by'
+            'daysappliedafter'
          )
 
 class addDiscount(ModelForm):
     discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta():
         model = Discount
         fields = (
-            'discountcode',
-            'discount_rate',
-            'added_by'
+             'discount_rate',
         )
 
 class ConscumertypecreationForm (ModelForm):

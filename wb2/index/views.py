@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import base64
 from wb2 import settings
 from .forms import *
@@ -989,7 +990,7 @@ def discount(request):
             addD = Discount()
             addD.discountcode = "D00"+str(discountidcount+1)
             addD.discount_rate = discount_rate
-            addD.added_by = request.user
+            addD.added_by = None
             addD.save()
     context = {
         'd'   : d,
@@ -1017,7 +1018,7 @@ def new_consumertype (request):
             ct.minReading = minReading
             ct.minReadingCharge = minReadingCharge
             ct.rateAfterMin = rateAfterMin
-            ct.added_by = request.user
+            ct.added_by = None
             ct.save()
     context = {
             'c'   : c,
@@ -1043,8 +1044,10 @@ def penalty (request):
             pen.penalty_rate = penalty_rate
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
-            pen.added_by = request.user
+            pen.added_by = None
             pen.save()
+        else:
+            print("way ayo")
     context = {
         'p'   : p,
         'form': form,
@@ -1052,5 +1055,32 @@ def penalty (request):
         }
 
     return render(request, 'penalty.html', context)
+
+def test(request):
+    user = request.user
+    bills = ConsumerInfo.objects.all().order_by('lastname','firstname','middlename')
+    
+    paginate_by = request.GET.get('paginate_by', 100)
+    page = request.GET.get('page')
+
+
+    paginator = Paginator(bills, paginate_by)
+
+    try:
+        bills_list = paginator.page(page)
+    
+    except PageNotAnInteger:
+        bills_list = paginator.page(1)
+    
+    except EmptyPage:
+        bills_list = paginator.page(paginator.num_pages)
+
+    context = {
+        'paginate_by':paginate_by,
+        'bills_list': bills_list,
+        'user': user,
+    }
+    return render(request, 'test.html', context)
+
 
 
