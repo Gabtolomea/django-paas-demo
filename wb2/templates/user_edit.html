@@ -4,7 +4,7 @@
 
 
 {% block title %}
-Registration Form
+System User
 {% endblock title %}
 {% block style %}
 <link rel="stylesheet" type="text/css" href="/wb2/static/style.css" />
@@ -13,39 +13,70 @@ Registration Form
 
 </head>
 <style>
-	.form-header {
-		font-family: Arial;
-		margin: 0px 0px 16px;
-		padding: 0px 12px;
-	}
+	 html {
+        height: auto;
+        min-height: 100%;
+    }
 
-	.container {
-		font-family: Arial;
-		color: #ffffff;
-	}
+    body {
+        height: auto;
+        background-image: linear-gradient(white, #63CDD7);
+    }
 
-	.wrapper {
-		font: 16px Arial;
-		margin: 0px 0px 16px;
-		padding: 0px 12px;
-		background: #63CDD7;
-		border-radius: 40px;
-		padding: 30px;
-	}
+    h3 {
+        font-size: 30px;
+    }
 
-	.approver {
-		font: 16px Arial;
-		margin: 0px 0px 16px;
-		padding: 0px 12px;
-	}
+    label {
+        font-size: 20px;
+    }
 
-	.submit {
-		background-color: #0093B7;
-		color: white;
-		border-radius: 25px;
-		width: 100%;
-		text-align: center;
-	}
+    .form-header {
+        font-family: Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+    }
+
+    .container {
+        font-family: Arial;
+        color: #ffffff;
+    }
+
+    .wrapper {
+        font-size: 20px;
+        font-family: Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+        background: #63CDD7;
+        border-radius: 40px;
+        padding: 30px;
+    }
+
+    .approver {
+        font: 16px Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+    }
+
+    .btn {
+        background-color: #0cb3c2;
+        color: #ffffff;
+        padding: 8px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .btn:first-child:hover,
+    :not(.btn-check)+.btn:hover {
+        background-color: white !important;
+        color: black;
+    }
 </style>
 {% endblock style %}
 {% block sysuserupdate %}
@@ -55,10 +86,10 @@ Registration Form
 		<div class="container">
 			<div class=" shadow wrapper m-4">
 				<div class="form-header">
-					<h1>Registration Form</h1>
+					<center><h1>System User</h1></center>
 				</div>
 				<div class="row form-group w-100 m-auto">
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
 						{% if form.errors %}
 						{% for error in form.first_name.errors %}
 						<div class="alert alert-danger">
@@ -70,7 +101,7 @@ Registration Form
 						{{form.first_name}}
 					</div>
 
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
 						{% if form.errors %}
 						{% for error in form.mid_name.errors %}
 						<div class="alert alert-danger">
@@ -82,7 +113,7 @@ Registration Form
 						{{form.mid_name}}
 					</div>
 
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
 						{% if form.errors %}
 						{% for error in form.last_name.errors %}
 						<div class="alert alert-danger">
@@ -93,7 +124,7 @@ Registration Form
 						<label for="">Last Name*</label>
 						{{form.last_name}}
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
 						{% if form.errors %}
 						{% for error in form.mobilenum.errors %}
 						<div class="alert alert-danger">
@@ -104,7 +135,7 @@ Registration Form
 						<label for="">Mobile Number*</label>
 						{{form.mobilenum}}
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
 						{% if form.errors %}
 						{% for error in form.email.errors %}
 						<div class="alert alert-danger">
@@ -115,7 +146,7 @@ Registration Form
 						<label for="">Email*</label>
 						{{form.email}}
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
 						{% if form.errors %}
 						{% for error in form.username.errors %}
 						<div class="alert alert-danger">
@@ -168,39 +199,41 @@ Registration Form
 						<label for="id_is_reader">METER READER</label><br>
 					</div>
 				</div>
-				<div class="row w-100 m-auto mb-3">
-					<div class="col-lg-12 col-md-12 col-sm-12 mb-4">
-
-						{% if form.errors %}
-						{% for error in form.authorizedapprover.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<div class="input-group mb-2">
-							<label class="input-group-text" for="inputGroupSelect01">Authorized Approver</label>
-							{{form.authorizedapprover}}
-						</div>
+				<div class="row w-100 m-auto mb-2">
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+    						<label for="state">Authorized Approver*</label>
+							<select id=""  class="form-control" name="">
+								<option value="approver">Approver for Inbound Application</option>
+								<option value="non approver">Non Approver</option>
+								<option value="supervisor">Supervisor</option>
+								<option value="engineer">Engineer's Office</option>
+								<option value="mayor">Mayor's Office</option>
+							</select>
 					</div>
-					<div class="profile mb-3">
-						{% if form.errors %}
-						{% for error in form.profilepic.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="formFile" class="form-label">Profile Picture*</label>
-						{{form.profilepic}}
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+						<label for="">Profile Picture*</label>
+						<input type="file"  class="form-control" id="choose-file" size="80">
 					</div>
 				</div>
-				<input type="submit" id="footer-subscription-button" class="btn submit" name="Submit">
-
-
+					<center><button onclick="fireSweetAlert()"
+						type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
+				
 			</div>
-		</div>
 		</div>
 	</form>
 </section>
 {% endblock sysuserupdate %}
+{% block script %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    function fireSweetAlert() {
+        Swal.fire(
+            'Good job!',
+            'You clicked the button!',
+            'success'
+        )
+    }
+
+  </script>
+{% endblock script %}
