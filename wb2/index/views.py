@@ -1058,8 +1058,8 @@ def penalty (request):
 def test(request):
     user = request.user
     bills = ConsumerInfo.objects.all().order_by('lastname','firstname','middlename')
-
-    paginate_by = request.GET.get('paginate_by', 10)
+    
+    paginate_by = request.GET.get('paginate_by', 100)
     page = request.GET.get('page')
 
 
