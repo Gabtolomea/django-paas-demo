@@ -910,6 +910,7 @@ def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id = id)
     con.delete()
     return redirect('consumer_list')
+
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
@@ -1066,17 +1067,35 @@ def billing(request,id):
             self.prevread = prevread
             self.bill = bill
             self.penalty = penalty
-            self.totalbill = totalbill
-            self.totalamount = totalamount
+           
                    
     tranid = ConsumerInfo.objects.get(consumer_id=id) 
     billing = Transactions.objects.filter(acctID_id=tranid.consumer_id, transType='Billing')
     count = len(billing)
     
+    j = 0 
+    for i in billing:
+        usage = 0
+        curread = 0
+        prevread = 0
+        bill = 0
+        totalbill = 0
+        totalamount = 0
+        if j < count and count != 0:
+            if i == billing[j]:
+                usage = billing[j].usage
+                curread = billing[j].meterReading
+                prevread = billing[j].meterReading - usage
+                bill = billing[j].bill
+                penalty = billing[j].penaltyCode
+        n = bill()
+                
+                
     
     
     
     context = {
+        'ybill':bill,
         'prevread':prevdate,
         'date':date,
         }
