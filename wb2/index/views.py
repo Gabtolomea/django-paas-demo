@@ -17,6 +17,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 import base64
+from .DBdb import *
 from wb2 import settings
 from .forms import *
 from .decorators import *
@@ -1057,12 +1058,25 @@ def billing(request,id):
     user = request.user
     d = datetime.now().today()
     prevdate = months[d.month]
-    tr = ConsumerInfo.objects.get(consumer_id=id) 
-    bill = Transactions.objects.filter(acctID_id=tr.consumer_id, transType='payment')
+    ybill = []
+    class bill():
+        def __init__(self, usage, currread, prevread,bill,penalty, totalbill, totalamount ):
+            self.usage = usage
+            self.currread = currread
+            self.prevread = prevread
+            self.bill = bill
+            self.penalty = penalty
+            self.totalbill = totalbill
+            self.totalamount = totalamount
+                   
+    tranid = ConsumerInfo.objects.get(consumer_id=id) 
+    billing = Transactions.objects.filter(acctID_id=tranid.consumer_id, transType='Billing')
+    count = len(billing)
+    
+    
+    
     
     context = {
-        'bill':bill,
-        'tr':tr,
         'prevread':prevdate,
         'date':date,
         }
