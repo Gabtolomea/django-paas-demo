@@ -29,7 +29,7 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
-from .decorators import unauthenticated_user
+from .decorators import unauthenticated_user, session_login_required
 
 
 def login_redirect(request):
@@ -69,15 +69,6 @@ def signin(request):
         else:
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
-
-
-def source_access(request):
-    context = {
-        "userid": request.session.get(ReqParams.username),
-        "name": request.session.get(ReqParams.name),
-        "UserType": request.session.get(ReqParams.LOGIN_SESSION)
-    }
-    return render(request, "html/source_access.html", {"context": context})
 
 
 def signout(request):
@@ -133,7 +124,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @login_required(login_url='login')
+# @session_login_required
 def dashboard(request):
     user = request.user
     context = {
