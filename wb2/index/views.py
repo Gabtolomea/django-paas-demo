@@ -44,12 +44,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -71,19 +71,13 @@ def signin(request):
     return render(request, 'login.html')
 
 
-def source_access(request):
-    context = {
-        "userid": request.session.get(ReqParams.username),
-        "name": request.session.get(ReqParams.name),
-        "UserType": request.session.get(ReqParams.LOGIN_SESSION)
-    }
-    return render(request, "html/source_access.html", {"context": context})
-
 
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
+
+
 
 
 def user_creation(request):
