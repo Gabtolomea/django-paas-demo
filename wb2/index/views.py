@@ -1,7 +1,6 @@
 import calendar
 from datetime import datetime
 
-from dis import dis
 from email import errors
 from multiprocessing import context
 from os import system
@@ -16,18 +15,21 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import QueryDict
+from wb2.settings import EMAIL_HOST_USER
 import base64
-from wb2 import settings
 from .forms import *
 from .decorators import *
 from .models import *
 from .dataporter import *
 from .functions import *
+from .temp import ReqParams
 import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
+from django.http import HttpResponseRedirect
 # from .loginrequiredmidware import login_exempt
 
 def porter(request):
@@ -55,10 +57,14 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
                 request.session['username'] = user.username
+                u = user.username
+                print(u)
+                login(request, user,  backend='django.contrib.auth.backends.ModelBackend')
                 print(request.session['username'])
+                request.session.modified = True
                 # authenticate(request, username = u, password = p)
-                messages.success(request, 'Logged in')
-                return redirect('bills_list')
+                messages.success(request, 'Logged in as '+user.username)
+                return HttpResponseRedirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
         else:
@@ -67,13 +73,12 @@ def signin(request):
 
 # @login_required
 def bills_list(request):
-    if request.session.has_key('username'):
-        user = request.session['username']
-    else:
-        user = "request.user"
-    bills_list = ConsumerInfo.objects.all()
+    # q = QueryDict(request.session['username'])
+    # print(q)
+    user = request.session.get('username')
+    bills = ConsumerInfo.objects.all()
     context = {
-        'bills_list': bills_list,
+        'bills_list': bills,
         'user': user,
     }
     return render(request, 'billslist.html', context)
@@ -255,7 +260,7 @@ def forgetpassword(request):
             email = EmailMessage(
                 email_subject,
                 message,
-                settings.EMAIL_HOST_USER,
+                EMAIL_HOST_USER,
                 [user.email],
             )
             email.fail_silently = True
@@ -698,7 +703,7 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-def br(request):
+def reports(request):
     return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
