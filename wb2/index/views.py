@@ -1058,7 +1058,10 @@ def billing(request,id):
     "May","June", "July","August","September","October","November")
     user = request.user
     d = datetime.now().today()
-    prevdate = months[d.month]
+    prevdate = months[d.month] 
+    tranid = ConsumerInfo.objects.get(consumer_id=id) 
+    bill = Transactions.objects.filter(acctID_id=tranid.consumer_id, transType='Billing')
+    
     
     context = {
         'prevread':prevdate,
