@@ -60,8 +60,8 @@ def signin(request):
                 u = user.username
                 print(u)
                 login(request, user,  backend='django.contrib.auth.backends.ModelBackend')
-                print(request.session['username'])
                 request.session.modified = True
+                print(request.session['username'])
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
                 return HttpResponseRedirect('bills_list')
