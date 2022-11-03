@@ -29,7 +29,7 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
-from .decorators import unauthenticated_user
+from .decorators import unauthenticated_user, session_login_required
 
 
 def login_redirect(request):
@@ -71,7 +71,10 @@ def signin(request):
     return render(request, 'login.html')
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8b032fa7c371ed1afb163387a017a44fe92f3e27
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
@@ -127,7 +130,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @login_required(login_url='login')
+# @session_login_required
 def dashboard(request):
     user = request.user
     context = {

@@ -1,5 +1,4 @@
 from . import views
-
 from django.urls import path
 # from django.conf.urls import patterns, url
 from django.views.generic.base import RedirectView
@@ -11,6 +10,7 @@ from django.views.generic import TemplateView
 #     url(r'^login/', 'login', name = 'login'))
 
 urlpatterns = [
+    
     path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),
     path('login',views.signin,name='login'),
