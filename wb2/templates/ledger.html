@@ -5,16 +5,16 @@ Account Ledger
 {% block ledger %}
 {% load humanize %}
 <style>
-    .hide {
-        opacity: 0;
-        transition: 0.3s all ease-in-out;
-    }
- 
-    .showOnHover:hover .hide {
-        opacity: 1;
-        transition: 0.3s all ease-in-out;
-       
-    }
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+
+	}
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -32,9 +32,9 @@ Account Ledger
 					<td class="table-light">{{u.consumer_id}}</td>
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light">{{u.meternumber}}</td>
-					<td class="table-light">&#8369;  {{u.current_bal|floatformat:2|intcomma}}
-							<button id="" type="button" class=" hide btn btn-success" data-toggle="modal"
-								data-target="#payment" style="float: right;">Pay</button>
+					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+						<button id="" type="button" class=" hide btn btn-success" data-toggle="modal"
+							data-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
@@ -55,7 +55,7 @@ Account Ledger
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="exampleInputPassword1">Amount</label>
-						<input type="number" name="amount" min="25"  id="id_amount" class="input form-control">
+						<input type="number" name="amount" min="25" id="id_amount" class="input form-control">
 					</div>
 					<div class="form-group">
 						<label for="exampleInputPassword1">OR Number</label>
@@ -77,7 +77,268 @@ Account Ledger
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
 		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
 	</div>
-	
+	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
+		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
+	</div>
+	<div id="newtable" style="display: none;" class="col-sm-10 col-sm-offset-1">
+		<div class="widget-box">
+			<div class="widget-header widget-header-large">
+				<center>
+					<h3 class="widget-title grey lighter">
+						<i class="ace-icon fa fa-leaf green"></i>
+						Your Bill
+					</h3>
+				</center>
+
+				<div class="widget-toolbar no-border invoice-info">
+
+				</div>
+				<br>
+				<br>
+
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main padding-24">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="row">
+								<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
+									<b>Company Info</b>
+								</div>
+							</div>
+
+							<div>
+								<ul class="list-unstyled spaced">
+									<li>
+										<i></i>Name: <strong>Ginatilan Water</strong>
+									</li>
+
+									<li>
+										<i></i>Address: <strong>Poblacion,Ginatilan,Cebu</strong>
+									</li>
+
+									<li>
+										<i></i>Zip Code: <strong>6028</strong>
+									</li>
+
+									<li>
+										<i></i>Country: <strong>Philippines</strong>
+									</li>
+									<li>
+										Phone: 
+									</li>
+
+								</ul>
+							</div>
+						</div><!-- /.col -->
+
+						<div class="col-sm-6">
+							<div class="row">
+								<div
+									class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
+									<b>Customer Info</b>
+								</div>
+							</div>
+
+							<div>
+								<ul>
+									<li>
+										Name: <strong>{{u.firstname}} {{u.middlename}} {{u.lastname}}</strong>
+									</li>
+									<li>
+										Account ID: <strong>{{tr.consumer_id}}</strong>
+									</li>
+									<li>
+										Meter Number: <strong>{{tr.meternumber}}</strong>
+									</li>
+									<li>
+										Address: <strong>{{tr.installation_address}}</strong>
+									</li>
+
+									<li>
+										Zip Code:<strong>6028</strong>
+									</li>
+
+									<li>
+										<i></i>Country: <strong>Philippines</strong>
+									</li>
+
+									<li>
+										Contact Info: <strong>{{tr.mobilenum}}</strong>
+									</li>
+								   
+								</ul>
+							</div>
+						</div><!-- /.col -->
+					</div><!-- /.row -->
+					<br>
+					<br>
+					<div class="widget-main padding-24">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="row">
+									<div
+										class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
+										<b>Bill Info</b>
+									</div>
+								</div>
+								<div>
+									<ul class="list-unstyled spaced">
+										<li>
+											<i class="ace-icon fa fa-caret-right blue"></i>Month:
+											<strong>{{month}}</strong>
+										</li>
+										<li>
+											<i class="ace-icon fa fa-caret-right blue"></i>Posted on:
+											<strong>{{date_today}}</strong>
+										</li>
+										<li>
+											<i class="ace-icon fa fa-caret-right blue"></i>Posted by: <strong>{{user}}</strong>
+										</li>
+										<li>
+											<i class="ace-icon fa fa-caret-right blue"></i>Payment Schedule:
+										</li>
+										<li class="divider"></li>
+									</ul>
+								</div>
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+						<div class="space"></div>
+						<br>
+						<br>
+						<div>
+							<table class="table table-striped table-bordered">
+								<tbody>
+									<tr>
+										<td>
+											Current Reading
+										</td>
+										<td class="hidden-xs">
+											{{u.meterReading}} m3
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Previous Reading
+										</td>
+										<td class="hidden-xs">
+											{{context.prev_reading}} m3
+										</td>
+									</tr>
+									<tr>
+										<td>Usage</td>
+										<td class="hidden-xs"> {{u.usage}} m3</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<br>
+						<br>
+						<div>
+							<table class="table table-striped table-bordered">
+								<tbody>
+									<tr>
+										<td>
+											Bill
+										</td>
+										<td class="hidden-xs">
+											Php.   {{lat.bill}}
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Penalty
+										</td>
+										<td class="hidden-xs">
+											Php.{{context.penalty}}
+										</td>
+									</tr>
+									<tr>
+										<td>Total Bill</td>
+										<td class="hidden-xs"> Php.{{tr.cummulative}} </td>
+									</tr>
+									<tr>
+										<td>Previous Due</td>
+										<td class="hidden-xs"> Php.{{context.prev_balance}} </td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="hr hr8 hr-double hr-dotted"></div>
+
+
+						<div class="row">
+							<div class="col-sm">
+								<div class="form-group">
+
+								</div>
+							</div>
+							<div class="col-sm">
+								<div class="form-group">
+
+								</div>
+							</div>
+							<div class="col-sm">
+								<div class="form-group">
+									<h4 class="pull-right">
+										Total amount :
+										<span class="red">Php.{{context.total_balance}}</span>
+									</h4>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		function print() {
+			var doc = new jsPDF('landscape', 'pt', 'a4');
+			var htmlstring = '';
+			var tempVarToCheckPageHeight = 0;
+			var pageHeight = 0;
+			
+
+			pageHeight = doc.internal.pageSize.height;
+			specialElementHandlers = {
+				// element with id of "bypass" - jQuery style selector
+				'#bypassme': function (element, renderer) {
+					// true = "handled elsewhere, bypass text extraction"
+					return true
+				}
+			};
+			margins = {
+				top: 150,
+				bottom: 60,
+				left: 40,
+				right: 40,
+				width: 600
+			};
+			const formatter = new Intl.NumberFormat('en-US', {
+				style: 'currency',
+				currency: 'Php',
+				minimumFractionDigits: 2
+			})
+
+			var y = 10;
+			var x = 20;
+			doc.text(420, y = y + 30, "Copy of Consumer's Meter Reading ");
+			doc.setLineWidth(2);
+			doc.setFontSize(15);
+			doc.fromHTML(
+				document.getElementById('newtable'),
+				15,
+				15,
+			)
+			y = doc.lastAutoTable.finalY
+			console.log(y);
+			console.log("testing")
+			doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
+		}				
+	</script>
 </div>
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
@@ -109,27 +370,28 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">&#8369;  {{t.bill|floatformat:2|intcomma}}</td>
-					<td class="{{t.style}}">&#8369;  {{t.payment|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">&#8369; {{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">&#8369; {{t.payment|floatformat:2|intcomma}}</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">&#8369;  {{t.bal|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table id="tabs">
 	</div>
 </div>
-<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;" >
-	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy" style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
+<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy"
+		style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
 	</button>
 </div>
 </div id="elementH">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
-		integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
-		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+	integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script type="text/javascript">
