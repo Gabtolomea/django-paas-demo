@@ -231,6 +231,8 @@ def ledger(request, id):
             prev = p
     year = date.today().year
     context = {
+        'month':calendar.month_name[date.today().month-1],
+        'date_today':date.today(),
         'u': u,
         'table': table,
         'year': year,
@@ -1059,16 +1061,3 @@ def penalty (request):
     return render(request, 'penalty.html', context)
 
 
-def billing(request,id):
-    date = datetime.now().date()
-    months =("Blank", "December", "January", "February", "March", "April", 
-    "May","June", "July","August","September","October","November")
-    user = request.user
-    d = datetime.now().today()
-    prevdate = months[d.month]
-    
-    context = {
-        'prevread':prevdate,
-        'date':date,
-        }
-    return render(request, 'pdf_bill.html', context)
