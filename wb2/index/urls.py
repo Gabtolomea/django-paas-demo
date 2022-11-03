@@ -4,10 +4,12 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
+
 urlpatterns = [
     path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),
     path('login',views.signin,name='login'),
+    path('user_creation', views.user_creation,name='user_creation'),
     path('signout', views.signout,name='signout'),
     path('bills_list/', views.bills_list, name='bills_list'),
     path('bills_list/<id>/', views.ledger,name='ledger'),
@@ -22,8 +24,8 @@ urlpatterns = [
     path('consumer_list/<int:id>/', views.userupdate, name='userupdate'),
     path('deleteconsumer/<int:id>', views.deleteconsumer,name='deleteconsumer'),
     path('sysuser/', views.sysuser,name='sysuser'),
-    path('sysuser/user_creation', views.user_creation,name='user_creation'),
-    path('sysuser/user_edit<id>/', views.user_edit, name='user_edit'),
+    path('user_creation', views.user_creation,name='user_creation'),
+    path('sysuser/<id>/', views.user_edit, name='user_edit'),
     path('deleteUser/<id>/', views.deleteUser, name='deleteUser'),
     path('about', views.about, name='about'),
     path('reports', views.reports, name='reports'),
@@ -36,7 +38,9 @@ urlpatterns = [
     path('reports/unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
     path('payment/<id>/', views.payment, name='payment'),
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
-
+    path('discount',views.discount, name='discount'),
+    path('penalty', views.penalty, name='penalty'),
+    path('billing/<int:id>/',views.billing, name='billing')
 
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),

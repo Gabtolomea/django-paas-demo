@@ -11,7 +11,7 @@ from .models import *
 
 
 class SystemUserForm(UserCreationForm):
-    CHOICES = (
+    CHOICES =(
         ("0", "Approver for Inbound Application"),
         ("1", "Non Approver"),
         ("2", "Supervisor"),
@@ -67,7 +67,7 @@ class sysup(ModelForm):
     # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
     class Meta:
         model = SystemUsers
-        fields =(  
+        fields =(
         'first_name',
         'last_name',
         'email',
@@ -86,8 +86,8 @@ class sysup(ModelForm):
 
 class ConsumerCreationForm(ModelForm):
     CHOICES = (
-        ("MALE", "Male"),
-        ("FEMALE", "Female"),
+        ("MALE", "MALE"),
+        ("FEMALE", "FEMALE"),
     )
 
     firstname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -99,7 +99,7 @@ class ConsumerCreationForm(ModelForm):
     sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=CHOICES)
     sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}),required=False)
     meternumber = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
     installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Barangays.objects.all())
@@ -163,9 +163,38 @@ class Userinfoupdate(ModelForm):
             'sitio',
             'picture'
         )
+    
+class addPenalty(ModelForm):
+    penalty_info = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    penalty_after = forms.NumberInput(attrs={'class': 'form-control', 'min':0})
+    daysappliedafter = forms.NumberInput(attrs={'class': 'form-control','min':0})
+    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+            models = Penalty
+            fields = (
+                'penalty_info',
+                'penaltyrate',
+                'penalty_after',
+                'daysappliedafter',
+                'added_by'
+            )
+
+class addDiscount(ModelForm):
+    discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta():
+        model = Discount
+        fields = (
+            'discountcode',
+            'discount_rate',
+            'added_by'
+        )
 
 class ConscumertypecreationForm (ModelForm):
-    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'min':0}))
+    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
     minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
     rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))

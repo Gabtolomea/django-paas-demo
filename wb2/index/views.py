@@ -1,6 +1,7 @@
 import calendar
 from datetime import datetime
-
+import datetime
+from dis import dis
 from email import errors
 from multiprocessing import context
 from os import system
@@ -18,6 +19,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import QueryDict
 from wb2.settings import EMAIL_HOST_USER
 import base64
+from .DBdb import *
+from wb2 import settings
 from .forms import *
 from .decorators import *
 from .models import *
@@ -31,6 +34,10 @@ from django.db.models import F, Sum
 from .decorators import unauthenticated_user
 from django.http import HttpResponseRedirect
 # from .loginrequiredmidware import login_exempt
+
+
+def login_redirect(request):
+    return redirect('login')
 
 def porter(request):
     porter_in()
@@ -133,20 +140,13 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('sysuser')
+            return redirect('dashboard')
     context = {
         'form': form,
         'errors': form.errors,
     }
     return render(request, 'registration.html', context)
 
-# @login_required(login_url='login')
-# def dashboard(request):
-#     user = request.user
-#     context = {
-#         'user': user
-#     }
-#     return render(request, 'dashboard.html', context)
 
 # @login_required(login_url='login')
 def ledger(request, id):
@@ -215,12 +215,12 @@ def ledger(request, id):
                 style = 'text-primary table-primary'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
-            mdate = asc_trans[i].date
+            date = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, mdate, prev, cur, usage,
+            new_row = ledgerclass(transid, date, prev, cur, usage,
                                   bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
@@ -310,7 +310,8 @@ def inputreading(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    trans = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
+    trans = Transactions.objects.filter(
+        acctID_id=id, transType='Billing', year=year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
     j = 0
@@ -364,7 +365,8 @@ def inputreading(request, id, year):
         except ObjectDoesNotExist:
             con_b_rec = BarangayRecord()
         else:
-            con_b_rec = BarangayRecord.objects.get(barangaycode_id = consumer.installation_address_id, year = year)
+            con_b_rec = BarangayRecord.objects.get(
+                barangaycode_id=consumer.installation_address_id, year=year)
             readings = []
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
@@ -530,9 +532,18 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
-
 # def landing(request):
 #     return render(request,'landing.html')
+
+# @login_required(login_url='login')
+def bills_list(request):
+    user = request.user
+    bills_list = ConsumerInfo.objects.all()
+    context = {
+        'bills_list': bills_list,
+        'user': user,
+    }
+    return render(request, 'billslist.html', context)
 
 
 # @login_required(login_url='login')
@@ -647,7 +658,7 @@ def userupdate(request, id):
 
     }
 
-    return render(request, 'consumercreation.html', context)
+    return render(request, 'userupdate.html', context)
 
 # @login_required(login_url='login')
 def user_edit(request, id):
@@ -665,7 +676,7 @@ def user_edit(request, id):
             fss.save(upload.name, upload)
             # sys.profilepic = pic
             sys.save()
-        messages.success(request, 'Successfully Submitted!')
+
         return redirect('sysuser')
     context = {
         'sys': sys,
@@ -685,6 +696,7 @@ def deleteUser(request, id):
 
 def about(request):
     return render(request, 'about.html')
+
 
 def payment(request, id):
     if request.method == 'POST':
@@ -714,7 +726,6 @@ def barangayreport(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(years)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -757,19 +768,24 @@ def barangayreport(request, year):
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
     context = {
-        'bang': bang
+        'bang': bang,
+
+
     }
     return render(request, 'view_barangay.html', context)
 
+
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
+    year = date.today().year
+    print(year)
     context = {
-        'ub':ub
-    }
+        'year':year,
+        'ub': ub
+    }    
     return render(request, 'unsettled_bill.html', context)
 
 
-    
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -778,7 +794,7 @@ def usage_report_data(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(i)
+        print(years)
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -801,7 +817,7 @@ def usage_report_data(request, year):
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
         F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')
     )
-    ).order_by()
+    )
 
     context = {
         'tu_mon': tu_mon,
@@ -833,6 +849,7 @@ def barangay_by_monthly(request, id, year):
     }
     return render(request, 'usage_report_data.html', context)
 
+
 def revenue_report(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -841,7 +858,7 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-
+        print(years)
     # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
@@ -857,6 +874,8 @@ def revenue_report(request, year):
         nov=Sum('total_paid_nov'),
         dec=Sum('total_paid_dec'),
     )
+    values = rev_col.values()
+    col= sum(values)
     # Total Receivables
     rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_due_jan') - Sum('total_paid_jan'),
@@ -880,11 +899,16 @@ def revenue_report(request, year):
     
    
 
-    context = {
+    context={
         'rev_col': rev_col,
-        'rev_rec': rev_rec,
-        'cur_year': year,
+        'rev_rec': filt,
+       'cur_year': year,
         'years': years,
+        'col':col,
+        'rec' : rec
+        
+       
+
     }
     return render( request, 'revenue_report.html',  context)
 
@@ -893,6 +917,7 @@ def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id = id)
     con.delete()
     return redirect('consumer_list')
+
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
@@ -913,7 +938,6 @@ def view_unsettled_bills(request, id, year):
             self.consumption = usage
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
-    con = ConsumerInfo.objects.get(consumer_id=id)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
     billing = Transactions.objects.filter(acctID_id=id, transType='Billing',  year=year)
     payment = Transactions.objects.filter(acctID_id=id, transType = 'Payment', year = year)
@@ -959,11 +983,35 @@ def view_unsettled_bills(request, id, year):
             'table':table,}
     return render(request, 'view_unsettled_bills.html', context)
 
+
+# def addPenalty(request):
+#     form = addPenalty()
+#     if request.method == "POST":
+#         form = addPenalty(request.POST)
+
+def discount(request):
+    form = addDiscount()
+    discountidcount = len(Discount.objects.all())
+    if request.method == "POST":
+        form = addDiscount(request.POST)
+        discount_rate = request.POST['discount_rate']
+        if form.is_valid():
+            addD = Discount()
+            addD.discountcode = "D00"+str(discountidcount+1)
+            addD.discount_rate = discount_rate
+            addD.added_by = request.user
+            addD.save()
+    context = {
+        'form': form,
+        'errors': form.errors,
+                }
+    return render(request, 'discount.html', context)
+     
+    
 # @login_required(login_url='login')
 def new_consumertype (request):
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
-    print(request.user)
     if request.method =="POST":
         form = ConscumertypecreationForm(request.POST)
         contype = request.POST['contype']
@@ -984,3 +1032,43 @@ def new_consumertype (request):
             'errors': form.errors
         }
     return render(request,'new_consumertype.html', context)
+
+def penalty (request):
+    form = addPenalty
+    penaltycounter = len(Penalty.objects.all())
+    if request.method =="POST":
+        form = addPenalty(request.POST)
+        penalty_info = request.POST['penalty_info']
+        penalty_rate = request.POST['penalty_rate']
+        penalty_after = request.POST['penalty_after']
+        daysappliedafter = request.POST['daysappliedafter']
+        if form.is_valid():
+            pen = Penalty()
+            pen.penaltycode = "P00"+str(penaltycounter+1)
+            pen.penalty_info = penalty_info
+            pen.penalty_rate = penalty_rate
+            pen.penalty_after = penalty_after
+            pen.daysappliedafter = daysappliedafter
+            pen.added_by = request.user
+            pen.save()
+    context = {
+        'form': form,
+        'errors': form.errors
+        }
+
+    return render(request, 'penalty.html', context)
+
+
+def billing(request,id):
+    date = datetime.now().date()
+    months =("Blank", "December", "January", "February", "March", "April", 
+    "May","June", "July","August","September","October","November")
+    user = request.user
+    d = datetime.now().today()
+    prevdate = months[d.month]
+    
+    context = {
+        'prevread':prevdate,
+        'date':date,
+        }
+    return render(request, 'pdf_bill.html', context)

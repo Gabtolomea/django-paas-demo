@@ -1,5 +1,22 @@
-<!DOCTYPE html>
-<html>
+{% extends 'dashboard.html' %}
+
+{% block title %}
+Usage Report
+{% endblock title %}
+
+{% block style %}
+<style>
+  .select {
+    font-weight: bold;
+    font-size: 20px;
+    font-style: normal;
+    float: left;
+    width: 140px;
+  }
+</style>
+
+{% endblock style %}
+{% block usage_report_data %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -27,7 +44,11 @@
 		</script>
 	</div>
 
-</div>
+  <body>
+    <center>
+      <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
+    </center>
+    <canvas id="myChart" width="800" height="150"></canvas>
 
 <script>
 	var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -180,4 +201,5 @@
 </script>
 </body>
 
-</html>
+
+{% endblock usage_report_data %}

@@ -82,7 +82,6 @@
       </div>
     </div>
   </div>
-
     <header>
         {% for message in messages %}
         <div id="login"
@@ -149,7 +148,7 @@
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
                     <i class="fa-solid fa-user fa-2x"></i>
-                    <span class="sidenav_text">Consumers</span>
+                    <span class="sidenav_text">Consumer Users</span>
                 </li>
             </a>
             <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
@@ -206,6 +205,12 @@
         {%  endblock view_unsettled_bills %}
         {%  block sysuserupdate %}
         {%  endblock sysuserupdate %}
+        {% block settingspage %}
+        {% endblock settingspage %}
+
+
+        
+
 
         {% block revenue_report %}
         {% endblock revenue_report %}
@@ -213,6 +218,8 @@
         {% block usage_report_data %}
         {% endblock usage_report_data %}
 
+        {% block bill %}
+        {% endblock bill %}
 
  
     </div>

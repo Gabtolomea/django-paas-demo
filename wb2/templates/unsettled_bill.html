@@ -1,24 +1,26 @@
 {% extends 'dashboard.html' %}
- 
+
+{% load static %}
+
 {% block title %}
 Unsettled Bills
 {% endblock title %}
- 
+
 {% load static %}
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
- 
+
 <style>
     .hide {
         opacity: 0;
         transition: 0.3s all ease-in-out;
     }
- 
+
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
- 
+
     }
 </style>
 {% endblock style %}
