@@ -230,13 +230,21 @@ def ledger(request, id):
                     p = p + current
             prev = p
     year = date.today().year
+    
+    alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
+    if alltrans[0].transType == 'Billing':
+        usage = usage
+        bill = bill
+        connectionType = connectionType
+        cur = alltrans[0].meterReading
+        pre = cur - usage
+        print(cur)
     context = {
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
         'u': u,
         'table': table,
-        'year': year,
-        'cur':cur,
+        'year': year,       
         'prev':prev
     }
     return render(request, 'ledger.html', context)
