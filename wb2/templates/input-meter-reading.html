@@ -42,7 +42,7 @@ Input Reading
 				</tr>
 			</thead>
 			<tbody>
-				<tr class="showOnHover">
+				<tr>
 					<td>{{consumer.consumer_id}}</td>
 					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
 					<td style="text-align:center;">{{consumer.meternumber}}</td>
@@ -57,7 +57,7 @@ Input Reading
 								<i class="fa fa-play"></i> ENABLE
 							</button>
 							{% else %}
-							<button class="hide btn btn-danger btn-sm rounded-3" type="submit"
+							<button class="btn btn-danger btn-sm rounded-3" type="submit"
 								onclick="return confirm('Stop {{consumer.firstname}}\'s Meter?')" title="Stop" style="text-align-last: right;">
 								<i class="fa fa-stop"></i> STOP
 							</button>
@@ -116,7 +116,7 @@ Input Reading
 							{{t.usage}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
-								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}}
+								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}} 
 								{% if t.next %}max="{{t.next}}" {%endif%} value="{{t.reading}}">
 						</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
@@ -188,7 +188,10 @@ Input Reading
 	</div>
 	<div class="container align-items-center">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-		<canvas id="myChart" style="width:100%;max-width:600px" width="1200" height="600"></canvas>
+		<canvas id="myChart"  width="800" height="250"></canvas>
+		<br>
+		<br>
+		<br>
 		<script>
 			var labels = [{%for i in table %} '{{i.month}}', {% endfor %}];
 			var chart = new Chart("myChart", {
@@ -227,15 +230,17 @@ Input Reading
 			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script type="text/javascript">
-
+			
 	function print() {
 		var doc = new jsPDF('landscape', 'pt', 'legal');
 		var htmlstring = '';
 		var tempVarToCheckPageHeight = 0;
 		var pageHeight = 0;
 		canvas = document.getElementById("myChart")
-   		canvasImg = canvas.toDataURL("image/jpeg", 1.0);
+   		canvasImg = canvas.toDataURL("image/png", 1.0);
+	
 
+   
 		pageHeight = doc.internal.pageSize.height;
 		specialElementHandlers = {
 			// element with id of "bypass" - jQuery style selector
@@ -279,7 +284,7 @@ Input Reading
 			columnStyles: {
 				0: {
 					cellWidth: 75,
-				},
+				},					
 			},
 			styles: {
 				minCellHeight: 20
@@ -288,7 +293,7 @@ Input Reading
 		y = doc.lastAutoTable.finalY
 		doc.setFillColor(255, 255,255);
 		doc.rect(x, y, 400, 200, "F");
-		doc.addImage(canvasImg, 'JPEG', x+40, y, 400, 200)
+		doc.addImage(canvasImg, 'JPEG', x+100, y, 800, 200)
 		console.log(y);
 		if (y > 600) {
 			doc.addPage()
@@ -296,7 +301,7 @@ Input Reading
 		}
 		console.log("testing")
 		doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
-	}
+	}				
 		</script>
 	</div>
 </div>

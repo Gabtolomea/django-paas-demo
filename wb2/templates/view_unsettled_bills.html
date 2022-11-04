@@ -13,18 +13,22 @@
             <th scope="col" style="min-width: 25px">Name</th>
             <th scope="col" style="min-width: 25px">Address</th>
         </tr>
+        <tbody class="wb_tbody">
     <tr>
-        <td>{{uv.consumer_id}}</td>
-        <td>{{uv.meternumber}}</td>
-        <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
-        <td>{{uv.installation_address}}</td>
-
+      <th scope="col" style="min-width:110px">Account ID</th>
+      <th scope="col" style="min-width:110px">Meter Number</th>
+      <th scope="col" style="min-width:110px">Name</th>
+      <th scope="col" style="min-width:110px">Address</th>
     </tr>
-</thead>
+    <tr>
+      <td>{{uv.consumer_id}}</td>
+      <td>{{uv.meternumber}}</td>
+      <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
+      <td>{{uv.installation_address}}</td>
+    </tr>
+  </thead>
 </table>
-</div>
-<label for="years" style="font-size: 18px; font-weight: normal;  font-weight: bold;">Select Year:
-</label>
+<label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">SelectYear:</label>
 <form id="yearselection" action="">
   <select style="width: 100px;"class="form-select" id="selector" onchange="change()">
     <option value="{{current}}">{{current}}</option>
@@ -56,7 +60,6 @@
         </tr>
           </thead>
               <tbody class="wb_tbody">
-              </tbody>
             {% for t in table %}
             <tr>
               <td>{{t.month}}</td>
@@ -66,7 +69,8 @@
               <td>{{t.total_bill}}</td>
               <td>{{t.total_amount_paid}}</td>
             </tr>
-            {% endfor %}
+            {% endfor %} 
+          </tbody>
     </table>
   </div>
 </div>

@@ -328,6 +328,10 @@ p {
     font-size: 40px;
     margin-left: -13px;
 }
+
+
+
+
 .toggle-button {
     position: absolute;
     width: 50px;
@@ -429,6 +433,7 @@ p {
 .btn-wb-back {
     background: #091d36 !important;
     color: white !important;
+    font-weight: 500 !important;
 }
 
 button.btn.btn-wb-back:hover {
@@ -437,13 +442,13 @@ button.btn.btn-wb-back:hover {
 }
 
 .btn-wb-copy {
-    background: #091d36 !important;
+    background: #0093B7 !important;
     color: white !important;
+    font-weight: 500 !important;
 }
 
 button.btn.btn-wb-copy:hover {
-    background: #3a4e7a !important;
-    color: white;
+    background: #a0c5cf !important;
 }
 
 .mb-3 {

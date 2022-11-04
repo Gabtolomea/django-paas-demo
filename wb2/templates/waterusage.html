@@ -3,7 +3,6 @@
 {% block title %}
 Water Usage
 {% endblock title %}
-
 {% block style %}
 
 
@@ -81,6 +80,61 @@ Water Usage
       text-align: right;
     }
 
+    table th {
+      font-size: .85em;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    @media screen and (max-width: 600px) {
+      table {
+        border: 0;
+      }
+
+      table caption {
+        font-size: 1.3em;
+      }
+
+      table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+
+      table tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .625em;
+      }
+
+      table td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: .8em;
+        text-align: right;
+      }
+
+      table td::before {
+
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      table td:last-child {
+        border-bottom: 0;
+      }
+    }
+    body {
+      font-family: "Open Sans", sans-serif;
+      line-height: 1.25;
+
     table td::before {
       /*
         * aria-label has no advantage, it won't be read inside a table
@@ -145,11 +199,6 @@ Water Usage
     </div>
 
 
-
-    <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year:
-    </label>
-
-
     <form id="yearselection" action="">
       <select class="form-select" id="selector" onchange="change()">
         <option value="{{cur_year}}">{{cur_year}}</option>
@@ -183,7 +232,7 @@ Water Usage
       {% for br in br %}
       <tr>
         <td data-label="Barangay" style="background-color: #DBF3FA;"><a
-            href="/view_barangay/{{br.barangayrec_id}}" style="text-decoration: none;">{{br.barangaycode}}</a></td>
+            href="{% url 'view_barangay' br.barangayrec_id %}" style="text-decoration: none;">{{br.barangaycode}}</a></td>
         <td data-label="Total Usage(Cu. Meter)" style="background-color: #D3D3D3">{{br.total_usage|floatformat:1}}</td>
         <td data-label="Total Receivables" class="total_paid" style="background-color: #D3D3D3">
           {{br.total_rec|floatformat:1}}</td>
@@ -193,7 +242,7 @@ Water Usage
       </tr>
       {% endfor %}
       <tr>
-        <td data-label="Barangay" style="background-color: #63CDD7;">Total</td>
+        <td data-label="Barangay" style="background-color: #63CDD7;"><a href="#" style="text-decoration: none;">Total</a></td>
         <td data-label="Total Usage(Cu. Meter)" class="total_paid" style="background-color: #808080">
           {{fr.tu|floatformat:1}}</td>
         <td data-label="Total Receivables" style="background-color: #808080">{{fr.tr|floatformat:1}}</td>

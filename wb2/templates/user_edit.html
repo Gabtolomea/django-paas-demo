@@ -84,7 +84,7 @@ System User
 	<form action="{%url 'user_edit' sys.username%}" enctype="multipart/form-data" method="POST" class="signup-form">
 		{% csrf_token %}
 		<div class="container">
-			<div class=" shadow wrapper">
+			<div class=" shadow wrapper m-4">
 				<div class="form-header">
 					<center><h1>System User</h1></center>
 				</div>
@@ -160,18 +160,32 @@ System User
 				</div>
 
 				<div class="row form-group w-100 m-auto">
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-						<label for="pwd">Password*</label><br>
-						<input type="password"  class="form-control" id="pwd" name="pwd">
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-                        <label for="pwd">Confirm Password*</label><br>
-						<input type="password"  class="form-control" id="pwd" name="pwd">
-                    </div>
-                </div>
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+						{% if form.errors %}
+						{% for error in form.password.errors %}
+						<div class="alert alert-danger">
+							<strong>{{ error|escape }}</strong>
+						</div>
+						{% endfor %}
+						{% endif %}
+						<label for="">Password*</label>
+						<input type="password" name="" id="id_password1" class="form-control" value="{{password}}">
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+						{% if form.errors %}
+						{% for error in form.password.errors %}
+						<div class="alert alert-danger">
+							<strong>{{ error|escape }}</strong>
+						</div>
+						{% endfor %}
+						{% endif %}
+						<label for="">Password*</label>
+						<input type="password" name="" id="id_password2" class="form-control" value="{{password}}">
+					</div>
+				</div>
 
 				<div class="row m-auto w-100">
-					<div class="col-lg-6 col-md-6 col-sm-12 ">
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 						<h3>Type of User</h3>
 						{{form.is_admin}}
 						<label for="id_is_admin">ADMIN</label><br>
@@ -210,4 +224,16 @@ System User
 </section>
 {% endblock sysuserupdate %}
 {% block script %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    function fireSweetAlert() {
+        Swal.fire(
+            'Good job!',
+            'You clicked the button!',
+            'success'
+        )
+    }
+
+  </script>
 {% endblock script %}
