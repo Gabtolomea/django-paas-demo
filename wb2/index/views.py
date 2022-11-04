@@ -26,6 +26,7 @@ from .decorators import *
 from .models import *
 from .dataporter import *
 from .functions import *
+from .temp import ReqParams
 import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage

@@ -10,39 +10,48 @@ Revenue Report
 
 {% block style %}
 <style>
-  
-  .header{
-    font-weight: bold;
-    margin-top: 40px;
-  }
+	.header {
+		font-weight: bold;
+		margin-top: 40px;
+	}
 
-  h3{
-    font-weight: bold;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
+	h3 {
+		font-weight: bold;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
 
-  @media (max-width: 450px){
-    h3 { font-size: 18px;}
-}
-@media (min-width: 451px){
-    h3 { font-size: 35px;}
-}
+	@media (max-width: 450px) {
+		h3 {
+			font-size: 18px;
+		}
+	}
+
+	@media (min-width: 451px) {
+		h3 {
+			font-size: 35px;
+		}
+	}
 
 
-@media (max-width: 450px){
-  label { font-size: 12px;}
-}
-@media (min-width: 451px){
-  label { font-size: 20px;}
-}
+	@media (max-width: 450px) {
+		label {
+			font-size: 12px;
+		}
+	}
+
+	@media (min-width: 451px) {
+		label {
+			font-size: 20px;
+		}
+	}
 </style>
 {% endblock style %}
 
 {% block revenue_report %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <div>
-  {% csrf_token %}
+	{% csrf_token %}
 
  <center><h3>Revenue Reports</h3></center>
   <div>
