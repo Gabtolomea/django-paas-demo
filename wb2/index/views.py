@@ -235,6 +235,8 @@ def ledger(request, id):
         'u': u,
         'table': table,
         'year': year,
+        'cur':cur,
+        'prev':prev
     }
     return render(request, 'ledger.html', context)
 

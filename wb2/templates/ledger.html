@@ -80,6 +80,8 @@ Account Ledger
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
 		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
 	</div>
+
+	<!-- BILL PDF LAYOUT WELFY--> 
 	<div id="newtable" style="display: none;" class="col-sm-10 col-sm-offset-1">
 		<div class="widget-box">
 			<div class="widget-header widget-header-large">
@@ -215,7 +217,7 @@ Account Ledger
 											Current Reading
 										</td>
 										<td class="hidden-xs">
-											{{u.meterReading}} m3
+											{{cur}} m3
 										</td>
 									</tr>
 									<tr>
@@ -223,7 +225,7 @@ Account Ledger
 											Previous Reading
 										</td>
 										<td class="hidden-xs">
-											{{context.prev_reading}} m3
+											{{prev}} m3
 										</td>
 									</tr>
 									<tr>
@@ -269,17 +271,15 @@ Account Ledger
 						<div class="hr hr8 hr-double hr-dotted"></div>
 
 
-						<div class="row">
+						<!-- <div class="row">
 							<div class="col-sm">
 								<div class="form-group">
-
 								</div>
 							</div>
 							<div class="col-sm">
 								<div class="form-group">
-
 								</div>
-							</div>
+							</div> -->
 							<div class="col-sm">
 								<div class="form-group">
 									<h4 class="pull-right">
@@ -317,15 +317,8 @@ Account Ledger
 				right: 40,
 				width: 600
 			};
-			const formatter = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'Php',
-				minimumFractionDigits: 2
-			})
-
 			var y = 10;
 			var x = 20;
-			doc.text(420, y = y + 30, "Copy of Consumer's Meter Reading ");
 			doc.setLineWidth(2);
 			doc.setFontSize(15);
 			doc.fromHTML(
@@ -333,8 +326,8 @@ Account Ledger
 				15,
 				15,
 			)
-			y = doc.lastAutoTable.finalY
-			console.log(y);
+			// y = doc.lastAutoTable.finalY
+			// console.log(y);
 			console.log("testing")
 			doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
 		}				
