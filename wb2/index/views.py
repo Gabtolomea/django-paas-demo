@@ -8,6 +8,7 @@ from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -82,11 +83,15 @@ def signin(request):
 def bills_list(request):
     # q = QueryDict(request.session['username'])
     # print(q)
+    session_key = 'oc32oddjcdape01eqxomcx7o6s1i2zbe'
+    session = Session.objects.get(session_key=session_key)
+    uid = session.get_decoded().get('username')
+    print(session)
     user = request.session.get('username')
     bills = ConsumerInfo.objects.all()
     context = {
         'bills_list': bills,
-        'user': user,
+        'user': session,
     }
     return render(request, 'billslist.html', context)
 
@@ -230,6 +235,10 @@ def ledger(request, id):
                     p = p + current
             prev = p
     year = date.today().year
+
+
+
+    
     context = {
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
@@ -312,8 +321,7 @@ def inputreading(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    trans = Transactions.objects.filter(
-        acctID_id=id, transType='Billing', year=year)
+    trans = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
     j = 0
@@ -354,7 +362,6 @@ def inputreading(request, id, year):
         # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
-        print(table)
 
     con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
     cummulative = get_cummulative(id)
