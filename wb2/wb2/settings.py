@@ -48,6 +48,10 @@ INSTALLED_APPS = [
 
 
 
+SESSION_SAVE_EVERY_REQUEST = True
+TEMPLATE_CONTEXT_PROCESSORS = [
+    'django.contrib.auth.context_processors.auth',
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -58,6 +62,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
 ]
+
+# SESSION_COOKIE_HTTPONLY = True
+# SESSION_COOKIE_AGE = 60*60*24
+# SESSION_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'wb2.urls'
 AUTH_USER_MODEL = 'index.SystemUsers'

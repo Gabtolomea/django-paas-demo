@@ -4,27 +4,33 @@
 
 
 {% block view_unsettled_bills %}
+<div class="table-responsive">
 <table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
     <thead class="header">
-        <tr>
-            <th scope="col" style="min-width:110px">Account ID</th>
-            <th scope="col" style="min-width:110px">Meter Number</th>
-            <th scope="col" style="min-width:110px">Name</th>
-            <th scope="col" style="min-width:110px">Address</th>
+        <tr style="background-color: #63CDD7; color: white;">
+            <th scope="col" style="min-width: 25px">Account ID</th>
+            <th scope="col" style="min-width: 25px">Meter Number</th>
+            <th scope="col" style="min-width: 25px">Name</th>
+            <th scope="col" style="min-width: 25px">Address</th>
         </tr>
+        <tbody class="wb_tbody">
     <tr>
-        <td>{{uv.consumer_id}}</td>
-        <td>{{uv.meternumber}}</td>
-        <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
-        <td>{{uv.installation_address}}</td>
-
+      <th scope="col" style="min-width:110px">Account ID</th>
+      <th scope="col" style="min-width:110px">Meter Number</th>
+      <th scope="col" style="min-width:110px">Name</th>
+      <th scope="col" style="min-width:110px">Address</th>
     </tr>
-</thead>
+    <tr>
+      <td>{{uv.consumer_id}}</td>
+      <td>{{uv.meternumber}}</td>
+      <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
+      <td>{{uv.installation_address}}</td>
+    </tr>
+  </thead>
 </table>
-<label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year:
-</label>
+<label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">SelectYear:</label>
 <form id="yearselection" action="">
-  <select class="form-select" id="selector" onchange="change()">
+  <select style="width: 100px;"class="form-select" id="selector" onchange="change()">
     <option value="{{current}}">{{current}}</option>
     {% for i in years reversed %}
     <option value="{{i}}">{{i}}</option>
@@ -66,6 +72,7 @@
   {% endfor %}
 </table>
 {%  endblock view_unsettled_bills %}
+
 
 
 

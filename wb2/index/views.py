@@ -1,6 +1,7 @@
 import calendar
+import pickle
 from datetime import datetime
-
+import datetime
 from dis import dis
 from email import errors
 from multiprocessing import context
@@ -8,6 +9,7 @@ from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -16,6 +18,8 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import QueryDict
+from wb2.settings import EMAIL_HOST_USER
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import base64
 from .DBdb import *
@@ -30,11 +34,12 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
+from django.http import HttpResponseRedirect
+# from .loginrequiredmidware import login_exempt
 
 
 def login_redirect(request):
     return redirect('login')
-
 
 def porter(request):
     porter_in()
@@ -44,12 +49,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -60,28 +65,49 @@ def signin(request):
         if pkval.exists():
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
-                login(request, user)
-                print(user)
-                messages.success(request, 'Logged in')
-                return redirect('bills_list')
+                request.session[ReqParams.username] = user.username
+                u = user.username
+                login(request, user,  backend='django.contrib.auth.backends.ModelBackend')
+                request.session.modified = True
+                # authenticate(request, username = u, password = p)
+                messages.success(request, 'Logged in as '+user.username)
+                return redirect('bills_list/')
             else:
                 messages.error(request, "Invalid Password")
         else:
             messages.error(request, "Invalid Username")
     return render(request, 'login.html')
 
-
-def source_access(request):
+# @login_required
+def bills_list(request):
+    # q = QueryDict(request.session['username'])
+    # print(q)
+    session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
+    session_data = Session.objects.get(session_key=session_key).session_data
+    data = pickle.loads(base64.b64decode(session_data))
+    user = "session.get_decoded().get(ReqParams.username)"
+    bills = ConsumerInfo.objects.all()
+    print(data)
     context = {
-        "userid": request.session.get(ReqParams.username),
-        "name": request.session.get(ReqParams.name),
-        "UserType": request.session.get(ReqParams.LOGIN_SESSION)
+        'bills_list': bills,
+        'user': user,
     }
-    return render(request, "html/source_access.html", {"context": context})
+    return render(request, 'billslist.html', context)
+
+# def source_access(request):
+#     context = {
+#         "userid": request.session.get(ReqParams.username),
+#         "name": request.session.get(ReqParams.name),
+#         "UserType": request.session.get(ReqParams.LOGIN_SESSION)
+#     }
+#     return render(request, "html/source_access.html", {"context": context})
 
 
 def signout(request):
-    logout(request)
+    try:
+        del request.session['username']
+    except KeyError:
+        pass
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -125,7 +151,7 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('dashboard')
+            return redirect('bills_list')
     context = {
         'form': form,
         'errors': form.errors,
@@ -134,19 +160,8 @@ def user_creation(request):
 
 
 # @login_required(login_url='login')
-def dashboard(request):
-    user = request.user
-    context = {
-        'user': user
-    }
-    return render(request, 'dashboard.html', context)
-
-# @login_required(login_url='login')
-
-
 def ledger(request, id):
     table = []
-
     class ledgerclass():
         def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style):
             self.transid = transid
@@ -226,7 +241,13 @@ def ledger(request, id):
                     p = p + current
             prev = p
     year = date.today().year
+
+
+
+    
     context = {
+        'month':calendar.month_name[date.today().month-1],
+        'date_today':date.today(),
         'u': u,
         'table': table,
         'year': year,
@@ -256,7 +277,7 @@ def forgetpassword(request):
             email = EmailMessage(
                 email_subject,
                 message,
-                settings.EMAIL_HOST_USER,
+                EMAIL_HOST_USER,
                 [user.email],
             )
             email.fail_silently = True
@@ -278,8 +299,7 @@ def password_reset_form(request):
 
     return render(request, 'password_reset_form')
 
-
-# @login_required
+# @login_required(login_url='login')
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -307,8 +327,7 @@ def inputreading(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    trans = Transactions.objects.filter(
-        acctID_id=id, transType='Billing', year=year)
+    trans = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
     asc_trans = trans.order_by('month')
     count = len(asc_trans)
     j = 0
@@ -349,7 +368,6 @@ def inputreading(request, id, year):
         # print(str(prev)+" "+str(reading)+" "+str(next))
         m = meterreaderclass(transid, month, usage, prev, reading, next, style)
         table.append(m)
-        print(table)
 
     con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
     cummulative = get_cummulative(id)
@@ -540,15 +558,6 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-# @login_required(login_url='login')
-def bills_list(request):
-    user = request.user
-    bills_list = ConsumerInfo.objects.all()
-    context = {
-        'bills_list': bills_list,
-        'user': user,
-    }
-    return render(request, 'billslist.html', context)
 
 
 # @login_required(login_url='login')
@@ -556,12 +565,10 @@ def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
-
 # @login_required(login_url='login')
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
-
 
 # @login_required(login_url='login')
 def consumercreation(request):
@@ -604,7 +611,6 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-
 # @login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
@@ -612,7 +618,6 @@ def stopmeter(request, id):
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
     return redirect('inputreading', id=id, year=date.today().year)
-
 
 # @login_required(login_url='login')
 def sysuser(request):
@@ -652,7 +657,6 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-
 # @login_required(login_url='login')
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
@@ -669,7 +673,6 @@ def userupdate(request, id):
     }
 
     return render(request, 'userupdate.html', context)
-
 
 # @login_required(login_url='login')
 def user_edit(request, id):
@@ -729,10 +732,7 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
-
 # @login_required(login_url='login')
-
-
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -782,7 +782,6 @@ def barangayreport(request, year):
 
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
-
     context = {
         'bang': bang,
 
@@ -932,7 +931,6 @@ def deleteconsumer(request, id):
     con.delete()
     return redirect('consumer_list')
 
-
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
@@ -954,7 +952,6 @@ def view_unsettled_bills(request, id, year):
             self.consumption = usage
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
-    con = ConsumerInfo.objects.get(consumer_id=id)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
     billing = Transactions.objects.filter(
         acctID_id=id, transType='Billing',  year=year)

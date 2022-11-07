@@ -1,6 +1,9 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 {% load humanize %}
+{% block title %}
+Billing
+{% endblock title %}
 
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
@@ -12,6 +15,8 @@
     }
 </style>
 {% endblock style %}
+
+
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -31,7 +36,7 @@
 </script>
 {% endblock script %}
 {% block billslist %}
-<body >
+
 <h1 class="mb-3 text-center">Bills List</h1>
 <div class="container-fluid p-0">
     <div class="table-responsive">
@@ -46,6 +51,7 @@
                 </tr>
             </thead>
 
+
             <tbody class="wb_tbody">
                 {% for bill in bills_list %}
                 <tr>
@@ -54,12 +60,14 @@
                     <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}}
                             {{bill.middlename}}</a></td>
                     <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
-                    <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;  {{bill.current_bal|floatformat:2|intcomma}}</a></td>
+                    <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;
+                            {{bill.current_bal|floatformat:2|intcomma}}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
-            </table>
-        </body>
-        
+        </table>
+    </div>
+</div>
 
-            {% endblock billslist %}
+
+{% endblock billslist %}
