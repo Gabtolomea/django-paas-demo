@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'ajax_datatable',
-    
 
 ]
 
@@ -57,7 +56,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
     
 ]
 
@@ -153,8 +151,5 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = 'images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
-LOGIN_URL= '/user/login'
 
 
-LOGIN_REDIRECT_URL = "bills_list"
-LOGOUT_REDIRECT_URL = "login"

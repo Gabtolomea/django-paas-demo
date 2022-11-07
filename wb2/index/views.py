@@ -29,7 +29,7 @@ import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
-from .decorators import unauthenticated_user, session_login_required
+from .decorators import unauthenticated_user
 
 
 def login_redirect(request):
@@ -44,12 +44,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -71,16 +71,19 @@ def signin(request):
     return render(request, 'login.html')
 
 
-<<<<<<< HEAD
+def source_access(request):
+    context = {
+        "userid": request.session.get(ReqParams.username),
+        "name": request.session.get(ReqParams.name),
+        "UserType": request.session.get(ReqParams.LOGIN_SESSION)
+    }
+    return render(request, "html/source_access.html", {"context": context})
 
-=======
->>>>>>> 8b032fa7c371ed1afb163387a017a44fe92f3e27
+
 def signout(request):
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
-
-
 
 
 def user_creation(request):
@@ -130,7 +133,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @session_login_required
+# @login_required(login_url='login')
 def dashboard(request):
     user = request.user
     context = {

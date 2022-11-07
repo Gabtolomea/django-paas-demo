@@ -1,17 +1,37 @@
 class ReqParams():
-    #session attributes
-    template = "template"
-    postedby = "postedby"
-    reading_postedby = "reading_postedby"
+    sample = {}
+    #SystemUsers
+    first_name ="first_name"
+    last_name ="last_name"
+    password = "password"
     username = "username"
-    LOGIN_SESSION = "LogInSession"
-    TELLER_LOGIN_VAL = "2"
-    ADMIN_LOGIN_VAL = "1"
-    SUPERVISOR_LOGIN_VAL = "3"
-    INPUTREADER_LOGIN_VAL = "5"
-    MANAGER_LOGIN_VAL = "4"
-    name = "name"
-    verification_code = "verification_code"
-    remember_me = "remember_me"
-    ACCOUNTID_VAL = "accountinfoidval"
-    vcode_expiry = "vcode_expiry"
+    mid_name = "mid_name"
+    mobilenum = "mobilenum"
+    profilepic = "profilepic"
+    authorizedapprover = "authorizedapprover"
+    email = "email"
+
+    #user roles
+    ADMIN ="is_admin"
+    TELLER = "is_teller"
+    SUPERVISOR = "is_supervisor"
+    MANAGER = "is_manager"
+    READER = "is_reader"
+    admin ="admin"
+    teller ="teller"
+    supervisor = "supervisor"
+    manager ="manager"
+    reader = "reader"
+
+    #ConsumerType
+    contypeid = "contypeid"
+    contype = "contype"
+    minReading = "minReading"
+    minReadingChange = "minReadingChange"
+    
+
+
+    #session attributes
+    templates = "templates"
+    username = "username"
+    LOGIN_SESSION ="LogInSession"

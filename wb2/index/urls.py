@@ -1,16 +1,11 @@
 from . import views
+
 from django.urls import path
-# from django.conf.urls import patterns, url
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
-from django.views.generic import TemplateView
 
-# urlspatterns = patterns ('index.views', 
-#     url(r'^connection/',TemplateView.as_view(template_name = 'login.html')),
-#     url(r'^login/', 'login', name = 'login'))
 
 urlpatterns = [
-    
     path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),
     path('login',views.signin,name='login'),
@@ -46,7 +41,6 @@ urlpatterns = [
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('penalty', views.penalty, name='penalty'),
     path('test', views.test, name='test'),
-    
     
  
 
