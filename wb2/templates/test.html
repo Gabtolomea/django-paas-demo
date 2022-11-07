@@ -1,0 +1,113 @@
+{% load humanize %}
+
+
+
+<body>
+
+
+    <h1 class="mb-3 text-center">Bills List</h1>
+    <form id="yearselection" method="GET">
+        <select name="paginate_by" id="selector" >
+            <option disabled selected value>--Select--</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="10000000">All</option>
+        </select>
+        <input type="submit" value="Show Record">
+    </form>
+   
+    <input type="myInput" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+    <table id="myTable" class="table table-bordered" cellspacing="0" width="100%">
+        <thead class="wb_thead">
+            <tr>
+                <th style="min-width: 100px;">Account ID</th>
+                <th style="min-width: 100px;">Meter Number</th>
+                <th style="min-width: 100px;">Name</th>
+                <th style="min-width: 100px;">Address</th>
+                <th style="min-width: 100px;">Total Balance</th>
+            </tr>
+        </thead>
+
+        <tbody class="wb_tbody">
+            {% for bill in bills_list %}
+            <tr>
+                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.consumer_id}}</a></td>
+                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.meternumber}}</a></td>
+                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}}
+                        {{bill.middlename}}</a></td>
+                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
+                <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;
+                        {{bill.current_bal|floatformat:2|intcomma}}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div>
+        <span>
+            {% if bills_list.has_previous %}
+            <a href="?page={{ bills_list.previous_page_number }}">« Previous page</a>
+          
+            {% if bills_list.number > 3 %}
+              <a href="?page=1">1</a>
+              {% if bills_list.number > 4 %}
+                <span>...</span>
+              {% endif %}
+            {% endif %}
+          {% endif %}
+          
+          {% for num in bills_list.paginator.page_range %}
+            {% if bills_list.number == num %}
+              <a href="?page={{ num }}">{{ num }}</a>
+            {% elif num > bills_list.number|add:'-3' and num < bills_list.number|add:'3' %}
+              <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+          
+          {% if bills_list.has_next %}
+            {% if bills_list.number < bills_list.paginator.num_pages|add:'-3' %}
+              <span>...</span>
+              <a href="?page={{ bills_list.paginator.num_pages }}">{{ bills_list.paginator.num_pages }}</a>
+            {% elif bills_list.number < bills_list.paginator.num_pages|add:'-2' %}
+              <a href="?page={{ bills_list.paginator.num_pages }}">{{ bills_list.paginator.num_pages }}</a>
+            {% endif %}
+          
+            <a href="?page={{ bills_list.next_page_number }}">Next Page »</a>
+          {% endif %}
+        </span>
+    </div>
+    <script>
+        function myFunction() {
+            // Declare variables 
+            var input, filter, table, tr, i, j, column_length, count_td;
+            column_length = document.getElementById('myTable').rows[0].cells.length;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 1; i < tr.length; i++) { // except first(heading) row
+                count_td = 0;
+                for (j = 1; j < column_length - 1; j++) { // except first column
+                    td = tr[i].getElementsByTagName("td")[j];
+                    /* ADD columns here that you want you to filter to be used on */
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            count_td++;
+                        }
+                    }
+                }
+                if (count_td > 0) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+
+        }
+
+    </script>
+
+</body>
