@@ -13,7 +13,6 @@ Account Ledger
 	.showOnHover:hover .hide {
 		opacity: 1;
 		transition: 0.3s all ease-in-out;
-
 	}
 </style>
 <div class="container-fluid p-0">
@@ -72,222 +71,20 @@ Account Ledger
 </div>
 <div class="row w-100 m-auto pt-2">
 	<div class="col-lg-2 col-md-2 col-sm-2 col-2">
-		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back" style="float:left; font-size: 11px !important; border-radius: 11px; ">Back</button></a>
+		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back"
+				style="float:left; font-size: 11px !important; border-radius: 11px; ">Back</button></a>
 	</div>
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
-		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
+		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back"
+				style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
 	</div>
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
-		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
+		<button type="button" class="btn btn-wb-back" onclick=print()
+			style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
 	</div>
 	<!-- style="display: none;" -->
-	<div id="newtable" style="display: none;"  class="col-sm-10 col-sm-offset-1">
-		<div class="widget-box">
-			<div class="widget-header widget-header-large">
-
-				<div class="widget-toolbar no-border invoice-info">
-
-				</div>
-				<br>
-				<br>
-
-			</div>
-
-			<div class="widget-body">
-				<div class="widget-main padding-24">
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="row">
-								<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-									<b>Company Info</b>
-								</div>
-							</div>
-
-							<div>
-								<ul class="list-unstyled spaced">
-									<li>
-										<i></i>Name: <strong>Ginatilan Water</strong>
-									</li>
-
-									<li>
-										<i></i>Address: <strong>Poblacion,Ginatilan,Cebu</strong>
-									</li>
-
-									<li>
-										<i></i>Zip Code: <strong>6028</strong>
-									</li>
-
-									<li>
-										<i></i>Country: <strong>Philippines</strong>
-									</li>
-									<li>
-										Phone:
-									</li>
-
-								</ul>
-							</div>
-						</div><!-- /.col -->
-
-						<div class="col-sm-6">
-							<div class="row">
-								<div
-									class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
-									<b>Customer Info</b>
-								</div>
-							</div>
-
-							<div>
-								<ul>
-									<li>
-										Name: <strong>{{u.firstname}} {{u.middlename}} {{u.lastname}}</strong>
-									</li>
-									<li>
-										Account ID: <strong>{{u.consumer_id}}</strong>
-									</li>
-									<li>
-										Meter Number: <strong>{{u.meternumber}}</strong>
-									</li>
-									<li>
-										Address: <strong>{{u.installation_address}}</strong>
-									</li>
-
-									<li>
-										Zip Code:<strong>6028</strong>
-									</li>
-
-									<li>
-										<i></i>Country: <strong>Philippines</strong>
-									</li>
-
-									<li>
-										Contact Info: <strong>{{u.mobilenum}}</strong>
-									</li>
-
-								</ul>
-							</div>
-						</div><!-- /.col -->
-					</div><!-- /.row -->
-					<br>
-					<br>
-					<div class="widget-main padding-24">
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="row">
-									<div
-										class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-										<b>Bill Info</b>
-									</div>
-								</div>
-								<div>
-									<ul class="list-unstyled spaced">
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Month:
-											<strong>{{month}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Posted on:
-											<strong>{{date_today}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Posted by: <strong>{{user}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Payment Schedule:
-										</li>
-										<li class="divider"></li>
-									</ul>
-								</div>
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-						<div class="space"></div>
-						<br>
-						<br>
-						<div>
-							<table class="table table-striped table-bordered">
-								<tbody>
-									<tr>
-										<td>
-											Current Reading
-										</td>
-										<td class="hidden-xs">
-											{{cur}} m3
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Previous Reading
-										</td>
-										<td class="hidden-xs">
-											{{prev}} m3
-										</td>
-									</tr>
-									<tr>
-										<td>Usage</td>
-										<td class="hidden-xs"> {{u.usage}} m3</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<br>
-						<br>
-						<div>
-							<table class="table table-striped table-bordered">
-								<tbody>
-									<tr>
-										<td>
-											Bill
-										</td>
-										<td class="hidden-xs">
-											Php.   {{b}}
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Penalty
-										</td>
-										<td class="hidden-xs">
-											Php.{{context.penalty}}
-										</td>
-									</tr>
-									<tr>
-										<td>Total Bill</td>
-										<td class="hidden-xs"> Php.{{tr.cummulative}} </td>
-									</tr>
-									<tr>
-										<td>Previous Due</td>
-										<td class="hidden-xs"> Php.{{context.prev_balance}} </td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-						<div class="hr hr8 hr-double hr-dotted"></div>
-
-
-						<div class="row">
-							<div class="col-sm">
-								<div class="form-group">
-
-								</div>
-							</div>
-							<div class="col-sm">
-								<div class="form-group">
-
-								</div>
-							</div>
-							<div class="col-sm">
-								<div class="form-group">
-									<h4 class="pull-right">
-										Total amount :
-										<span class="red">Php.{{context.total_balance}}</span>
-									</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+	<div id="newtable"  class="col-sm-10 col-sm-offset-1">
+		<h1>AQOH C RYLA </h1>
 	</div>
 	<script>
 		function print() {
@@ -303,27 +100,19 @@ Account Ledger
 					return true
 				}
 			};
-		
-			const formatter = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'Php',
-				minimumFractionDigits: 2
-			})
-
 			var y = 10;
 			var x = 20;
-			doc.text(420, y = y + 30, "Copy of Consumer's Meter Reading ");
 			doc.setLineWidth(2);
 			doc.setFontSize(15);
 			doc.fromHTML(
 				document.getElementById('newtable'),
-				15,
-				15,
+				50,
+				50,
 			)
 			y = doc.lastAutoTable.finalY
 			console.log(y);
 			console.log("testing")
-			doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
+			doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
 		}
 	</script>
 </div>
@@ -347,7 +136,6 @@ Account Ledger
 					<th style="min-width: 100px;">Current Balance</th>
 				</tr>
 			</thead>
-
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
 				<tr>

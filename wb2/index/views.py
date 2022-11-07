@@ -181,6 +181,7 @@ def ledger(request, id):
                 prev = 0
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
+                pre = asc_trans[i].meterReading - usage
                 bill = asc_trans[i].bill
                 connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid)
                 cur = asc_trans[i].meterReading
@@ -231,21 +232,14 @@ def ledger(request, id):
             prev = p
     year = date.today().year
     
-    alltrans = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    if alltrans[0].transType == 'Billing':
-        usage = usage
-        bill = bill
-        connectionType = connectionType
-        cur = alltrans[0].meterReading
-        pre = cur - usage
-        print(cur)
+    print(usage)
     context = {
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
         'u': u,
         'table': table,
         'year': year,       
-        'prev':prev
+        'pre':pre
     }
     return render(request, 'ledger.html', context)
 
@@ -548,14 +542,7 @@ def inputreading(request, id, year):
 #     return render(request,'landing.html')
 
 # @login_required(login_url='login')
-def bills_list(request):
-    user = request.user
-    bills_list = ConsumerInfo.objects.all()
-    context = {
-        'bills_list': bills_list,
-        'user': user,
-    }
-    return render(request, 'billslist.html', context)
+
 
 
 # @login_required(login_url='login')
