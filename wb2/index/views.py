@@ -79,30 +79,30 @@ def signin(request):
     return render(request, 'login.html')
 
 # @login_required
-# def bills_list(request):
-#     # q = QueryDict(request.session['username'])
-#     # print(q)
-#     session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
-#     session_data = Session.objects.get(session_key=session_key).session_data
-#     data = pickle.loads(base64.b64decode(session_data))
-#     user = "session.get_decoded().get(ReqParams.username)"
-#     bills = ConsumerInfo.objects.all()
-#     print(data)
-#     context = {
-#         'bills_list': bills,
-#         'user': user,
-#     }
-#     return render(request, 'billslist.html', context)
 def bills_list(request):
-    
+    # q = QueryDict(request.session['username'])
+    # print(q)
+    session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
+    session_data = Session.objects.get(session_key=session_key).session_data
+    data = pickle.loads(base64.b64decode(session_data))
+    user = "session.get_decoded().get(ReqParams.username)"
     bills = ConsumerInfo.objects.all()
-    
+    print(data)
     context = {
         'bills_list': bills,
-        'user': request.user,
+        'user': user,
     }
-    print(request.user)
     return render(request, 'billslist.html', context)
+# def bills_list(request):
+    
+#     bills = ConsumerInfo.objects.all()
+    
+#     context = {
+#         'bills_list': bills,
+#         'user': request.user,
+#     }
+#     print(request.user)
+#     return render(request, 'billslist.html', context)
 
 # def source_access(request):
 #     context = {
