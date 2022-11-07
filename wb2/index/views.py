@@ -1,4 +1,5 @@
 import calendar
+import pickle
 from datetime import datetime
 import datetime
 from dis import dis
@@ -27,7 +28,6 @@ from .decorators import *
 from .models import *
 from .dataporter import *
 from .functions import *
-from .temp import ReqParams
 import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
@@ -64,15 +64,13 @@ def signin(request):
         if pkval.exists():
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
-                request.session['username'] = user.username
+                request.session[ReqParams.username] = user.username
                 u = user.username
-                print(u)
                 login(request, user,  backend='django.contrib.auth.backends.ModelBackend')
                 request.session.modified = True
-                print(request.session['username'])
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
-                return HttpResponseRedirect('bills_list')
+                return redirect('bills_list/')
             else:
                 messages.error(request, "Invalid Password")
         else:
@@ -83,18 +81,17 @@ def signin(request):
 def bills_list(request):
     # q = QueryDict(request.session['username'])
     # print(q)
-    session_key = 'oc32oddjcdape01eqxomcx7o6s1i2zbe'
-    session = Session.objects.get(session_key=session_key)
-    uid = session.get_decoded().get('username')
-    print(session)
-    user = request.session.get('username')
+    session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
+    session_data = Session.objects.get(session_key=session_key).session_data
+    data = pickle.loads(base64.b64decode(session_data))
+    user = "session.get_decoded().get(ReqParams.username)"
     bills = ConsumerInfo.objects.all()
+    print(data)
     context = {
         'bills_list': bills,
-        'user': session,
+        'user': user,
     }
     return render(request, 'billslist.html', context)
-
 
 # @login_required(login_url='login')
 def signout(request):
@@ -145,7 +142,7 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('dashboard')
+            return redirect('bills_list')
     context = {
         'form': form,
         'errors': form.errors,
@@ -156,7 +153,6 @@ def user_creation(request):
 # @login_required(login_url='login')
 def ledger(request, id):
     table = []
-
     class ledgerclass():
         def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style):
             self.transid = transid
@@ -544,15 +540,6 @@ def inputreading(request, id, year):
 # def landing(request):
 #     return render(request,'landing.html')
 
-# @login_required(login_url='login')
-def bills_list(request):
-    user = request.user
-    bills_list = ConsumerInfo.objects.all()
-    context = {
-        'bills_list': bills_list,
-        'user': user,
-    }
-    return render(request, 'billslist.html', context)
 
 
 # @login_required(login_url='login')
