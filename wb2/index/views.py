@@ -38,19 +38,21 @@ from django.http import HttpResponseRedirect
 # from .loginrequiredmidware import login_exempt
 
 
-def login_redirect(request):
-    return redirect('login')
-
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
     billing_out()
     balance()
+    cons = ConsumerInfo.objects.all()
+    for i in cons:
+        i.cummulative = get_cummulative(i.consumer_id)
+        i.save()
     return render(request, "landing.html")
 
 
 @unauthenticated_user
 def lp(request):
+    print(gen_token())
     return render(request, "landing.html")
 
 
@@ -65,49 +67,46 @@ def signin(request):
         if pkval.exists():
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
+                login_rec = LoginRec()
                 request.session[ReqParams.username] = user.username
-                u = user.username
+                login_rec.username = user.username
+                login_rec.last_access = datetime.now()
+                
                 login(request, user,  backend='django.contrib.auth.backends.ModelBackend')
+
                 request.session.modified = True
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
-                return redirect('bills_list/')
+                return redirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
         else:
             messages.error(request, "Invalid Username")
-    return render(request, 'login.html')
+    context = {
+        'ReqParams':ReqParams,
+    }
+    return render(request, 'login.html', context)
 
 # @login_required
 def bills_list(request):
     # q = QueryDict(request.session['username'])
     # print(q)
-    session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
-    session_data = Session.objects.get(session_key=session_key).session_data
-    data = pickle.loads(base64.b64decode(session_data))
-    user = "session.get_decoded().get(ReqParams.username)"
+    # session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
+    # session_data = Session.objects.get(session_key=session_key).session_data
+    # data = pickle.loads(base64.b64decode(session_data))
+    # print(data)
+    user = request.session.get(ReqParams.username)
     bills = ConsumerInfo.objects.all()
-    print(data)
     context = {
+        'ReqParams':ReqParams,
         'bills_list': bills,
-        'user': user,
+        'userid': user,
     }
     return render(request, 'billslist.html', context)
 
-# def source_access(request):
-#     context = {
-#         "userid": request.session.get(ReqParams.username),
-#         "name": request.session.get(ReqParams.name),
-#         "UserType": request.session.get(ReqParams.LOGIN_SESSION)
-#     }
-#     return render(request, "html/source_access.html", {"context": context})
-
 
 def signout(request):
-    try:
-        del request.session['username']
-    except KeyError:
-        pass
+    request.session.flush()
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -1080,12 +1079,15 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def test(request):
+def test(request, pages):
+    print(pages)
     user = request.user
-    bills = ConsumerInfo.objects.all().order_by(
-        'lastname', 'firstname', 'middlename')
-
-    paginate_by = request.GET.get('paginate_by', 25)
+    bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    count = bills.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
     page = request.GET.get('page')
 
     paginator = Paginator(bills, paginate_by)

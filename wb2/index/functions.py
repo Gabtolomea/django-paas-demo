@@ -1,6 +1,9 @@
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 import math
+import random
+import string
+from datetime import datetime
 def n_int(var):
     if var is None:
         return 0
@@ -44,3 +47,16 @@ def get_balance(id):
             bal=bal-asc_trans[i].payment
     user.current_bal = math.ceil(bal*100)/100
     user.save()
+
+
+def gen_token():
+    nums = [str(x) for x in range(10)]
+    alphabet = list(string.ascii_lowercase)
+    choices = nums + alphabet
+    token = ""
+    
+    random.seed(datetime.now())
+    for i in range(10):
+        char = random.choice(choices)
+        token+=(char)
+    return token
