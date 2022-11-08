@@ -102,7 +102,6 @@ def bills_list(request):
         'bills_list': bills,
         'userid': user,
     }
-    print(user)
     return render(request, 'billslist.html', context)
 
 
