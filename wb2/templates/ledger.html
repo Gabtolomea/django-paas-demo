@@ -79,13 +79,91 @@ Account Ledger
 				style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
 	</div>
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
-		<button type="button" class="btn btn-wb-back" onclick=print()
+		<button id ="bitch"type="button" class="btn btn-wb-back" onclick=print()
 			style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
 	</div>
 	<!-- style="display: none;" -->
 	<div id="newtable"  class="col-sm-10 col-sm-offset-1">
+		<style>
+			.consumer_info{
+				background-color: #f8f9fa;
+				padding-left: 10px
+			}
+			.bills_info{
+				background-color: #f8f9fa;
+				padding-left: 10px;
+				padding-bottom: 97px;
+			}
+		
+		</style>
+		<div id ="billing">
+			<div class="header" style="text-align:center; margin-top: 30px;">
+				<h3>Municipality of Ginatilan</h3>
+				<h4> Ginatilan Water Station</h4>
+			</div>
+			<div class="row w-100 m-auto pb-3">
+				<div class=" col-lg-4 col-md-4 col-sm-4 col-4">
+					<label for="brgy">Barangay: {{u.installationaddress}}</label>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-4">
+					<label for="zip">Zip Code:</label>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-4">
+					<label for="country">Country:</label>
+				</div>
+			</div>
+			<hr style="margin: 0;">
+			<div class="row w-100 m-auto">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
+					<p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Consumer Info</p>
+					<div class="consumer_info">
+						<label for="name">Name:</label><br>
+						<label for="accnt">Account ID:</label><br>
+						<label for="meter">Meter Number:</label><br>
+						<label for="addr">Address:</label>
+						<label for="zip">Zip Code:</label><br>
+						<label for="country">Country:</label><br>
+						<label for="connect-type">Connection Type:</label><br>
+						<label for="contact-info">Contact Info:</label>
+					</div>
+		
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
+					<p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Bills Info</p>
+					<div class="bills_info">
+						<label for="current-reading">Current Reading:</label><br>
+						<label for="prev-reading">Previous Reading:</label><br>
+						<label for="usage">Usage:</label><br>
+					</div>
+				   
+				</div>
+			</div>
+			<hr style="margin: 0;">
+			<div class="bill row w-100 m-auto pt-3">
+				<label for="penalty">Penalty:</label><br>
+				<label for="total-bill">Total Bill:</label><br>
+				<label for="prev-due">Previous Due:</label><br>
+				<label for="total-balance">Total Balance:</label><br>
+			</div>
+		</div>
 	</div>
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="jsPDF.js"></script>
 	<script>
+		$(function () {
+		
+		  $('#bitch').click(function () {
+			var doc = new jsPDF();
+			doc.addHTML($('#billing')[0], 15, 15, {
+			  'background': '#000000',
+			}, function() {
+			  doc.save('sample-file.pdf');
+			});
+		  });
+		});
+		</script>
+	<!-- <script>
 		function print() {
 			var doc = new jsPDF('landscape', 'pt', 'a4');
 			var htmlstring = '';
@@ -113,7 +191,7 @@ Account Ledger
 			console.log("testing")
 			doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
 		}
-	</script>
+	</script> -->
 </div>
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
