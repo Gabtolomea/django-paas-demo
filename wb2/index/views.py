@@ -93,6 +93,16 @@ def bills_list(request):
         'user': user,
     }
     return render(request, 'billslist.html', context)
+# def bills_list(request):
+    
+#     bills = ConsumerInfo.objects.all()
+    
+#     context = {
+#         'bills_list': bills,
+#         'user': request.user,
+#     }
+#     print(request.user)
+#     return render(request, 'billslist.html', context)
 
 # def source_access(request):
 #     context = {

@@ -67,6 +67,11 @@ MIDDLEWARE = [
 # SESSION_COOKIE_AGE = 60*60*24
 # SESSION_COOKIE_SECURE = True
 
+AUTHENTICATION_BACKENDS = (
+    'index.backends.AuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 ROOT_URLCONF = 'wb2.urls'
 AUTH_USER_MODEL = 'index.SystemUsers'
 
