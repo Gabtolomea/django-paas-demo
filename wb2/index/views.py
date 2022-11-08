@@ -232,14 +232,15 @@ def ledger(request, id):
             prev = p
     year = date.today().year
     
-    print(usage)
+    print()
     context = {
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
         'u': u,
         'table': table,
         'year': year,       
-        'pre':pre
+        'pre':pre,
+        'transid':transid
     }
     return render(request, 'ledger.html', context)
 
