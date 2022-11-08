@@ -1,6 +1,6 @@
 import calendar
 import pickle
-from datetime import datetime
+from datetime import datetime, timedelta
 import datetime
 from dis import dis
 from email import errors
@@ -70,7 +70,10 @@ def signin(request):
                 login_rec = LoginRec()
                 request.session[ReqParams.username] = user.username
                 login_rec.username = user.username
+                login_rec.token = gen_token()
                 login_rec.last_access = datetime.now()
+                login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
+                login_rec.save()
                 
                 login(request, user,  backend='django.contrib.auth.backends.ModelBackend')
 
