@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-from index import DBdb
-ReqParams = DBdb.ReqParams()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,6 +47,8 @@ INSTALLED_APPS = [
 
 
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_PATH = "/wb2"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 TEMPLATE_CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
 ]
@@ -66,11 +66,6 @@ MIDDLEWARE = [
 # SESSION_COOKIE_HTTPONLY = True
 # SESSION_COOKIE_AGE = 60*60*24
 # SESSION_COOKIE_SECURE = True
-
-AUTHENTICATION_BACKENDS = (
-    'index.backends.AuthBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
 
 ROOT_URLCONF = 'wb2.urls'
 AUTH_USER_MODEL = 'index.SystemUsers'
@@ -92,7 +87,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'wb2.wsgi.application'
-SESSION_COOKIE_PATH = "/wb2"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -164,5 +158,4 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = 'images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
-
 

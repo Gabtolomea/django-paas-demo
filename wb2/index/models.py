@@ -2,11 +2,32 @@
 from datetime import date
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+import random
 # Create your models here.
 
+class LoginRec(models.Model):
+    username = models.CharField(max_length=20,primary_key = True)
+    token = models.CharField(max_length = 10)
+    last_access = models.DateTimeField()
+    expiration = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.token)
+
+    def save(self, *args, **kwargs):
+        number_list = [x for x in range(10)]
+        code_items = []
+
+        for i in range(10):
+            num = random.choice(number_list)
+            code_items.append(num)
+        
+        code_string = "".join(str(item) for item in code_items)
+        self.token = code_string
+        super().save(*args, **kwargs)
 
 
+    
 
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)

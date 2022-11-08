@@ -32,6 +32,7 @@ class ReqParams():
 
 
     #session attributes
+    expiration_time = 5
     templates = "templates"
     username = "username"
     LOGIN_SESSION ="LogInSession"
