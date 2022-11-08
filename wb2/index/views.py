@@ -1,6 +1,6 @@
 import calendar
 import pickle
-from datetime import datetime
+from datetime import datetime, timedelta
 import datetime
 from dis import dis
 from email import errors
@@ -68,13 +68,17 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
                 login_rec = LoginRec()
+                request.session.set_test_cookie()
                 request.session[ReqParams.username] = user.username
-                login_rec.username = user.username
-                login_rec.last_access = datetime.now()
-                
-                login(request, user,  backend='django.contrib.auth.backends.ModelBackend')
-
                 request.session.modified = True
+                login_rec.username = user.username
+                login_rec.token = gen_token()
+                login_rec.last_access = datetime.now()
+                login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
+                login_rec.save()
+                
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
                 return redirect('bills_list')
@@ -95,6 +99,7 @@ def bills_list(request):
     # session_data = Session.objects.get(session_key=session_key).session_data
     # data = pickle.loads(base64.b64decode(session_data))
     # print(data)
+    print(request.session.test_cookie_worked())
     user = request.session.get(ReqParams.username)
     bills = ConsumerInfo.objects.all()
     context = {
@@ -106,6 +111,7 @@ def bills_list(request):
 
 
 def signout(request):
+    print(request.session.get(ReqParams.username))
     request.session.flush()
     messages.success(request, 'Logout successful')
     return redirect('login')
