@@ -99,13 +99,13 @@ def bills_list(request):
     # session_data = Session.objects.get(session_key=session_key).session_data
     # data = pickle.loads(base64.b64decode(session_data))
     # print(data)
-    print(request.session.test_cookie_worked())
-    user = request.session.get(ReqParams.username)
+    print(request.session.get(ReqParams.username))
+    
     bills = ConsumerInfo.objects.all()
     context = {
         'ReqParams':ReqParams,
         'bills_list': bills,
-        'userid': user,
+        'userid': request.session.get(ReqParams.username),
     }
     return render(request, 'billslist.html', context)
 
