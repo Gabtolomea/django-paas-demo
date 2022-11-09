@@ -197,9 +197,9 @@ def ledger(request, id):
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 pre = asc_trans[i].meterReading - usage
+                pen = asc_trans[i].penaltyCode
                 bill = asc_trans[i].bill
-                connectionType = ConsumerType.objects.get(
-                    contypeid=asc_trans[i].contypeid)
+                connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -247,8 +247,7 @@ def ledger(request, id):
                     p = p + current
             prev = p
     year = date.today().year
-    
-
+    print(pre)
 
     
     context = {
@@ -257,8 +256,14 @@ def ledger(request, id):
         'u': u,
         'table': table,
         'year': year,       
+        'usage':usage,
+        'transid':transid,
+        'contype':connectionType,
         'pre':pre,
-        'transid':transid
+        'cur':cur,
+        'pen':pen,
+        'bal':bal,
+        'bill':bill
     }
     return render(request, 'ledger.html', context)
 
