@@ -5,14 +5,8 @@
 Billing
 {% endblock title %}
 {% block style %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
-<style>
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
-</style>
+
 {% endblock style %}
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -40,18 +34,16 @@ Billing
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
 				<div class="col-sm-12 col-md-6">
-					<form id="yearselection" class="dataTables_length" action="" method="GET">
-						<label>
-							Show
-							<select id="selector" class="form-select form-select-sm" onchange="change()">
-								<option disabled selected value>--Select--</option>
-								<option value="10">10</option>
-								<option value="25">25</option>
-								<option value="50">50</option>
-								<option value="100">100</option>
-								<option value="0">All</option>
-							</select> entries
-						</label>
+					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
+						<label style="display:flex;">Show
+						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
+							<option disabled selected value>--Select--</option>
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+							<option value="0">All</option>
+						</select> entries</label>
 					</form>
 					<script>
 						yearselection = document.getElementById("yearselection")
@@ -63,10 +55,9 @@ Billing
 					</script>
 				</div>
 				<div class="col-sm-12 col-md-6">
-					<div id="table_filter" class="dataTables_filter"><label>Search:
-
-							<input type="myInput" id="myInput" class="form-control form-control-sm"
-								onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
+						<label>Search:
+							<input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
 						</label>
 					</div>
 				</div>
@@ -86,18 +77,21 @@ Billing
 						</thead>
 						<tbody class="wb_tbody">
 							{% for bill in bills_list %}
-							<tr>
-								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.consumer_id}}</a></td>
-								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.meternumber}}</a></td>
-								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}},
-										{{bill.firstname}}
-										{{bill.middlename}}</a></td>
-								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a>
-								</td>
-								<td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;
-										{{bill.current_bal|floatformat:2|intcomma}}</a></td>
+							<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">
+								<td>{{bill.consumer_id}}</td>
+								<td>{{bill.meternumber}}</td>
+								<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
+								<td>{{bill.installation_address}}</td>
+								<td class="balance"> &#8369; {{bill.current_bal|floatformat:2|intcomma}}</td>
 							</tr>
 							{% endfor %}
+							<script>
+								jQuery(document).ready(function($) {
+									$(".clickable-row").click(function() {
+										window.location = $(this).data("href");
+									});
+								});
+							</script>
 						</tbody>
 					</table>
 				</div>
@@ -106,55 +100,138 @@ Billing
 				<div class="col-sm-12 col-md-5"><div class="dataTables_info" id="table_info" role="status" aria-live="polite"></div></div>
 				<div class="col-sm-12 col-md-7">
 					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
-						<ul class="pagination">
-							{% if bills_list.has_previous %}
-							<li class="paginate_button page-item previous">
-								<a href="?page={{ bills_list.previous_page_number }}">« Previous page</a>
-							</li>
-							{% if bills_list.number > 3 %}
-							<li class="paginate_button page-item">
-								<a href="?page=1">1</a>
-							</li>
-							{% if bills_list.number > 4 %}
-							<li class="paginate_button page-item">
-								<span>...</span>
-							</li>
-							{% endif %}
-							{% endif %}
-							{% endif %}
-
-							{% for num in bills_list.paginator.page_range %}
-							{% if bills_list.number == num %}
-							<li class="paginate_button page-item">
-								<a href="?page={{ num }}">{{ num }}</a>
-							</li>
-							{% elif num > bills_list.number|add:'-3' and num < bills_list.number|add:'3' %} <li
-								class="paginate_button page-item">
-								<a href="?page={{ num }}">{{ num }}</a>
-								</li>
+						<ul style="display: flex; padding-left: 0; list-style: none;">
+							{% if bills_list.number < 5 %}
+								{% if bills_list.has_previous %}
+								<a href="?page={{ bills_list.previous_page_number }}">
+									<li class="paginate_button page-item previous">Previous</li>
+								</a>
+								{% else %}
+									<li class="paginate_button disabled page-item previous">Previous</li>
 								{% endif %}
+								{% for i in five %}
+									{% if i == bills_list.number %}
+										<a href="?page={{i}}">
+											<li class="paginate_button page-item active">{{i}}</li>
+										</a>
+									{% else %}
+										<a href="?page={{i}}">
+											<li class="paginate_button page-item">{{i}}</li>
+										</a>
+									{% endif %}
 								{% endfor %}
+								<li class="paginate_button disabled page-item">...</li>
+								<a href="?page={{ bills_list.paginator.num_pages }}">
+									<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
+								</a>
+								<a href="?page={{ bills_list.next_page_number }}">
+									<li class="paginate_button page-item next">Next</li>
+								</a>
+							{% else %}
 
-								{% if bills_list.has_next %}
-								{% if bills_list.number < bills_list.paginator.num_pages|add:'-3' %} <li
-									class="paginate_button page-item">
-									<span>...</span>
-									</li>
-									<li class="paginate_button page-item">
-										<a href="?page={{ bills_list.paginator.num_pages }}">{{ bills_list.paginator.num_pages }}</a>
-									</li>
-									{% elif bills_list.number < bills_list.paginator.num_pages|add:'-2' %} <li
-										class="paginate_button page-item">
-										<a href="?page={{ bills_list.paginator.num_pages }}">{{ bills_list.paginator.num_pages }}</a>
-										</li>
+								{% if bills_list.number > bills_list.paginator.num_pages|add:'-4'%}
+
+								{% else %}
+									{% if bills_list.has_previous %}
+										<a href="?page={{ bills_list.previous_page_number }}">
+											<li class="paginate_button page-item previous">Previous</li>
+										</a>
+									{% else %}
+										<li class="paginate_button disabled page-item previous">Previous</li>
+									{% endif %}
+									{% if bills_list.number > 2 %}
+										<a href="?page=1">
+											<li class="paginate_button page-item">1</li>
+										</a>
+										{% if bills_list.number > 3 %}
+											<li class="paginate_button disabled page-item">...</li>
 										{% endif %}
-										<li class="paginate_button page-item next">
-											<a href="?page={{ bills_list.next_page_number }}">Next Page »</a>
-										</li>
+									{% endif %}
+
+									{% for num in bills_list.paginator.page_range %}
+									{% if bills_list.number == num %}<a href="?page={{ num }}">
+									<li class="paginate_button page-item active">
+										{{ num }}
+									</li></a>
+									{% elif num > bills_list.number|add:'-2' and num < bills_list.number|add:'2' %}
+										<a href="?page={{ num }}"> 
+											<li class="paginate_button page-item">{{ num }}</li>
+										</a>
 										{% endif %}
+										{% endfor %}
+
+									{% if bills_list.number < bills_list.paginator.num_pages|add:'-2' %}
+										<li class="paginate_button disabled page-item">...</li>
+										<a href="?page={{ bills_list.paginator.num_pages }}">
+											<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
+										</a>
+									{% elif bills_list.number < bills_list.paginator.num_pages|add:'-1' %} 
+										<a href="?page={{ bills_list.paginator.num_pages }}">
+											<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
+										</a>
+									{% endif %}
+									{% if bills_list.has_next %}
+										<a href="?page={{ bills_list.next_page_number }}">
+											<li class="paginate_button page-item next">Next</li>
+										</a>
+									{% else %}
+										<li class="paginate_button page-item disabled next">Next</li>
+									{% endif %}
+								{% endif %}
+							{% endif %}
+							
 
 
 						</ul>
+						<style>
+						a{		
+							-webkit-touch-callout: none;
+							-webkit-user-select: none;
+							-khtml-user-select: none;
+							-moz-user-select: none;
+							-ms-user-select: none;
+							user-select: none;
+							cursor: default;
+							text-decoration: none;
+						}
+						.paginate_button {
+							cursor: pointer;
+							position: relative;
+							display: block;
+							padding: 0.375rem 0.75rem;
+							font-size: 1rem;
+							color: #0d6efd;
+							text-decoration: none;
+							background-color: white;
+							border: 1px solid #dee2e6;
+							transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+						}
+						.active>.paginate_button, .paginate_button.active {
+							z-index: 3;
+							color: white !important;
+							background-color: #0d6efd;
+							border-color: #dee2e6;
+						}
+						.previous {
+							border-top-left-radius: .375rem;
+							border-bottom-left-radius: .375rem;
+						}
+						.next {
+							border-top-right-radius: .375rem;
+							border-bottom-right-radius: .375rem;
+						}
+						.disabled {		
+							-webkit-touch-callout: none;
+							-webkit-user-select: none;
+							-khtml-user-select: none;
+							-moz-user-select: none;
+							-ms-user-select: none;
+							user-select: none;
+							cursor: default;
+							color: #6c757d;
+						}
+					
+						</style>
 					</div>
 				</div>
 			</div>

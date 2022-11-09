@@ -110,6 +110,7 @@ SERVER_EMAIL = 'ginatilancebuwater'
 EMAIL_HOST_PASSWORD = 'axsrouetdxposfko'
 EMAIL_PORT = 587
 
+CORS_ALLOW_CREDENTIALS = True
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

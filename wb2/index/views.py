@@ -37,6 +37,13 @@ from .decorators import unauthenticated_user
 from django.http import HttpResponseRedirect
 # from .loginrequiredmidware import login_exempt
 
+class CustomSession():
+    def __init__(self, username):
+        self.username = username
+    
+    def username(self) -> str:
+        return self.username
+cs = ""
 
 def porter(request):
     porter_in()
@@ -70,18 +77,19 @@ def signin(request):
                 login_rec = LoginRec()
                 request.session.set_test_cookie()
                 request.session[ReqParams.username] = user.username
+                global cs
+                cs = CustomSession(user.username)
                 request.session.modified = True
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = datetime.now()
                 login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
                 login_rec.save()
-                
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                login(request, user)
 
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
-                return redirect('bills_list')
+                return HttpResponseRedirect('/bills_list', cs)
             else:
                 messages.error(request, "Invalid Password")
         else:
@@ -91,16 +99,18 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-# @login_required
+# # @login_required
+# def dashboard(request):
+#     user = request.user
+#     context = {
+#         'user':user
+#     }
+#     return render(request, 'dashboard.html', context)
 def bills_list(request):
-    # q = QueryDict(request.session['username'])
-    # print(q)
-    # session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
-    # session_data = Session.objects.get(session_key=session_key).session_data
-    # data = pickle.loads(base64.b64decode(session_data))
-    # print(data)
-    print(request.session.test_cookie_worked())
-    user = request.session.get(ReqParams.username)
+
+    user = cs.username
+    print(cs.username)
+    # user = request.user
     bills = ConsumerInfo.objects.all()
     context = {
         'ReqParams':ReqParams,
@@ -197,8 +207,7 @@ def ledger(request, id):
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
-                connectionType = ConsumerType.objects.get(
-                    contypeid=asc_trans[i].contypeid)
+                connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -1085,8 +1094,8 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def test(request, pages):
-    print(pages)
+def test(request, p):
+    pages = int(p)
     user = request.user
     bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = bills.count()
@@ -1097,7 +1106,6 @@ def test(request, pages):
     page = request.GET.get('page')
 
     paginator = Paginator(bills, paginate_by)
-
     try:
         bills_list = paginator.page(page)
 
@@ -1108,6 +1116,7 @@ def test(request, pages):
         bills_list = paginator.page(paginator.num_pages)
 
     context = {
+        'five':range(1,6),
         'paginate_by': paginate_by,
         'bills_list': bills_list,
         'user': user,
