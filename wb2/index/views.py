@@ -49,39 +49,23 @@ def porter(request):
         i.save()
     return render(request, "landing.html")
 
-def source_access(request):
-    context ={
-        "username": request.session.get(ReqParams.username),
-        "UserType": request.session.get(ReqParams.LOGIN_SESSION)
-    }
-    return render (request,'dashboard.html',context)
 
-# @unauthenticated_user
+@unauthenticated_user
 def lp(request):
     print(gen_token())
     return render(request, "landing.html")
 
 
+@unauthenticated_user
 def signin(request):
-    user = request.POST.get(ReqParams.username)
-    password = request.POST.get(ReqParams.password)
-    if user !=None:
-        context ={
-            "user" : user
-        }
-    else:
-        context = {
-            "user" : ""
-        }
     if request.method == "POST":
-        pkval =SystemUsers.objects.filter(username = user)
+        u = request.POST['username']
+        password = request.POST['password']
+        pkval = SystemUsers.objects.filter(username=u)
+        passAscii = password.encode("ascii")
+        p = base64.b64encode(passAscii)
         if pkval.exists():
-            username = SystemUsers.objects.get(username=user)
-            passAscii = password.encode("ascii")
-            p = base64.b64encode(passAscii)
-            print(username.password)
-
-             
+            user = SystemUsers.objects.get(username=u)
             if user.password == p:
                 login_rec = LoginRec()
                 request.session.set_test_cookie()
@@ -92,8 +76,12 @@ def signin(request):
                 login_rec.last_access = datetime.now()
                 login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
                 login_rec.save()
+                
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+                # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
-                return redirect('source_access/bills_list')
+                return redirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
         else:
@@ -102,42 +90,6 @@ def signin(request):
         'ReqParams':ReqParams,
     }
     return render(request, 'login.html', context)
-
-
-# @unauthenticated_user
-# def signin(request):
-#     if request.method == "POST":
-#         u = request.POST['username']
-#         password = request.POST['password']
-#         pkval = SystemUsers.objects.filter(username=u)
-#         passAscii = password.encode("ascii")
-#         p = base64.b64encode(passAscii)
-#         if pkval.exists():
-#             user = SystemUsers.objects.get(username=u)
-#             if user.password == p:
-#                 login_rec = LoginRec()
-#                 request.session.set_test_cookie()
-#                 request.session[ReqParams.username] = user.username
-#                 request.session.modified = True
-#                 login_rec.username = user.username
-#                 login_rec.token = gen_token()
-#                 login_rec.last_access = datetime.now()
-#                 login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
-#                 login_rec.save()
-                
-#                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-
-#                 # authenticate(request, username = u, password = p)
-#                 messages.success(request, 'Logged in as '+user.username)
-#                 return redirect('bills_list')
-#             else:
-#                 messages.error(request, "Invalid Password")
-#         else:
-#             messages.error(request, "Invalid Username")
-#     context = {
-#         'ReqParams':ReqParams,
-#     }
-#     return render(request, 'login.html', context)
 
 # @login_required
 def bills_list(request):
@@ -155,7 +107,6 @@ def bills_list(request):
         'bills_list': bills,
         'userid': user,
     }
-    print(user)
     return render(request, 'billslist.html', context)
 
 
