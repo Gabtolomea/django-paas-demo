@@ -1,3 +1,0 @@
-
-class ReqParams():
-    username = "username"

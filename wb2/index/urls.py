@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),
-    path('login',views.signin,name='login'),
+    path('accounts/login/',views.signin,name='login'),
     path('user_creation', views.user_creation,name='user_creation'),
     path('signout', views.signout,name='signout'),
     path('bills_list/', views.bills_list, name='bills_list'),
@@ -40,6 +40,12 @@ urlpatterns = [
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
+    path('penalty', views.penalty, name='penalty'),
+    path('test/<int:pages>', views.test, name='test'),
+    
+ 
+
+
 
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),

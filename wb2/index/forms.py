@@ -165,32 +165,27 @@ class Userinfoupdate(ModelForm):
         )
     
 class addPenalty(ModelForm):
-    penalty_info = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    penalty_info = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
     penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    penalty_after = forms.NumberInput(attrs={'class': 'form-control', 'min':0})
-    daysappliedafter = forms.NumberInput(attrs={'class': 'form-control','min':0})
-    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    penalty_after = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    daysappliedafter = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
 
-    class Meta:
-            models = Penalty
-            fields = (
-                'penalty_info',
-                'penaltyrate',
-                'penalty_after',
-                'daysappliedafter',
-                'added_by'
-            )
+    class Meta():
+        model = Penalty
+        fields = (
+            'penalty_info',
+            'penalty_rate',
+            'penalty_after',
+            'daysappliedafter'
+         )
 
 class addDiscount(ModelForm):
     discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    added_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta():
         model = Discount
         fields = (
-            'discountcode',
-            'discount_rate',
-            'added_by'
+             'discount_rate',
         )
 
 class ConscumertypecreationForm (ModelForm):

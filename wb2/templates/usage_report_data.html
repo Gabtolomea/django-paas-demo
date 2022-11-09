@@ -25,12 +25,11 @@ Usage Report
 	<div>
 		<label for="exampleInputBarangay">Select Year</label>
 		<form id="yearselection" action="">
-			<select class="form-select" aria-label="selector" onchange="change()">
+			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
-			</select>
-			{% for i in years reversed %}
-			<option value="{{i}}">{{i}}</option>
-			{% endfor %}
+				{% for i in years reversed %}
+				<option value="{{i}}">{{i}}</option>
+				{% endfor %}
 			</select>
 		</form>
 		<script>
@@ -39,7 +38,6 @@ Usage Report
 			function change() {
 				yearselection.action = selector.value
 				yearselection.submit()
-				console.log("selction testing")
 			}
 		</script>
 	</div>

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-# from index.loginrequiredmidware import LoginRequiredMiddleware
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,15 +36,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
     'index',
     'chartjs',
     'active_link',
+    'django.contrib.humanize',
+    'ajax_datatable',
+
 ]
 
-LOGIN_URL = "login"
+
 
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_PATH = "/wb2"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 TEMPLATE_CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
 ]
@@ -57,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'index.loginrequiredmidware.LoginRequiredMiddleware',
+    
 ]
 
 # SESSION_COOKIE_HTTPONLY = True
@@ -84,13 +87,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'wb2.wsgi.application'
-SESSION_COOKIE_PATH = "/wb2"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default': { 
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wb2',
         'USER': 'root',
@@ -156,3 +158,4 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = 'images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+

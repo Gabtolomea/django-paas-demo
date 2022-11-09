@@ -27,8 +27,8 @@
     {% block style %}
     {% endblock style %}
 </head>
- 
- 
+
+
 <body>
     <div id="loading">
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
@@ -45,7 +45,7 @@
         </div>
         <div class="modal-body sidebar w-100">
             <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x"></i>
-                <p style="font-size: 30px">Developer</p>
+                <p style="font-size: 30px"></p>
             </div>
             <ul class="list-unstyled" style="padding-left: 30px;">
                 <li class="modal_side_nav_li">
@@ -100,7 +100,7 @@
                 aria-label="close">&times;</a>
         </div>
         {% endfor %}
- 
+
             <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
                 <div class="col-sm-8 col-md-8 col-lg-8;" style="font-size: 20px; white-space: nowrap;" >
                     <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
@@ -115,10 +115,10 @@
                     </button>
                     <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
                 </div>
- 
+
                 <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
- 
- 
+
+
                     <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
                         <i class="fa-solid fa-bell"></i>
                     </a>
@@ -131,12 +131,12 @@
                 </div>
             </div>
     </header>
- 
- 
+
+
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
         <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
-            <p style="font-size: 30px">{{user}}</p>
- 
+            <p style="font-size: 30px">{{userid}}</p>
+
         </div>
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
@@ -149,7 +149,7 @@
                 <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span class="sidenav_text">Meter Reading</span>
- 
+
                 </li>
             </a>
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
@@ -183,21 +183,29 @@
         {% block billslist %}
         {% endblock billslist %}
 
+        {% block discount %}
+        {% endblock discount %}
+
+        {% block reports %}
+        {% endblock reports %}
+
+
+
         {% block ledger %}
         {% endblock ledger%}
- 
+
         {% block meterreading %}
         {% endblock meterreading%}
- 
+
         {% block bills_list %}
         {% endblock bills_list %}
- 
+
         {% block consumer_list %}
         {% endblock consumer_list %}
- 
+
         {% block sysuser %}
         {% endblock sysuser %}
- 
+
         {% block consumercreation %}
         {% endblock consumercreation %}
 
@@ -222,7 +230,7 @@
         {% endblock settingspage %}
 
 
-        
+
 
 
         {% block revenue_report %}
@@ -234,21 +242,21 @@
         {% block bill %}
         {% endblock bill %}
 
- 
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script>
- 
+
         function media_query_720(screen_size) {
             if (screen_size.matches) { // If media query matches
                 document.getElementById("first_toggle").style.display = "none";
- 
+
                 document.getElementById("second_toggle").style.display = "none";
                 document.getElementById("third_toggle").style.display = "inline";
-               
- 
+
+
                 document.getElementById("mobile_header_nav").style.display = "none";
- 
+
                 document.getElementById("side_nav").classList.remove("sidebar");
                 document.getElementById("side_nav").classList.add("remove_sidebar");
                 document.getElementById("main_content").classList.remove("main_content");
@@ -256,11 +264,11 @@
             } else {
                 document.getElementById("first_toggle").style.display = "inline";
                 document.getElementById("second_toggle").style.display = "none";
- 
+
                 document.getElementById("third_toggle").style.display = "none";
- 
+
                 document.getElementById("mobile_header_nav").style.display = "inline";
- 
+
                 document.getElementById("side_nav").classList.add("sidebar");
                 document.getElementById("side_nav").classList.remove("remove_sidebar");
                 document.getElementById("main_content").classList.add("main_content");
@@ -270,12 +278,12 @@
         var screen_size = window.matchMedia("(max-width: 720px)")
         media_query_720(screen_size) // Call listener function at run time
         screen_size.addListener(media_query_720) // Attach listener function on state changes
- 
- 
+
+
         function first_toggle() {
             document.getElementById("first_toggle").style.display = "none";
             document.getElementById("second_toggle").style.display = "inline";
- 
+
             document.getElementById("side_nav").classList.remove("sidebar");
             document.getElementById("side_nav").classList.add("remove_sidebar");
             document.getElementById("main_content").classList.remove("main_content");
@@ -284,7 +292,7 @@
         function second_toggle() {
             document.getElementById("first_toggle").style.display = "inline";
             document.getElementById("second_toggle").style.display = "none";
- 
+
             document.getElementById("side_nav").classList.add("sidebar");
             document.getElementById("side_nav").classList.remove("remove_sidebar");
             document.getElementById("main_content").classList.add("main_content");
@@ -311,12 +319,12 @@
                     }, 1050);
                 }
             });
- 
+
             $(window).scroll(function (e) {
                 // Avoid triggering the logic if the scroll event is triggerd from clicking one of the items
                 if (menuScrollTimer === null) {
                     let windowTop = $(this).scrollTop();
- 
+
                     $('.nav a').each(function (event) {
                         if (windowTop >= $($(this).attr('href')).offset().top - 100) {
                             $('.nav .active').removeClass('active');
@@ -327,7 +335,7 @@
             });
         });
     </script>
- 
+
 </body><script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 <script>
     $(window).on('load', function () {
@@ -353,8 +361,8 @@
 
 {% block script %}
 {% endblock script %}
- 
+
 </html>
- 
- 
+
+
 

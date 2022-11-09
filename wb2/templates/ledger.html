@@ -222,11 +222,11 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">&#8369; {{t.bill|floatformat:2|intcomma}}</td>
-					<td class="{{t.style}}">&#8369; {{t.payment|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369;{% endif %} {{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bal %}&#8369;{% endif %} {{t.bal|floatformat:2|intcomma}}</td>
 				</tr>
 				{% endfor %}
 			</tbody>

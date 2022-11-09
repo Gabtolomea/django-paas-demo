@@ -1,0 +1,201 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+Billing
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<style>
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+{% endblock style %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+{% endblock script %}
+{% block billslist %}
+<h1 class="mb-3 text-center">Bills List</h1>
+
+
+<div class="container-fluid p-0">
+	<div class="table-responsive">
+		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+			<div class="row">
+				<div class="col-sm-12 col-md-6">
+					<form id="yearselection" class="dataTables_length" action="" method="GET">
+						<label>
+							Show
+							<select id="selector" class="form-select form-select-sm" onchange="change()">
+								<option disabled selected value>--Select--</option>
+								<option value="10">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<option value="0">All</option>
+							</select> entries
+						</label>
+					</form>
+					<script>
+						yearselection = document.getElementById("yearselection")
+						selector = document.getElementById("selector")
+						function change() {
+							yearselection.action = selector.value
+							yearselection.submit('')
+						}
+					</script>
+				</div>
+				<div class="col-sm-12 col-md-6">
+					<div id="table_filter" class="dataTables_filter"><label>Search:
+
+							<input type="myInput" id="myInput" class="form-control form-control-sm"
+								onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<table id="myTable" class="table table-bordered table-hover table-striped table-sm" cellspacing="0"
+						width="100%">
+						<thead class="wb_thead">
+							<tr>
+								<th style="min-width: 100px;">Account ID</th>
+								<th style="min-width: 100px;">Meter Number</th>
+								<th style="min-width: 100px;">Name</th>
+								<th style="min-width: 100px;">Address</th>
+								<th style="min-width: 100px;">Total Balance</th>
+							</tr>
+						</thead>
+						<tbody class="wb_tbody">
+							{% for bill in bills_list %}
+							<tr>
+								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.consumer_id}}</a></td>
+								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.meternumber}}</a></td>
+								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}},
+										{{bill.firstname}}
+										{{bill.middlename}}</a></td>
+								<td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a>
+								</td>
+								<td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;
+										{{bill.current_bal|floatformat:2|intcomma}}</a></td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 col-md-5"><div class="dataTables_info" id="table_info" role="status" aria-live="polite"></div></div>
+				<div class="col-sm-12 col-md-7">
+					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
+						<ul class="pagination">
+							{% if bills_list.has_previous %}
+							<li class="paginate_button page-item previous">
+								<a href="?page={{ bills_list.previous_page_number }}">« Previous page</a>
+							</li>
+							{% if bills_list.number > 3 %}
+							<li class="paginate_button page-item">
+								<a href="?page=1">1</a>
+							</li>
+							{% if bills_list.number > 4 %}
+							<li class="paginate_button page-item">
+								<span>...</span>
+							</li>
+							{% endif %}
+							{% endif %}
+							{% endif %}
+
+							{% for num in bills_list.paginator.page_range %}
+							{% if bills_list.number == num %}
+							<li class="paginate_button page-item">
+								<a href="?page={{ num }}">{{ num }}</a>
+							</li>
+							{% elif num > bills_list.number|add:'-3' and num < bills_list.number|add:'3' %} <li
+								class="paginate_button page-item">
+								<a href="?page={{ num }}">{{ num }}</a>
+								</li>
+								{% endif %}
+								{% endfor %}
+
+								{% if bills_list.has_next %}
+								{% if bills_list.number < bills_list.paginator.num_pages|add:'-3' %} <li
+									class="paginate_button page-item">
+									<span>...</span>
+									</li>
+									<li class="paginate_button page-item">
+										<a href="?page={{ bills_list.paginator.num_pages }}">{{ bills_list.paginator.num_pages }}</a>
+									</li>
+									{% elif bills_list.number < bills_list.paginator.num_pages|add:'-2' %} <li
+										class="paginate_button page-item">
+										<a href="?page={{ bills_list.paginator.num_pages }}">{{ bills_list.paginator.num_pages }}</a>
+										</li>
+										{% endif %}
+										<li class="paginate_button page-item next">
+											<a href="?page={{ bills_list.next_page_number }}">Next Page »</a>
+										</li>
+										{% endif %}
+
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<div>
+	<span>
+
+	</span>
+</div>
+<script>
+	function myFunction() {
+		// Declare variables 
+		var input, filter, table, tr, i, j, column_length, count_td;
+		column_length = document.getElementById('myTable').rows[0].cells.length;
+		input = document.getElementById("myInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("myTable");
+		tr = table.getElementsByTagName("tr");
+		for (i = 1; i < tr.length; i++) { // except first(heading) row
+			count_td = 0;
+			for (j = 1; j < column_length - 1; j++) { // except first column
+				td = tr[i].getElementsByTagName("td")[j];
+				/* ADD columns here that you want you to filter to be used on */
+				if (td) {
+					if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+						count_td++;
+					}
+				}
+			}
+			if (count_td > 0) {
+				tr[i].style.display = "";
+			} else {
+				tr[i].style.display = "none";
+			}
+		}
+
+	}
+
+</script>
+
+{% endblock billslist %}
