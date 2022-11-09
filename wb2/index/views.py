@@ -109,6 +109,13 @@ def bills_list(request):
     }
     return render(request, 'billslist.html', context)
 
+def dashboard(request):
+    user = request.user
+    print(user)
+    context = {
+        'user': user
+    }
+    return render(request, 'dashboard.html', context)
 
 def signout(request):
     print(request.session.get(ReqParams.username))
