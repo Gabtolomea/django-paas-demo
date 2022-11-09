@@ -247,8 +247,6 @@ def ledger(request, id):
                     p = p + current
             prev = p
     year = date.today().year
-    print(pre)
-
     
     context = {
         'month':calendar.month_name[date.today().month-1],
@@ -266,7 +264,6 @@ def ledger(request, id):
         'bill':bill
     }
     return render(request, 'ledger.html', context)
-
 
 def forgetpassword(request):
     if request.method == "POST":

@@ -14,7 +14,6 @@ Account Ledger
 		opacity: 1;
 		transition: 0.3s all ease-in-out;
 	}
-	
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -83,65 +82,23 @@ Account Ledger
 		<button id ="bitch"type="button" class="btn btn-wb-back" onclick=print()
 			style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
 	</div>
-	<!-- style="display: none;" -->
-		<div id ="billing" style="background-color: rgb(255, 255, 255); display: none; ">
-			<div class="header" style="text-align:center; margin-top: 30px;">
-				<h3 style="color: black;">Municipality of Ginatilan</h3>
-				<h4> Bill for {{month}}</h4>
-			</div>
-			<div class="row w-100 m-auto pb-3">
-				<div class="col-lg-4 col-md-4 col-sm-4 col-4">
-					<label for="zip">Date Issued: {{date_today}}</label>
-				</div>
-			</div>
-			<hr style="margin: 0;">
-			<div class="row w-100 m-auto">
-				<div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
-					<!-- <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Consumer Info</p> -->
-					<div class="consumer_info">
-						<label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
-						<label for="accnt">Account ID: {{u.consumer_id}}</label><br>
-						<label for="meter">Meter Number: {{u.meternumber}}</label><br>
-						<label for="addr">Address: {{u.installation_address}}</label>
-						<label for="zip">Zip Code: 6028</label><br>
-						<label for="connect-type">Connection Type: {{contype}}</label><br>
-						<label for="contact-info">Contact Info: {{u.mobilenum}}</label>
-					</div>
+	
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="jsPDF.js"></script>
+	<script>
+		$(function () {
 		
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
-					<!-- <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Bills Info</p> -->
-					<div class="bills_info">
-						<label for="current-reading">Current Reading: {{cur}}</label><br>
-						<label for="prev-reading">Previous Reading: {{pre}}</label><br>
-						<label for="usage">Usage: {{usage}}</label><br><br>
-						<h5><label for="usage">Bill: {{bill}}</label><br></h5>
-
-					</div>
-					
-				   
-				</div>
-			</div>
-			<hr style="margin: 0;">
-			<div class="bill row w-100 m-auto pt-3">
-				<label for="penalty">Penalty: {{pen}}</label><br>
-				<label for="prev-due">Previous Due:</label><br>
-				<label for="total-balance">Total Balance: {{bal}}</label><br>
-			</div>
-		</div>
-	</div>
-	<script type="text/javascript" src="html2canvas.js"></script>
-  <script type="text/javascript" src="jspdf.min.js"></script>
-  <script type="text/javascript">
-  function print()
-  {
-    var pdf = new jsPDF('l', 'pt', 'letter');
- 	pdf.addHTML($('#billing'), function () {
-     pdf.save('Test.pdf');
- });
-
-  }
-  </script>
+		  $('#bitch').click(function () {
+			var doc = new jsPDF();
+			doc.addHTML($('#billing')[0], 15, 15, {
+			  'background': '#000000',
+			}, function() {
+			  doc.save('sample-file.pdf');
+			});
+		  });
+		});
+		</script>
 	<!-- <script>
 		function print() {
 			var doc = new jsPDF('landscape', 'pt', 'a4');
