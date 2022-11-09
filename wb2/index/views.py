@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
@@ -37,13 +38,6 @@ from .decorators import unauthenticated_user
 from django.http import HttpResponseRedirect
 # from .loginrequiredmidware import login_exempt
 
-class CustomSession():
-    def __init__(self, username):
-        self.username = username
-    
-    def username(self) -> str:
-        return self.username
-cs = ""
 
 def porter(request):
     porter_in()
@@ -59,15 +53,15 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
-    print(gen_token())
     return render(request, "landing.html")
-
 
 @unauthenticated_user
 def signin(request):
+    
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
+        # lr = LoginRec.objects.filter()
         pkval = SystemUsers.objects.filter(username=u)
         passAscii = password.encode("ascii")
         p = base64.b64encode(passAscii)
@@ -76,20 +70,20 @@ def signin(request):
             if user.password == p:
                 login_rec = LoginRec()
                 request.session.set_test_cookie()
-                request.session[ReqParams.username] = user.username
-                global cs
-                cs = CustomSession(user.username)
+                global ReqParams
+                ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
                 login_rec.username = user.username
                 login_rec.token = gen_token()
-                login_rec.last_access = datetime.now()
+                login_rec.last_access = timezone.now()
                 login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
                 login_rec.save()
+                authenticate(user)
                 login(request, user)
 
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
-                return HttpResponseRedirect('/bills_list', cs)
+                return redirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
         else:
@@ -99,6 +93,18 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
+
+@login_required(login_url='login')
+def bills_list(request):
+    user = ReqParams.cs.username
+    bills = ConsumerInfo.objects.all()
+    context = {
+        'ReqParams':ReqParams,
+        'bills_list': bills,
+        'user': user,
+    }
+    return render(request, 'billslist.html', context)
+
 # # @login_required
 # def dashboard(request):
 #     user = request.user
@@ -106,23 +112,11 @@ def signin(request):
 #         'user':user
 #     }
 #     return render(request, 'dashboard.html', context)
-def bills_list(request):
-
-    user = cs.username
-    print(cs.username)
-    # user = request.user
-    bills = ConsumerInfo.objects.all()
-    context = {
-        'ReqParams':ReqParams,
-        'bills_list': bills,
-        'userid': user,
-    }
-    return render(request, 'billslist.html', context)
 
 
 def signout(request):
-    print(request.session.get(ReqParams.username))
-    request.session.flush()
+    global ReqParams
+    ReqParams.cs.username = ""
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -748,6 +742,8 @@ def reports(request):
     return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
+    global ReqParams
+    user = ReqParams.cs.username
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -788,14 +784,14 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-
-
+        'user':user,
     }
     return render(request, 'waterusage.html', context)
 
 
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
+
     context = {
         'bang': bang,
 
