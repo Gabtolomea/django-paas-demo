@@ -35,6 +35,7 @@ alltables = [
 
 sorted_tables = []
 
+<<<<<<< HEAD
 #mydb = mysql.connector.connect(
  #  host="localhost",
 #    user="root",
@@ -42,6 +43,15 @@ sorted_tables = []
 #    database="lgu_ginatilan_db"
 # )
 # mycursor = mydb.cursor()
+=======
+mydb = mysql.connector.connect(
+   host="localhost",
+   user="root",
+   password="yjh434ctuG@-@",
+   database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
+>>>>>>> jazzy
 
 def porter_in():
     col = 0
@@ -68,7 +78,6 @@ def rearrange(var):
     sorted_tables.append(arr)
 con_info = ConsumerInfo()
 b_rec = BarangayRecord()
-sys_user = SystemUsers()
 rt = ConsumerType()
 trans = Transactions()
 bar = [
@@ -550,12 +559,22 @@ def get_cummulative(id):
     return math.ceil(cum*100)/100
 
 def sys_user_out(i):
+<<<<<<< HEAD
+=======
+    sys_user = SystemUsers()
+>>>>>>> jazzy
     sys_user.is_admin = False
     sys_user.is_teller = False
     sys_user.is_supervisor = False
     sys_user.is_manager = False
     sys_user.is_reader = False
     sys_user.username = i[0]
+<<<<<<< HEAD
+=======
+    # passAscii = base64.b64decode(i[1])
+    # p = passAscii.decode("ascii")
+    # print(p)
+>>>>>>> jazzy
     sys_user.password = i[1]
     sys_user.first_name = i[2]
     sys_user.mid_name = i[3]
@@ -631,3 +650,4 @@ def b_rec_out(i):
     b_rec.total_paid_dec = i[40]
     b_rec.total_usage_dec = i[41]
     b_rec.save()
+

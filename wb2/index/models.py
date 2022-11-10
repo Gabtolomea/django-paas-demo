@@ -1,13 +1,21 @@
 
-from datetime import date
+from datetime import date, datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import random
 # Create your models here.
+
+class LoginRec(models.Model):
+    username = models.CharField(max_length=20,primary_key = True)
+    token = models.CharField(max_length = 10)
+    last_access = models.DateTimeField()
+    expiration = models.DateTimeField(default = datetime.now())
+
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
-    password = models.BinaryField(max_length=450, blank=True, editable = True)
-    username = models.CharField(primary_key=True, max_length=20)
+    password = models.BinaryField()
+    username = models.CharField(max_length=20,primary_key = True)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
@@ -32,6 +40,9 @@ class ConsumerType(models.Model):
     date_added = models.DateField(auto_now_add=True)
     date_mod = models.DateField(auto_now=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self) -> str:
+        return self.contypeid
 
 class Penalty(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
