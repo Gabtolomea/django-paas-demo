@@ -1,27 +1,86 @@
+
 {% load humanize %}
 
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<style>
+
+  body{
+    background-color: #F2F3F2;
+   }
+
+  .pagination{
+    float: right;
+    margin-right: 25px;
+    text-decoration: none;
+  }
+  a{
+    text-decoration: none;
+  }
+
+  .input{
+    float: right;
+    margin-right: 25px;
+  }
+  
+  h2{
+    font-size: 50px;
+    font-weight: normal;
+    margin-right: 5px;
+    font-family: Arial;
+  }
+span{
+  float: right;
+}
+ form{
+  margin-bottom: 30px;
+ } 
+
+  .searchbox{
+    margin-right: 25px;
+    float: right;
+    height: 1.5 rem;
+  }
+  
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
 <body>
+    <center><h3 class="mb-3 text-center" style="margin-top:40px; font-weight: bold;">Bills List</h3></center>
 
+      <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+      <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+      
+  
+      <form id="yearselection" method="GET">
 
-    <h1 class="mb-3 text-center">Bills List</h1>
-    <form id="yearselection" method="GET">
-        <select name="paginate_by" id="selector" >
+        <!--<input type="submit" value="Show Record">-->
+        <select name="paginate_by" id="selector" style="border-radius: 25px; width: 8%; height: 3%;">
             <option value="">--Select--</option>
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
             <option value="10000000">All</option>
         </select>
-        <input type="submit" value="Show Record">
     </form>
-   
-    <input type="myInput" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-    <table id="myTable" class="table table-bordered" cellspacing="0" width="100%">
+ 
+<div class="container-fluid p-0">
+  <div class="table-responsive">
+
+      <label class="searchbox">
+        <input type="myInput" id="myInput" onkeyup="myFunction()" placeholder aria-controls="Search for names" class="form-control">
+      </label>
+
+    
+   <!--<input  style=" float: right; height: 30px; margin-right: 25px;" type="myInput" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
+   <br><br>
+    <table id="myTable" class="table table-bordered table-striped" cellspacing="0" width="100%">
         <thead class="wb_thead">
-            <tr>
-                <th style="min-width: 100px;">Account ID</th>
+            <tr  style="background-color: #63CDD7; color: white;">
+                <th scope="col" style="min-width: 100px;">Account ID</th>
                 <th style="min-width: 100px;">Meter Number</th>
                 <th style="min-width: 100px;">Name</th>
                 <th style="min-width: 100px;">Address</th>
@@ -32,23 +91,25 @@
         <tbody class="wb_tbody">
             {% for bill in bills_list %}
             <tr>
-                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.consumer_id}}</a></td>
-                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.meternumber}}</a></td>
-                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}}
+                <td scope= "row" ><a href="{% url 'ledger' bill.consumer_id %}" style="text-decoration: none;">{{bill.consumer_id}}</a></td>
+                <td><a href="{% url 'ledger' bill.consumer_id %}" style="text-decoration: none;">{{bill.meternumber}}</a></td>
+                <td><a href="{% url 'ledger' bill.consumer_id %}" style="text-decoration: none;">{{bill.lastname}}, {{bill.firstname}}
                         {{bill.middlename}}</a></td>
-                <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
-                <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;
+                <td><a href="{% url 'ledger' bill.consumer_id %}" style="text-decoration: none;">{{bill.installation_address}}</a></td>
+                <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}" style="text-decoration: none;"> &#8369;
                         {{bill.current_bal|floatformat:2|intcomma}}</a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+  </div>
+</div>
 
-
-    <div>
+<br><br>
+    <div class="pagination">
         <span>
             {% if bills_list.has_previous %}
-            <a href="?page={{ bills_list.previous_page_number }}">« Previous page</a>
+            <a href="?page={{ bills_list.previous_page_number }}">Previous page</a></button>
           
             {% if bills_list.number > 3 %}
               <a href="?page=1">1</a>
@@ -74,7 +135,7 @@
               <a href="?page={{ bills_list.paginator.num_pages }}">{{ bills_list.paginator.num_pages }}</a>
             {% endif %}
           
-            <a href="?page={{ bills_list.next_page_number }}">Next Page »</a>
+            <a href="?page={{ bills_list.next_page_number }}">Next Page</a>
           {% endif %}
         </span>
     </div>

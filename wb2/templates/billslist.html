@@ -2,6 +2,7 @@
 {% load static %}
 {% load humanize %}
 
+
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
@@ -30,46 +31,6 @@
         });
     </script>
     {% endblock script %}
-{% block bills_list %}
-<h1 class="mb-3 text-center">Bills List</h1>
-    <div class="container-fluid p-0">
-        <div class="table-responsive">
-            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%" style="white-space: nowrap;">
-                <thead class="wb_thead">
-                    <tr>
-                        <th style="min-width: 100px;">Account ID</th>                        
-                        <th style="min-width: 100px;">Meter Number</th>
-                        <th style="min-width: 100px;">Name</th>
-                        <th style="min-width: 100px;">Address</th>
-                        <th style="min-width: 100px;">Total Balance</th>
-                    </tr>
-                </thead>
-                    
-                    <tbody class="wb_tbody">
-                        {% for bill in bills_list %}
-                        <tr>
-                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.consumer_id}}</a></td>
-                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.meternumber}}</a></td>
-                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</a></td>
-                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
-                            <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.current_bal}}</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-
-<script>
-    $(document).ready(function () {
-        $('#table').DataTable({
-            order: [[2, 'asc']],
-            stateSave: true,
-            lengthMenu: [
-                [10, 25, 50, -1],
-                [10, 25, 50, 'All'],
-            ],
-        });
-    });
-</script>
-{% endblock script %}
 {% block billslist %}
 <body >
 <h1 class="mb-3 text-center">Bills List</h1>
