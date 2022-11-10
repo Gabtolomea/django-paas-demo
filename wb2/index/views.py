@@ -8,7 +8,6 @@ from multiprocessing import context
 from os import system
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -36,6 +35,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
 from django.http import HttpResponseRedirect
+from django.core.cache import cache
 # from .loginrequiredmidware import login_exempt
 
 
@@ -57,11 +57,10 @@ def lp(request):
 
 @unauthenticated_user
 def signin(request):
-    
+    global ReqParams
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-        # lr = LoginRec.objects.filter()
         pkval = SystemUsers.objects.filter(username=u)
         passAscii = password.encode("ascii")
         p = base64.b64encode(passAscii)
@@ -69,20 +68,27 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
                 login_rec = LoginRec()
-                request.session.set_test_cookie()
-                global ReqParams
+                #request.session.set_test_cookie()
+                request.session[ReqParams.username] = user.username
                 ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
+                request.user = user.username
+                cache.add('username',user.username)
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = timezone.now()
                 login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
                 login_rec.save()
-                authenticate(user)
-                login(request, user)
-
+                print(request.user)
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
+                
+                bills = ConsumerInfo.objects.all()  
+                context = {
+                    'ReqParams':ReqParams,
+                    'bills_list': bills,
+                    'user': user,
+                }
                 return redirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
@@ -94,16 +100,18 @@ def signin(request):
     return render(request, 'login.html', context)
 
 
-@login_required(login_url='login')
+@authenticated_user
 def bills_list(request):
-    user = ReqParams.cs.username
-    bills = ConsumerInfo.objects.all()
-    context = {
-        'ReqParams':ReqParams,
-        'bills_list': bills,
-        'user': user,
-    }
-    return render(request, 'billslist.html', context)
+    u = request.session.get(ReqParams.username)
+    # user = ReqParams.cs.username
+    # bills = ConsumerInfo.objects.all()
+    # context = {
+    #     'ReqParams':ReqParams,
+    #     'bills_list': bills,
+    #     'user': user,
+    # }
+    print(cache.get('username'))
+    return render(request, 'billslist.html')
 
 # # @login_required
 # def dashboard(request):
@@ -114,6 +122,7 @@ def bills_list(request):
 #     return render(request, 'dashboard.html', context)
 
 
+@authenticated_user
 def signout(request):
     global ReqParams
     ReqParams.cs.username = ""
@@ -121,6 +130,7 @@ def signout(request):
     return redirect('login')
 
 
+@authenticated_user
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -168,7 +178,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @login_required(login_url='login')
+@authenticated_user
 def ledger(request, id):
     table = []
     class ledgerclass():
@@ -262,7 +272,7 @@ def ledger(request, id):
     }
     return render(request, 'ledger.html', context)
 
-
+@unauthenticated_user
 def forgetpassword(request):
     if request.method == "POST":
         u_email = request.POST['email']
@@ -298,7 +308,7 @@ def forgetpassword(request):
         context = {'email': email, 'errors': errors}
     return render(request, 'forgetpassword.html')
 
-
+@unauthenticated_user
 def password_reset_form(request):
     # form = SystemUserForm()
     # if request.method == "POST":
@@ -307,7 +317,8 @@ def password_reset_form(request):
 
     return render(request, 'password_reset_form')
 
-# @login_required(login_url='login')
+
+@authenticated_user
 def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -316,8 +327,7 @@ def meterreading(request):
     }
     return render(request, 'meterreading.html', context)
 
-
-# @login_required(login_url='login')
+@authenticated_user
 def inputreading(request, id, year):
     table = []
     years = []
@@ -563,22 +573,17 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
-# def landing(request):
-#     return render(request,'landing.html')
-
-
-
-# @login_required(login_url='login')
+@authenticated_user
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
 
-# @login_required(login_url='login')
+@authenticated_user
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
-# @login_required(login_url='login')
+@authenticated_user
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -619,7 +624,7 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-# @login_required(login_url='login')
+@authenticated_user
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -627,7 +632,7 @@ def stopmeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=date.today().year)
 
-# @login_required(login_url='login')
+@authenticated_user
 def sysuser(request):
     table = []
 
@@ -665,7 +670,7 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-# @login_required(login_url='login')
+@authenticated_user
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -682,7 +687,7 @@ def userupdate(request, id):
 
     return render(request, 'userupdate.html', context)
 
-# @login_required(login_url='login')
+@authenticated_user
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -740,7 +745,7 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
-# @login_required(login_url='login')
+@authenticated_user
 def barangayreport(request, year):
     global ReqParams
     user = ReqParams.cs.username
@@ -1032,7 +1037,7 @@ def discount(request):
     return render(request, 'discount.html', context)
 
 
-# @login_required(login_url='login')
+@authenticated_user
 def new_consumertype(request):
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()

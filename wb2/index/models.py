@@ -11,9 +11,6 @@ class LoginRec(models.Model):
     last_access = models.DateTimeField()
     expiration = models.DateTimeField(default = datetime.now())
 
-
-    
-
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
