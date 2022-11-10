@@ -102,16 +102,17 @@ def signin(request):
 
 @authenticated_user
 def bills_list(request):
-    u = request.session.get(ReqParams.username)
+   
     # user = ReqParams.cs.username
-    # bills = ConsumerInfo.objects.all()
-    # context = {
-    #     'ReqParams':ReqParams,
-    #     'bills_list': bills,
-    #     'user': user,
-    # }
-    print(cache.get('username'))
-    return render(request, 'billslist.html')
+    bills = ConsumerInfo.objects.all()
+   
+    context = {
+        
+        'bills_list': bills,
+        'user': request.session.get(ReqParams.username)
+    }
+    print(request.session.get(ReqParams.username))
+    return render(request, 'billslist.html',context)
 
 # # @login_required
 # def dashboard(request):
@@ -324,7 +325,8 @@ def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
         'meterred': meterred,
-        'year': date.today().year
+        'year': date.today().year,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'meterreading.html', context)
 
@@ -569,7 +571,8 @@ def inputreading(request, id, year):
         'consumer': consumer,
         'table': table,
         'cur_year': year,
-        'years': years
+        'years': years,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -577,7 +580,12 @@ def inputreading(request, id, year):
 @authenticated_user
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
-    return render(request, 'conlist.html', {'consumer_list': consumer_list})
+
+    context = {
+        'consumer_list': consumer_list,
+        'user': request.session.get(ReqParams.username)
+    }
+    return render(request, 'conlist.html',context)
 
 @authenticated_user
 def sysuser(request):
@@ -622,6 +630,7 @@ def consumercreation(request):
     context = {
         'form': form,
         'errors': form.errors,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'consumercreation.html', context)
 
@@ -667,7 +676,8 @@ def sysuser(request):
         su = sysuserclass(firstname, lastname, midname, username, email, role)
         table.append(su)
     context = {
-        'table': table
+        'table': table,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'sysuser.html', context)
 
@@ -710,6 +720,7 @@ def user_edit(request, id):
         'sys': sys,
         'form': form,
         'password': password,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'user_edit.html', context)
 
