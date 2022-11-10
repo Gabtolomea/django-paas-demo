@@ -122,9 +122,10 @@ def bills_list(request):
 #     return render(request, 'dashboard.html', context)
 
 
-@authenticated_user
 def signout(request):
     global ReqParams
+    lr = LoginRec.objects.get(username = ReqParams.cs.username)
+    lr.delete()
     ReqParams.cs.username = ""
     messages.success(request, 'Logout successful')
     return redirect('login')
