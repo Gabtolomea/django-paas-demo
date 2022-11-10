@@ -70,12 +70,10 @@ MIDDLEWARE = [
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'my_cache_table',
+        'LOCATION': 'cache_table',
     }
 }
-# SESSION_COOKIE_HTTPONLY = True
-# SESSION_COOKIE_AGE = 60*60*24
-# SESSION_COOKIE_SECURE = True
+
 
 ROOT_URLCONF = 'wb2.urls'
 AUTH_USER_MODEL = 'index.SystemUsers'
