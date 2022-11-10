@@ -100,9 +100,6 @@ def signin(request):
     return render(request, 'login.html', context)
 
 
-<<<<<<< HEAD
-@login_required(login_url='login')
-=======
 @authenticated_user
 def bills_list(request):
     u = request.session.get(ReqParams.username)
@@ -125,10 +122,10 @@ def bills_list(request):
 #     return render(request, 'dashboard.html', context)
 
 
-@authenticated_user
->>>>>>> jazzy
 def signout(request):
     global ReqParams
+    lr = LoginRec.objects.get(username = ReqParams.cs.username)
+    lr.delete()
     ReqParams.cs.username = ""
     messages.success(request, 'Logout successful')
     return redirect('login')
@@ -577,25 +574,7 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
-<<<<<<< HEAD
-# def landing(request):
-#     return render(request,'landing.html')
-
-# @login_required(login_url='login')
-def bills_list(request):
-    user = request.user
-    bills_list = ConsumerInfo.objects.all()
-    context = {
-        'bills_list': bills_list,
-        'user': user,
-    }
-    return render(request, 'billslist.html', context)
-
-
-# @login_required(login_url='login')
-=======
 @authenticated_user
->>>>>>> jazzy
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
     return render(request, 'conlist.html', {'consumer_list': consumer_list})
@@ -1036,10 +1015,6 @@ def view_unsettled_bills(request, id, year):
                'current': year,
                'table': table, }
     return render(request, 'view_unsettled_bills.html', context)
-<<<<<<< HEAD
-
-=======
->>>>>>> jazzy
 
 
 def discount(request):
@@ -1084,19 +1059,11 @@ def new_consumertype(request):
             ct.added_by = None
             ct.save()
     context = {
-<<<<<<< HEAD
-            'c'   : c,
-            'form': form,
-            'errors': form.errors
-        }
-    return render(request,'new_consumertype.html', context)
-=======
         'c': c,
         'form': form,
         'errors': form.errors
     }
     return render(request, 'new_consumertype.html', context)
->>>>>>> jazzy
 
 
 def penalty(request):
@@ -1157,9 +1124,3 @@ def test(request, p):
         'user': user,
     }
     return render(request, 'test.html', context)
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> jazzy

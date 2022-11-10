@@ -41,7 +41,6 @@ urlpatterns = [
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
-    path('penalty', views.penalty, name='penalty'),
     path('test/<int:p>', views.test, name='test'),
     
  
