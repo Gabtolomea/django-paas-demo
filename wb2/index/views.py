@@ -102,7 +102,9 @@ def signin(request):
 
 @authenticated_user
 def bills_list(request):
-    u = request.session.get(ReqParams.username)
+    if ReqParams.username in request.session:
+         user = request.session[ReqParams.username]
+    
     # user = ReqParams.cs.username
     # bills = ConsumerInfo.objects.all()
     # context = {
@@ -110,7 +112,7 @@ def bills_list(request):
     #     'bills_list': bills,
     #     'user': user,
     # }
-    print(cache.get('username'))
+    print(user)
     return render(request, 'billslist.html')
 
 # # @login_required
