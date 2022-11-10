@@ -8,8 +8,8 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),
-    path('login/',views.signin,name='login'),
-    path('dashboard', views.dashboard,name='dashboard'),
+    # path('dashboard',views.dashboard,name='dashboard'),
+    path('accounts/login/',views.signin,name='login'),
     path('user_creation', views.user_creation,name='user_creation'),
     path('signout', views.signout,name='signout'),
     path('bills_list/', views.bills_list, name='bills_list'),
@@ -42,7 +42,7 @@ urlpatterns = [
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
     path('penalty', views.penalty, name='penalty'),
-    path('test/<int:pages>', views.test, name='test'),
+    path('test/<int:p>', views.test, name='test'),
     
  
 

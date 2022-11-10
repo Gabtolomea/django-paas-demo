@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
@@ -52,15 +53,15 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
-    print(gen_token())
     return render(request, "landing.html")
-
 
 @unauthenticated_user
 def signin(request):
+    
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
+        # lr = LoginRec.objects.filter()
         pkval = SystemUsers.objects.filter(username=u)
         passAscii = password.encode("ascii")
         p = base64.b64encode(passAscii)
@@ -69,15 +70,16 @@ def signin(request):
             if user.password == p:
                 login_rec = LoginRec()
                 request.session.set_test_cookie()
-                request.session[ReqParams.username] = user.username
+                global ReqParams
+                ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
                 login_rec.username = user.username
                 login_rec.token = gen_token()
-                login_rec.last_access = datetime.now()
+                login_rec.last_access = timezone.now()
                 login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
                 login_rec.save()
-                
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                authenticate(user)
+                login(request, user)
 
                 # authenticate(request, username = u, password = p)
                 messages.success(request, 'Logged in as '+user.username)
@@ -91,35 +93,30 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-# @login_required
+
+@login_required(login_url='login')
 def bills_list(request):
-    # q = QueryDict(request.session['username'])
-    # print(q)
-    # session_key = "zjl9q9w8hm3y96frejvzrirvk6xoetu2"
-    # session_data = Session.objects.get(session_key=session_key).session_data
-    # data = pickle.loads(base64.b64decode(session_data))
-    # print(data)
-    print(request.session.test_cookie_worked())
-    user = request.session.get(ReqParams.username)
+    user = ReqParams.cs.username
     bills = ConsumerInfo.objects.all()
     context = {
         'ReqParams':ReqParams,
         'bills_list': bills,
-        'userid': user,
+        'user': user,
     }
     return render(request, 'billslist.html', context)
 
-def dashboard(request):
-    user = request.user
-    print(user)
-    context = {
-        'user': user
-    }
-    return render(request, 'dashboard.html', context)
+# # @login_required
+# def dashboard(request):
+#     user = request.user
+#     context = {
+#         'user':user
+#     }
+#     return render(request, 'dashboard.html', context)
+
 
 def signout(request):
-    print(request.session.get(ReqParams.username))
-    request.session.flush()
+    global ReqParams
+    ReqParams.cs.username = ""
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -204,8 +201,7 @@ def ledger(request, id):
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 bill = asc_trans[i].bill
-                connectionType = ConsumerType.objects.get(
-                    contypeid=asc_trans[i].contypeid)
+                connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -746,6 +742,8 @@ def reports(request):
     return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
+    global ReqParams
+    user = ReqParams.cs.username
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -786,14 +784,14 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-
-
+        'user':user,
     }
     return render(request, 'waterusage.html', context)
 
 
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
+
     context = {
         'bang': bang,
 
@@ -1092,8 +1090,8 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def test(request, pages):
-    print(pages)
+def test(request, p):
+    pages = int(p)
     user = request.user
     bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = bills.count()
@@ -1104,7 +1102,6 @@ def test(request, pages):
     page = request.GET.get('page')
 
     paginator = Paginator(bills, paginate_by)
-
     try:
         bills_list = paginator.page(page)
 
@@ -1115,6 +1112,7 @@ def test(request, pages):
         bills_list = paginator.page(paginator.num_pages)
 
     context = {
+        'five':range(1,6),
         'paginate_by': paginate_by,
         'bills_list': bills_list,
         'user': user,

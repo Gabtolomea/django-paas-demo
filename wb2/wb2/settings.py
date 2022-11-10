@@ -101,7 +101,12 @@ DATABASES = {
         'PORT': '3307'
     }
 }
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
@@ -110,6 +115,7 @@ SERVER_EMAIL = 'ginatilancebuwater'
 EMAIL_HOST_PASSWORD = 'axsrouetdxposfko'
 EMAIL_PORT = 587
 
+CORS_ALLOW_CREDENTIALS = True
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

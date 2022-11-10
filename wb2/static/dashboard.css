@@ -541,7 +541,6 @@ li.active {
     transition: opacity 1s;
 }
 
-
 /* @media(max-width: 720px) {
     .toggle_desktop{
         display: none;
