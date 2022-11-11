@@ -80,220 +80,73 @@ Account Ledger
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
 		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
 	</div>
-	<div id="newtable" style="display: none;" class="col-sm-10 col-sm-offset-1">
-		<div class="widget-box">
-			<div class="widget-header widget-header-large">
-				<center>
-					<h3 class="widget-title grey lighter">
-						<i class="ace-icon fa fa-leaf green"></i>
-						Your Bill
-					</h3>
-				</center>
+	
+<div id="billing">
+	<style>
+    .consumer_info{
+        background-color: #f8f9fa;
+        padding-left: 10px
+    }
+    .bills_info{
+        background-color: #f8f9fa;
+        padding-left: 10px;
+        padding-bottom: 97px;
+    }
 
-				<div class="widget-toolbar no-border invoice-info">
+</style>
 
-				</div>
-				<br>
-				<br>
+<body>
+    <div class="header" style="text-align:center; margin-top: 30px;">
+        <h1>Municipality of Ginatilan</h1>
+        <p> Ginatilan Water Station</p>
+    </div>
+    <div class="row w-100 m-auto pb-3">
+        <div class=" col-lg-4 col-md-4 col-sm-4 col-4">
+            <label for="brgy">Barangay:</label>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+            <label for="zip">Zip Code:</label>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+            <label for="country">Country:</label>
+        </div>
+    </div>
+    <hr style="margin: 0;">
+    <div class="row w-100 m-auto">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
+            <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Consumer Info</p>
+            <div class="consumer_info">
+                <label for="name">Name:</label><br>
+                <label for="accnt">Account ID:</label><br>
+                <label for="meter">Meter Number:</label><br>
+                <label for="addr">Address:</label>
+                <label for="zip">Zip Code:</label><br>
+                <label for="country">Country:</label><br>
+                <label for="connect-type">Connection Type:</label><br>
+                <label for="contact-info">Contact Info:</label>
+            </div>
 
-			</div>
-
-			<div class="widget-body">
-				<div class="widget-main padding-24">
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="row">
-								<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-									<b>Company Info</b>
-								</div>
-							</div>
-
-							<div>
-								<ul class="list-unstyled spaced">
-									<li>
-										<i></i>Name: <strong>Ginatilan Water</strong>
-									</li>
-
-									<li>
-										<i></i>Address: <strong>Poblacion,Ginatilan,Cebu</strong>
-									</li>
-
-									<li>
-										<i></i>Zip Code: <strong>6028</strong>
-									</li>
-
-									<li>
-										<i></i>Country: <strong>Philippines</strong>
-									</li>
-									<li>
-										Phone: 
-									</li>
-
-								</ul>
-							</div>
-						</div><!-- /.col -->
-
-						<div class="col-sm-6">
-							<div class="row">
-								<div
-									class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
-									<b>Customer Info</b>
-								</div>
-							</div>
-
-							<div>
-								<ul>
-									<li>
-										Name: <strong>{{u.firstname}} {{u.middlename}} {{u.lastname}}</strong>
-									</li>
-									<li>
-										Account ID: <strong>{{tr.consumer_id}}</strong>
-									</li>
-									<li>
-										Meter Number: <strong>{{tr.meternumber}}</strong>
-									</li>
-									<li>
-										Address: <strong>{{tr.installation_address}}</strong>
-									</li>
-
-									<li>
-										Zip Code:<strong>6028</strong>
-									</li>
-
-									<li>
-										<i></i>Country: <strong>Philippines</strong>
-									</li>
-
-									<li>
-										Contact Info: <strong>{{tr.mobilenum}}</strong>
-									</li>
-								   
-								</ul>
-							</div>
-						</div><!-- /.col -->
-					</div><!-- /.row -->
-					<br>
-					<br>
-					<div class="widget-main padding-24">
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="row">
-									<div
-										class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-										<b>Bill Info</b>
-									</div>
-								</div>
-								<div>
-									<ul class="list-unstyled spaced">
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Month:
-											<strong>{{month}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Posted on:
-											<strong>{{date_today}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Posted by: <strong>{{user}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Payment Schedule:
-										</li>
-										<li class="divider"></li>
-									</ul>
-								</div>
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-						<div class="space"></div>
-						<br>
-						<br>
-						<div>
-							<table class="table table-striped table-bordered">
-								<tbody>
-									<tr>
-										<td>
-											Current Reading
-										</td>
-										<td class="hidden-xs">
-											{{u.meterReading}} m3
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Previous Reading
-										</td>
-										<td class="hidden-xs">
-											{{context.prev_reading}} m3
-										</td>
-									</tr>
-									<tr>
-										<td>Usage</td>
-										<td class="hidden-xs"> {{u.usage}} m3</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<br>
-						<br>
-						<div>
-							<table class="table table-striped table-bordered">
-								<tbody>
-									<tr>
-										<td>
-											Bill
-										</td>
-										<td class="hidden-xs">
-											Php.   {{lat.bill}}
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Penalty
-										</td>
-										<td class="hidden-xs">
-											Php.{{context.penalty}}
-										</td>
-									</tr>
-									<tr>
-										<td>Total Bill</td>
-										<td class="hidden-xs"> Php.{{tr.cummulative}} </td>
-									</tr>
-									<tr>
-										<td>Previous Due</td>
-										<td class="hidden-xs"> Php.{{context.prev_balance}} </td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-						<div class="hr hr8 hr-double hr-dotted"></div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
+            <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Bills Info</p>
+            <div class="bills_info">
+                <label for="current-reading">Current Reading:</label><br>
+                <label for="prev-reading">Previous Reading:</label><br>
+                <label for="usage">Usage:</label><br>
+            </div>
+           
+        </div>
+    </div>
+    <hr style="margin: 0;">
+    <div class="bill row w-100 m-auto pt-3">
+        <label for="penalty">Penalty:</label><br>
+        <label for="total-bill">Total Bill:</label><br>
+        <label for="prev-due">Previous Due:</label><br>
+        <label for="total-balance">Total Balance:</label><br>
+    </div>
+</div>
 
 
-						<div class="row">
-							<div class="col-sm">
-								<div class="form-group">
-
-								</div>
-							</div>
-							<div class="col-sm">
-								<div class="form-group">
-
-								</div>
-							</div>
-							<div class="col-sm">
-								<div class="form-group">
-									<h4 class="pull-right">
-										Total amount :
-										<span class="red">Php.{{context.total_balance}}</span>
-									</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 	<script>
 		function print() {
 			var doc = new jsPDF('landscape', 'pt', 'a4');
@@ -325,11 +178,10 @@ Account Ledger
 
 			var y = 10;
 			var x = 20;
-			doc.text(420, y = y + 30, "Copy of Consumer's Meter Reading ");
 			doc.setLineWidth(2);
 			doc.setFontSize(15);
 			doc.fromHTML(
-				document.getElementById('newtable'),
+				document.getElementById('billing'),
 				15,
 				15,
 			)
