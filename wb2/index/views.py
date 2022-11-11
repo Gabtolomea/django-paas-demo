@@ -176,6 +176,7 @@ def user_creation(request):
     context = {
         'form': form,
         'errors': form.errors,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'registration.html', context)
 
