@@ -20,7 +20,12 @@ class CustomSession():
         else:
             return True
     
-
+class message():
+    def __init__(self, tag, msg):
+        self.tag = tag
+        self.msg = msg
+    def __str__(self) -> str:
+        return self.msg
 class ReqParams():
     cs = CustomSession("")
     sample = {}

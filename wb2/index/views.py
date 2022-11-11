@@ -68,27 +68,16 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             if user.password == p:
                 login_rec = LoginRec()
-                #request.session.set_test_cookie()
                 request.session[ReqParams.username] = user.username
                 ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
-                request.user = user.username
-                cache.add('username',user.username)
+                cache.set('message', message('success', 'Logged in as '+user.username))
+                # print(cache.get('message'))
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = timezone.now()
                 login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
                 login_rec.save()
-                print(request.user)
-                # authenticate(request, username = u, password = p)
-                messages.success(request, 'Logged in as '+user.username)
-                
-                bills = ConsumerInfo.objects.all()  
-                context = {
-                    'ReqParams':ReqParams,
-                    'bills_list': bills,
-                    'user': user,
-                }
                 return redirect('bills_list')
             else:
                 messages.error(request, "Invalid Password")
@@ -102,16 +91,19 @@ def signin(request):
 
 @authenticated_user
 def bills_list(request):
-   
+    m = [cache.get('message')]
+    # print(cache.get('message'))
+    # print('m')
+    # print(m)
+    # print(m[0].tag)
     # user = ReqParams.cs.username
     bills = ConsumerInfo.objects.all()
    
     context = {
-        
+        'messages':m,
         'bills_list': bills,
         'user': request.session.get(ReqParams.username)
     }
-    print(request.session.get(ReqParams.username))
     return render(request, 'billslist.html',context)
 
 # # @login_required
@@ -125,8 +117,8 @@ def bills_list(request):
 
 def signout(request):
     global ReqParams
-    lr = LoginRec.objects.get(username = ReqParams.cs.username)
-    lr.delete()
+    # lr = LoginRec.objects.get(username = ReqParams.cs.username)
+    # lr.delete()
     ReqParams.cs.username = ""
     messages.success(request, 'Logout successful')
     return redirect('login')
