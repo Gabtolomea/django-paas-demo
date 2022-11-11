@@ -1147,7 +1147,11 @@ def meterreading2(request,p):
     try:
         meterred = paginator.page(page)
     
-    except
+    except PageNotAnInteger:
+        meterred = paginator.page(1)
+    
+    except EmptyPage:
+        meterred = paginator.page(paginator.num_pages)
     context = {
         'five':range(1,6),
         'paginate_by': paginate_by,
