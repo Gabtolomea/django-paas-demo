@@ -71,7 +71,7 @@ def signin(request):
                 request.session[ReqParams.username] = user.username
                 ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
-                cache.set('message', message('success', 'Logged in as '+user.username))
+                cache.set('message', message('success', 'Logged in as '+user.username),5)
                 # print(cache.get('message'))
                 login_rec.username = user.username
                 login_rec.token = gen_token()
