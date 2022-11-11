@@ -91,7 +91,7 @@ def signin(request):
 
 @authenticated_user
 def bills_list(request):
-    print(cache.get('message').trigger)
+    print(cache.get('message'))
     
     if cache.get('message').trigger > 1:
         m = []
