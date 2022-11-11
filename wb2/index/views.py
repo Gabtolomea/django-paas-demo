@@ -71,8 +71,8 @@ def signin(request):
                 request.session[ReqParams.username] = user.username
                 ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
-                cache.set('message', message('success', 'Logged in as '+user.username))
-                # print(cache.get('message'))
+                cache.set('message', message('success', 'Logged in as '+user.username, 0))
+                # print(cache.get('message').tag)
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = timezone.now()
@@ -91,12 +91,13 @@ def signin(request):
 
 @authenticated_user
 def bills_list(request):
-    m = [cache.get('message')]
-    # print(cache.get('message'))
-    # print('m')
-    # print(m)
-    # print(m[0].tag)
-    # user = ReqParams.cs.username
+    print(cache.get('message').trigger)
+    
+    if cache.get('message').trigger > 1:
+        m = []
+    else:
+        m = [cache.get('message')]
+    print("ahksgdiqwurhgpas")
     bills = ConsumerInfo.objects.all()
    
     context = {
