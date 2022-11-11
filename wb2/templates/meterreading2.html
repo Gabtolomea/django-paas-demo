@@ -76,19 +76,19 @@ Billing
 							</tr>
 						</thead>
 						<tbody class="wb_tbody">
-							{% for bill in bills_list %}
+							{% for meterred in meterred %}
 							<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">
                                 <td class="{{t.style}}">
-                                    {{m.consumer_id}}
+                                    {{meterred.consumer_id}}
                                 </td>
                                 <td class="{{t.style}}">
-                                    {{m.lastname}}, {{m.firstname}} {{m.middlename}}
+                                    {{meterred.lastname}}, {{meterred.firstname}} {{meterred.middlename}}
                                 </td>
                                 <td class="{{t.style}}">
-                                    {{m.meternumber}}
+                                    {{meterred.meternumber}}
                                 </td>
                                 <td class="{{t.style}} showOnHover">
-                                    {{m.installation_address}}
+                                    {{meterred.installation_address}}
                                     <a class="hide btn btn-success btn-sm rounded-0" href="{% url 'inputreading' m.consumer_id year %}" style="float:right;">
                                         <i class="fa fa-edit"></i>
                                     </a>
@@ -110,16 +110,16 @@ Billing
 				<div class="col-sm-12 col-md-7">
 					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
 						<ul style="display: flex; padding-left: 0; list-style: none;">
-							{% if bills_list.number < 5 %}
-								{% if bills_list.has_previous %}
-								<a href="?page={{ bills_list.previous_page_number }}">
+							{% if meterred.number < 5 %}
+								{% if meterred.has_previous %}
+								<a href="?page={{ meterred.previous_page_number }}">
 									<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
 									<li class="paginate_button disabled page-item previous">Previous</li>
 								{% endif %}
 								{% for i in five %}
-									{% if i == bills_list.number %}
+									{% if i == meterred.number %}
 										<a href="?page={{i}}">
 											<li class="paginate_button page-item active">{{i}}</li>
 										</a>
@@ -130,57 +130,57 @@ Billing
 									{% endif %}
 								{% endfor %}
 								<li class="paginate_button disabled page-item">...</li>
-								<a href="?page={{ bills_list.paginator.num_pages }}">
-									<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
+								<a href="?page={{ meterred.paginator.num_pages }}">
+									<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
 								</a>
-								<a href="?page={{ bills_list.next_page_number }}">
+								<a href="?page={{ meterred.next_page_number }}">
 									<li class="paginate_button page-item next">Next</li>
 								</a>
 							{% else %}
 
-								{% if bills_list.number > bills_list.paginator.num_pages|add:'-4'%}
+								{% if meterred.number > meterred.paginator.num_pages|add:'-4'%}
 
 								{% else %}
-									{% if bills_list.has_previous %}
-										<a href="?page={{ bills_list.previous_page_number }}">
+									{% if meterred.has_previous %}
+										<a href="?page={{ meterred.previous_page_number }}">
 											<li class="paginate_button page-item previous">Previous</li>
 										</a>
 									{% else %}
 										<li class="paginate_button disabled page-item previous">Previous</li>
 									{% endif %}
-									{% if bills_list.number > 2 %}
+									{% if meterred.number > 2 %}
 										<a href="?page=1">
 											<li class="paginate_button page-item">1</li>
 										</a>
-										{% if bills_list.number > 3 %}
+										{% if meterred.number > 3 %}
 											<li class="paginate_button disabled page-item">...</li>
 										{% endif %}
 									{% endif %}
 
-									{% for num in bills_list.paginator.page_range %}
-									{% if bills_list.number == num %}<a href="?page={{ num }}">
+									{% for num in meterred.paginator.page_range %}
+									{% if meterred.number == num %}<a href="?page={{ num }}">
 									<li class="paginate_button page-item active">
 										{{ num }}
 									</li></a>
-									{% elif num > bills_list.number|add:'-2' and num < bills_list.number|add:'2' %}
+									{% elif num > meterred.number|add:'-2' and num < meterred.number|add:'2' %}
 										<a href="?page={{ num }}"> 
 											<li class="paginate_button page-item">{{ num }}</li>
 										</a>
 										{% endif %}
 										{% endfor %}
 
-									{% if bills_list.number < bills_list.paginator.num_pages|add:'-2' %}
+									{% if meterred.number < meterred.paginator.num_pages|add:'-2' %}
 										<li class="paginate_button disabled page-item">...</li>
-										<a href="?page={{ bills_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
+										<a href="?page={{ meterred.paginator.num_pages }}">
+											<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
 										</a>
-									{% elif bills_list.number < bills_list.paginator.num_pages|add:'-1' %} 
-										<a href="?page={{ bills_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
+									{% elif meterred.number < meterred.paginator.num_pages|add:'-1' %} 
+										<a href="?page={{ meterred.paginator.num_pages }}">
+											<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
 										</a>
 									{% endif %}
-									{% if bills_list.has_next %}
-										<a href="?page={{ bills_list.next_page_number }}">
+									{% if meterred.has_next %}
+										<a href="?page={{ meterred.next_page_number }}">
 											<li class="paginate_button page-item next">Next</li>
 										</a>
 									{% else %}

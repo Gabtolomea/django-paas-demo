@@ -42,6 +42,7 @@ urlpatterns = [
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
     path('test/<int:p>', views.test, name='test'),
+    path('meterreading2/<int:p>',views.meterreading2, name = 'meterreading2')
     
  
 
