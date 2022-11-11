@@ -247,7 +247,6 @@ def ledger(request, id):
                     p = p + current
             prev = p
     year = date.today().year
-    
     context = {
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
