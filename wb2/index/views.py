@@ -124,13 +124,9 @@ def bills_list(request):
 
 
 def signout(request):
-    global ReqParams
-    lr = LoginRec.objects.get(username = ReqParams.cs.username)
-    lr.delete()
-    ReqParams.cs.username = ""
+    logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
-
 
 @authenticated_user
 def user_creation(request):
@@ -1133,6 +1129,6 @@ def test(request, p):
         'five':range(1,6),
         'paginate_by': paginate_by,
         'bills_list': bills_list,
-        'user': user,
+         'user': request.session.get(ReqParams.username)
     }
     return render(request, 'test.html', context)
