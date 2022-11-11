@@ -51,8 +51,6 @@ Billing
                     <th style="min-width: 100px;">Total Balance</th>
                 </tr>
             </thead>
-
-
             <tbody class="wb_tbody">
                 {% for bill in bills_list %}
                 <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">

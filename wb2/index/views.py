@@ -73,7 +73,7 @@ def signin(request):
                 ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
                 request.user = user.username
-                # cache.add('username',user.username)
+                cache.add('username',user.username)
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = timezone.now()
@@ -124,10 +124,12 @@ def bills_list(request):
 
 
 def signout(request):
-    logout(request)
+    global ReqParams
+    lr = LoginRec.objects.get(username = ReqParams.cs.username)
+    lr.delete()
+    ReqParams.cs.username = ""
     messages.success(request, 'Logout successful')
     return redirect('login')
-
 
 
 @authenticated_user
@@ -174,6 +176,7 @@ def user_creation(request):
     context = {
         'form': form,
         'errors': form.errors,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'registration.html', context)
 

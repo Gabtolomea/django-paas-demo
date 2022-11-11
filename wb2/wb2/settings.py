@@ -41,15 +41,7 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'ajax_datatable',
-
 ]
-
-
-
-# SESSION_SAVE_EVERY_REQUEST = True
-# SESSION_COOKIE_SECURE = False
-# SESSION_COOKIE_PATH = "/wb2"
-# SESSION_COOKIE_DOMAIN = "127.0.0.1"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 TEMPLATE_CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
