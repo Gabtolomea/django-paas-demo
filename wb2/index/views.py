@@ -1129,6 +1129,6 @@ def test(request, p):
         'five':range(1,6),
         'paginate_by': paginate_by,
         'bills_list': bills_list,
-         'user': request.session.get(ReqParams.username)
+        'user': user,
     }
     return render(request, 'test.html', context)
