@@ -92,7 +92,7 @@
         {% for message in messages %}
         <div id="login" class="message alert alert-{{message.tag}} alert-dismissible"
             style="margin-left: 750px; margin-right: 750px; padding-left: 55px; position: absolute; border-radius: 10px;">
-            <strong>{{message.tags|title}}!</strong> {{message}}
+            <strong>{{message.tag|title}}!</strong> {{message}}
             <a href="#" class="close" data-dismiss="alert"
                 style="color: var(--bs-{{message.tag}}); text-decoration: none;" aria-label="close">&times;</a>
         </div>
