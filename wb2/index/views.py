@@ -1132,3 +1132,27 @@ def test(request, p):
         'user': user,
     }
     return render(request, 'test.html', context)
+
+def meterreading2(request,p):
+    meterred = ConsumerInfo.objects.all()
+    page = int(p)
+    count = meterred.count()
+    if page == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by',count)
+    page = request.GET.get('page')
+    paginator = Paginator(meterred, paginate_by)
+
+    try:
+        meterred = paginator.page(page)
+    
+    except
+    context = {
+        'five':range(1,6),
+        'paginate_by': paginate_by,
+        'meterred': meterred,
+        'year': date.today().year,
+        'user': request.session.get(ReqParams.username)
+    }
+    return render(request, 'meterreading2.html', context)
