@@ -23,9 +23,9 @@
  
  
 <body>
-    <div id="loading">
+    <!-- <div id="loading">
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
-    </div>
+    </div> -->
   <!-- Modal -->
   <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -60,7 +60,7 @@
                     </a>
                 </li>
                 <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="{% url 'br' %}" style="color: white; text-decoration: none" >
+                    <a class="modal_side_nav_li_text" href="{% url 'reports' %}" style="color: white; text-decoration: none" >
                         <i class="fa fa-line-chart fa-2x"></i>
                         <span class="sidenav_text">Reports</span>
                     </a>
@@ -152,8 +152,8 @@
                     <span class="sidenav_text">Consumers</span>
                 </li>
             </a>
-            <a href="{% url 'br' %}" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link 'br' 'active' %}">
+            <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'reports' 'active' %}">
                     <i class="fa fa-line-chart fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
                 </li>

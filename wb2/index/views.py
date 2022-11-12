@@ -226,7 +226,7 @@ def ledger(request, id):
             prev = p
     year = date.today().year
     context = {
-        'u': u,
+        # 'u': u,
         'table': table,
         'year': year,
     }
@@ -698,7 +698,7 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-def br(request):
+def reports(request):
     return redirect('barangayreport', date.today().year)
 # @login_required(login_url='login')
 def barangayreport(request, year):
