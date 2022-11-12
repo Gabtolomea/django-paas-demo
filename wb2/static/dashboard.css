@@ -328,6 +328,10 @@ p {
     font-size: 40px;
     margin-left: -13px;
 }
+
+
+
+
 .toggle-button {
     position: absolute;
     width: 50px;
@@ -425,13 +429,11 @@ p {
     opacity: 1;
     transition: all 0.75s ease;
 }
-.main_content{
-    padding-left: 420px !important;
-}
 
 .btn-wb-back {
     background: #091d36 !important;
     color: white !important;
+    font-weight: 500 !important;
 }
 
 button.btn.btn-wb-back:hover {
@@ -440,13 +442,13 @@ button.btn.btn-wb-back:hover {
 }
 
 .btn-wb-copy {
-    background: #091d36 !important;
+    background: #0093B7 !important;
     color: white !important;
+    font-weight: 500 !important;
 }
 
 button.btn.btn-wb-copy:hover {
-    background: #3a4e7a !important;
-    color: white;
+    background: #a0c5cf !important;
 }
 
 .mb-3 {
@@ -525,7 +527,7 @@ button.btn.btn-wb-copy:hover {
     background-color: #fff;
     z-index: 99;
   }
- 
+
 #loading-image {
     z-index: 100;
 }
@@ -538,6 +540,7 @@ li.active {
     opacity: 0;
     transition: opacity 1s;
 }
+
 /* @media(max-width: 720px) {
     .toggle_desktop{
         display: none;

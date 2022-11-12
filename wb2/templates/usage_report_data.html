@@ -1,5 +1,22 @@
-<!DOCTYPE html>
-<html>
+{% extends 'dashboard.html' %}
+
+{% block title %}
+Usage Report
+{% endblock title %}
+
+{% block style %}
+<style>
+  .select {
+    font-weight: bold;
+    font-size: 20px;
+    font-style: normal;
+    float: left;
+    width: 140px;
+  }
+</style>
+
+{% endblock style %}
+{% block usage_report_data %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -8,12 +25,11 @@
 	<div>
 		<label for="exampleInputBarangay">Select Year</label>
 		<form id="yearselection" action="">
-			<select class="form-select" aria-label="selector" onchange="change()">
+			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
-			</select>
-			{% for i in years reversed %}
-			<option value="{{i}}">{{i}}</option>
-			{% endfor %}
+				{% for i in years reversed %}
+				<option value="{{i}}">{{i}}</option>
+				{% endfor %}
 			</select>
 		</form>
 		<script>
@@ -22,12 +38,15 @@
 			function change() {
 				yearselection.action = selector.value
 				yearselection.submit()
-				console.log("selction testing")
 			}
 		</script>
 	</div>
 
-</div>
+  <body>
+    <center>
+      <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
+    </center>
+    <canvas id="myChart" width="800" height="150"></canvas>
 
 <script>
 	var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -180,4 +199,5 @@
 </script>
 </body>
 
-</html>
+
+{% endblock usage_report_data %}

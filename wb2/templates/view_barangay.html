@@ -107,20 +107,10 @@
 
 
 
-<center class="header"><label>Barangay Yearly Records for Year {{bang.barangaycode}}</label></center>
-<div class="col-sm-offset-7 col-sm-5">
-	<div class="form-group">
-		<label style="font-size: 17px; font-weight: bold;" for="exampleInputBarangay">Select Year:</label>
-		<select name="urlsme" onchange='this.form.submit();'>
-			{% for record in record %}
-			<option selected>{{record.year}}</option>
+<center class="header"><label> Barangay {{bang.barangaycode}} Monthly Records </label></center>
 
-			<option>{{record.year}}</option>
-			{%endfor%}
-		</select>
-	</div>
-	<noscript><input type="submit" value="Submit" href="/{{br.year}}"></noscript>
-</div>
+
+<title>Barangay {{bang.barangaycode}}</title>
 
 <body onload="collection_rate()">
 	<table style="margin-bottom: 30px; margin-top: 30px;">
@@ -280,6 +270,8 @@
 			</tr>
 		</tbody>
 	</table>
+
+
 
 
 	<a class="button2 btn-primary" role="button" onclick="history.back()">BACK</a>

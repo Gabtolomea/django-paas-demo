@@ -1,7 +1,6 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 {% load humanize %}
-
 {% block title %}
 Billing
 {% endblock title %}
@@ -16,6 +15,8 @@ Billing
     }
 </style>
 {% endblock style %}
+
+
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -36,10 +37,11 @@ Billing
 {% endblock script %}
 {% block billslist %}
 
+
 <h1 class="mb-3 text-center">Bills List</h1>
 <div class="container-fluid p-0">
     <div class="table-responsive">
-        <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+        <table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
             <thead class="wb_thead">
                 <tr>
                     <th style="min-width: 100px;">Account ID</th>
@@ -49,20 +51,23 @@ Billing
                     <th style="min-width: 100px;">Total Balance</th>
                 </tr>
             </thead>
-
-
             <tbody class="wb_tbody">
                 {% for bill in bills_list %}
-                <tr>
-                    <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.consumer_id}}</a></td>
-                    <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.meternumber}}</a></td>
-                    <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.lastname}}, {{bill.firstname}}
-                            {{bill.middlename}}</a></td>
-                    <td><a href="{% url 'ledger' bill.consumer_id %}">{{bill.installation_address}}</a></td>
-                    <td class="balance"><a href="{% url 'ledger' bill.consumer_id %}"> &#8369;
-                            {{bill.current_bal|floatformat:2|intcomma}}</a></td>
+                <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">
+                    <td>{{bill.consumer_id}}</td>
+                    <td>{{bill.meternumber}}</td>
+                    <td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
+                    <td>{{bill.installation_address}}</td>
+                    <td class="balance"> &#8369; {{bill.current_bal|floatformat:2|intcomma}}</td>
                 </tr>
                 {% endfor %}
+                <script>
+                    jQuery(document).ready(function($) {
+                        $(".clickable-row").click(function() {
+                            window.location = $(this).data("href");
+                        });
+                    });
+                </script>
             </tbody>
         </table>
     </div>
