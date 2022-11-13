@@ -1123,6 +1123,7 @@ def test(request, p):
         bills_list = paginator.page(paginator.num_pages)
 
     context = {
+        # 'last':range(paginator.num_pages-4,paginator.num_pages+1),
         'five':range(1,6),
         'paginate_by': paginate_by,
         'bills_list': bills_list,
