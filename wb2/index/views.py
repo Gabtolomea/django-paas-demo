@@ -748,7 +748,6 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
-
 def reports(request):
     return redirect('barangayreport', date.today().year)
 @authenticated_user
