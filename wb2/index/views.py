@@ -97,7 +97,7 @@ def bills_list(request):
         m = []
     else:
         m = [cache.get('message')]
-    
+    print("ahksgdiqwurhgpas")
     bills = ConsumerInfo.objects.all()
    
     context = {
@@ -747,7 +747,6 @@ def payment(request, id):
         t.save()
         get_balance(id)
     return redirect('ledger', id=id)
-
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
