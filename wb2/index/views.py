@@ -1025,6 +1025,7 @@ def discount(request):
     d = Discount.objects.all()
     form = addDiscount()
     discountidcount = len(Discount.objects.all())
+    user = request.session.get(ReqParams.username)
     if request.method == "POST":
         form = addDiscount(request.POST)
         discount_rate = request.POST['discount_rate']
@@ -1032,12 +1033,12 @@ def discount(request):
             addD = Discount()
             addD.discountcode = "D00"+str(discountidcount+1)
             addD.discount_rate = discount_rate
-            addD.added_by = None
             addD.save()
     context = {
         'd': d,
         'form': form,
         'errors': form.errors,
+        'user':user
     }
     return render(request, 'discount.html', context)
 
@@ -1065,7 +1066,8 @@ def new_consumertype(request):
     context = {
         'c': c,
         'form': form,
-        'errors': form.errors
+        'errors': form.errors,
+        'user' : request.session.get(ReqParams.username)
     }
     return render(request, 'new_consumertype.html', context)
 
@@ -1087,14 +1089,14 @@ def penalty(request):
             pen.penalty_rate = penalty_rate
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
-            pen.added_by = None
             pen.save()
         else:
             print("way ayo")
     context = {
         'p': p,
         'form': form,
-        'errors': form.errors
+        'errors': form.errors,
+        'user' : request.session.get(ReqParams.username)
     }
 
     return render(request, 'penalty.html', context)
