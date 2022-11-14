@@ -97,7 +97,7 @@ def bills_list(request):
         m = []
     else:
         m = [cache.get('message')]
-    print("ahksgdiqwurhgpas")
+    
     bills = ConsumerInfo.objects.all()
    
     context = {
