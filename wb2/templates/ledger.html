@@ -85,7 +85,8 @@ Account Ledger
 	
 	
 <!-- style="display:none;" -->
-<div id="billing">
+
+<div id="billing" style="display:none;">
 	<style>
     .consumer_info{
         background-color: #f8f9fa;
@@ -99,11 +100,11 @@ Account Ledger
 </style>
 
 <body>
+
 <div id="invoice">
      <div class="header" style="text-align:center; margin-top: 30px;">
         <h1>Municipality of Ginatilan</h1>
         <p> Ginatilan Water Station</p>
-    </div>
     </div>
     <hr style="margin: 0;">
     <div class="row w-100 m-auto">
@@ -140,7 +141,6 @@ Account Ledger
         <label for="total-balance">Total Balance:</label><br>
     </div>
     </div>
-</div>
 	<script>
 		window.onload = function () {
     document.getElementById("download")
@@ -153,7 +153,7 @@ Account Ledger
                 filename: 'myfile.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
             };
             html2pdf().from(invoice).set(opt).save();
         })
