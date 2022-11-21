@@ -25,8 +25,14 @@ Unsettled Bills
     }
 </style>
 {% endblock style %}
-
 {% block unsettled_bills %}
+
+<a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
+<a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
+<a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
+
 <div>
     <h1 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Unsettled Bills</h1>
 </div>
