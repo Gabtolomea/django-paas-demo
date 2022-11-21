@@ -78,10 +78,14 @@ Account Ledger
 		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
 	</div>
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
-		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
+		<!-- <button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button> -->
+		<button class="btn btn-primary" id="download" style="float:right; font-size: 12px; border-radius: 14px;"> download pdf</button>
+
 	</div>
 	
-<div id="billing" style="display: none;">
+	
+<!-- style="display:none;" -->
+<div id="billing">
 	<style>
     .consumer_info{
         background-color: #f8f9fa;
@@ -90,49 +94,40 @@ Account Ledger
     .bills_info{
         background-color: #f8f9fa;
         padding-left: 10px;
-        padding-bottom: 97px;
+        padding-bottom: 104px;
     }
-
 </style>
 
 <body>
-    <div class="header" style="text-align:center; margin-top: 30px;">
+<div id="invoice">
+     <div class="header" style="text-align:center; margin-top: 30px;">
         <h1>Municipality of Ginatilan</h1>
         <p> Ginatilan Water Station</p>
     </div>
-    <div class="row w-100 m-auto pb-3">
-        <div class=" col-lg-4 col-md-4 col-sm-4 col-4">
-            <label for="brgy">Barangay:</label>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
-            <label for="zip">Zip Code:</label>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
-            <label for="country">Country:</label>
-        </div>
     </div>
     <hr style="margin: 0;">
     <div class="row w-100 m-auto">
         <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
             <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Consumer Info</p>
             <div class="consumer_info">
-                <label for="name">Name:</label><br>
-                <label for="accnt">Account ID:</label><br>
-                <label for="meter">Meter Number:</label><br>
-                <label for="addr">Address:</label>
-                <label for="zip">Zip Code:</label><br>
-                <label for="country">Country:</label><br>
-                <label for="connect-type">Connection Type:</label><br>
-                <label for="contact-info">Contact Info:</label>
+                <label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
+                <label for="accnt">Account ID: {{u.consumer_id}}</label><br>
+                <label for="meter">Meter Number: {{u.meternumber}}</label><br>
+                <label for="addr">Address: {{u.installation_address}}</label>
+                <label for="zip">Zip Code: 6028</label><br>
+                <label for="country">Country: Philippines</label><br>
+                <label for="connect-type">Connection Type: {{u.contypeid}}</label><br>
+                <label for="contact-info">Contact Info: {{u.mobilenum}}</label>
             </div>
 
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
             <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Bills Info</p>
             <div class="bills_info">
-                <label for="current-reading">Current Reading:</label><br>
-                <label for="prev-reading">Previous Reading:</label><br>
-                <label for="usage">Usage:</label><br>
+                <label for="current-reading">Current Reading: {{cur}}</label><br>
+                <label for="prev-reading">Previous Reading: {{pre}}</label><br>
+                <label for="usage">Usage: {{usage}}</label><br>	
+				<br>
             </div>
            
         </div>
@@ -144,28 +139,24 @@ Account Ledger
         <label for="prev-due">Previous Due:</label><br>
         <label for="total-balance">Total Balance:</label><br>
     </div>
+    </div>
 </div>
-
-
 	<script>
-		function print() {
-    var doc = new jsPDF();
-	
-    // Source HTMLElement or a string containing HTML.
-    var elementHTML = document.querySelector("#billing");
-
-    doc.fromHTML(elementHTML, {
-        callback: function(doc) {
-            // Save the PDF
-            doc.save('document-html.pdf');
-        },
-        margin: [10, 10, 10, 10],
-        autoPaging: 'text',
-        x: 0,
-        y: 0,
-        width: 190, //target width in the PDF document
-        windowWidth: 675 //window width in CSS pixels
-    });
+		window.onload = function () {
+    document.getElementById("download")
+        .addEventListener("click", () => {
+            const invoice = this.document.getElementById("invoice");
+            console.log(invoice);
+            console.log(window);
+            var opt = {
+                margin: 1,
+                filename: 'myfile.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().from(invoice).set(opt).save();
+        })
 }
 		// function print() {
 		// 	var doc = new jsPDF('landscape', 'pt', 'a4');
