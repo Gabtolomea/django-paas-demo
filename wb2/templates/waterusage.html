@@ -193,6 +193,10 @@ Water Usage
 {% endblock style %}
 {% block waterusage %}
 
+<p><a href="{ % url 'barangayreport' % }">Barangay Report</a></p>
+<p><a href="{ % url 'usage_report_data' % }">Usage Report</a></p>
+<p><a href="{ % url 'revenue_report' % }">Revenue Report</a></p>
+<p><a href="{ % url 'unsettled_bills' % }">Unsittled Bills</a></p>
 <body onload="collection_rate()">
 	<div>
 		<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Water Usage Per
