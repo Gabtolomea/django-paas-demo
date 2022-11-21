@@ -6,7 +6,7 @@ from .DBdb import *
 def unauthenticated_user(view_func):
 	def wrapper_func(request, *args, **kwargs):
 		if ReqParams.cs.auth:
-			return redirect('bills_list')
+			return redirect('test')
 		else:
 			return view_func(request, *args, **kwargs)
 	return wrapper_func

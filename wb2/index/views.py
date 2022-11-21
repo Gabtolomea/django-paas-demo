@@ -138,7 +138,6 @@ def signout(request):
     messages.success(request, 'Logout successful')
     return redirect('login')
 
-
 @authenticated_user
 def user_creation(request):
     form = SystemUserForm()
