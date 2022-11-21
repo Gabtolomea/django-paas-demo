@@ -81,7 +81,7 @@ Account Ledger
 		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
 	</div>
 	
-<div id="billing">
+<div id="billing" style="display: none;">
 	<style>
     .consumer_info{
         background-color: #f8f9fa;
@@ -149,47 +149,66 @@ Account Ledger
 
 	<script>
 		function print() {
-			var doc = new jsPDF('landscape', 'pt', 'a4');
-			var htmlstring = '';
-			var tempVarToCheckPageHeight = 0;
-			var pageHeight = 0;
+    var doc = new jsPDF();
+	
+    // Source HTMLElement or a string containing HTML.
+    var elementHTML = document.querySelector("#billing");
+
+    doc.fromHTML(elementHTML, {
+        callback: function(doc) {
+            // Save the PDF
+            doc.save('document-html.pdf');
+        },
+        margin: [10, 10, 10, 10],
+        autoPaging: 'text',
+        x: 0,
+        y: 0,
+        width: 190, //target width in the PDF document
+        windowWidth: 675 //window width in CSS pixels
+    });
+}
+		// function print() {
+		// 	var doc = new jsPDF('landscape', 'pt', 'a4');
+		// 	var htmlstring = '';
+		// 	var tempVarToCheckPageHeight = 0;
+		// 	var pageHeight = 0;
 			
 
-			pageHeight = doc.internal.pageSize.height;
-			specialElementHandlers = {
-				// element with id of "bypass" - jQuery style selector
-				'#bypassme': function (element, renderer) {
-					// true = "handled elsewhere, bypass text extraction"
-					return true
-				}
-			};
-			margins = {
-				top: 150,
-				bottom: 60,
-				left: 40,
-				right: 40,
-				width: 600
-			};
-			const formatter = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'Php',
-				minimumFractionDigits: 2
-			})
+		// 	pageHeight = doc.internal.pageSize.height;
+		// 	specialElementHandlers = {
+		// 		// element with id of "bypass" - jQuery style selector
+		// 		'#bypassme': function (element, renderer) {
+		// 			// true = "handled elsewhere, bypass text extraction"
+		// 			return true
+		// 		}
+		// 	};
+		// 	margins = {
+		// 		top: 150,
+		// 		bottom: 60,
+		// 		left: 40,
+		// 		right: 40,
+		// 		width: 600
+		// 	};
+		// 	const formatter = new Intl.NumberFormat('en-US', {
+		// 		style: 'currency',
+		// 		currency: 'Php',
+		// 		minimumFractionDigits: 2
+		// 	})
 
-			var y = 10;
-			var x = 20;
-			doc.setLineWidth(2);
-			doc.setFontSize(15);
-			doc.fromHTML(
-				document.getElementById('billing'),
-				15,
-				15,
-			)
-			y = doc.lastAutoTable.finalY
-			console.log(y);
-			console.log("testing")
-			doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
-		}				
+		// 	var y = 10;
+		// 	var x = 20;
+		// 	doc.setLineWidth(2);
+		// 	doc.setFontSize(15);
+		// 	doc.fromHTML(
+		// 		document.getElementById('billing'),
+		// 		15,
+		// 		15,
+		// 	)
+		// 	y = doc.lastAutoTable.finalY
+		// 	console.log(y);
+		// 	console.log("testing")
+		// 	doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
+		// }				
 	</script>
 </div>
 <h1 class="mb-3 text-center">Account Ledger</h1>
@@ -262,13 +281,13 @@ Account Ledger
 				return true
 			}
 		};
-		// margins = {
-		// 	top: 150,
-		// 	bottom: 60,
-		// 	left: 40,
-		// 	right: 40,
-		// 	width: 600
-		// };
+		margins = {
+			top: 150,
+			bottom: 60,
+			left: 40,
+			right: 40,
+			width: 600
+		};
 		const formatter = new Intl.NumberFormat('en-US', {
 			style: 'currency',
 			currency: 'Php',
