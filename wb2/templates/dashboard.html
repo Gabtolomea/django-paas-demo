@@ -22,16 +22,15 @@
 
 
 <body>
-    <!-- <div id="loading">
+    <div id="loading">
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
     </div>
-    <!-- Modal -->
     <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-dark border-0">
-                    <span class="mobile_header_font" style="color:white;font-weight: 700;"> ONLINE WATER BILLING <span
+                    <span class="mobile_header_font" style="color:white;font-weight: 700;"> GINATILAN WATER BILLING <span
                             class="station" style="color: #63CDD7;">STATION</span></span>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -77,12 +76,12 @@
                                 <span class="sidenav_text"> System Users</span>
                             </a>
                         </li>
-                        <li class="modal_side_nav_li">
+                        <!-- <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
                                 <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
                                 <span class="sidenav_text">Account Settings</span>
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -110,7 +109,7 @@
                     data-target="#exampleModal">
                     <i class="fa fa-bars"></i>
                 </button>
-                <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span
+                <span class="mobile_header_font" style="padding-left:10px; color:white"> GINATILAN WATER BILLING <span
                         class="station" style="color: #63CDD7;">STATION</span></span>
             </div>
 
@@ -136,7 +135,7 @@
             <p style="font-size: 30px">{{user}}</p>
         </div>
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
-            <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
+            <a href="{% url 'bills_list'%}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
                     <i class="fa-solid fa-money-bill-wave fa-2x"></i>
                     <span class="sidenav_text">Billing</span>
@@ -167,12 +166,12 @@
                     <span class="sidenav_text">System Users</span>
                 </li>
             </a>
-            <a href="/" style="color: white; text-decoration: none">
+            <!-- <a href="/" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link '/' 'active' %}">
                     <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
                     <span class="sidenav_text">Account Settings</span>
                 </li>
-            </a>
+            </a> -->
         </ul>
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
@@ -330,8 +329,7 @@
     </script>
 
 </body>
-<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
-    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 <script>
     $(window).on('load', function () {
         $('#loading').hide();

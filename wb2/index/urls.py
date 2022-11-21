@@ -12,8 +12,9 @@ urlpatterns = [
     path('login/',views.signin,name='login'),
     path('user_creation', views.user_creation,name='user_creation'),
     path('signout', views.signout,name='signout'),
-    path('bills_list/', views.bills_list, name='bills_list'),
-    path('bills_list/<id>/', views.ledger,name='ledger'),
+    path('bills_list', views.bills_list, name='bills_list'),
+    path('bills_list/p/<int:p>', views.bills_list_p, name='bills_list_p'),
+    path('bills_list/ledger/<id>/', views.ledger,name='ledger'),
     path('payment/<id>/', views.payment, name='payment'),
     path('meterreading/', views.meterreading,name='meterreading'),
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
@@ -41,12 +42,6 @@ urlpatterns = [
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
-    path('test/<int:p>', views.test, name='test'),
-    
- 
-
-
-
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
