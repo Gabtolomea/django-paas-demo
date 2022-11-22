@@ -71,7 +71,7 @@ def signin(request):
                 request.session[ReqParams.username] = user.username
                 ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
-                cache.set('message', message('success', 'Logged in as '+user.username, 5))
+                # cache.set('message', message('success', 'Logged in as '+user.username, 5))
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = timezone.now()
@@ -93,13 +93,13 @@ def bills_list(request):
 
 @authenticated_user
 def bills_list_p(request, p):
-    if cache.get('message') is not None:
-        if cache.get('message').trigger > 1:
-            m = []
-        else:
-            m = [cache.get('message')]
-    else:
-        m = []
+    # if cache.get('message') is not None:
+    #     if cache.get('message').trigger > 1:
+    #         m = []
+    #     else:
+    #         m = [cache.get('message')]
+    # else:
+    #     m = []
     pages = int(p)
     user = request.session.get(ReqParams.username)
     bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
@@ -121,7 +121,7 @@ def bills_list_p(request, p):
         bills_list = paginator.page(paginator.num_pages)
 
     context = {
-        'messages':m,
+        # 'messages':m,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -941,6 +941,7 @@ def revenue_report(request, year):
     )
     values = rev_col.values()
     col = sum(values)
+    
     # Total Receivables
     rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_due_jan') - Sum('total_paid_jan'),
