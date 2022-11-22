@@ -271,7 +271,7 @@ def ledger(request, id):
 
 
 
-    
+
     context = {
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
@@ -360,7 +360,7 @@ def inputreading(request, id, year):
     if not trans:
         for i in range(1, 13):
             month = calendar.month_name[i]
-            
+
             m = meterreaderclass('', month, '', '', '', '', '')
             table.append(m)
         context = {
@@ -888,7 +888,7 @@ def usage_report_data(request, year):
         'cur_year': year,
         'years': years,
         'user':request.session.get(ReqParams.username),
-     
+
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -908,6 +908,7 @@ def barangay_by_monthly(request, id, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
+
     context = {
         'bbm': bbm
     }
