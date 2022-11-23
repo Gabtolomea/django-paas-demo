@@ -908,9 +908,34 @@ def barangay_by_monthly(request, id, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-
+    # jan = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jan'))
+    # feb = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_feb'))
+    # mar = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_mar'))
+    # apr = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_apr'))
+    # may = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_may'))
+    # jun = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jun'))
+    # jul = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jul'))
+    # aug = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_aug'))
+    # sept = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_sept'))
+    # oct = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_oct'))
+    # nov = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_nov'))
+    # dec = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_dec'))
+    # context = {
+    #     'bbm.jan': jan,
+    #     'bbm.feb': feb,
+    #     'bbm.mar': mar,
+    #     'bbm.apr': apr,
+    #     'bbm.may': may,
+    #     'bbm.jun': jun,
+    #     'bbm.jul': jul,
+    #     'bbm.aug': aug,
+    #     'bbm.sept': sept,
+    #     'bbm.oct': oct,
+    #     'bbm.nov': nov,
+    #     'bbm.dec': dec,
+    # }
     context = {
-        'bbm': bbm
+         'bbm' : 
     }
     return render(request, 'usage_report_data.html', context)
 
