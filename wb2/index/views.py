@@ -60,6 +60,7 @@ def signin(request):
                 request.session[ReqParams.username] = user.username
                 request.session[ReqParams.auth] = True
                 request.session.modified = True
+                # cache.set('message', message('success', 'Logged in as '+user.username, 5))
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = timezone.now()
@@ -85,7 +86,13 @@ def meterreading(request):
 
 @authenticated_user
 def bills_list_p(request, p):
-    m = []
+    # if cache.get('message') is not None:
+    #     if cache.get('message').trigger > 1:
+    #         m = []
+    #     else:
+    #         m = [cache.get('message')]
+    # else:
+    #     m = []
     pages = int(p)
     user = request.session.get(ReqParams.username)
     bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
@@ -107,7 +114,7 @@ def bills_list_p(request, p):
         bills_list = paginator.page(paginator.num_pages)
 
     context = {
-        'messages':m,
+        # 'messages':m,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -254,7 +261,7 @@ def ledger(request, id):
 
 
 
-    
+
     context = {
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
@@ -373,7 +380,7 @@ def inputreading(request, id, year):
     if not trans:
         for i in range(1, 13):
             month = calendar.month_name[i]
-            
+
             m = meterreaderclass('', month, '', '', '', '', '')
             table.append(m)
         context = {
@@ -900,7 +907,7 @@ def usage_report_data(request, year):
         'cur_year': year,
         'years': years,
         'user':request.session.get(ReqParams.username),
-     
+
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -920,8 +927,34 @@ def barangay_by_monthly(request, id, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
+    # jan = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jan'))
+    # feb = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_feb'))
+    # mar = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_mar'))
+    # apr = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_apr'))
+    # may = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_may'))
+    # jun = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jun'))
+    # jul = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jul'))
+    # aug = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_aug'))
+    # sept = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_sept'))
+    # oct = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_oct'))
+    # nov = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_nov'))
+    # dec = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_dec'))
+    # context = {
+    #     'bbm.jan': jan,
+    #     'bbm.feb': feb,
+    #     'bbm.mar': mar,
+    #     'bbm.apr': apr,
+    #     'bbm.may': may,
+    #     'bbm.jun': jun,
+    #     'bbm.jul': jul,
+    #     'bbm.aug': aug,
+    #     'bbm.sept': sept,
+    #     'bbm.oct': oct,
+    #     'bbm.nov': nov,
+    #     'bbm.dec': dec,
+    # }
     context = {
-        'bbm': bbm
+        'bbm' : 
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -952,6 +985,7 @@ def revenue_report(request, year):
     )
     values = rev_col.values()
     col = sum(values)
+    
     # Total Receivables
     rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_due_jan') - Sum('total_paid_jan'),

@@ -23,6 +23,7 @@ Usage Report
 <a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
 <a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
 
+<p>Testing Bitch</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -104,7 +105,7 @@ Usage Report
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-	// setup 
+	// setup
 	const data = {
 		labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
 		datasets: [{
@@ -132,7 +133,7 @@ Usage Report
 		}]
    	}
 
-	// config 
+	// config
 	const config = {
 		type: 'bar',
 		data,
@@ -168,7 +169,7 @@ Usage Report
 		}]
 	};
 
-	// config 
+	// config
 	const config2 = {
 		type: 'line',
 		data: data2,
