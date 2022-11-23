@@ -47,7 +47,6 @@ def lp(request):
 
 @unauthenticated_user
 def signin(request):
-    global ReqParams
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
@@ -86,12 +85,6 @@ def meterreading(request):
 
 @authenticated_user
 def bills_list_p(request, p):
-    # if cache.get('message') is not None:
-    #     if cache.get('message').trigger > 1:
-    #         m = []
-    #     else:
-    #         m = [cache.get('message')]
-    # else:
     m = []
     pages = int(p)
     user = request.session.get(ReqParams.username)
