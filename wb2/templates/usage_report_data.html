@@ -18,12 +18,14 @@ Usage Report
 {% endblock style %}
 {% block usage_report_data %}
 
+
+<p>egat</p>
 <a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
 <a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
 <a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
 <a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
 
-<p>Testing Bitch</p>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
