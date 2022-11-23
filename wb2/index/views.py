@@ -27,7 +27,6 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
-from django.core.cache import cache
 
 
 def porter(request):
@@ -62,7 +61,6 @@ def signin(request):
                 request.session[ReqParams.username] = user.username
                 request.session[ReqParams.auth] = True
                 request.session.modified = True
-                cache.set('message', message('success', 'Logged in as '+user.username, 5))
                 login_rec.username = user.username
                 login_rec.token = gen_token()
                 login_rec.last_access = timezone.now()
@@ -88,13 +86,13 @@ def meterreading(request):
 
 @authenticated_user
 def bills_list_p(request, p):
-    if cache.get('message') is not None:
-        if cache.get('message').trigger > 1:
-            m = []
-        else:
-            m = [cache.get('message')]
-    else:
-        m = []
+    # if cache.get('message') is not None:
+    #     if cache.get('message').trigger > 1:
+    #         m = []
+    #     else:
+    #         m = [cache.get('message')]
+    # else:
+    m = []
     pages = int(p)
     user = request.session.get(ReqParams.username)
     bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
