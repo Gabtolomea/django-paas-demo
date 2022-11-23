@@ -200,17 +200,15 @@ Water Usage
 {% endblock style %}
 {% block waterusage %}
 
-<p>bitch hahaha</p>
 
-
-
-
-<body onload="collection_rate()">
-	
 <a href = "">Barangay Report</a>
 <a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
 <a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
-<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a> -->
+<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
+<body onload="collection_rate()">
+	
+
 
 	<div>
 		<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Water Usage Per
