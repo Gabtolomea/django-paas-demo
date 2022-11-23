@@ -41,7 +41,11 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'ajax_datatable',
+
 ]
+
+
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 TEMPLATE_CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
@@ -54,17 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
     
 ]
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'cache_table',
-    }
-}
 
 
 ROOT_URLCONF = 'wb2.urls'
@@ -101,12 +96,7 @@ DATABASES = {
         'PORT': '3307'
     }
 }
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ]
-}
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
@@ -115,7 +105,6 @@ SERVER_EMAIL = 'ginatilancebuwater'
 EMAIL_HOST_PASSWORD = 'axsrouetdxposfko'
 EMAIL_PORT = 587
 
-CORS_ALLOW_CREDENTIALS = True
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

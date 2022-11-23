@@ -1,4 +1,3 @@
-
 class CustomSession():
     def __init__(self, username):
         self._username = username
@@ -19,14 +18,7 @@ class CustomSession():
             return False
         else:
             return True
-    
-class message():
-    def __init__(self, tag, msg, trigger):
-        self.tag = tag
-        self.msg = msg
-        self.trigger = trigger
-    def __str__(self) -> str:
-        return self.msg
+
 class ReqParams():
     cs = CustomSession("")
     sample = {}

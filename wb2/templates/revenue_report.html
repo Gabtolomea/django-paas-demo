@@ -47,14 +47,8 @@ Revenue Report
 	}
 </style>
 {% endblock style %}
+
 {% block revenue_report %}
-
-<a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
-<a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
-<a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
-<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <div>
 	{% csrf_token %}

@@ -75,8 +75,7 @@ Account Ledger
 		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back" style="float:left; font-size: 11px !important; border-radius: 11px; ">Back</button></a>
 	</div>
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
-		{% comment %}<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
-		{% endcomment %}
+		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
 	</div>
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
 		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
