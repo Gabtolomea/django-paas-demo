@@ -18,6 +18,13 @@ Usage Report
 {% endblock style %}
 {% block usage_report_data %}
 
+<a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
+<a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
+<a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
+<p>Testing Bitch</p>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 {% csrf_token %}
@@ -98,12 +105,12 @@ Usage Report
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-	// setup 
+	// setup
 	const data = {
-		labels: [{%for tu_bay in tu_bay %}'{{tu_bay.barangaycode}}', {% endfor %}],
+		labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
 		datasets: [{
 			label: 'Barangay Usage',
-			data: [{%for tu_bay in tu_bay %}'{{ tu_bay.sum }}', {% endfor %}],
+			data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
 			backgroundColor: [
 				'rgba(255, 26, 104, 0.2)',
 				'rgba(54, 162, 235, 0.2)',
@@ -126,7 +133,7 @@ Usage Report
 		}]
    	}
 
-	// config 
+	// config
 	const config = {
 		type: 'bar',
 		data,
@@ -156,13 +163,13 @@ Usage Report
 			label: "Total Usage",
 			fill: false,
 			borderColor: '#20B2AA',
-			tension: 0.1,
+			tension: 0,
 			backgroundColor: "#3090C7",
 			data: yValues
 		}]
 	};
 
-	// config 
+	// config
 	const config2 = {
 		type: 'line',
 		data: data2,
