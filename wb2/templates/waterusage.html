@@ -4,12 +4,12 @@
 Water Usage
 {% endblock title %}
 {% block style %}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 {% block script %}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
 </head>
 {% endblock script %}
 
@@ -201,13 +201,13 @@ Water Usage
 {% block waterusage %}
 
 
-<a href = "">Barangay Report</a>
-<a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
-<a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
-<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+<a href="">Barangay Report</a>
+<a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
+<a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
 
-<body onload="collection_rate()">
-	
+<div onload="collection_rate()">
+
 
 
 	<div>
@@ -240,11 +240,11 @@ Water Usage
 	<table class="table table-bordered table-hover table-striped table-sm">
 		<thead class="wb_thead">
 			<tr>
-				<th scope="col" style="background-color: #63CDD7;">Barangay</th>
-				<th scope="col" style="background-color: #63CDD7">Total Usage(Cu. Meter)</th>
-				<th scope="col" style="background-color: #63CDD7">Total Receivables</th>
-				<th scope="col" style="background-color: #63CDD7">Total Collection</th>
-				<th scope="col" style="background-color: #63CDD7">Collection Rate</th>
+				<th scope="col" style="background-color: #0093b7;">Barangay</th>
+				<th scope="col" style="background-color: #0093b7">Total Usage(Cu. Meter)</th>
+				<th scope="col" style="background-color: #0093b7">Total Receivables</th>
+				<th scope="col" style="background-color: #0093b7">Total Collection</th>
+				<th scope="col" style="background-color: #0093b7">Collection Rate</th>
 			</tr>
 		</thead>
 		<tbody class="wb_body">
@@ -267,7 +267,7 @@ Water Usage
 			</tr>
 			{% endfor %}
 			<tr>
-				<td data-label="Barangay" style="background-color: #63CDD7; color: white; font-weight: bold;">Total</td>
+				<td data-label="Barangay" style="background-color: #0093b7; color: white; font-weight: bold;">Total</td>
 				<td data-label="Total Usage(Cu. Meter)" class="total_paid">
 					{{fr.tu|floatformat:1}}</td>
 				<td data-label="Total Receivables">{{fr.tr|floatformat:1}}</td>
@@ -277,8 +277,8 @@ Water Usage
 				<td data-label="Collection Rate" class="rate"></td>
 			</tr>
 			<script>
-				jQuery(document).ready(function($) {
-					$(".clickable-row").click(function() {
+				jQuery(document).ready(function ($) {
+					$(".clickable-row").click(function () {
 						window.location = $(this).data("href");
 					});
 				});
@@ -305,7 +305,7 @@ Water Usage
 			}
 		}
 	</script>
-</body>
+</div>
 
 
 

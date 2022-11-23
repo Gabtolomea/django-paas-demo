@@ -26,17 +26,17 @@ header {
     background: transparent;
     border: 0 !important;
     padding: 0 10px !important;
-    color: #63CDD7;
+    color: #0093b7;
 }
 
 button#first_toggle:hover {
-    background: #63CDD7 !important;
+    background: #0093b7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
 
 button#second_toggle:hover {
-    background: #63CDD7 !important;
+    background: #0093b7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
@@ -53,7 +53,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 3.15%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 
 }
 
@@ -63,7 +63,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 7.23%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 }
 
 .search {
@@ -72,7 +72,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 11.11%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 
 }
 .modal_side_nav_li{
@@ -88,14 +88,6 @@ i.fa-solid.fa-right-from-bracket:hover {
 li.modal_side_nav_li:hover {
     background: #a0c5cf;
 }
-.side_nav_li{
-    padding:10px 0 10px 100px;
-    color:#E6ECEB;
-    font-weight: bold;
-    font-size: 10px;
-    white-space: nowrap;
-}
-
 
 ul {
     margin-top: 10px;
@@ -135,22 +127,22 @@ body {
     background: transparent;
     border: 0 !important;
     padding: 0 10px !important;
-    color: #63CDD7;
+    color: #0093b7;
 }
 
 button#first_toggle:hover {
-    background: #63CDD7 !important;
+    background: #0093b7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
 
 button#second_toggle:hover{
-    background: #63CDD7 !important;
+    background: #0093b7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
 button#third_toggle:hover {
-    background: #63CDD7 !important;
+    background: #0093b7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
@@ -167,7 +159,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 3.15%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 
 }
 
@@ -177,7 +169,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 7.23%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 }
 
 .search {
@@ -186,17 +178,9 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 11.11%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 
 }
-.side_nav_li {
-    padding: 15px 0 15px 120px;
-    color: #E6ECEB;
-    font-weight: bold;
-    font-size: medium;
-    white-space: nowrap;
-}
-
 li.side_nav_li:hover {
     background: #bfecf7;
     color: #005e75;
@@ -242,17 +226,17 @@ body {
     background: transparent;
     border: 0 !important;
     padding: 0 10px !important;
-    color: #63CDD7;
+    color: #0093b7;
 }
 
 button#first_toggle:hover {
-    background: #63CDD7 !important;
+    background: #0093b7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
 
 button#second _toggle:hover {
-    background: #63CDD7 !important;
+    background: #0093b7 !important;
     color: #ffffff !important;
     border-radius: 5px;
 }
@@ -269,7 +253,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 3.15%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 
 }
 
@@ -279,7 +263,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 7.23%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 }
 
 .search {
@@ -288,7 +272,7 @@ i.fa-solid.fa-right-from-bracket:hover {
     right: 11.11%;
     top: 13px;
     bottom: 50px;
-    color: #63CDD7;
+    color: #0093b7;
 
 }
 
@@ -462,7 +446,7 @@ button.btn.btn-wb-copy:hover {
 .wb_thead {
     position: sticky;
     top: 0;
-    background-color: #63CDD7;
+    background-color: #0093b7;
     text-align: center;
     color: white;
     white-space: nowrap !important
