@@ -891,7 +891,7 @@ def usage_report_data(request, year):
         may=Sum('total_usage_may'),
         jun=Sum('total_usage_jun'),
         jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
+        aug=Sum('total_usage_aug'),                  
         sept=Sum('total_usage_sept'),
         oct=Sum('total_usage_oct'),
         nov=Sum('total_usage_nov'),
