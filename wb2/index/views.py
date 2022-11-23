@@ -907,7 +907,7 @@ def usage_report_data(request, year):
         'cur_year': year,
         'years': years,
         'user':request.session.get(ReqParams.username),
-        'bbm': bbm,
+     
     }
     return render(request, 'usage_report_data.html', context)
 
