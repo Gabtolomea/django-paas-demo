@@ -1,0 +1,105 @@
+{% load humanize %}
+    {% csrf_token %}
+
+
+    <div>
+        <div class="col-sm-offset-7 col-sm-5">
+            <div class="form-group">
+                <label for="exampleInputBarangay">Select Year</label>
+                <form id="yearselection" action="">
+                    <select class="form-select" aria-label="selector" onchange="change()">
+                        <option value="{{cur_year}}">{{cur_year}}</option>
+                    </select>
+                    {% for i in years reversed %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                    </select>
+                </form>
+                <script>
+                    yearselection = document.getElementById("yearselection")
+                    selector = document.getElementById("selector").innerHTML = "barangayreport/{{bang.year}}/"
+                    function change() {
+                        yearselection.action = selector.value
+                        yearselection.submit()
+                        console.log("selction testing")
+                    }
+                </script>
+            </div>
+
+        </div>
+        
+        <a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
+        <a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
+        <a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
+        <a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
+
+        <table id="checkme">
+
+            <body onload= "collection_rate()">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Barangay</th>
+                            <th>Total Usage (Cubic Meter)</th>
+                            <th>Total Receivable</th>
+                            <th>Total Collection</th>
+                            <th>Collection Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for br in br %}
+                        <tr>
+                            <td>
+                                <a href="view_barangay/{{br.barangayrec_id}}">{{br.barangaycode}}</a>
+                            </td>
+                            <td>{{br.total_usage|floatformat:1}}</td>
+                            <td class="total_paid">&#8369;  {{br.total_rec|floatformat:2|intcomma}}</td>
+                            <td class="total_due">&#8369;  {{br.total_paid|floatformat:2|intcomma}}</td>
+                            <td class="rate"></td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td class="total_paid">&#8369;  {{td.tr|floatformat:2|intcomma}}</td>
+                            <td class="total_due">&#8369;  {{td.tp|floatformat:2|intcomma}}</td>
+                            <td class="rate"></td>
+                        </tr>
+
+
+                    </tbody>
+
+            </body>
+        </table>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script>
+            function collection_rate() {
+                total_paid = document.getElementsByClassName("total_paid")
+                total_due = document.getElementsByClassName("total_due")
+                rate = document.getElementsByClassName("rate")
+
+                for (let index = 0; index < rate.length; index++) {
+                    int_total_due = parseInt(total_due[index].innerHTML)
+                    int_total_paid = parseInt(total_paid[index].innerHTML)
+                    temporary_rate = (int_total_paid / int_total_due) * 100
+                    if (temporary_rate !== temporary_rate) {
+                        rate[index].innerHTML = "0.0%"
+                    } else {
+                        rate[index].innerHTML = temporary_rate.toFixed(2) + "%"
+                    }
+                    console.log("test")
+                }
+            }
+
+
+        </script>
+
+    </div>
+</form>
