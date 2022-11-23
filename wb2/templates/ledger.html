@@ -15,6 +15,31 @@ Account Ledger
 		transition: 0.3s all ease-in-out;
 
 	}
+	
+
+    .button2 {
+        background-color: #0093b7;
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+    .btn.button2:hover {
+        background: #0093b7;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+    .btn.button2:focus {
+        background: #0093b7;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -72,7 +97,9 @@ Account Ledger
 </div>
 <div class="row w-100 m-auto pt-2">
 	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-		<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy" style="float:left; font-size: 12px; border-radius: 15px;">Get a Copy
+		<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
+			<i class="fa fa-copy"></i>
+			Get a Copy
 		</button>
 	</div>
 	<div id="newtable" style="display: none;" class="col-sm-10 col-sm-offset-1">

@@ -30,21 +30,28 @@ Consumer List
     }
 
     .button2 {
-        background-color:#091d36;
-        font-size: 12px;
+        background-color: #0093b7;
         color: white;
-        font-weight: bold;
-        width: 15%;
-        text-decoration: none;
-        padding: 8px 32px;
-        margin: 4px 2px;
-        border-radius: 30px;
-        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
     }
-    button.btn.button2:hover {
-    background: #3a4e7a !important;
-    color: white;
-}
+    .btn.button2:hover {
+        background: #0093b7;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+    .btn.button2:focus {
+        background: #0093b7;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
 </style>
 {% endblock style %}
 {% block script %}
@@ -69,9 +76,9 @@ Consumer List
 <center>
     <h1>CONSUMER LIST</h1>
 </center>
-<a href="{% url 'consumercreation' %}">
-    <button class="btn button2">Add New Consumer</button>
-</a>
+<form action="{% url 'consumercreation' %}">
+    <button class="btn button2" type="submit"><i class="fa fa-user-plus"></i> New Consumer</button>
+</form>
 <br>
 <br>
 <div class="container-fluid p-0">
