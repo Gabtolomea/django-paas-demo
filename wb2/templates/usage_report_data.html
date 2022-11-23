@@ -157,7 +157,7 @@ Usage Report
 
 	//data2 start here
 	var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var yValues = ['{{bbm.jan}}', '{{bbm.feb}}', '{{bbm.mar}}', '{{bbm.apr}}', '{{bbm.may}}', '{{bbm.jun}}', '{{bbm.jul}}', '{{bbm.aug}}', '{{bbm.sept}}', '{{bbm.oct}}', '{{bbm.nov}}', '{{bbm.dec}}'];
+	var yValues = [{%for b in bbm%} {{b.bbm}} {% endfor %}];
 
 	const data2 = {
 		labels: xValues,

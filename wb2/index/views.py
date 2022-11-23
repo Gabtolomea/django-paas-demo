@@ -842,20 +842,6 @@ def unsettled_bill(request):
 
 def usage_report_data(request, year):
     years = []
-    class bm():
-        def __init__(self, jan, feb, mar, apr, may, jun, jul, aug, sept, oct, nov, dec):
-            self.jan = jan
-            self.feb = feb
-            self.mar = mar
-            self.apr = apr
-            self.may = may
-            self.jun = jun
-            self.jul = jul
-            self.aug = aug
-            self.sept = sept
-            self.oct = oct
-            self.nov = nov
-            self.dec = dec
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -882,19 +868,7 @@ def usage_report_data(request, year):
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
-    context = {
-        'tu_mon': tu_mon,
-        'tu_bay': tu_bay,
-        'cur_year': year,
-        'years': years,
-        'user':request.session.get(ReqParams.username),
-
-    }
-    return render(request, 'usage_report_data.html', context)
-
-
-def barangay_by_monthly(request, id, year):
-    bdm = BarangayRecord.objects.filter(barangaycode=id, year=year).aggregate(
+    bbm = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -908,11 +882,17 @@ def barangay_by_monthly(request, id, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-
     context = {
-        'bbm': bdm
+        'tu_mon': tu_mon,
+        'tu_bay': tu_bay,
+        'cur_year': year,
+        'years': years,
+        'bbm': bbm,
+        'user':request.session.get(ReqParams.username),
+
     }
     return render(request, 'usage_report_data.html', context)
+
 
 
 def revenue_report(request, year):
