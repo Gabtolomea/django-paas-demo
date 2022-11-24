@@ -1,8 +1,14 @@
 import calendar
+import pickle
 from datetime import datetime, timedelta
 import datetime
+from dis import dis
 from email import errors
+from multiprocessing import context
+from os import system
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -12,6 +18,7 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import QueryDict
 from wb2.settings import EMAIL_HOST_USER
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import base64
@@ -27,6 +34,9 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
+from django.http import HttpResponseRedirect
+from django.core.cache import cache
+# from .loginrequiredmidware import login_exempt
 
 
 def porter(request):
@@ -47,6 +57,7 @@ def lp(request):
 
 @unauthenticated_user
 def signin(request):
+    global ReqParams
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
@@ -58,7 +69,7 @@ def signin(request):
             if user.password == p:
                 login_rec = LoginRec()
                 request.session[ReqParams.username] = user.username
-                request.session[ReqParams.auth] = True
+                ReqParams.cs = CustomSession(user.username)
                 request.session.modified = True
                 # cache.set('message', message('success', 'Logged in as '+user.username, 5))
                 login_rec.username = user.username
@@ -79,10 +90,6 @@ def signin(request):
 @authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
-
-@authenticated_user
-def meterreading(request):
-    return redirect('meterreading_p', p=10)
 
 @authenticated_user
 def bills_list_p(request, p):
@@ -121,11 +128,13 @@ def bills_list_p(request, p):
         'bills_list': bills_list,
         'user': user,
     }
-    return render(request, 'billslist.html', context)
+    return render(request, 'test.html', context)
 
 def signout(request):
-    lr = LoginRec.objects.get(username = request.session[ReqParams.username])
-    lr.delete()
+    global ReqParams
+    # lr = LoginRec.objects.get(username = ReqParams.cs.username)
+    # lr.delete()
+    ReqParams.cs.username = ""
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -249,7 +258,8 @@ def ledger(request, id):
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage,bill, payment, pb, ornum, bal, connectionType, style)
+            new_row = ledgerclass(transid, date, prev, cur, usage,
+                                  bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
                 if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
@@ -268,7 +278,6 @@ def ledger(request, id):
         'u': u,
         'table': table,
         'year': year,
-        'user':request.session[ReqParams.username]
     }
     return render(request, 'ledger.html', context)
 
@@ -319,41 +328,12 @@ def password_reset_form(request):
 
 
 @authenticated_user
-def meterreading_p(request, p):
+def meterreading(request):
     meterred = ConsumerInfo.objects.all()
     context = {
         'meterred': meterred,
         'year': date.today().year,
         'user': request.session.get(ReqParams.username)
-    }
-    
-    pages = int(p)
-    user = request.session.get(ReqParams.username)
-    meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
-    count = meterred.count()
-    if pages == 0:
-        paginate_by = request.GET.get('paginate_by', count)
-    else:
-        paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
-
-    paginator = Paginator(meterred, paginate_by)
-    try:
-        m = paginator.page(page)
-
-    except PageNotAnInteger:
-        m = paginator.page(1)
-
-    except EmptyPage:
-        m = paginator.page(paginator.num_pages)
-
-    context = {
-        'last':range(paginator.num_pages - 3, paginator.num_pages),
-        'five':range(1,6),
-        'paginate_by': paginate_by,
-        'meterred': m,
-        'user': user,
-        'year': date.today().year,
     }
     return render(request, 'meterreading.html', context)
 
@@ -791,7 +771,8 @@ def reports(request):
     return redirect('barangayreport', date.today().year)
 @authenticated_user
 def barangayreport(request, year):
-    user = request.session[ReqParams.username]
+    global ReqParams
+    user = ReqParams.cs.username
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -861,20 +842,6 @@ def unsettled_bill(request):
 
 def usage_report_data(request, year):
     years = []
-    class bm():
-        def __init__(self, jan, feb, mar, apr, may, jun, jul, aug, sept, oct, nov, dec):
-            self.jan = jan
-            self.feb = feb
-            self.mar = mar
-            self.apr = apr
-            self.may = may
-            self.jun = jun
-            self.jul = jul
-            self.aug = aug
-            self.sept = sept
-            self.oct = oct
-            self.nov = nov
-            self.dec = dec
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -901,19 +868,7 @@ def usage_report_data(request, year):
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
-    context = {
-        'tu_mon': tu_mon,
-        'tu_bay': tu_bay,
-        'cur_year': year,
-        'years': years,
-        'user':request.session.get(ReqParams.username),
-
-    }
-    return render(request, 'usage_report_data.html', context)
-
-
-def barangay_by_monthly(request, id, year):
-    bbm = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(
+    bbm = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -927,36 +882,17 @@ def barangay_by_monthly(request, id, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    # jan = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jan'))
-    # feb = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_feb'))
-    # mar = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_mar'))
-    # apr = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_apr'))
-    # may = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_may'))
-    # jun = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jun'))
-    # jul = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jul'))
-    # aug = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_aug'))
-    # sept = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_sept'))
-    # oct = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_oct'))
-    # nov = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_nov'))
-    # dec = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_dec'))
-    # context = {
-    #     'bbm.jan': jan,
-    #     'bbm.feb': feb,
-    #     'bbm.mar': mar,
-    #     'bbm.apr': apr,
-    #     'bbm.may': may,
-    #     'bbm.jun': jun,
-    #     'bbm.jul': jul,
-    #     'bbm.aug': aug,
-    #     'bbm.sept': sept,
-    #     'bbm.oct': oct,
-    #     'bbm.nov': nov,
-    #     'bbm.dec': dec,
-    # }
     context = {
-        # 'bbm' : 
+        'tu_mon': tu_mon,
+        'tu_bay': tu_bay,
+        'cur_year': year,
+        'years': years,
+        'bbm': bbm,
+        'user':request.session.get(ReqParams.username),
+
     }
     return render(request, 'usage_report_data.html', context)
+
 
 
 def revenue_report(request, year):
