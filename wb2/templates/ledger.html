@@ -107,16 +107,13 @@ Account Ledger
         <h1>Municipality of Ginatilan</h1>
         <p> Ginatilan Water Station</p>
     </div> 
-	<div style="position: absolute; left: 47%; z-index: 1000;  opacity: 0.5;">
+	<div style="position: absolute;left: 32%;opacity: 1;top: 27%;">
         <img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
 	</div>
     <hr style="margin: 0;">
     <div class="row w-100 m-auto">
         <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
-            <p style="    padding-left: 10px;
-			text-align: center;
-			margin-bottom: 0;
-			background-color: #a4cdf1b3;">Consumer Info</p>
+			<p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: #a4cdf1b3;">Consumer Info</p>
             <div class="consumer_info">
                 <label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
                 <label for="accnt">Account ID: {{u.consumer_id}}</label><br>
@@ -130,10 +127,7 @@ Account Ledger
 
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
-            <p style="    padding-left: 10px;
-			text-align: center;
-			margin-bottom: 0;
-			background-color: #a4cdf1b3;">Bills Info</p>
+			<p style=" padding-left: 10px; text-align: center; margin-bottom: 0; background-color: #a4cdf1b3;">Bills Info</p>
             <div class="bills_info">
                 <label for="current-reading">Current Reading: {{cur}}</label><br>
                 <label for="prev-reading">Previous Reading: {{pre}}</label><br>
@@ -167,7 +161,7 @@ Account Ledger
             };
             html2pdf().from(invoice).set(opt).save();
         })
-}
+ }
 		// function print() {
 		// 	var doc = new jsPDF('landscape', 'pt', 'a4');
 		// 	var htmlstring = '';
@@ -212,6 +206,7 @@ Account Ledger
 		// }				
 	</script>
 </div>
+
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
