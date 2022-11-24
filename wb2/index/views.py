@@ -954,7 +954,7 @@ def barangay_by_monthly(request, id, year):
     #     'bbm.dec': dec,
     # }
     context = {
-        'bbm' : 
+        # 'bbm' : 
     }
     return render(request, 'usage_report_data.html', context)
 
