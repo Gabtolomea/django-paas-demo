@@ -100,10 +100,12 @@ Usage Report
 <script>
 	// setup 
 	const data = {
-		labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
 		datasets: [{
 			label: 'Barangay Usage',
-			data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
+			data: [{%for t in tu_bay %}
+			{x: '{{t.barangaycode}}', y:'{{ t.sum }}' monthly: {link: href = "{% url 'bbm' my.barangayrec_id %}"}},
+			{% endfor %}
+		],
 			backgroundColor: [
 				'rgba(255, 26, 104, 0.2)',
 				'rgba(54, 162, 235, 0.2)',
@@ -131,6 +133,10 @@ Usage Report
 		type: 'bar',
 		data,
 		options: {
+			parsing: {
+				xAxisKey: 'x',
+				yAxisKey: 'y.monthly'
+			},
 			scales: {
 				y: {
 					beginAtZero: true
@@ -145,55 +151,19 @@ Usage Report
 		ctx,
 		config
 	);
-
-	//data2 start here
-	var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var yValues = ['{{bbm.jan}}', '{{bbm.feb}}', '{{bbm.mar}}', '{{bbm.apr}}', '{{bbm.may}}', '{{bbm.jun}}', '{{bbm.jul}}', '{{bbm.aug}}', '{{bbm.sept}}', '{{bbm.oct}}', '{{bbm.nov}}', '{{bbm.dec}}'];
-
-	const data2 = {
-		labels: xValues,
-		datasets: [{
-			label: "Total Usage",
-			fill: false,
-			borderColor: '#20B2AA',
-			tension: 0,
-			backgroundColor: "#3090C7",
-			data: yValues
-		}]
-	};
-
-	// config 
-	const config2 = {
-		type: 'line',
-		data: data2,
-		options: {
-			scales: {
-				y: {
-					beginAtZero: true
-				}
-			}
-		}
-	};
-
-	// render init block
-	const monthly_views = new Chart(
-		document.getElementById('monthly_views'),
-		config2
-	);
-
 	function clickHandler(click) {
 		const points = barangay.getElementsAtEventForMode(click, 'nearest', {
 			intersect: true
 		}, true);
 		if (points.length) {
-			console.log(points.length)
-			console.log(points[0].element.$context.raw)
-
-			monthly_views.config.data.datasets[0].data = points[0].element.$context.raw;
-			monthly_views.update();
+			const firstPoint = points[0];
+			console.log(points)
+			console.log(firstPoint);
+			const value = barangay.data.datasets[firstPoint.datsetIndex].data[firstPoint.index];
+			console.log(value)
 		}
 	};
-	ctx.onclick = clickHandler
+	ctx.onclick = clickHandler;
 </script>
 
 </script>

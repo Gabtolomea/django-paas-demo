@@ -865,7 +865,7 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-
+    
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
@@ -948,6 +948,7 @@ def revenue_report(request, year):
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
 
     context = {
+        'my': my,
         'rev_col': rev_col,
         'rev_rec': filt,
         'cur_year': year,
