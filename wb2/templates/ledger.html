@@ -98,22 +98,56 @@ Account Ledger
         padding-left: 10px;
         padding-bottom: 104px;
     }
+	#logo{
+	vertical-align: middle;
+    border-style: none;
+    height: 113px;
+	}
+	.mun-header{
+    font-size: 38px;
+    font-family: emoji;
+	font-weight: 700;
+	}
+	.mun{
+    font-family: emoji;
+    font-size: 25px;
+	font-weight: 900;
+	margin-top: -16px;
+	}	
+	.style{
+    padding-left: 10px;
+    text-align: center;
+    margin-bottom: 0;
+    background-color: #a4cdf1b3;
+}
+.image-logo{
+    position: absolute;
+    left: 17%;
+    opacity: 100;
+    top: 2%;
+}
+.for-bot{
+	margin: 0%;
+}
+.for-top{
+	margin: 10px;
+}
 </style>
 
 <body>
 
 <div id="invoice">
      <div class="header" style="text-align:center; margin-top: 30px;">
-        <h1>Municipality of Ginatilan</h1>
-        <p> Ginatilan Water Station</p>
+        <h1 class="mun-header">Municipality of Ginatilan</h1>
+        <p class="mun"> Ginatilan Water Station</p>
     </div> 
-	<div style="position: absolute;left: 32%;opacity: 1;top: 27%;">
+	<div class="image-logo">
         <img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
 	</div>
-    <hr style="margin: 0;">
+    <hr class="for-top">
     <div class="row w-100 m-auto">
         <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
-			<p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: #a4cdf1b3;">Consumer Info</p>
+			<h2 class="style">Consumer Info</h2>
             <div class="consumer_info">
                 <label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
                 <label for="accnt">Account ID: {{u.consumer_id}}</label><br>
@@ -127,7 +161,7 @@ Account Ledger
 
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
-			<p style=" padding-left: 10px; text-align: center; margin-bottom: 0; background-color: #a4cdf1b3;">Bills Info</p>
+			<h2 class="style">Bills Info</h2>
             <div class="bills_info">
                 <label for="current-reading">Current Reading: {{cur}}</label><br>
                 <label for="prev-reading">Previous Reading: {{pre}}</label><br>
@@ -137,7 +171,7 @@ Account Ledger
            
         </div>
     </div>
-    <hr style="margin: 0;">
+    <hr class="for-bot">
     <div class="bill row w-100 m-auto pt-3">
         <label for="penalty">Penalty: {{pen}}</label><br>
         <label for="total-bill">Total Bill:</label><br>

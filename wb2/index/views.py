@@ -1,14 +1,8 @@
 import calendar
-import pickle
 from datetime import datetime, timedelta
 import datetime
-from dis import dis
 from email import errors
-from multiprocessing import context
-from os import system
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -18,7 +12,6 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import QueryDict
 from wb2.settings import EMAIL_HOST_USER
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import base64
@@ -34,9 +27,6 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
-from django.http import HttpResponseRedirect
-from django.core.cache import cache
-# from .loginrequiredmidware import login_exempt
 
 
 def porter(request):
@@ -51,13 +41,12 @@ def porter(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
-    global ReqParams
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
@@ -69,7 +58,7 @@ def signin(request):
             if user.password == p:
                 login_rec = LoginRec()
                 request.session[ReqParams.username] = user.username
-                ReqParams.cs = CustomSession(user.username)
+                request.session[ReqParams.auth] = True
                 request.session.modified = True
                 # cache.set('message', message('success', 'Logged in as '+user.username, 5))
                 login_rec.username = user.username
@@ -87,11 +76,15 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-@authenticated_user
+# @authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
-@authenticated_user
+# @authenticated_user
+def meterreading(request):
+    return redirect('meterreading_p', p=10)
+
+# @authenticated_user
 def bills_list_p(request, p):
     # if cache.get('message') is not None:
     #     if cache.get('message').trigger > 1:
@@ -128,17 +121,15 @@ def bills_list_p(request, p):
         'bills_list': bills_list,
         'user': user,
     }
-    return render(request, 'test.html', context)
+    return render(request, 'billslist.html', context)
 
 def signout(request):
-    global ReqParams
-    # lr = LoginRec.objects.get(username = ReqParams.cs.username)
-    # lr.delete()
-    ReqParams.cs.username = ""
+    lr = LoginRec.objects.get(username = request.session[ReqParams.username])
+    lr.delete()
     messages.success(request, 'Logout successful')
     return redirect('login')
 
-@authenticated_user
+# @authenticated_user
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -187,7 +178,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-@authenticated_user
+# @authenticated_user
 def ledger(request, id):
     table = []
     class ledgerclass():
@@ -219,6 +210,8 @@ def ledger(request, id):
                 prev = 0
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
+                pre = asc_trans[i].meterReading - usage
+                pen = asc_trans[i].penaltyCode
                 bill = asc_trans[i].bill
                 connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
                 cur = asc_trans[i].meterReading
@@ -258,8 +251,7 @@ def ledger(request, id):
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage,
-                                  bill, payment, pb, ornum, bal, connectionType, style)
+            new_row = ledgerclass(transid, date, prev, cur, usage,bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
                 if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
@@ -277,7 +269,15 @@ def ledger(request, id):
         'date_today':date.today(),
         'u': u,
         'table': table,
-        'year': year,
+        'year': year,       
+        'usage':usage,
+        'transid':transid,
+        'contype':connectionType,
+        'pre':pre,
+        'cur':cur,
+        'pen':pen,
+        'bal':bal,
+        'bill':bill
     }
     return render(request, 'ledger.html', context)
 
@@ -317,7 +317,7 @@ def forgetpassword(request):
         context = {'email': email, 'errors': errors}
     return render(request, 'forgetpassword.html')
 
-@unauthenticated_user
+# @unauthenticated_user
 def password_reset_form(request):
     # form = SystemUserForm()
     # if request.method == "POST":
@@ -327,17 +327,46 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-@authenticated_user
-def meterreading(request):
+# @authenticated_user
+def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     context = {
         'meterred': meterred,
         'year': date.today().year,
         'user': request.session.get(ReqParams.username)
     }
+    
+    pages = int(p)
+    user = request.session.get(ReqParams.username)
+    meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    count = meterred.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator(meterred, paginate_by)
+    try:
+        m = paginator.page(page)
+
+    except PageNotAnInteger:
+        m = paginator.page(1)
+
+    except EmptyPage:
+        m = paginator.page(paginator.num_pages)
+
+    context = {
+        'last':range(paginator.num_pages - 3, paginator.num_pages),
+        'five':range(1,6),
+        'paginate_by': paginate_by,
+        'meterred': m,
+        'user': user,
+        'year': date.today().year,
+    }
     return render(request, 'meterreading.html', context)
 
-@authenticated_user
+# @authenticated_user
 def inputreading(request, id, year):
     table = []
     years = []
@@ -590,7 +619,7 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
-@authenticated_user
+# @authenticated_user
 def consumer_list(request):
     consumer_list = ConsumerInfo.objects.all()
 
@@ -600,12 +629,12 @@ def consumer_list(request):
     }
     return render(request, 'conlist.html',context)
 
-@authenticated_user
+# @authenticated_user
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
-@authenticated_user
+# @authenticated_user
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -647,7 +676,7 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-@authenticated_user
+# @authenticated_user
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -655,7 +684,7 @@ def stopmeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=date.today().year)
 
-@authenticated_user
+# @authenticated_user
 def sysuser(request):
     table = []
 
@@ -694,7 +723,7 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-@authenticated_user
+# @authenticated_user
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -711,7 +740,7 @@ def userupdate(request, id):
 
     return render(request, 'userupdate.html', context)
 
-@authenticated_user
+# @authenticated_user
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -769,10 +798,10 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
-@authenticated_user
+
+# @authenticated_user
 def barangayreport(request, year):
-    global ReqParams
-    user = ReqParams.cs.username
+    user = request.session[ReqParams.username]
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -842,6 +871,20 @@ def unsettled_bill(request):
 
 def usage_report_data(request, year):
     years = []
+    class bm():
+        def __init__(self, jan, feb, mar, apr, may, jun, jul, aug, sept, oct, nov, dec):
+            self.jan = jan
+            self.feb = feb
+            self.mar = mar
+            self.apr = apr
+            self.may = may
+            self.jun = jun
+            self.jul = jul
+            self.aug = aug
+            self.sept = sept
+            self.oct = oct
+            self.nov = nov
+            self.dec = dec
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -868,7 +911,19 @@ def usage_report_data(request, year):
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
-    bbm = BarangayRecord.objects.filter(year=year).aggregate(
+    context = {
+        'tu_mon': tu_mon,
+        'tu_bay': tu_bay,
+        'cur_year': year,
+        'years': years,
+        'user':request.session.get(ReqParams.username),
+
+    }
+    return render(request, 'usage_report_data.html', context)
+
+
+def barangay_by_monthly(request, id, year):
+    bbm = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -882,17 +937,36 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
+    # jan = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jan'))
+    # feb = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_feb'))
+    # mar = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_mar'))
+    # apr = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_apr'))
+    # may = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_may'))
+    # jun = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jun'))
+    # jul = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jul'))
+    # aug = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_aug'))
+    # sept = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_sept'))
+    # oct = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_oct'))
+    # nov = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_nov'))
+    # dec = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_dec'))
+    # context = {
+    #     'bbm.jan': jan,
+    #     'bbm.feb': feb,
+    #     'bbm.mar': mar,
+    #     'bbm.apr': apr,
+    #     'bbm.may': may,
+    #     'bbm.jun': jun,
+    #     'bbm.jul': jul,
+    #     'bbm.aug': aug,
+    #     'bbm.sept': sept,
+    #     'bbm.oct': oct,
+    #     'bbm.nov': nov,
+    #     'bbm.dec': dec,
+    # }
     context = {
-        'tu_mon': tu_mon,
-        'tu_bay': tu_bay,
-        'cur_year': year,
-        'years': years,
-        'bbm': bbm,
-        'user':request.session.get(ReqParams.username),
-
+        # 'bbm' : 
     }
     return render(request, 'usage_report_data.html', context)
-
 
 
 def revenue_report(request, year):
@@ -1054,7 +1128,7 @@ def discount(request):
     return render(request, 'discount.html', context)
 
 
-@authenticated_user
+# @authenticated_user
 def new_consumertype(request):
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
