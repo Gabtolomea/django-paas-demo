@@ -841,6 +841,7 @@ def unsettled_bill(request):
 
 
 def usage_report_data(request, year):
+    
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -868,7 +869,7 @@ def usage_report_data(request, year):
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
-    bbm = BarangayRecord.objects.filter(year=year).aggregate(
+    bbm = BarangayRecord.objects.filter( year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -893,6 +894,8 @@ def usage_report_data(request, year):
     }
     return render(request, 'usage_report_data.html', context)
 
+# def bbm (request, id, year):
+    
 
 
 def revenue_report(request, year):
