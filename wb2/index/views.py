@@ -869,7 +869,18 @@ def usage_report_data(request, year):
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
-    bbm = BarangayRecord.objects.filter( year=year).aggregate(
+    context = {
+        'tu_mon': tu_mon,
+        'tu_bay': tu_bay,
+        'cur_year': year,
+        'years': years,
+        'user':request.session.get(ReqParams.username),
+
+    }
+    return render(request, 'usage_report_data.html', context)
+
+def bbm (request):
+    m = BarangayRecord.objects.filter(barangayrec_id = year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -883,20 +894,10 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    context = {
-        'tu_mon': tu_mon,
-        'tu_bay': tu_bay,
-        'cur_year': year,
-        'years': years,
-        'bbm': bbm,
-        'user':request.session.get(ReqParams.username),
-
+    context  = {
+        'm'  : m,
     }
-    return render(request, 'usage_report_data.html', context)
-
-# def bbm (request, id, year):
-    
-
+    return render (request, 'baranagay_by_monthly.html', context)
 
 def revenue_report(request, year):
     years = []

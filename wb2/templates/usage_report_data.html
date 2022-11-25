@@ -98,7 +98,6 @@ Usage Report
 
 <section>
 	<canvas id="barangay" width="800" height="150"></canvas>
-	<canvas id="monthly_views" width="800" height="150"></canvas>
 	<br>
 	<br>
 	<br>
@@ -155,41 +154,7 @@ Usage Report
 		config
 	);
 
-	//data2 start here
-	var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var yValues = [{%for b in bbm%} {{b.bbm}} {% endfor %}];
-
-	const data2 = {
-		labels: xValues,
-		datasets: [{
-			label: "Total Usage",
-			fill: false,
-			borderColor: '#20B2AA',
-			tension: 0,
-			backgroundColor: "#3090C7",
-			data: yValues
-		}]
-	};
-
-	// config
-	const config2 = {
-		type: 'line',
-		data: data2,
-		options: {
-			scales: {
-				y: {
-					beginAtZero: true
-				}
-			}
-		}
-	};
-
-	// render init block
-	const monthly_views = new Chart(
-		document.getElementById('monthly_views'),
-		config2
-	);
-
+	
 	function clickHandler(click) {
 		const points = barangay.getElementsAtEventForMode(click, 'nearest', {
 			intersect: true

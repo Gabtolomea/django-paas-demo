@@ -4,14 +4,7 @@
 Water Usage
 {% endblock title %}
 {% block style %}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-{% block script %}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
-</head>
-{% endblock script %}
+
 
 <style>
 	html {
@@ -201,13 +194,13 @@ Water Usage
 {% block waterusage %}
 
 
-<a href = "">Barangay Report</a>
-<a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
-<a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
-<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+<a href="">Barangay Report</a>
+<a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
+<a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
+<p>bahug bulugh</p>
 
 <body onload="collection_rate()">
-	
 
 
 	<div>
