@@ -11,8 +11,7 @@
     </title>
     <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
-    <script src="https://code.jquery.com/jquery-3.6.1.js"
-        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script src="{% static 'bootstrap.min.js' %}"></script>
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
@@ -28,6 +27,11 @@
     <link rel="stylesheet" href="pdf.css" />
     <script src="pdf.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>  
+   <link rel="stylesheet" href="{% static 'fontawesome-free-5.15.4-web/css/all.css' %}">
+   <script src="https://kit.fontawesome.com/9d6dcdab6b.js" crossorigin="anonymous"></script>
+   <!-- <link rel="stylesheet" href="./style.css"> -->
     {% block style %}
     {% endblock style %}
 </head>
@@ -42,14 +46,18 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-dark border-0">
-                    <span class="mobile_header_font" style="color:white;font-weight: 700;"> GINATILAN WATER BILLING <span
-                            class="station" style="color: #63CDD7;">STATION</span></span>
+                    <span class="mobile_header_font" style="color:white;font-weight: 700;">
+                        WATER BILLING 
+                        <span class="station" style="color: #63CDD7;">STATION</span>
+                    </span>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body sidebar w-100">
-                    <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x"></i>
+                    <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x">
+                        <img src="{% static 'svgs/payments.svg' %}" alt="">
+                    </i>
                         <p style="font-size: 30px">{{user}}</p>
                     </div>
                     <ul class="list-unstyled" style="padding-left: 30px;">
@@ -168,7 +176,7 @@
                     <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal" data-target="#exampleModal">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
+                    <span class="mobile_header_font" style="padding-left:10px; color:white">WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
                 </div>
 
                 <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
@@ -196,7 +204,7 @@
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
-                    <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                    <i class="fa-solid fa-money-bill-wave fa-2x"><div class="icon payment"></div></i>
                     <span class="sidenav_text">Billing</span>
                 </li>
             </a>
@@ -279,7 +287,6 @@
         {% block bill %}
         {% endblock bill %}
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script>
 
         function media_query_720(screen_size) {
@@ -353,7 +360,7 @@
                         menuScrollTimer = null;
                     }, 1050);
                 }
-            });
+            });jquery
 
             $(window).scroll(function (e) {
                 // Avoid triggering the logic if the scroll event is triggerd from clicking one of the items
@@ -371,18 +378,14 @@
         });
     </script>
 
-</body><script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+</body>
+<script src="{% static 'jquery/jquery.js' %}"></script>
 <script>
     $(window).on('load', function () {
         $('#loading').hide();
     })
 </script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
+<script src="{% static 'popper.min.js' %}"></script>
 
     <script>
         var login = document.getElementById('login');

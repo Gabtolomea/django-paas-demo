@@ -16,6 +16,31 @@ Account Ledger
 		transition: 0.3s all ease-in-out;
 
 	}
+	
+
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -72,8 +97,11 @@ Account Ledger
 	</div>
 </div>
 <div class="row w-100 m-auto pt-2">
-	<div class="col-lg-2 col-md-2 col-sm-2 col-2">
-		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back" style="float:left; font-size: 11px !important; border-radius: 11px; ">Back</button></a>
+	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+		<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
+			<i class="fa fa-copy"></i>
+			Get a Copy
+		</button>
 	</div>
 	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
 		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
@@ -194,48 +222,6 @@ Account Ledger
             html2pdf().from(invoice).set(opt).save();
         })
  }
-		// function print() {
-		// 	var doc = new jsPDF('landscape', 'pt', 'a4');
-		// 	var htmlstring = '';
-		// 	var tempVarToCheckPageHeight = 0;
-		// 	var pageHeight = 0;
-			
-
-		// 	pageHeight = doc.internal.pageSize.height;
-		// 	specialElementHandlers = {
-		// 		// element with id of "bypass" - jQuery style selector
-		// 		'#bypassme': function (element, renderer) {
-		// 			// true = "handled elsewhere, bypass text extraction"
-		// 			return true
-		// 		}
-		// 	};
-		// 	margins = {
-		// 		top: 150,
-		// 		bottom: 60,
-		// 		left: 40,
-		// 		right: 40,
-		// 		width: 600
-		// 	};
-		// 	const formatter = new Intl.NumberFormat('en-US', {
-		// 		style: 'currency',
-		// 		currency: 'Php',
-		// 		minimumFractionDigits: 2
-		// 	})
-
-		// 	var y = 10;
-		// 	var x = 20;
-		// 	doc.setLineWidth(2);
-		// 	doc.setFontSize(15);
-		// 	doc.fromHTML(
-		// 		document.getElementById('billing'),
-		// 		15,
-		// 		15,
-		// 	)
-		// 	y = doc.lastAutoTable.finalY
-		// 	console.log(y);
-		// 	console.log("testing")
-		// 	doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
-		// }				
 	</script>
 </div>
 
