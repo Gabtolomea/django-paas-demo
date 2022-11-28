@@ -277,7 +277,8 @@ def ledger(request, id):
         'cur':cur,
         'pen':pen,
         'bal':bal,
-        'bill':bill
+        'bill':bill,
+        'user':request.session.get(ReqParams.username)
     }
     return render(request, 'ledger.html', context)
 
