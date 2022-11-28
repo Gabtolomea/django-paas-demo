@@ -879,8 +879,9 @@ def usage_report_data(request, year):
     }
     return render(request, 'usage_report_data.html', context)
 
-def bbm (request):
-    m = BarangayRecord.objects.filter(barangayrec_id = year).aggregate(
+def bbm (request, id):
+  
+    m = BarangayRecord.objects.filter(barangayrec_id = id).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
