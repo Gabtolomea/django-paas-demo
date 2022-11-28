@@ -210,6 +210,8 @@ def ledger(request, id):
                 prev = 0
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
+                pre = asc_trans[i].meterReading - usage
+                pen = asc_trans[i].penaltyCode
                 bill = asc_trans[i].bill
                 connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
                 cur = asc_trans[i].meterReading
@@ -267,8 +269,15 @@ def ledger(request, id):
         'date_today':date.today(),
         'u': u,
         'table': table,
-        'year': year,
-        'user':request.session[ReqParams.username]
+        'year': year,       
+        'usage':usage,
+        'transid':transid,
+        'contype':connectionType,
+        'pre':pre,
+        'cur':cur,
+        'pen':pen,
+        'bal':bal,
+        'bill':bill
     }
     return render(request, 'ledger.html', context)
 
@@ -357,7 +366,7 @@ def meterreading_p(request, p):
     }
     return render(request, 'meterreading.html', context)
 
-@authenticated_user
+# @authenticated_user
 def inputreading(request, id, year):
     table = []
     years = []
@@ -789,6 +798,7 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
+
 @authenticated_user
 def barangayreport(request, year):
     user = request.session[ReqParams.username]
@@ -861,6 +871,20 @@ def unsettled_bill(request):
 
 def usage_report_data(request, year):
     years = []
+    class bm():
+        def __init__(self, jan, feb, mar, apr, may, jun, jul, aug, sept, oct, nov, dec):
+            self.jan = jan
+            self.feb = feb
+            self.mar = mar
+            self.apr = apr
+            self.may = may
+            self.jun = jun
+            self.jul = jul
+            self.aug = aug
+            self.sept = sept
+            self.oct = oct
+            self.nov = nov
+            self.dec = dec
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -887,7 +911,19 @@ def usage_report_data(request, year):
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
-    bbm = BarangayRecord.objects.filter(year=year).aggregate(
+    context = {
+        'tu_mon': tu_mon,
+        'tu_bay': tu_bay,
+        'cur_year': year,
+        'years': years,
+        'user':request.session.get(ReqParams.username),
+
+    }
+    return render(request, 'usage_report_data.html', context)
+
+
+def barangay_by_monthly(request, id, year):
+    bbm = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -901,17 +937,36 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
+    # jan = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jan'))
+    # feb = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_feb'))
+    # mar = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_mar'))
+    # apr = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_apr'))
+    # may = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_may'))
+    # jun = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jun'))
+    # jul = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jul'))
+    # aug = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_aug'))
+    # sept = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_sept'))
+    # oct = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_oct'))
+    # nov = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_nov'))
+    # dec = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_dec'))
+    # context = {
+    #     'bbm.jan': jan,
+    #     'bbm.feb': feb,
+    #     'bbm.mar': mar,
+    #     'bbm.apr': apr,
+    #     'bbm.may': may,
+    #     'bbm.jun': jun,
+    #     'bbm.jul': jul,
+    #     'bbm.aug': aug,
+    #     'bbm.sept': sept,
+    #     'bbm.oct': oct,
+    #     'bbm.nov': nov,
+    #     'bbm.dec': dec,
+    # }
     context = {
-        'tu_mon': tu_mon,
-        'tu_bay': tu_bay,
-        'cur_year': year,
-        'years': years,
-        'bbm': bbm,
-        'user':request.session.get(ReqParams.username),
-
+        # 'bbm' : 
     }
     return render(request, 'usage_report_data.html', context)
-
 
 
 def revenue_report(request, year):
