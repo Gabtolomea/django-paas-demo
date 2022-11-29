@@ -61,7 +61,6 @@ MIDDLEWARE = [
     
 ]
 
-
 ROOT_URLCONF = 'wb2.urls'
 AUTH_USER_MODEL = 'index.SystemUsers'
 

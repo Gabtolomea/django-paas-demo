@@ -1,8 +1,6 @@
-
 from datetime import date, datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import random
 # Create your models here.
 
 class LoginRec(models.Model):

@@ -99,5 +99,7 @@
         "verif",
         "xcubic",
         "xmincharge"
-    ]
+    ],
+    "editor.tabCompletion": "on",
+    "diffEditor.codeLens": true
 }

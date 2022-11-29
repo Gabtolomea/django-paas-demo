@@ -1,0 +1,29 @@
+		
+Municipality of Ginatilan
+Ginatilan Water
+Poblacion 
+Zip Code
+Country 
+Phone:
+
+Consumer Info
+‣Name
+‣Account Id
+‣Meter Number
+‣Address
+‣Zip Code
+‣Country
+‣Connection Type
+‣Contact Info
+
+Bill Info
+‣Current Reading
+‣Previous Reading
+‣Usage
+
+‣Bill
+‣Penalty 
+‣Total Bil 
+‣Previous Due
+‣Total Balance
+

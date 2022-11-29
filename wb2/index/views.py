@@ -1,14 +1,8 @@
 import calendar
-import pickle
 from datetime import datetime, timedelta
 import datetime
-from dis import dis
 from email import errors
-from multiprocessing import context
-from os import system
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -18,7 +12,6 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import QueryDict
 from wb2.settings import EMAIL_HOST_USER
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import base64
@@ -34,9 +27,6 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
-from django.http import HttpResponseRedirect
-from django.core.cache import cache
-# from .loginrequiredmidware import login_exempt
 
 
 def porter(request):
@@ -57,7 +47,6 @@ def lp(request):
 
 @unauthenticated_user
 def signin(request):
-    global ReqParams
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
@@ -69,7 +58,7 @@ def signin(request):
             if user.password == p:
                 login_rec = LoginRec()
                 request.session[ReqParams.username] = user.username
-                ReqParams.cs = CustomSession(user.username)
+                request.session[ReqParams.auth] = True
                 request.session.modified = True
                 # cache.set('message', message('success', 'Logged in as '+user.username, 5))
                 login_rec.username = user.username
@@ -90,6 +79,10 @@ def signin(request):
 @authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
+
+@authenticated_user
+def meterreading(request):
+    return redirect('meterreading_p', p=10)
 
 @authenticated_user
 def bills_list_p(request, p):
@@ -128,13 +121,11 @@ def bills_list_p(request, p):
         'bills_list': bills_list,
         'user': user,
     }
-    return render(request, 'test.html', context)
+    return render(request, 'billslist.html', context)
 
 def signout(request):
-    global ReqParams
-    # lr = LoginRec.objects.get(username = ReqParams.cs.username)
-    # lr.delete()
-    ReqParams.cs.username = ""
+    lr = LoginRec.objects.get(username = request.session[ReqParams.username])
+    lr.delete()
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -219,6 +210,8 @@ def ledger(request, id):
                 prev = 0
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
+                pre = asc_trans[i].meterReading - usage
+                pen = asc_trans[i].penaltyCode
                 bill = asc_trans[i].bill
                 connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
                 cur = asc_trans[i].meterReading
@@ -258,8 +251,7 @@ def ledger(request, id):
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage,
-                                  bill, payment, pb, ornum, bal, connectionType, style)
+            new_row = ledgerclass(transid, date, prev, cur, usage,bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
                 if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
@@ -277,7 +269,16 @@ def ledger(request, id):
         'date_today':date.today(),
         'u': u,
         'table': table,
-        'year': year,
+        'year': year,       
+        'usage':usage,
+        'transid':transid,
+        'contype':connectionType,
+        'pre':pre,
+        'cur':cur,
+        'pen':pen,
+        'bal':bal,
+        'bill':bill,
+        'user':request.session[ReqParams.username]
     }
     return render(request, 'ledger.html', context)
 
@@ -328,16 +329,45 @@ def password_reset_form(request):
 
 
 @authenticated_user
-def meterreading(request):
+def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     context = {
         'meterred': meterred,
         'year': date.today().year,
         'user': request.session.get(ReqParams.username)
     }
+    
+    pages = int(p)
+    user = request.session.get(ReqParams.username)
+    meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    count = meterred.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator(meterred, paginate_by)
+    try:
+        m = paginator.page(page)
+
+    except PageNotAnInteger:
+        m = paginator.page(1)
+
+    except EmptyPage:
+        m = paginator.page(paginator.num_pages)
+
+    context = {
+        'last':range(paginator.num_pages - 3, paginator.num_pages),
+        'five':range(1,6),
+        'paginate_by': paginate_by,
+        'meterred': m,
+        'user': user,
+        'year': date.today().year,
+    }
     return render(request, 'meterreading.html', context)
 
-@authenticated_user
+# @authenticated_user
 def inputreading(request, id, year):
     table = []
     years = []
@@ -769,6 +799,7 @@ def payment(request, id):
 
 def reports(request):
     return redirect('barangayreport', date.today().year)
+
 @authenticated_user
 def barangayreport(request, year):
     years = []
@@ -842,6 +873,20 @@ def unsettled_bill(request):
 def usage_report_data(request, year):
     
     years = []
+    class bm():
+        def __init__(self, jan, feb, mar, apr, may, jun, jul, aug, sept, oct, nov, dec):
+            self.jan = jan
+            self.feb = feb
+            self.mar = mar
+            self.apr = apr
+            self.may = may
+            self.jun = jun
+            self.jul = jul
+            self.aug = aug
+            self.sept = sept
+            self.oct = oct
+            self.nov = nov
+            self.dec = dec
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -858,7 +903,7 @@ def usage_report_data(request, year):
         may=Sum('total_usage_may'),
         jun=Sum('total_usage_jun'),
         jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
+        aug=Sum('total_usage_aug'),                  
         sept=Sum('total_usage_sept'),
         oct=Sum('total_usage_oct'),
         nov=Sum('total_usage_nov'),

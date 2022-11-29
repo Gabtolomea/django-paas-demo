@@ -15,6 +15,31 @@ Account Ledger
 		transition: 0.3s all ease-in-out;
 
 	}
+	
+
+    .button2 {
+        background-color: var(--main-color); 
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -28,13 +53,13 @@ Account Ledger
 				</tr>
 			</thead>
 			<tbody>
-				<tr class="showOnHover">
-					<td class="table-light">{{u.consumer_id}}</td>
-					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
-					<td class="table-light">{{u.meternumber}}</td>
-					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
-						<button id="" type="button" class=" hide btn btn-success" data-toggle="modal"
-							data-target="#payment" style="float: right;">Pay</button>
+				<tr class="showOnHover" >
+					<td class="table-light"style="">{{u.consumer_id}}</td>
+					<td class="table-light"style="">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<td class="table-light"style="">{{u.meternumber}}</td>
+					<td class="table-light"style="">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+						<button type="button" class=" hide btn btn-primary"style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
+						<button id="" type="button" class="hide btn btn-success" data-toggle="modal" data-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
@@ -44,7 +69,7 @@ Account Ledger
 <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
-			<form action="" method="post"> {% comment %} {% url 'payment' u.consumer_id %} {% endcomment %}
+			<form action="" method="post">
 				{% csrf_token %}
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
@@ -71,14 +96,11 @@ Account Ledger
 	</div>
 </div>
 <div class="row w-100 m-auto pt-2">
-	<div class="col-lg-2 col-md-2 col-sm-2 col-2">
-		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back" style="float:left; font-size: 11px !important; border-radius: 11px; ">Back</button></a>
-	</div>
-	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
-		<a href="{% url 'inputreading' u.consumer_id year %}"><button type="button" class="btn btn-wb-back" style="float:right; font-size: 12px; border-radius: 14px;">Input Reading</button></a>
-	</div>
-	<div class="col-lg-10 col-md-10 col-sm-10 col-10">
-		<button type="button" class="btn btn-wb-back" onclick=print() style="float:right; font-size: 12px; border-radius: 14px;">Get Bill</button>
+	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+		<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
+			<i class="fa fa-copy"></i>
+			Get a Copy
+		</button>
 	</div>
 	<div id="newtable" style="display: none;" class="col-sm-10 col-sm-offset-1">
 		<div class="widget-box">
@@ -126,7 +148,7 @@ Account Ledger
 										<i></i>Country: <strong>Philippines</strong>
 									</li>
 									<li>
-										Phone: 
+										Phone:
 									</li>
 
 								</ul>
@@ -135,8 +157,7 @@ Account Ledger
 
 						<div class="col-sm-6">
 							<div class="row">
-								<div
-									class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
+								<div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
 									<b>Customer Info</b>
 								</div>
 							</div>
@@ -167,7 +188,7 @@ Account Ledger
 									<li>
 										Contact Info: <strong>{{tr.mobilenum}}</strong>
 									</li>
-								   
+
 								</ul>
 							</div>
 						</div><!-- /.col -->
@@ -178,8 +199,7 @@ Account Ledger
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="row">
-									<div
-										class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
+									<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
 										<b>Bill Info</b>
 									</div>
 								</div>
@@ -194,7 +214,8 @@ Account Ledger
 											<strong>{{date_today}}</strong>
 										</li>
 										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Posted by: <strong>{{user}}</strong>
+											<i class="ace-icon fa fa-caret-right blue"></i>Posted by:
+											<strong>{{user}}</strong>
 										</li>
 										<li>
 											<i class="ace-icon fa fa-caret-right blue"></i>Payment Schedule:
@@ -243,7 +264,7 @@ Account Ledger
 											Bill
 										</td>
 										<td class="hidden-xs">
-											Php.   {{lat.bill}}
+											Php. {{lat.bill}}
 										</td>
 									</tr>
 									<tr>
@@ -300,7 +321,7 @@ Account Ledger
 			var htmlstring = '';
 			var tempVarToCheckPageHeight = 0;
 			var pageHeight = 0;
-			
+
 
 			pageHeight = doc.internal.pageSize.height;
 			specialElementHandlers = {
@@ -370,8 +391,10 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369;{% endif %} {{t.bill|floatformat:2|intcomma}}</td>
-					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369;{% endif %}
+						{{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+					</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
 					<td class="{{t.style}}">{% if t.bal %}&#8369;{% endif %} {{t.bal|floatformat:2|intcomma}}</td>
@@ -380,11 +403,6 @@ Account Ledger
 			</tbody>
 		</table id="tabs">
 	</div>
-</div>
-<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy"
-		style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
-	</button>
 </div>
 </div id="elementH">
 
