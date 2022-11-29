@@ -231,16 +231,16 @@ Usage Report
 			}
 		</script>
 	</div>
-
+<br>
   <div id="newdiv">
+	<br>
+	<br>
 <center><h4><strong>Barangay Total Usage: Year {{cur_year}}</strong></h4></center>
 	<canvas id="barangay" width="800" height="150"></canvas>
 
 	<br>
 	<br>
-	<br>
-	<br>
-	<br>
+	
 	
 	
   <center>
@@ -250,6 +250,8 @@ Usage Report
 <section>
 	</div>
 	
+	<br>
+	<br>
 	<br>
 	<center>
 		<h4><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></h4>
@@ -385,13 +387,12 @@ Usage Report
 	
 		const newdiv = this.document.getElementById("newdiv");
 		console.log(newdiv);
-		console.log(window);
 		var opt = {
 			margin: .5,
 			filename: 'myfile.pdf',
 			image: { type: 'jpeg', quality: 0.98 },
 			html2canvas: { scale: 2 },
-			jsPDF: { unit: 'cm', format: 'a4', orientation: 'landscape' }
+			jsPDF: { unit: 'cm', format: 'legal', orientation: 'landscape' },
 			
 		};
 		html2pdf().from(newdiv).set(opt).save();
