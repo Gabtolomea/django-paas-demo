@@ -771,8 +771,6 @@ def reports(request):
     return redirect('barangayreport', date.today().year)
 @authenticated_user
 def barangayreport(request, year):
-    global ReqParams
-    user = ReqParams.cs.username
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -813,7 +811,7 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        'user':user,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'waterusage.html', context)
 
@@ -835,7 +833,8 @@ def unsettled_bill(request):
     print(year)
     context = {
         'year': year,
-        'ub': ub
+        'ub': ub,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'unsettled_bill.html', context)
 
@@ -1064,6 +1063,7 @@ def discount(request):
 
 @authenticated_user
 def new_consumertype(request):
+  
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
@@ -1090,7 +1090,7 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
-
+@authenticated_user
 def penalty(request):
     p = Penalty.objects.all()
     form = addPenalty
@@ -1108,6 +1108,7 @@ def penalty(request):
             pen.penalty_rate = penalty_rate
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
+            pen.added_by = None
             pen.save()
         else:
             print("way ayo")
