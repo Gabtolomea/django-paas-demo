@@ -871,6 +871,7 @@ def unsettled_bill(request):
 
 
 def usage_report_data(request, year):
+    
     years = []
     class bm():
         def __init__(self, jan, feb, mar, apr, may, jun, jul, aug, sept, oct, nov, dec):
@@ -908,7 +909,7 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-
+    
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
@@ -917,14 +918,15 @@ def usage_report_data(request, year):
         'tu_bay': tu_bay,
         'cur_year': year,
         'years': years,
+        'my': my,
         'user':request.session.get(ReqParams.username),
 
     }
     return render(request, 'usage_report_data.html', context)
 
-
-def barangay_by_monthly(request, id, year):
-    bbm = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(
+def bbm (request,id):
+    
+    m = BarangayRecord.objects.filter(barangayrec_id = id).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -938,37 +940,11 @@ def barangay_by_monthly(request, id, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    # jan = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jan'))
-    # feb = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_feb'))
-    # mar = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_mar'))
-    # apr = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_apr'))
-    # may = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_may'))
-    # jun = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jun'))
-    # jul = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jul'))
-    # aug = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_aug'))
-    # sept = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_sept'))
-    # oct = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_oct'))
-    # nov = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_nov'))
-    # dec = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_dec'))
-    # context = {
-    #     'bbm.jan': jan,
-    #     'bbm.feb': feb,
-    #     'bbm.mar': mar,
-    #     'bbm.apr': apr,
-    #     'bbm.may': may,
-    #     'bbm.jun': jun,
-    #     'bbm.jul': jul,
-    #     'bbm.aug': aug,
-    #     'bbm.sept': sept,
-    #     'bbm.oct': oct,
-    #     'bbm.nov': nov,
-    #     'bbm.dec': dec,
-    # }
-    context = {
-        # 'bbm' : 
+    context  = {
+        'm'  : m,
+   
     }
-    return render(request, 'usage_report_data.html', context)
-
+    return render (request, 'bbm.html', context)
 
 def revenue_report(request, year):
     years = []
@@ -1019,6 +995,7 @@ def revenue_report(request, year):
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
 
     context = {
+        'my': my,
         'rev_col': rev_col,
         'rev_rec': filt,
         'cur_year': year,
