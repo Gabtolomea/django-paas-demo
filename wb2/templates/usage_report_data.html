@@ -248,14 +248,13 @@ Usage Report
     </center>
     <canvas id="myChart" width="800" height="150"></canvas>
 <section>
-	
+	</div>
 	
 	<br>
 	<center>
 		<h4><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></h4>
 		<p2><i>click on row to view Monthly line-graph of individual Barangay</i></p2>
 	</center>
-</div>
 
 		
 	
@@ -383,8 +382,7 @@ Usage Report
 </script>
 <script>
 	function pdf()  {
-		var width = doc.internal.pageSize.getWidth();
-		var height = doc.internal.pageSize.getHeight();
+	
 		const newdiv = this.document.getElementById("newdiv");
 		console.log(newdiv);
 		console.log(window);
@@ -393,9 +391,8 @@ Usage Report
 			filename: 'myfile.pdf',
 			image: { type: 'jpeg', quality: 0.98 },
 			html2canvas: { scale: 2 },
-			jsPDF: { unit: 'p', format: 'a4', orientation: 'landscape' },
-			width,
-			height
+			jsPDF: { unit: 'cm', format: 'a4', orientation: 'landscape' }
+			
 		};
 		html2pdf().from(newdiv).set(opt).save();
 			}
