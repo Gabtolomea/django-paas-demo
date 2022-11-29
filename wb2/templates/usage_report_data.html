@@ -1,179 +1,210 @@
-<!DOCTYPE html>
-<html>
+{% extends 'dashboard.html' %}
+
+{% block title %}
+Usage Report
+{% endblock title %}
+
+{% block style %}
+<style>
+  .select {
+    font-weight: bold;
+    font-size: 20px;
+    font-style: normal;
+    float: left;
+    width: 140px;
+  }
+</style>
+
+{% endblock style %}
+{% block usage_report_data %}
+
+<a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
+<a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
+<a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
+<p>Testing Bitch</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 {% csrf_token %}
 <div>
-  <div>
-      <label for="exampleInputBarangay">Select Year</label>
-      <form id="yearselection" action="">
-          <select class="form-select" aria-label="selector" onchange="change()">
-              <option value="{{cur_year}}">{{cur_year}}</option>
-          </select>
-          {% for i in years reversed %}
-          <option value="{{i}}">{{i}}</option>
-          {% endfor %}
-          </select>
-      </form>
-      <script>
-          yearselection = document.getElementById("yearselection")
-          selector = document.getElementById("selector")
-          function change() {
-              yearselection.action = selector.value
-              yearselection.submit()
-              console.log("selction testing")
-          }
-      </script>
-  </div>
+	<div>
+		<label for="exampleInputBarangay">Select Year</label>
+		<form id="yearselection" action="">
+			<select class="form-select" id="selector" onchange="change()">
+				<option value="{{cur_year}}">{{cur_year}}</option>
+				{% for i in years reversed %}
+				<option value="{{i}}">{{i}}</option>
+				{% endfor %}
+			</select>
+		</form>
+		<script>
+			yearselection = document.getElementById("yearselection")
+			selector = document.getElementById("selector")
+			function change() {
+				yearselection.action = selector.value
+				yearselection.submit()
+			}
+		</script>
+	</div>
 
-</div>
+  <body>
+    <center>
+      <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
+    </center>
+    <canvas id="myChart" width="800" height="150"></canvas>
 
-<body>
+<script>
+	var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	y = ['{{tu_mon.jan}}', '{{tu_mon.feb}}', '{{tu_mon.mar}}', '{{tu_mon.apr}}', '{{tu_mon.may}}', '{{tu_mon.jun}}', '{{tu_mon.jul}}', '{{tu_mon.aug}}', '{{tu_mon.sept}}', '{{tu_mon.oct}}', '{{tu_mon.nov}}', '{{tu_mon.dec}}'];
+	var yValues = []
+	for (var i = 0; i < y.length; i++) {
+		if (y[i] <= 0) {
+			yValues.push(null)
+		} else {
+			yValues.push(y[i])
+		}
 
-  <canvas id="myChart" width="800" height="150"></canvas>
+	}
+	new Chart("myChart", {
+		type: "line",
 
-  <script>
-    var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var yValues = ['{{tu_mon.jan}}', '{{tu_mon.feb}}', '{{tu_mon.mar}}', '{{tu_mon.apr}}', '{{tu_mon.may}}', '{{tu_mon.jun}}', '{{tu_mon.jul}}', '{{tu_mon.aug}}', '{{tu_mon.sept}}', '{{tu_mon.oct}}', '{{tu_mon.nov}}', '{{tu_mon.dec}}'];
+		data: {
+			labels: xValues,
+			datasets: [{
+				label: "MonthlyTotal Usage: Year {{tu_mon.year}}",
+				fill: false,
+				borderColor: '#20B2AA',
+				tension: 0.1,
+				backgroundColor: "#3090C7",
+				data: yValues
+			}]
+		},
+		options: {
+			legend: { display: false },
+			title: {
+				display: true,
+				text: "Monthly Total Usage"
+			}
+		},
 
-    new Chart("myChart", {
-      type: "line",
+	});
+</script>
 
-      data: {
-        labels: xValues,
-        datasets: [{
-          label: "MonthlyTotal Usage: Year {{tu_mon.year}}",
-          fill: false,
-          borderColor: '#20B2AA',
-          tension: 0.1,
-          backgroundColor: "#3090C7",
-          data: yValues
-        }]
-      },
-      options: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: "Monthly Total Usage"
-        }
-      },
+<br>
 
-    });
-  </script>
+<section>
+	<canvas id="barangay" width="800" height="150"></canvas>
+	<canvas id="monthly_views" width="800" height="150"></canvas>
+	<br>
+	<br>
+	<br>
+</section>
 
-  <br>
 
-  <section>
-    <canvas id="barangay" width="800" height="150"></canvas>
-    <canvas id="monthly_views" width="800" height="150"></canvas>
-    <br>
-    <br>
-    <br>
-  </section>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+	// setup
+	const data = {
+		labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
+		datasets: [{
+			label: 'Barangay Usage',
+			data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
+			backgroundColor: [
+				'rgba(255, 26, 104, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(255, 206, 86, 0.2)',
+				'rgba(75, 192, 192, 0.2)',
+				'rgba(153, 102, 255, 0.2)',
+				'rgba(255, 159, 64, 0.2)',
+				'rgba(0, 0, 0, 0.2)'
+			],
+			borderColor: [
+				'rgba(255, 26, 104, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(255, 206, 86, 1)',
+				'rgba(75, 192, 192, 1)',
+				'rgba(153, 102, 255, 1)',
+				'rgba(255, 159, 64, 1)',
+				'rgba(0, 0, 0, 1)'
+			],
+			borderWidth: 1,
+		}]
+   	}
 
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    // setup 
-    const data = {
-      labels: [{%for tu_bay in tu_bay %}'{{tu_bay.barangaycode}}', {% endfor %}],
-    datasets: [{
-      label: 'Barangay Usage',
-      data: [{%for tu_bay in tu_bay %}'{{ tu_bay.sum }}', {% endfor %}],
-      backgroundColor: [
-        'rgba(255, 26, 104, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(0, 0, 0, 0.2)'
-      ],
-        borderColor: [
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(0, 0, 0, 1)'
-        ],
-          borderWidth: 1
-     }]
-   };
+	// config
+	const config = {
+		type: 'bar',
+		data,
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+	};
 
-    // config 
-    const config = {
-      type: 'bar',
-      data,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    };
+	// render init block
+	const ctx = document.getElementById('barangay');
+	const barangay = new Chart(
+		ctx,
+		config
+	);
 
-    // render init block
-    const ctx = document.getElementById('barangay');
-    const barangay = new Chart(
-      ctx,
-      config
-    );
+	//data2 start here
+	var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var yValues = ['{{bbm.jan}}', '{{bbm.feb}}', '{{bbm.mar}}', '{{bbm.apr}}', '{{bbm.may}}', '{{bbm.jun}}', '{{bbm.jul}}', '{{bbm.aug}}', '{{bbm.sept}}', '{{bbm.oct}}', '{{bbm.nov}}', '{{bbm.dec}}'];
 
-    //data2 start here
-    var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var yValues = ['{{bbm.jan}}', '{{bbm.feb}}', '{{bbm.mar}}', '{{bbm.apr}}', '{{bbm.may}}', '{{bbm.jun}}', '{{bbm.jul}}', '{{bbm.aug}}', '{{bbm.sept}}', '{{bbm.oct}}', '{{bbm.nov}}', '{{bbm.dec}}'];
+	const data2 = {
+		labels: xValues,
+		datasets: [{
+			label: "Total Usage",
+			fill: false,
+			borderColor: '#20B2AA',
+			tension: 0,
+			backgroundColor: "#3090C7",
+			data: yValues
+		}]
+	};
 
-    const data2 = {
-      labels: xValues,
-      datasets: [{
-        label: "Total Usage",
-        fill: false,
-        borderColor: '#20B2AA',
-        tension: 0.1,
-        backgroundColor: "#3090C7",
-        data: yValues
-      }]
-    };
+	// config
+	const config2 = {
+		type: 'line',
+		data: data2,
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+	};
 
-    // config 
-    const config2 = {
-      type: 'line',
-      data: data2,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    };
+	// render init block
+	const monthly_views = new Chart(
+		document.getElementById('monthly_views'),
+		config2
+	);
 
-    // render init block
-    const monthly_views = new Chart(
-      document.getElementById('monthly_views'),
-      config2
-    );
+	function clickHandler(click) {
+		const points = barangay.getElementsAtEventForMode(click, 'nearest', {
+			intersect: true
+		}, true);
+		if (points.length) {
+			console.log(points.length)
+			console.log(points[0].element.$context.raw)
 
-    function clickHandler(click) {
-      const points = barangay.getElementsAtEventForMode(click, 'nearest', {
-        intersect: true
-      }, true);
-      if (points.length) {
-        console.log(points.length)
-        console.log(points[0].element.$context.raw)
+			monthly_views.config.data.datasets[0].data = points[0].element.$context.raw;
+			monthly_views.update();
+		}
+	};
+	ctx.onclick = clickHandler
+</script>
 
-        monthly_views.config.data.datasets[0].data = points[0].element.$context.raw;
-        monthly_views.update();
-      }
-    };
-    ctx.onclick = clickHandler
-    console.log(data)
-  </script>
-
-  </script>
+</script>
 </body>
 
-</html>
+
+{% endblock usage_report_data %}

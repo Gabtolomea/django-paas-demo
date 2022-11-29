@@ -3,10 +3,10 @@
 {% block title %}
 Water Usage
 {% endblock title %}
-
 {% block style %}
-
-
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+<!-- 
 <style>
   html {
     background-color: #F2F3F2;
@@ -81,6 +81,61 @@ Water Usage
       text-align: right;
     }
 
+    table th {
+      font-size: .85em;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    @media screen and (max-width: 600px) {
+      table {
+        border: 0;
+      }
+
+      table caption {
+        font-size: 1.3em;
+      }
+
+      table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+
+      table tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .625em;
+      }
+
+      table td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: .8em;
+        text-align: right;
+      }
+
+      table td::before {
+
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      table td:last-child {
+        border-bottom: 0;
+      }
+    }
+    body {
+      font-family: "Open Sans", sans-serif;
+      line-height: 1.25;
+
     table td::before {
       /*
         * aria-label has no advantage, it won't be read inside a table
@@ -135,19 +190,24 @@ Water Usage
 </style>
 
 {% endblock style %}
+
+{% block script %}
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script> -->
+{% endblock script %}
+
+
 {% block waterusage %}
 
-<body onload="collection_rate()">
-  <table>
-    <div>
-      <h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Water Usage Per
-        Barangay</h2>
-    </div>
 
+<a href="">Barangay Report</a>
+<a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
+<a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
 
+<div onload="collection_rate()">
 
-    <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">Select Year:
-    </label>
 
 
     <form id="yearselection" action="">
@@ -183,7 +243,7 @@ Water Usage
       {% for br in br %}
       <tr>
         <td data-label="Barangay" style="background-color: #DBF3FA;"><a
-            href="/view_barangay/{{br.barangayrec_id}}">{{br.barangaycode}}</a></td>
+            href="{% url 'view_barangay' br.barangayrec_id %}" style="text-decoration: none;">{{br.barangaycode}}</a></td>
         <td data-label="Total Usage(Cu. Meter)" style="background-color: #D3D3D3">{{br.total_usage|floatformat:1}}</td>
         <td data-label="Total Receivables" class="total_paid" style="background-color: #D3D3D3">
           {{br.total_rec|floatformat:1}}</td>
@@ -193,7 +253,7 @@ Water Usage
       </tr>
       {% endfor %}
       <tr>
-        <td data-label="Barangay" style="background-color: #63CDD7;"><a href="#">Total</a></td>
+        <td data-label="Barangay" style="background-color: #63CDD7;"><a href="#" style="text-decoration: none;">Total</a></td>
         <td data-label="Total Usage(Cu. Meter)" class="total_paid" style="background-color: #808080">
           {{fr.tu|floatformat:1}}</td>
         <td data-label="Total Receivables" style="background-color: #808080">{{fr.tr|floatformat:1}}</td>
@@ -226,7 +286,7 @@ Water Usage
 
 
   </script>
-</body>
+</div>
 
 
 

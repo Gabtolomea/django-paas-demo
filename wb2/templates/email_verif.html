@@ -1,6 +1,6 @@
-{% autoescape off %} 
+{% autoescape off %}
 Welcome
 {{ name }}!!
- If you've lost your password or wish to reset it, use the lin to get started. Rest Your Password:
- 
+ If you've lost your password or wish to reset it, use the lin to get started. Reset Your Password:
+
  http://{{domain}}{% url 'password_reset_confirm' uidb64=uid token=token %}{% endautoescape %}
