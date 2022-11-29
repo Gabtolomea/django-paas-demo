@@ -527,6 +527,7 @@ def inputreading(request, id, year):
 def bills_list(request):
     user = request.user
     bills_list = ConsumerInfo.objects.all()
+    print(bills_list)
     context = {
         'bills_list': bills_list,
         'user': user,

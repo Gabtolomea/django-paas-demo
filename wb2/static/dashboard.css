@@ -81,12 +81,14 @@ i.fa-solid.fa-right-from-bracket:hover {
     font-size: 10px;
     white-space: nowrap;
 }
+a.modal_side_nav_li_text:hover{
+    background: #bfecf7;
+    color: #005e75 !important;
+    transition: all 0.15s;
+}
 .modal_side_nav_li_text{
     padding:10px 0 10px 10px;
     display: block;
-}
-li.modal_side_nav_li:hover {
-    background: #a0c5cf;
 }
 .side_nav_li{
     padding:10px 0 10px 100px;
@@ -97,10 +99,10 @@ li.modal_side_nav_li:hover {
 }
 
 
-ul {
+/* ul {
     margin-top: 10px;
     margin-left: -27px;
-}
+} */
 
 .sidenav_text {
     padding-left: 20px;
@@ -299,12 +301,6 @@ i.fa-solid.fa-right-from-bracket:hover {
     font-size: medium;
     white-space: nowrap;
 }
-
-ul {
-    margin-top: 10px;
-    margin-left: -27px;
-}
-
 .sidenav_text {
     padding-left: 20px;
     font-size: 20px;
