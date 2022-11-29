@@ -874,13 +874,14 @@ def usage_report_data(request, year):
         'tu_bay': tu_bay,
         'cur_year': year,
         'years': years,
+        'my': my,
         'user':request.session.get(ReqParams.username),
 
     }
     return render(request, 'usage_report_data.html', context)
 
-def bbm (request, id):
-  
+def bbm (request,id):
+    
     m = BarangayRecord.objects.filter(barangayrec_id = id).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
@@ -897,8 +898,9 @@ def bbm (request, id):
     )
     context  = {
         'm'  : m,
+   
     }
-    return render (request, 'baranagay_by_monthly.html', context)
+    return render (request, 'bbm.html', context)
 
 def revenue_report(request, year):
     years = []

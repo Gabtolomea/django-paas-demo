@@ -6,14 +6,14 @@ Usage Report
 
 {% block style %}
 <style>
-  .select {
-    font-weight: bold;
-    font-size: 20px;
-    font-style: normal;
-    float: left;
-    width: 140px;
-  }
-  table {
+	canvas {
+		border: 10px outset #63CDD7;
+	}
+	html {
+		background-color: #F2F3F2;
+	}
+
+	table {
 		border: 1px solid #ccc;
 		border-collapse: collapse;
 		margin: 0;
@@ -134,7 +134,62 @@ Usage Report
 				border-bottom: 0;
 			}
 		}
-	}
+
+		body {
+			font-family: "Open Sans", sans-serif;
+			line-height: 1.25;
+
+			table td::before {
+				/*
+        * aria-label has no advantage, it won't be read inside a table
+        content: attr(aria-label);
+        */
+				content: attr(data-label);
+				float: left;
+				font-weight: bold;
+				text-transform: uppercase;
+			}
+
+			table td:last-child {
+				border-bottom: 0;
+			}
+		}
+
+		body {
+			font-family: "Open Sans", sans-serif;
+			line-height: 1.25;
+		}
+
+		@media (max-width: 400px) {
+			h2 {
+				font-size: 20px;
+			}
+		}
+
+		@media (min-width: 401px) {
+			h2 {
+				font-size: 32px;
+			}
+		}
+
+		@media (max-width: 400px) {
+			h3 {
+				font-size: 15px;
+			}
+		}
+
+		@media (min-width: 401px) {
+			h3 {
+				font-size: 20px;
+			}
+		}
+
+		#years {
+			width: 180px;
+			height: 23px;
+			border-radius: 50px;
+
+		}
 </style>
 
 {% endblock style %}
@@ -143,6 +198,13 @@ Usage Report
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 {% csrf_token %}
+
+
+<a href="{% url 'reports' %}">Barangay Report</a>
+<a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
+<a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
 <div>
 	<div>
 		<label for="exampleInputBarangay">Select Year</label>
@@ -165,36 +227,47 @@ Usage Report
 	</div>
 
   <body>
-    <center>
+  
+<center><h4><strong>Barangay Total Usage: Year {{cur_year}}</strong></h4></center>
+	<canvas id="barangay" width="800" height="150"></canvas>
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	
+	
+  <center>
       <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
     </center>
     <canvas id="myChart" width="800" height="150"></canvas>
-
-
-
-<br>
-
 <section>
-	<center><h4><strong>Barangay Total Usage: Year {{cur_year}}</strong></h4></center>
-	<canvas id="barangay" width="800" height="150"></canvas>
+	
 	
 	<br>
-	<center><h4><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></h4></center>
+	<center>
+		<h4><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></h4>
+		<p2><i>click on row to view Monthly line-graph of individual Barangay</i></p2>
+	</center>
+
+		
+	
 	<table class="table table-bordered table-hover table-striped table-sm">
 		<thead class="wb_thead">
 			<tr>
 				<th scope="col" style="background-color: #63CDD7;">Barangay</th>
-				<th scope="col" style="background-color: #63CDD7">Total Usage(Cu. Meter)</th>
+				<th scope="col" style="background-color: #63CDD7">Total Usage(&#13221;)</th>
 				</tr>
 		</thead>
 		<tbody class="wb_body">
 			{% for t in tu_bay %}
-			<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'bbm' tu_mon.barangayrec_id %}">
+			<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'bbm' t.barangayrec_id %}">
 				<td data-label="Barangay">
 					{{t.barangaycode}}
 				</td>
-				<td data-label="Total Usage(Cu. Meter)">
-					{{ t.sum }}
+				<td data-label="Total Usage(&#13221;)">
+					{{ t.sum }} &#13221;
 				</td>
 	
 			</tr>
@@ -204,6 +277,10 @@ Usage Report
 		</tbody>
 	</table>
 </section>
+
+
+<br>
+
 
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>

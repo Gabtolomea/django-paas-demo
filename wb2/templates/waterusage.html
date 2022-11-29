@@ -194,11 +194,11 @@ Water Usage
 {% block waterusage %}
 
 
-<a href="">Barangay Report</a>
+<a href="{% url 'reports' %}">Barangay Report</a>
 <a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
 <a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
 <a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
-<p>bahug bulugh</p>
+
 
 <body onload="collection_rate()">
 
@@ -234,7 +234,7 @@ Water Usage
 		<thead class="wb_thead">
 			<tr>
 				<th scope="col" style="background-color: #63CDD7;">Barangay</th>
-				<th scope="col" style="background-color: #63CDD7">Total Usage(Cu. Meter)</th>
+				<th scope="col" style="background-color: #63CDD7">Total Usage(&#13221;)</th>
 				<th scope="col" style="background-color: #63CDD7">Total Receivables</th>
 				<th scope="col" style="background-color: #63CDD7">Total Collection</th>
 				<th scope="col" style="background-color: #63CDD7">Collection Rate</th>
@@ -247,7 +247,7 @@ Water Usage
 					{{br.barangaycode}}
 				</td>
 				<td data-label="Total Usage(Cu. Meter)">
-					{{br.total_usage|floatformat:1}}
+					 {{br.total_usage|floatformat:2}} &#13221;
 				</td>
 				<td data-label="Total Receivables" class="total_paid">
 					{{br.total_rec|floatformat:1}}
