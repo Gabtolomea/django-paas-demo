@@ -278,10 +278,10 @@ def ledger(request, id):
         'pen':pen,
         'bal':bal,
         'bill':bill,
-        'user':request.session.get(ReqParams.username)
+        'user':request.session[ReqParams.username]
     }
     return render(request, 'ledger.html', context)
-
+ww54ew5ew5
 @unauthenticated_user
 def forgetpassword(request):
     if request.method == "POST":
