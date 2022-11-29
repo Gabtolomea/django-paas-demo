@@ -203,11 +203,11 @@ Usage Report
 <a href="{% url 'reports' %}">Barangay Report</a>
 <a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
 <a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
-<a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
+<a  ="{% url 'unsettled_bills' %}">Unsettled Bills</a>
 
 <div>
 	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-		<button type="button" id="download" class="btn button2" style="float:right;">
+		<button type="button" onclick="pdf()" class="btn button2" style="float:right;">
 			<i class="fa fa-copy" aria-hidden="true"></i>
 			Get a Copy
 		</button>
@@ -232,8 +232,7 @@ Usage Report
 		</script>
 	</div>
 
-  <body>
-  
+  <div id="newdiv">
 <center><h4><strong>Barangay Total Usage: Year {{cur_year}}</strong></h4></center>
 	<canvas id="barangay" width="800" height="150"></canvas>
 
@@ -256,6 +255,7 @@ Usage Report
 		<h4><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></h4>
 		<p2><i>click on row to view Monthly line-graph of individual Barangay</i></p2>
 	</center>
+</div>
 
 		
 	
@@ -382,26 +382,24 @@ Usage Report
 	);
 </script>
 <script>
-		window.onload = function () {
-    document.getElementById("download")
-        .addEventListener("click", () => {
-            const invoice = this.document.getElementById("invoice");
-            console.log(invoice);
-            console.log(window);
-            var opt = {
-                margin: .5,
-                filename: 'myfile.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().from(invoice).set(opt).save();
-        })
- }
-	</script>
-
+	function pdf()  {
+		var width = doc.internal.pageSize.getWidth();
+		var height = doc.internal.pageSize.getHeight();
+		const newdiv = this.document.getElementById("newdiv");
+		console.log(newdiv);
+		console.log(window);
+		var opt = {
+			margin: .5,
+			filename: 'myfile.pdf',
+			image: { type: 'jpeg', quality: 0.98 },
+			html2canvas: { scale: 2 },
+			jsPDF: { unit: 'p', format: 'a4', orientation: 'landscape' },
+			width,
+			height
+		};
+		html2pdf().from(newdiv).set(opt).save();
+			}
 </script>
-</body>
 
 
 {% endblock usage_report_data %}
