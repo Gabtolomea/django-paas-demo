@@ -10,36 +10,41 @@ System User
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
 
-    .hide {
-        opacity: 0;
-        transition: 0.3s all ease-in-out;
-    }
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
 
-    .showOnHover:hover .hide {
-        opacity: 1;
-        transition: 0.3s all ease-in-out;
+	}
+	
 
-    }
-    .button2{
-        background-color: #0093b7;
+    .button2 {
+        background-color: var(--main-color); 
         color: white;
-        font-weight: bold;
-        width: 20%;
-        text-decoration: none;
-        padding: 8px 32px;
-        margin: 4px 2px;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
         border-radius: 30px;
-        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
     }
-    .showOnHover {
-        white-space: nowrap;
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
     }
-
 </style>
 {% endblock style %}
 {% block script %}
@@ -105,20 +110,6 @@ System User
         </section>
     </section>
 </section>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  function fireSweetAlert() {
-    {% for message in messages %}
-        {% if message %}
-            Swal.fire(
-            'Good job!',
-            '{{ message }}',
-            'success'
-            )
-        {% endif %}
-    {% endfor %}
-  }
-  </script>
 {% endblock sysuser %}
 
 

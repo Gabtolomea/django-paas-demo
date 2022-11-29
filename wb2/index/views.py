@@ -86,13 +86,6 @@ def meterreading(request):
 
 @authenticated_user
 def bills_list_p(request, p):
-    # if cache.get('message') is not None:
-    #     if cache.get('message').trigger > 1:
-    #         m = []
-    #     else:
-    #         m = [cache.get('message')]
-    # else:
-    #     m = []
     pages = int(p)
     user = request.session.get(ReqParams.username)
     bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
@@ -114,7 +107,6 @@ def bills_list_p(request, p):
         bills_list = paginator.page(paginator.num_pages)
 
     context = {
-        # 'messages':m,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -281,7 +273,7 @@ def ledger(request, id):
         'user':request.session[ReqParams.username]
     }
     return render(request, 'ledger.html', context)
-ww54ew5ew5
+
 @unauthenticated_user
 def forgetpassword(request):
     if request.method == "POST":
@@ -622,11 +614,36 @@ def inputreading(request, id, year):
 
 @authenticated_user
 def consumer_list(request):
-    consumer_list = ConsumerInfo.objects.all()
+    return redirect('consumer_list_p', p=10)
+
+
+def consumer_list_p(request, p):
+    pages = int(p)
+    user = request.session.get(ReqParams.username)
+    cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    count = cons.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator(cons, paginate_by)
+    try:
+        cons_list = paginator.page(page)
+
+    except PageNotAnInteger:
+        cons_list = paginator.page(1)
+
+    except EmptyPage:
+        cons_list = paginator.page(paginator.num_pages)
 
     context = {
-        'consumer_list': consumer_list,
-        'user': request.session.get(ReqParams.username)
+        'last':range(paginator.num_pages - 3, paginator.num_pages),
+        'five':range(1,6),
+        'paginate_by': paginate_by,
+        'consumer_list': cons_list,
+        'user': user,
     }
     return render(request, 'conlist.html',context)
 
