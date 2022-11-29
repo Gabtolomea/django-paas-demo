@@ -206,6 +206,12 @@ Usage Report
 <a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
 
 <div>
+	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+		<button type="button" id="download" class="btn button2" style="float:right;">
+			<i class="fa fa-copy" aria-hidden="true"></i>
+			Get a Copy
+		</button>
+	</div>
 	<div>
 		<label for="exampleInputBarangay">Select Year</label>
 		<form id="yearselection" action="">
@@ -272,7 +278,13 @@ Usage Report
 	
 			</tr>
 			{% endfor %}
-		
+			<script>
+				jQuery(document).ready(function($) {
+					$(".clickable-row").click(function() {
+						window.location = $(this).data("href");
+					});
+				});
+			</script> 
 			
 		</tbody>
 	</table>
@@ -368,9 +380,27 @@ Usage Report
 		ctx,
 		config
 	);
+</script>
+<script>
+		window.onload = function () {
+    document.getElementById("download")
+        .addEventListener("click", () => {
+            const invoice = this.document.getElementById("invoice");
+            console.log(invoice);
+            console.log(window);
+            var opt = {
+                margin: .5,
+                filename: 'myfile.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().from(invoice).set(opt).save();
+        })
+ }
+	</script>
 
 </script>
-
 </body>
 
 
