@@ -197,7 +197,7 @@ Water Usage
 <a href="{% url 'reports' %}">Barangay Report</a>
 <a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
 <a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
-<a href="{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
 
 
 <body onload="collection_rate()">
@@ -208,7 +208,7 @@ Water Usage
 			Barangay</h2>
 	</div>
 
-
+	<label for="exampleInputBarangay">Select Year</label>
 	<form id="yearselection" action="">
 		<select class="form-select" id="selector" onchange="change()">
 			<option value="{{cur_year}}">{{cur_year}}</option>

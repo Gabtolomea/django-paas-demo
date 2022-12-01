@@ -815,7 +815,6 @@ def reports(request):
 
 # @authenticated_user
 def barangayreport(request, year):
-    user = request.session[ReqParams.username]
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -856,7 +855,7 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        'user':user,
+        'user': request.session.get(ReqParams.username)
     }
     return render(request, 'waterusage.html', context)
 
@@ -1027,11 +1026,41 @@ def deleteconsumer(request, id):
     con.delete()
     return redirect('consumer_list')
 
-def unsettled_bill(request):
-    ub = ConsumerInfo.objects.all()
+
+def unsettled_bills(request):
+    return redirect('unsettled_bills_p', p=10)
+
+def unsettled_bills_p(request, p):
+    tb =ConsumerInfo.objects.all().aggregate(
+        tots = Sum('current_bal')
+    )
+    pages = int(p)
+    ubs = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    count = ubs.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator (ubs,paginate_by)
+    try:
+        ub = paginator.page(page)
+    
+    except PageNotAnInteger:
+        ub = paginator.page(1)
+    except EmptyPage:
+        ub = paginator.page(paginator.num_pages)
+
+
     context = {
         'ub': ub,
-        'latest':2022
+        'latest':2022,
+        'paginate_by': paginate_by,
+        'last':range(paginator.num_pages - 3, paginator.num_pages),
+        'five':range(1,6),
+        'tb' : tb,
+        'user' : request.session.get(ReqParams.username)
     }
     return render(request, 'unsettled_bill.html', context)
 
@@ -1120,6 +1149,7 @@ def discount(request):
 
 # @authenticated_user
 def new_consumertype(request):
+  
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
@@ -1146,7 +1176,7 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
-
+@authenticated_user
 def penalty(request):
     p = Penalty.objects.all()
     form = addPenalty
@@ -1164,6 +1194,7 @@ def penalty(request):
             pen.penalty_rate = penalty_rate
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
+            pen.added_by = None
             pen.save()
         else:
             print("way ayo")
