@@ -173,6 +173,14 @@ def user_creation(request):
 @authenticated_user
 def ledger(request, id):
     table = []
+    year = datetime.today().year
+    usage = 0
+    transid = 0
+    connectionType = 0
+    pre = 0
+    cur = 0
+    pen = 0
+    bill = 0
     class ledgerclass():
         def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style):
             self.transid = transid
@@ -251,14 +259,10 @@ def ledger(request, id):
                 else:
                     p = p + current
             prev = p
-    year = date.today().year
-
-
-
 
     context = {
-        'month':calendar.month_name[date.today().month-1],
-        'date_today':date.today(),
+        'month':calendar.month_name[datetime.today().month-1],
+        'date_today':datetime.today(),
         'u': u,
         'table': table,
         'year': year,       
@@ -325,7 +329,7 @@ def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     context = {
         'meterred': meterred,
-        'year': date.today().year,
+        'year': datetime.today().year,
         'user': request.session.get(ReqParams.username)
     }
     
@@ -355,7 +359,7 @@ def meterreading_p(request, p):
         'paginate_by': paginate_by,
         'meterred': m,
         'user': user,
-        'year': date.today().year,
+        'year': datetime.today().year,
     }
     return render(request, 'meterreading.html', context)
 
@@ -466,7 +470,7 @@ def inputreading(request, id, year):
                         t = Transactions()
                         t.acctID = id
                         t.transType = 'Billing'
-                        t.date = date.today()
+                        t.date = datetime.today()
                         t.month = d
                         t.year = year
                         t.meterReading = i
@@ -487,7 +491,7 @@ def inputreading(request, id, year):
                             t = Transactions()
                             t.acctID = consumer
                             t.transType = 'Penalty'
-                            t.date = date.today()
+                            t.date = datetime.today()
                             t.month = d
                             t.year = year
                             t.bill = interest
@@ -500,7 +504,7 @@ def inputreading(request, id, year):
                             t = Transactions()
                             t.acctID = consumer
                             t.transType = 'Discount'
-                            t.date = date.today()
+                            t.date = datetime.today()
                             t.month = d
                             t.year = year
                             t.bill = 0
@@ -523,7 +527,7 @@ def inputreading(request, id, year):
 
                         lastreading = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d-1).meterReading
                         t.meterReading = i
-                        t.date = date.today()
+                        t.date = datetime.today()
                         t.usage = i - lastreading
                         usage = i - lastreading
                         rate = ConsumerType.objects.get(contypeidid=t.contypeid)
@@ -539,7 +543,7 @@ def inputreading(request, id, year):
                             t = Transactions()
                             t.acctID = consumer
                             t.transType = 'Penalty'
-                            t.date = date.today()
+                            t.date = datetime.today()
                             t.month = d
                             t.year = year
                             t.bill = interest
@@ -551,7 +555,7 @@ def inputreading(request, id, year):
                             t = Transactions()
                             t.acctID = consumer
                             t.transType = 'Discount'
-                            t.date = date.today()
+                            t.date = datetime.today()
                             t.month = d
                             t.year = year
                             t.bill = 0
@@ -598,7 +602,7 @@ def inputreading(request, id, year):
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
                 d += 1
-            return redirect('inputreading', id=id, year=date.today().year)
+            return redirect('inputreading', id=id, year=datetime.today().year)
 
         # CHARLIE DIRI PAGHIMO
 
@@ -700,7 +704,7 @@ def stopmeter(request, id):
         consumer = ConsumerInfo.objects.get(consumer_id=id)
         consumer.stopmeterflag = not consumer.stopmeterflag
         consumer.save()
-    return redirect('inputreading', id=id, year=date.today().year)
+    return redirect('inputreading', id=id, year=datetime.today().year)
 
 @authenticated_user
 def sysuser(request):
@@ -804,9 +808,9 @@ def payment(request, id):
         t = Transactions()
         t.acctID = ConsumerInfo.objects.get(consumer_id=id)
         t.transType = "Payment"
-        t.date = date.today()
-        t.year = date.today().year
-        t.month = date.today().month
+        t.date = datetime.today()
+        t.year = datetime.today().year
+        t.month = datetime.today().month
         t.payment = amount
         t.processedBy = request.user.username
         t.or_number = or_num
@@ -815,7 +819,7 @@ def payment(request, id):
     return redirect('ledger', id=id)
 
 def reports(request):
-    return redirect('barangayreport', date.today().year)
+    return redirect('barangayreport', datetime.today().year)
 
 @authenticated_user
 def barangayreport(request, year):
@@ -878,7 +882,7 @@ def view_barangay(request, id):
 
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
-    year = date.today().year
+    year = datetime.today().year
     print(year)
     context = {
         'year': year,
