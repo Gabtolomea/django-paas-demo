@@ -8,11 +8,11 @@ Billing
 
 {% endblock style %}
 {% block script %}
-<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+<!-- <script src="{% static 'jquery/jquery.js' %}"></script> -->
 {% endblock script %}
 {% block billslist %}
 <h1 class="mb-3 text-center">Bills List</h1>
-
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
@@ -20,14 +20,15 @@ Billing
 				<div class="col-sm-12 col-md-6">
 					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
-						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
-							<option disabled selected value>--Select--</option>
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
-							<option value="0">All</option>
-						</select> entries</label>
+							<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
+								<option disabled selected value>--Select--</option>
+								<option value="10">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<option value="0">All</option>
+							</select> entries
+						</label>
 					</form>
 					<script>
 						yearselection = document.getElementById("yearselection")
