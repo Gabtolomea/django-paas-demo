@@ -1055,7 +1055,8 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
-
+    
+    
     
     alltran = Transactions.objects.filter(acctID_id=1, transType='Billing')
     years = []
