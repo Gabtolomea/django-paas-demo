@@ -41,11 +41,11 @@ def porter(request):
     return render(request, "landing.html")
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def lp(request):
     return render(request, "landing.html")
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -76,15 +76,15 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-@authenticated_user
+# @authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
-@authenticated_user
+# @authenticated_user
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
-@authenticated_user
+# @authenticated_user
 def bills_list_p(request, p):
     pages = int(p)
     user = request.session.get(ReqParams.username)
@@ -121,7 +121,7 @@ def signout(request):
     messages.success(request, 'Logout successful')
     return redirect('login')
 
-@authenticated_user
+# @authenticated_user
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -170,7 +170,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-@authenticated_user
+# @authenticated_user
 def ledger(request, id):
     table = []
     year = datetime.today().year
@@ -314,7 +314,7 @@ def forgetpassword(request):
         context = {'email': email, 'errors': errors}
     return render(request, 'forgetpassword.html')
 
-@unauthenticated_user
+# @unauthenticated_user
 def password_reset_form(request):
     # form = SystemUserForm()
     # if request.method == "POST":
@@ -324,7 +324,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-@authenticated_user
+# @authenticated_user
 def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     context = {
@@ -608,7 +608,7 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
-@authenticated_user
+# @authenticated_user
 def consumer_list(request):
     return redirect('consumer_list_p', p=10)
 
@@ -643,12 +643,12 @@ def consumer_list_p(request, p):
     }
     return render(request, 'conlist.html',context)
 
-@authenticated_user
+# @authenticated_user
 def sysuser(request):
     sysuser = SystemUsers.objects.all()
     return render(request, 'sysuser.html', {'sysuser': sysuser})
 
-@authenticated_user
+# @authenticated_user
 def consumercreation(request):
     form = ConsumerCreationForm()
     if request.method == "POST":
@@ -690,7 +690,7 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-@authenticated_user
+# @authenticated_user
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -698,7 +698,7 @@ def stopmeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=datetime.today().year)
 
-@authenticated_user
+# @authenticated_user
 def sysuser(request):
     table = []
 
@@ -737,7 +737,7 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-@authenticated_user
+# @authenticated_user
 def userupdate(request, id):
     user = ConsumerInfo.objects.get(consumer_id=id)
     form = Userinfoupdate(instance=user)
@@ -754,7 +754,7 @@ def userupdate(request, id):
 
     return render(request, 'userupdate.html', context)
 
-@authenticated_user
+# @authenticated_user
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     encoded = sys.password
@@ -813,7 +813,7 @@ def payment(request, id):
 def reports(request):
     return redirect('barangayreport', datetime.today().year)
 
-@authenticated_user
+# @authenticated_user
 def barangayreport(request, year):
     user = request.session[ReqParams.username]
     years = []
@@ -884,6 +884,7 @@ def unsettled_bill(request):
 
 
 def usage_report_data(request, year):
+    
     years = []
     class bm():
         def __init__(self, jan, feb, mar, apr, may, jun, jul, aug, sept, oct, nov, dec):
@@ -921,7 +922,7 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-
+    
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
 
@@ -930,14 +931,15 @@ def usage_report_data(request, year):
         'tu_bay': tu_bay,
         'cur_year': year,
         'years': years,
+        'my': my,
         'user':request.session.get(ReqParams.username),
 
     }
     return render(request, 'usage_report_data.html', context)
 
-
-def barangay_by_monthly(request, id, year):
-    bbm = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(
+def bbm (request,id):
+    
+    m = BarangayRecord.objects.filter(barangayrec_id = id).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -951,37 +953,11 @@ def barangay_by_monthly(request, id, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    # jan = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jan'))
-    # feb = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_feb'))
-    # mar = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_mar'))
-    # apr = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_apr'))
-    # may = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_may'))
-    # jun = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jun'))
-    # jul = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_jul'))
-    # aug = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_aug'))
-    # sept = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_sept'))
-    # oct = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_oct'))
-    # nov = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_nov'))
-    # dec = BarangayRecord.objects.filter(barangayrec_id=id, year=year).aggregate(sum = Sum('total_usage_dec'))
-    # context = {
-    #     'bbm.jan': jan,
-    #     'bbm.feb': feb,
-    #     'bbm.mar': mar,
-    #     'bbm.apr': apr,
-    #     'bbm.may': may,
-    #     'bbm.jun': jun,
-    #     'bbm.jul': jul,
-    #     'bbm.aug': aug,
-    #     'bbm.sept': sept,
-    #     'bbm.oct': oct,
-    #     'bbm.nov': nov,
-    #     'bbm.dec': dec,
-    # }
-    context = {
-        # 'bbm' : 
+    context  = {
+        'm'  : m,
+   
     }
-    return render(request, 'usage_report_data.html', context)
-
+    return render (request, 'bbm.html', context)
 
 def revenue_report(request, year):
     years = []
@@ -1032,6 +1008,7 @@ def revenue_report(request, year):
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
 
     context = {
+        'my': my,
         'rev_col': rev_col,
         'rev_rec': filt,
         'cur_year': year,
@@ -1141,7 +1118,7 @@ def discount(request):
     return render(request, 'discount.html', context)
 
 
-@authenticated_user
+# @authenticated_user
 def new_consumertype(request):
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
