@@ -386,7 +386,6 @@ def inputreading(request, id, year):
     if not trans:
         for i in range(1, 13):
             month = calendar.month_name[i]
-
             m = meterreaderclass('', month, '', '', '', '', '')
             table.append(m)
         context = {
@@ -400,7 +399,6 @@ def inputreading(request, id, year):
         asc_trans = trans.order_by('month')
         count = len(asc_trans)
         j = 0
-        print(asc_trans)
         if asc_trans[0].date.month == 1:
             j = 1
         for i in alltrans:
@@ -408,8 +406,6 @@ def inputreading(request, id, year):
                 years.append(i.date.year)
         if int(year) in years:
             years.remove(int(year))
-        # print(asc_trans)
-        # print(count)
         lastreading = 0
         for i in range(1, 13):
             month = calendar.month_name[i]
@@ -420,7 +416,6 @@ def inputreading(request, id, year):
             reading = 0
             style = ''
             next = False
-            # print(str(i)+" "+str(j+1))
             if j < count and count != 0:
                 if i == asc_trans[j].month:
                     transid = asc_trans[j].transactionid
@@ -434,7 +429,6 @@ def inputreading(request, id, year):
                     lastreading = reading
                     style = 'table-success'
                     j += 1
-            # print(str(prev)+" "+str(reading)+" "+str(next))
             m = meterreaderclass(transid, month, usage, prev, reading, next, style)
             table.append(m)
 
@@ -444,8 +438,7 @@ def inputreading(request, id, year):
         usage = 0
         if request.method == "POST":
             try:
-                BarangayRecord.objects.get(
-                    barangaycode_id=consumer.installation_address_id, year=year)
+                BarangayRecord.objects.get(barangaycode_id=consumer.installation_address_id, year=year)
             except ObjectDoesNotExist:
                 con_b_rec = BarangayRecord()
             else:
@@ -462,13 +455,13 @@ def inputreading(request, id, year):
                     if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
                         xy = con_penalty.penalty_rate * cummulative
                         interest = xy/100
-                    try:
-                        Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                    except ObjectDoesNotExist:
+                    
+                    t = Transactions.objects.filter(acctID=consumer, transType='Billing', year=year, month=d)
+                    if not t:
                         # print("create transaction")
                         bill = 0
                         t = Transactions()
-                        t.acctID = id
+                        t.acctID = consumer
                         t.transType = 'Billing'
                         t.date = datetime.today()
                         t.month = d
@@ -476,9 +469,8 @@ def inputreading(request, id, year):
                         t.meterReading = i
                         t.usage = i - lastreading
                         usage = i - lastreading
-                        t.contypeid = consumer.rateid_id
-                        rate = ConsumerType.objects.get(
-                            contypeidid=consumer.rateid_id)
+                        t.contypeid = consumer.contypeid_id
+                        rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
                         if t.usage <= rate.minReading:
                             t.bill = rate.minReadingCharge
                         else:
@@ -1061,7 +1053,8 @@ def deleteconsumer(request, id):
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     context = {
-        'ub': ub
+        'ub': ub,
+        'latest':2022
     }
     return render(request, 'unsettled_bill.html', context)
 
@@ -1080,10 +1073,8 @@ def view_unsettled_bills(request, id, year):
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    billing = Transactions.objects.filter(
-        acctID_id=id, transType='Billing',  year=year)
-    payment = Transactions.objects.filter(
-        acctID_id=id, transType='Payment', year=year)
+    billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
+    payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year)
     pcount = len(payment)
     count = len(billing)
     j = 0

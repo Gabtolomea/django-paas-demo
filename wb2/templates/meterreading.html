@@ -22,21 +22,6 @@ Meter Reading
 </style>
 {% endblock style %}
 {% block script %}
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#table').DataTable({
-            order: [[1, 'asc']],
-            stateSave: true,
-            lengthMenu: [
-                [10, 25, 50, -1],
-                [10, 25, 50, 'All'],
-            ],
-        });
-    });
-</script>
 {% endblock script %}
 {% block meterreading %}
 
@@ -59,6 +44,8 @@ Meter Reading
 							<option value="0">All</option>
 						</select> entries</label>
 					</form>
+					
+					<script src="{% static 'jquery/jquery.js' %}"></script>
 					<script>
 						yearselection = document.getElementById("yearselection")
 						selector = document.getElementById("selector")
