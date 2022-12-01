@@ -1031,7 +1031,6 @@ def view_unsettled_bills(request, id, year):
     years = []
     table = []
     uv = ConsumerInfo.objects.get(consumer_id=id)
-
     class view_utang():
         def __init__(self, month, reading, reading_date, usage, total_bill, total_amount_paid):
             self.month = month
@@ -1077,11 +1076,9 @@ def view_unsettled_bills(request, id, year):
                 reading_date = billing[j].date
                 total_bill = billing[j].bill
                 j += 1
-
-        a = view_utang(month, reading, reading_date, usage,
+                a = view_utang(month, reading, reading_date, usage,
                        total_bill, total_amount_paid)
         table.append(a)
-
     context = {'uv': uv,
                'years': years,
                'current': year,
