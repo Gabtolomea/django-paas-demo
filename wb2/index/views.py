@@ -27,6 +27,7 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
+from django.shortcuts import render
 
 
 def porter(request):
@@ -128,6 +129,7 @@ def signout(request):
     lr.delete()
     messages.success(request, 'Logout successful')
     return redirect('login')
+
 
 # @authenticated_user
 def user_creation(request):
@@ -260,9 +262,14 @@ def ledger(request, id):
                     p = p + current
             prev = p
     year = date.today().year
-
-
+    
+    query = request.GET.get('q', '')
+    if query:
+        results = ConsumerInfo.objects.filter(name__icontains=query).distinct()
+    else:
+        results = []
     context = {
+        'results':results,
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
         'u': u,
