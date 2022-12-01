@@ -387,13 +387,13 @@ Usage Report
 	
 		const newdiv = this.document.getElementById("newdiv");
 		console.log(newdiv);
+		newdiv.height = newdiv.width = 0; 
 		var opt = {
 			margin: .5,
 			filename: 'myfile.pdf',
 			image: { type: 'jpeg', quality: 0.98 },
 			html2canvas: { scale: 2 },
-			jsPDF: { unit: 'cm', format: 'legal', orientation: 'landscape' },
-			
+			jsPDF: { unit: 'in', format: 'letter', orientation: 'l' [297, 300]},
 		};
 		html2pdf().from(newdiv).set(opt).save();
 			}
