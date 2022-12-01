@@ -858,17 +858,6 @@ def view_barangay(request, id):
     return render(request, 'view_barangay.html', context)
 
 
-def unsettled_bill(request):
-    ub = ConsumerInfo.objects.all()
-    year = date.today().year
-    print(year)
-    context = {
-        'year': year,
-        'ub': ub,
-        'user': request.session.get(ReqParams.username)
-    }
-    return render(request, 'unsettled_bill.html', context)
-
 
 def usage_report_data(request, year):
     
@@ -1014,10 +1003,40 @@ def deleteconsumer(request, id):
     con.delete()
     return redirect('consumer_list')
 
-def unsettled_bill(request):
-    ub = ConsumerInfo.objects.all()
+
+def unsettled_bills(request):
+    return redirect('unsettled_bills_p', p=10)
+
+def unsettled_bills_p(request, p):
+    tb =ConsumerInfo.objects.all().aggregate(
+        tots = Sum('current_bal')
+    )
+    pages = int(p)
+    ubs = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    count = ubs.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator (ubs,paginate_by)
+    try:
+        ub = paginator.page(page)
+    
+    except PageNotAnInteger:
+        ub = paginator.page(1)
+    except EmptyPage:
+        ub = paginator.page(paginator.num_pages)
+
+
     context = {
-        'ub': ub
+        'ub': ub,
+        'paginate_by': paginate_by,
+        'last':range(paginator.num_pages - 3, paginator.num_pages),
+        'five':range(1,6),
+        'tb' : tb,
+        'user' : request.session.get(ReqParams.username)
     }
     return render(request, 'unsettled_bill.html', context)
 

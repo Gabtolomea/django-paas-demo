@@ -1,4 +1,7 @@
 <style>
+	canvas {
+		border: 10px outset #63CDD7;
+	}
 	html {
 		background-color: #F2F3F2;
 	}
@@ -109,7 +112,7 @@
   <body>
 {% csrf_token %}
  <center>
-      <h4><strong>Monthly Total Usage of Barangay {{m.barangaycode}} </strong></h4>
+      <h4><strong>Monthly Total Usage of Barangay {{m.year}} </strong></h4>
     </center>
 <canvas id="myChart" width="800" height="150"></canvas>
 <br>
