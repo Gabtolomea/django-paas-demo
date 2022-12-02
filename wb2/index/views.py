@@ -1035,19 +1035,33 @@ def unsettled_bills_p(request, p):
         def __init__(self, y, u):
             self.y = y
             self.u = u
-    tb =ConsumerInfo.objects.all().aggregate(
-        tots = Sum('current_bal')
-    )
+    tb =ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
     pages = int(p)
-    ubs = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
-    count = ubs.count()
+    ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
+    
+    table = []
+    for j in ubs:
+        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing')
+        years = []
+        for i in alltran:
+            if i.year not in years:
+                if i.year is not None:
+                    years.append(i.year)
+        years.reverse()
+        if years:
+            a = years[0]
+        else:
+            a = 0
+        yeah = ub_year(a,j)
+        table.append(yeah)
+    count = len(table)
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
     page = request.GET.get('page')
 
-    paginator = Paginator (ubs,paginate_by)
+    paginator = Paginator (table,paginate_by)
     try:
         ub = paginator.page(page)
     
@@ -1055,25 +1069,13 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
-    
-    
-    
-    alltran = Transactions.objects.filter(acctID_id=1, transType='Billing')
-    years = []
-    for i in alltran:
-        if i.year not in years:
-            if i.year is not None:
-                years.append(i.year)
-    years.reverse()
-    print(years[0])
     context = {
         'ub': ub,
-        'latest': 2022,
         'paginate_by': paginate_by,
-        'last':range(paginator.num_pages-3, paginator.num_pages),
-        'five':range(1,6),
+        'last' : range(paginator.num_pages-3, paginator.num_pages),
+        'five' : range(1,6),
         'tb' : tb,
-        'user' : request.session.get(ReqParams.username)
+        'user' : request.session.get(ReqParams.username),
     }
     return render(request, 'unsettled_bill.html', context)
 

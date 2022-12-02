@@ -9,8 +9,7 @@ Unsettled Bills
 
 {% load static %}
 {% block style %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
 
 <style>
     .hide {
@@ -27,14 +26,6 @@ Unsettled Bills
 {% endblock style %}
 
 {% block unsettled_bills %}
-
-<script>
-    jQuery(document).ready(function($) {
-        $(".clickable-row").click(function() {
-            window.location = $(this).data("href");
-        });
-    });
-</script>
 
 <h1 class="mb-3 text-center">Unsettled Bills</h1>
 <center>
@@ -92,14 +83,15 @@ Unsettled Bills
                         </thead>
                         <tbody class="wb_tbody">
                             {% for ub in ub %}
-                            <tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' ub.consumer_id latest %}">
-                                <td>{{ub.consumer_id}}</td>
-                                <td>{{ub.lastname}} {{firsname}} {{middlename}}</td>
-                                <td>{{ub.meternumber}}</td>
-                                <td>{{ub.installation_address}}</td>
-                                <td>&#8369; {{ub.current_bal|floatformat:2|intcomma}}</td>
+                            <tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' ub.u.consumer_id ub.y %}">
+                                <td>{{ub.u.consumer_id}}</td>
+                                <td>{{ub.u.lastname}} {{ub.u.firsname}} {{ub.u.middlename}}</td>
+                                <td>{{ub.u.meternumber}}</td>
+                                <td>{{ub.u.installation_address}}</td>
+                                <td>&#8369; {{ub.u.current_bal|floatformat:2|intcomma}}</td>
                             </tr>
                             {% endfor %}
+                            <script src="{% static 'jquery/jquery.js' %}"></script>
                             <script>
                                 jQuery(document).ready(function ($) {
                                     $(".clickable-row").click(function () {
@@ -300,18 +292,16 @@ Unsettled Bills
 </div>
 <script>
     function myFunction() {
-        // Declare variables 
         var input, filter, table, tr, i, j, column_length, count_td;
         column_length = document.getElementById('myTable').rows[0].cells.length;
         input = document.getElementById("myInput");
         filter = input.value.toUpperCase();
         table = document.getElementById("myTable");
         tr = table.getElementsByTagName("tr");
-        for (i = 1; i < tr.length; i++) { // except first(heading) row
+        for (i = 1; i < tr.length; i++) {
             count_td = 0;
-            for (j = 1; j < column_length - 1; j++) { // except first column
+            for (j = 1; j < column_length - 1; j++) {
                 td = tr[i].getElementsByTagName("td")[j];
-                /* ADD columns here that you want you to filter to be used on */
                 if (td) {
                     if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
                         count_td++;
