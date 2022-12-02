@@ -1184,3 +1184,24 @@ def penalty(request):
     }
 
     return render(request, 'penalty.html', context)
+
+def test(request, year):
+    test = BarangayRecord.objects.filter(year = year,).aggregate(
+        jan=Sum('total_usage_jan'),
+        feb=Sum('total_usage_feb'),
+        mar=Sum('total_usage_mar'),
+        apr=Sum('total_usage_apr'),
+        may=Sum('total_usage_may'),
+        jun=Sum('total_usage_jun'),
+        jul=Sum('total_usage_jul'),
+        aug=Sum('total_usage_aug'),
+        sept=Sum('total_usage_sept'),
+        oct=Sum('total_usage_oct'),
+        nov=Sum('total_usage_nov'),
+        dec=Sum('total_usage_dec'),
+    )
+
+    context = {
+        'test' : test
+    }
+    return render(request, 'test.html', context)

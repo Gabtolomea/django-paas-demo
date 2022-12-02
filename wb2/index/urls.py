@@ -44,6 +44,7 @@ urlpatterns = [
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
+    path('test/<int:year>', views.test, name='test'),
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
