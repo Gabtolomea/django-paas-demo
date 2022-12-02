@@ -1011,6 +1011,7 @@ def unsettled_bills_p(request, p):
     tb =ConsumerInfo.objects.all().aggregate(
         tots = Sum('current_bal')
     )
+
     pages = int(p)
     ubs = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = ubs.count()
@@ -1028,8 +1029,12 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
+    
+    
+    
 
 
+   
     context = {
         'ub': ub,
         'paginate_by': paginate_by,
