@@ -1,9 +1,8 @@
-
-
 {% load static %}
 {% load active_link_tags %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>
         {% block title %}
@@ -11,12 +10,10 @@
     </title>
     <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
-    <script src="https://code.jquery.com/jquery-3.6.1.js"
-        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.15.4-web/css/all.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'bootstrap-icons.css' %}"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     {% block style %}
     {% endblock style %}
 </head>
@@ -24,62 +21,80 @@
     <div id="loading">
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
     </div>
-  <!-- Modal -->
-  <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-dark border-0">
-            <span class="mobile_header_font" style="color:white;font-weight: 700;"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body sidebar w-100">
-            <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x"></i>
-                <p style="font-size: 30px">{{user}}</p>
+    <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark border-0">
+                    <span class="mobile_header_font" style="color:white;font-weight: 700;">
+                        WATER BILLING
+                        <span class="station" style="color: #63CDD7;">STATION</span>
+                    </span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body sidebar w-100">
+                    <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x">
+                            <img src="{% static 'svgs/payments.svg' %}" alt="">
+                        </i>
+                        <p style="font-size: 30px">{{user}}</p>
+                    </div>
+                    <ul class="list-unstyled" style="padding-left: 30px;">
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'bills_list' %}"
+                                style="color: white; text-decoration: none;">
+                                <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                                <span class="sidenav_text">Billing</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'meterreading' %}"
+                                style="color: white; text-decoration: none ">
+                                <i class="fa fa-tachometer fa-2x"></i>
+                                <span class="sidenav_text">Meter Reading</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'consumer_list' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-user fa-2x"></i>
+                                <span class="sidenav_text">Consumers</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'reports' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa fa-line-chart fa-2x"></i>
+                                <span class="sidenav_text">Reports</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'unsettled_bills' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa fa-line-chart fa-2x"></i>
+                                <span class="sidenav_text">Unsettled Bills</span>
+                            </a>
+                        </li>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'sysuser' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-user-group fa-2x"></i>
+                                <span class="sidenav_text"> System Users</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                                <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                                <span class="sidenav_text">Account Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <ul class="list-unstyled" style="padding-left: 30px;">
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
-                        <i class="fa-solid fa-money-bill-wave fa-2x"></i>
-                        <span class="sidenav_text">Billing</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="{% url 'meterreading' %}"  style="color: white; text-decoration: none ">
-                        <i class="fa fa-tachometer fa-2x"></i>
-                        <span class="sidenav_text">Meter Reading</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
-                        <i class="fa-solid fa-user fa-2x"></i>
-                        <span class="sidenav_text">Consumers</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="{% url 'reports' %}" style="color: white; text-decoration: none" >
-                        <i class="fa fa-line-chart fa-2x"></i>
-                        <span class="sidenav_text">Reports</span>
-                    </a>
-                </li>
-                <li class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
-                        <i class="fa-solid fa-user-group fa-2x"></i>
-                        <span class="sidenav_text"> System Users</span>
-                    </a>
-                </li>
-                <li  class="modal_side_nav_li">
-                    <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
-                        <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
-                        <span class="sidenav_text">Account Settings</span>
-                    </a>
-                </li>
-            </ul>
         </div>
-      </div>
     </div>
-  </div>
     <header>
         {% for message in messages %}
         <div id="login"
@@ -92,46 +107,48 @@
         </div>
         {% endfor %}
 
-            <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
-                <div class="col-sm-8 col-md-8 col-lg-8;" style="font-size: 20px; white-space: nowrap;" >
-                    <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                        <!-- Button trigger modal -->
-                    <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal" data-target="#exampleModal">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <span class="mobile_header_font" style="padding-left:10px; color:white"> ONLINE WATER BILLING <span class="station" style="color: #63CDD7;">STATION</span></span>
-                </div>
-
-                <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
-
-
-                    <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
-                        <i class="fa-solid fa-bell"></i>
-                    </a>
-                    <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
-                        <i class="fa-solid fa-magnifying-glass-plus"></i>
-                    </a>
-                    <a href="{% url 'signout' %}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </a>
-                </div>
+        <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
+            <div class="col-sm-8 col-md-8 col-lg-8;" style="font-size: 20px; white-space: nowrap;">
+                <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <!-- Button trigger modal -->
+                <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal"
+                    data-target="#exampleModal">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <span class="mobile_header_font" style="padding-left:10px; color:white">WATER BILLING <span
+                        class="station" style="color: #63CDD7;">STATION</span></span>
             </div>
+
+            <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
+
+
+                <a href="#" style="color:#0093B7; text-decoration: none; padding: 0 5%;">
+                    <i class="fa-solid fa-bell"></i>
+                </a>
+                <a href="" style="color:#0093B7; text-decoration: none; padding:0 5%">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </a>
+                <a href="{% url 'signout' %}" style="color:#0093B7; text-decoration: none ;padding:0 5%">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
     </header>
-
-
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
         <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
             <p style="font-size: 30px">{{user}}</p>
+
         </div>
+        
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
-                    <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                    <i class="bi bi-cash-coin" role="img"></i>
                     <span class="sidenav_text">Billing</span>
                 </li>
             </a>
@@ -139,7 +156,6 @@
                 <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span class="sidenav_text">Meter Reading</span>
-
                 </li>
             </a>
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
@@ -152,6 +168,12 @@
                 <li class="side_nav_li {% active_link 'reports' 'active' %}">
                     <i class="fa fa-line-chart fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
+                </li>
+            </a>
+            <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
+                    <i class="fa fa-line-chart fa-2x"></i>
+                    <span class="sidenav_text">Unsettled Bills</span>
                 </li>
             </a>
             <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
@@ -169,33 +191,22 @@
         </ul>
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
-
         {% block billslist %}
         {% endblock billslist %}
-
         {% block discount %}
         {% endblock discount %}
-
         {% block reports %}
         {% endblock reports %}
-
-
-
         {% block ledger %}
         {% endblock ledger%}
-
         {% block meterreading %}
         {% endblock meterreading%}
-
         {% block bills_list %}
         {% endblock bills_list %}
-
         {% block consumer_list %}
         {% endblock consumer_list %}
-
         {% block sysuser %}
         {% endblock sysuser %}
-
         {% block consumercreation %}
         {% endblock consumercreation %}
         {% block deleteUser %}
@@ -206,43 +217,27 @@
         {% endblock waterusage %}
         {% block unsettled_bills %}
         {% endblock unsettled_bills %}
-        {%  block view_unsettled_bills %}
-        {%  endblock view_unsettled_bills %}
-        {%  block sysuserupdate %}
-        {%  endblock sysuserupdate %}
+        {% block view_unsettled_bills %}
+        {% endblock view_unsettled_bills %}
+        {% block sysuserupdate %}
+        {% endblock sysuserupdate %}
         {% block settingspage %}
         {% endblock settingspage %}
-
-
-        {% block test %}
-        {% endblock test %}
-
-
-
         {% block revenue_report %}
         {% endblock revenue_report %}
-
         {% block usage_report_data %}
         {% endblock usage_report_data %}
-
         {% block bill %}
         {% endblock bill %}
-
-
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script>
 
         function media_query_720(screen_size) {
-            if (screen_size.matches) { // If media query matches
+            if (screen_size.matches) {
                 document.getElementById("first_toggle").style.display = "none";
-
                 document.getElementById("second_toggle").style.display = "none";
                 document.getElementById("third_toggle").style.display = "inline";
-
-
                 document.getElementById("mobile_header_nav").style.display = "none";
-
                 document.getElementById("side_nav").classList.remove("sidebar");
                 document.getElementById("side_nav").classList.add("remove_sidebar");
                 document.getElementById("main_content").classList.remove("main_content");
@@ -250,11 +245,8 @@
             } else {
                 document.getElementById("first_toggle").style.display = "inline";
                 document.getElementById("second_toggle").style.display = "none";
-
                 document.getElementById("third_toggle").style.display = "none";
-
                 document.getElementById("mobile_header_nav").style.display = "inline";
-
                 document.getElementById("side_nav").classList.add("sidebar");
                 document.getElementById("side_nav").classList.remove("remove_sidebar");
                 document.getElementById("main_content").classList.add("main_content");
@@ -262,8 +254,8 @@
             }
         }
         var screen_size = window.matchMedia("(max-width: 720px)")
-        media_query_720(screen_size) // Call listener function at run time
-        screen_size.addListener(media_query_720) // Attach listener function on state changes
+        media_query_720(screen_size)
+        screen_size.addListener(media_query_720)
 
 
         function first_toggle() {
@@ -278,7 +270,6 @@
         function second_toggle() {
             document.getElementById("first_toggle").style.display = "inline";
             document.getElementById("second_toggle").style.display = "none";
-
             document.getElementById("side_nav").classList.add("sidebar");
             document.getElementById("side_nav").classList.remove("remove_sidebar");
             document.getElementById("main_content").classList.add("main_content");
@@ -287,18 +278,12 @@
         $(document).ready(function () {
             let menuScrollTimer = null;
             $(".nav a").click(function (e) {
-                // Prevent default behaviour ( scroll to element )
                 e.preventDefault();
                 if (menuScrollTimer === null) {
-                    // Highlight the clicked item
                     $('.nav a.active').removeClass('active');
                     $(this).addClass('active');
-                    // Smooth scroll to the target section
                     let target = $(this).attr('href');
                     $('html, body').animate({ scrollTop: $(target).offset().top - 100 }, 1050);
-                    // Set `menuScrollTimer` timer
-                    // This will prevents multiple clicks on menu items whule the smooth scroll is taking effect
-                    // This will also prevent the scroll logic from running
                     menuScrollTimer = setTimeout(function () {
                         clearTimeout(menuScrollTimer);
                         menuScrollTimer = null;
@@ -307,7 +292,6 @@
             });
 
             $(window).scroll(function (e) {
-                // Avoid triggering the logic if the scroll event is triggerd from clicking one of the items
                 if (menuScrollTimer === null) {
                     let windowTop = $(this).scrollTop();
 
@@ -322,33 +306,31 @@
         });
     </script>
 
-</body><script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-<script>
-    $(window).on('load', function () {
-        $('#loading').hide();
-    })
-</script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script> -->
+    <script src="{% static 'jquery/jquery.js' %}"></script>
+    <script src="{% static 'bootstrap.min.js' %}"></script>
+    <script src="{% static 'popper.min.js' %}"></script>
+    <script>
+        $(window).on('load', function () {
+            $('#loading').hide();
+        })
+    </script>
 
     <script>
         var login = document.getElementById('login');
-        setTimeout(function closeModal(){
+        setTimeout(function closeModal() {
             login.classList.add("op-0")
-        },3000)
-        setTimeout(function dispnone(){
+        }, 3000)
+        setTimeout(function dispnone() {
             login.style.display = "none"
-        },4000)
+        }, 4000)
     </script>
 
-{% block script %}
-{% endblock script %}
+    {% block script %}
+    {% endblock script %}
+</body>
 
 </html>
-
-
-

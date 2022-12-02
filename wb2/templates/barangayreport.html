@@ -1,5 +1,7 @@
 {% load humanize %}
     {% csrf_token %}
+
+
     <div>
         <div class="col-sm-offset-7 col-sm-5">
             <div class="form-group">
@@ -25,6 +27,12 @@
             </div>
 
         </div>
+        
+        <a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
+        <a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
+        <a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
+        <a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
+
 
         <table id="checkme">
 

@@ -1,8 +1,6 @@
-
 from datetime import date, datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import random
 # Create your models here.
 
 class LoginRec(models.Model):
@@ -10,6 +8,9 @@ class LoginRec(models.Model):
     token = models.CharField(max_length = 10)
     last_access = models.DateTimeField()
     expiration = models.DateTimeField(default = datetime.now())
+
+
+    
 
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)

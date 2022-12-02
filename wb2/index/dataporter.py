@@ -35,8 +35,8 @@ alltables = [
 
 sorted_tables = []
 
-#mydb = mysql.connector.connect(
- #  host="localhost",
+# mydb = mysql.connector.connect(
+#    host="localhost",
 #    user="root",
 #    password="yjh434ctuG@-@",
 #    database="lgu_ginatilan_db"

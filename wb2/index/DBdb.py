@@ -1,30 +1,24 @@
 
-class CustomSession():
-    def __init__(self, username):
-        self._username = username
-    
-    @property
-    def username(self) -> str:
-        return self._username
-    @username.setter
-    def username(self, value) -> str:
-        self._username = value
-    @username.deleter
-    def username(self) -> str:
-        self._username = ""
 
-    @property
-    def auth(self) -> bool:
-        if self._username == "":
-            return False
-        else:
-            return True
-    
+# class CustomSession():
+#     def __init__(self, username):
+#         self._username = username
+#     @property
+#     def username(self) -> str:
+#         return self._username
+#     @username.setter
+#     def username(self, value) -> str:
+#         self._username = value
+#     @username.deleter
+#     def username(self) -> str:
+#         self._username = ""
+
 
 class ReqParams():
-    cs = CustomSession("")
+    # cs = CustomSession("")
     sample = {}
     #SystemUsers
+    auth = "auth"
     first_name ="first_name"
     last_name ="last_name"
     password = "password"
