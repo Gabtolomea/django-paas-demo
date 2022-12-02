@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'index',
-    'chartjs',
     'active_link',
     'django.contrib.humanize',
     'ajax_datatable',
