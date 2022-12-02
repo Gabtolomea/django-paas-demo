@@ -171,24 +171,25 @@
                     <i class="fa fa-line-chart fa-2x"></i>
                     <span class="sidenav_text">Reports</span>
                 </li>
-                <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
-                    <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
-                        <i class="fa fa-line-chart fa-2x"></i>
-                        <span class="sidenav_text">Unsettled Bills</span>
-                    </li>
-                </a>
-                <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
-                    <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
-                        <i class="fa-solid fa-user-group fa-2x"></i>
-                        <span class="sidenav_text">System Users</span>
-                    </li>
-                </a>
-                <a href="/" style="color: white; text-decoration: none">
-                    <li class="side_nav_li {% active_link '/' 'active' %}">
-                        <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
-                        <span class="sidenav_text">Account Settings</span>
-                    </li>
-                </a>
+            </a>
+            <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
+                    <i class="fa fa-line-chart fa-2x"></i>
+                    <span class="sidenav_text">Unsettled Bills</span>
+                </li>
+            </a>
+            <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
+                    <i class="fa-solid fa-user-group fa-2x"></i>
+                    <span class="sidenav_text">System Users</span>
+                </li>
+            </a>
+            <a href="/" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link '/' 'active' %}">
+                    <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                    <span class="sidenav_text">Account Settings</span>
+                </li>
+            </a>
         </ul>
     </div>
     <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
