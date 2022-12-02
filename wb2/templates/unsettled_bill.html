@@ -26,15 +26,12 @@ Unsettled Bills
 {% endblock style %}
 
 {% block unsettled_bills %}
-
 <h1 class="mb-3 text-center">Unsettled Bills</h1>
 <center>
     <h4>
         <strong>Total Balance of all Unsettled Bills : &#8369; {{tb.tots|floatformat:2|intcomma}}</strong>
     </h4>
 </center>
-
-
 <div class="container-fluid p-0">
     <div class="table-responsive">
         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">

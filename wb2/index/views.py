@@ -1220,3 +1220,7 @@ def penalty(request):
     }
 
     return render(request, 'penalty.html', context)
+
+
+def bulkreading(request):
+    return render(request,'bulkreading.html')
