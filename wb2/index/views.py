@@ -25,7 +25,7 @@ from .functions import *
 import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Q
 from .decorators import unauthenticated_user
 
 
@@ -910,7 +910,7 @@ def usage_report_data(request, year):
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
     
     #bitch this is something long muhahaha
-    anao = BarangayRecord.objects.filter(year = year, barangaycode = '1').aggregate(
+    ana = BarangayRecord.objects.filter(year = year, barangaycode = '1').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -924,7 +924,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    mangaco = BarangayRecord.objects.filter(year = year, barangaycode = '2').aggregate(
+    anao = dict((i, j) for i, j in ana.items() if j >=0)
+
+    manga = BarangayRecord.objects.filter(year = year, barangaycode = '10').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -938,7 +940,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    palanas = BarangayRecord.objects.filter(year = year, barangaycode = '3').aggregate(
+    mangaco = dict((i, j) for i, j in manga.items() if j >=0)
+
+    pala = BarangayRecord.objects.filter(year = year, barangaycode = '11').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -952,7 +956,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    poblacion =  BarangayRecord.objects.filter(year = year, barangaycode = '4').aggregate(
+    palanas = dict((i, j) for i, j in pala.items() if j >=0)
+
+    pob =  BarangayRecord.objects.filter(year = year, barangaycode = '12').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -966,7 +972,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    salamanca = BarangayRecord.objects.filter(year = year, barangaycode = '5').aggregate(
+    poblacion = dict((i, j) for i, j in pala.items() if j >=0)
+
+    salam = BarangayRecord.objects.filter(year = year, barangaycode = '13').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -980,7 +988,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    sanroq = BarangayRecord.objects.filter(year = year, barangaycode = '6').aggregate(
+    salamanca = dict((i, j) for i, j in salam.items() if j >= 0)
+
+    san = BarangayRecord.objects.filter(year = year, barangaycode = '14').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -994,7 +1004,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    cagsing = BarangayRecord.objects.filter(year = year, barangaycode = '7').aggregate(
+    sanroq = dict((i, j) for i, j in san.items() if j >=0)
+
+    cag = BarangayRecord.objects.filter(year = year, barangaycode = '2').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1008,7 +1020,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    calabawan = BarangayRecord.objects.filter(year = year, barangaycode = '8').aggregate(
+    cagsing = dict((i, j) for i, j in cag.items() if j >=0)
+
+    calabaw = BarangayRecord.objects.filter(year = year, barangaycode = '3').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1022,7 +1036,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    cambagte = BarangayRecord.objects.filter(year = year, barangaycode = '9').aggregate(
+    calabawan = dict((i, j) for i, j in calabaw.items() if j >=0)
+
+    cambagt = BarangayRecord.objects.filter(year = year, barangaycode = '4').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1036,7 +1052,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    campisong = BarangayRecord.objects.filter(year = year, barangaycode = '10').aggregate(
+    cambagte = dict((i, j) for i, j in cambagt.items() if j >=0)
+
+    campison = BarangayRecord.objects.filter(year = year, barangaycode = '5').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1050,7 +1068,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    canorong = BarangayRecord.objects.filter(year = year, barangaycode = '11').aggregate(
+    campisong = dict((i, j) for i, j in campison.items() if j >=0)
+    
+    cano = BarangayRecord.objects.filter(year = year, barangaycode = '6').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1064,7 +1084,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    guiwan = BarangayRecord.objects.filter(year = year, barangaycode = '12').aggregate(
+    canorong = dict((i, j) for i, j in cano.items() if j >=0)
+
+    gui = BarangayRecord.objects.filter(year = year, barangaycode = '7').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1078,7 +1100,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    looc = BarangayRecord.objects.filter(year = year, barangaycode = '13').aggregate(
+    guiwan = dict((i, j) for i, j in gui.items() if j >=0)
+
+    lo = BarangayRecord.objects.filter(year = year, barangaycode = '8').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1092,7 +1116,9 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    malat = BarangayRecord.objects.filter(year = year, barangaycode = '14').aggregate(
+    looc = dict((i, j) for i, j in lo.items() if j >=0)
+
+    mala = BarangayRecord.objects.filter(year = year, barangaycode = '9').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
         mar=Sum('total_usage_mar'),
@@ -1106,6 +1132,7 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
+    malat = dict((i, j) for i, j in mala.items() if j >=0)
     context = {
         'tu_mon': tu_mon,
         'tu_bay': tu_bay,
@@ -1131,27 +1158,6 @@ def usage_report_data(request, year):
     }
     return render(request, 'usage_report_data.html', context)
 
-def bbm (request,id):
-    
-    m = BarangayRecord.objects.filter(barangayrec_id = id).aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    context  = {
-        'm'  : m,
-   
-    }
-    return render (request, 'bbm.html', context)
 
 def revenue_report(request, year):
     years = []
@@ -1415,234 +1421,3 @@ def penalty(request):
     }
 
     return render(request, 'penalty.html', context)
-
-def test(request, year):
-    test = BarangayRecord.objects.filter(year = year,).aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    anao = BarangayRecord.objects.filter(year = year, barangaycode = '1').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    mangaco = BarangayRecord.objects.filter(year = year, barangaycode = '2').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    palanas = BarangayRecord.objects.filter(year = year, barangaycode = '3').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    poblacion =  BarangayRecord.objects.filter(year = year, barangaycode = '4').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    salamanca = BarangayRecord.objects.filter(year = year, barangaycode = '5').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    sanroq = BarangayRecord.objects.filter(year = year, barangaycode = '6').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    cagsing = BarangayRecord.objects.filter(year = year, barangaycode = '7').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    calabawan = BarangayRecord.objects.filter(year = year, barangaycode = '8').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    cambagte = BarangayRecord.objects.filter(year = year, barangaycode = '9').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    campisong = BarangayRecord.objects.filter(year = year, barangaycode = '10').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    canorong = BarangayRecord.objects.filter(year = year, barangaycode = '11').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    guiwan = BarangayRecord.objects.filter(year = year, barangaycode = '12').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    looc = BarangayRecord.objects.filter(year = year, barangaycode = '13').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    malat = BarangayRecord.objects.filter(year = year, barangaycode = '14').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-   
-    context = {
-        'test'      : test,
-        'anao'      : anao,
-        'mangaco'   : mangaco,
-        'palanas'   : palanas,
-        'poblacion' : poblacion,
-        'salamanca' : salamanca,
-        'sanroq'    : sanroq,
-        'cagsing'   : cagsing,
-        'calabawan' : calabawan,
-        'cambagte'  : cambagte,
-        'campisong' : campisong,
-        'canorong'  : canorong,
-        'guiwan'    : guiwan,
-        'looc'      : looc,
-        'malat'     : malat,
-    }
-    return render(request, 'test.html', context)
