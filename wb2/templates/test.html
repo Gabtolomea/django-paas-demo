@@ -9,14 +9,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
 
-<div class ="chartBox"></div>
+<div class ="chartBox">
 <canvas id="myChart" ></canvas>
 </div>
 
 <div class ="selectBox">
     <select id ="coffeesales">
    
-  <option value="'{{test.jan}}', '{{test.feb}}', '{{test.mar}}', '{{test.apr}}', '{{test.may}}', '{{test.jun}}', '{{test.jul}}', '{{test.aug}}', '{{test.sept}}', '{{test.oct}}', '{{test.nov}}', '{{test.dec}}'">Bitch</option>
+  <option value="12,5,6,43,5,56,4,65,87,35,58,44">Bitch</option>
+  <option value="{{anao.jan}}, {{anao.feb}}, {{anao.mar}}, {{anao.apr}}, {{anao.may}}, {{anao.jun}}, {{anao.jul}}, {{anao.aug}}, {{anao.sept}}, {{anao.oct}}, {{anao.nov}}, {{anao.dec}} ">Anao</option>
+  <option value="{{mangaco.jan}}, {{mangaco.feb}}, {{mangaco.mar}}, {{mangaco.apr}}, {{mangaco.may}}, {{mangaco.jun}}, {{mangaco.jul}}, {{mangaco.aug}}, {{mangaco.sept}}, {{mangaco.oct}}, {{mangaco.nov}}, {{mangaco.dec}} ">Mangaco</option>
+  <option value="{{palanas.jan}}, {{palanas.feb}}, {{palanas.mar}}, {{palanas.apr}}, {{palanas.may}}, {{palanas.jun}}, {{palanas.jul}}, {{palanas.aug}}, {{palanas.sept}}, {{palanas.oct}}, {{palanas.nov}}, {{palanas.dec}} ">Palanas</option>
+  <option value="{{poblacion.jan}}, {{poblacion.feb}}, {{poblacion.mar}}, {{poblacion.apr}}, {{poblacion.may}}, {{poblacion.jun}}, {{poblacion.jul}}, {{poblacion.aug}}, {{poblacion.sept}}, {{poblacion.oct}}, {{poblacion.nov}}, {{poblacion.dec}} ">Poblacion</option>
+  <option value="{{salamanca.jan}}, {{salamanca.feb}}, {{salamanca.mar}}, {{salamanca.apr}}, {{salamanca.may}}, {{salamanca.jun}}, {{salamanca.jul}}, {{salamanca.aug}}, {{salamanca.sept}}, {{salamanca.oct}}, {{salamanca.nov}}, {{salamanca.dec}} ">Salamanca</option>
+  <option value="{{sanroq.jan}}, {{sanroq.feb}}, {{sanroq.mar}}, {{sanroq.apr}}, {{sanroq.may}}, {{sanroq.jun}}, {{sanroq.jul}}, {{sanroq.aug}}, {{sanroq.sept}}, {{sanroq.oct}}, {{sanroq.nov}}, {{sanroq.dec}} ">San Roque</option>
+  <option value="{{cagsing.jan}}, {{cagsing.feb}}, {{cagsing.mar}}, {{cagsing.apr}}, {{cagsing.may}}, {{cagsing.jun}}, {{cagsing.jul}}, {{cagsing.aug}}, {{cagsing.sept}}, {{cagsing.oct}}, {{cagsing.nov}}, {{cagsing.dec}} ">Cagsing</option>
+  <option value="{{calabawan.jan}}, {{calabawan.feb}}, {{calabawan.mar}}, {{calabawan.apr}}, {{calabawan.may}}, {{calabawan.jun}}, {{calabawan.jul}}, {{calabawan.aug}}, {{calabawan.sept}}, {{calabawan.oct}}, {{calabawan.nov}}, {{calabawan.dec}} ">Calabawan</option>
+  <option value="{{cambagte.jan}}, {{cambagte.feb}}, {{cambagte.mar}}, {{cambagte.apr}}, {{cambagte.may}}, {{cambagte.jun}}, {{cambagte.jul}}, {{cambagte.aug}}, {{cambagte.sept}}, {{cambagte.oct}}, {{cambagte.nov}}, {{cambagte.dec}} ">Cambagte</option>
+  <option value="{{campisong.jan}}, {{campisong.feb}}, {{campisong.mar}}, {{campisong.apr}}, {{campisong.may}}, {{campisong.jun}}, {{campisong.jul}}, {{campisong.aug}}, {{campisong.sept}}, {{campisong.oct}}, {{campisong.nov}}, {{campisong.dec}} ">Campisong</option>
+  <option value="{{canorong.jan}}, {{canorong.feb}}, {{canorong.mar}}, {{canorong.apr}}, {{canorong.may}}, {{canorong.jun}}, {{canorong.jul}}, {{canorong.aug}}, {{canorong.sept}}, {{canorong.oct}}, {{canorong.nov}}, {{canorong.dec}} ">Cañorong</option>
+  <option value="{{guiwan.jan}}, {{guiwan.feb}}, {{guiwan.mar}}, {{guiwan.apr}}, {{guiwan.may}}, {{guiwan.jun}}, {{guiwan.jul}}, {{guiwan.aug}}, {{guiwan.sept}}, {{guiwan.oct}}, {{guiwan.nov}}, {{guiwan.dec}} ">Guiwanon</option>
+  <option value="{{looc.jan}}, {{looc.feb}}, {{looc.mar}}, {{looc.apr}}, {{looc.may}}, {{looc.jun}}, {{looc.jul}}, {{looc.aug}}, {{looc.sept}}, {{looc.oct}}, {{looc.nov}}, {{looc.dec}} ">Looc</option>
+  <option value="{{malats.jan}}, {{malats.feb}}, {{malats.mar}}, {{malats.apr}}, {{malats.may}}, {{malats.jun}}, {{malats.jul}}, {{malats.aug}}, {{malats.sept}}, {{malats.oct}}, {{looc.nov}}, {{looc.dec}} ">Malatbo</option>
+
+
+
 
     </select>
 
@@ -30,7 +47,7 @@
             labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             datasets: [{
                 label: '# of Votes',
-                data: ['{{test.jan}}', '{{test.feb}}', '{{test.mar}}', '{{test.apr}}', '{{test.may}}', '{{test.jun}}', '{{test.jul}}', '{{test.aug}}', '{{test.sept}}', '{{test.oct}}', '{{test.nov}}', '{{test.dec}}'],
+                data: [12,5,6,43,5,56,4,65,87,35,58,44],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
