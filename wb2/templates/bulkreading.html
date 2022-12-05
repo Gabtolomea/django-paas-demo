@@ -30,6 +30,7 @@ Bulk Reading
 
 {% block bulkreading %}
 <h1 class="mb-3 text-center">BULK READING ENTRY</h1>
+<h1 class="mb-3 text-center">Bulk Input Reading for {{month}} {{year}}</h1>
 
 <div class="row w-100 m-auto pt-2">
     <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
@@ -38,326 +39,71 @@ Bulk Reading
         BACK
         </button>
     </div>
-<div class="container-fluid p-0">
-	<div class="table-responsive">
-		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			<div class="row">
-				<div class="col-sm-12 col-md-6">
-					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
-						<label style="display:flex;">Show
-							<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
-								<option disabled selected value>--Select--</option>
-								<option value="10">10</option>
-								<option value="25">25</option>
-								<option value="50">50</option>
-								<option value="100">100</option>
-								<option value="0">All</option>
-							</select> entries
-						</label>
-					</form>
-					<script src="{% static 'jquery/jquery.js' %}"></script>
-					<script>
-						yearselection = document.getElementById("yearselection")
-						selector = document.getElementById("selector")
-						function change() {
-							yearselection.action = selector.value
-							yearselection.submit('')
-						}
-					</script>
-				</div>
-				<div class="col-sm-12 col-md-6">
-					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<label>Search:
-							<input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-						</label>
-					</div>
-				</div>
+
+	<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0"
+		width="100%">
+		<thead class="wb_thead">
+			<tr>
+				<th style="min-width: 100px;">Meter Number</th>
+				<th style="min-width: 100px;">Account Number</th>
+				<th style="min-width: 100px;">Customer</th>
+				<th style="min-width: 100px;">Previous Reading</th>
+				<th style="min-width: 100px;">Current Reading</th>
+			</tr>
+		</thead>
+		<tbody class="wb_tbody">
+			{% for consumer in consumers_list %}
+			<tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'ledger' consumer.consumer_id %}">
+				<td>{{consumer.meternumber}}</td>
+				<td>{{consumer.consumer_id}}</td>
+				<td>{{consumer.lastname}}, {{consumer.firstname}} {{consumer.middlename}}</td>
+				<td>{{consumer.installation_address}}</td>
+				<td class="balance"> &#8369; {{consumer.current_bal|floatformat:2|intcomma}}</td>
+			</tr>
+			{% endfor %}
+			<script src="{% static 'jquery/jquery.js' %}"></script>
+		</tbody>
+	</table>
+		<div class="row w-100 m-auto pt-2">
+			<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+				<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
+					<i class="fa fa-copy"></i>
+					Save
+				</button>
 			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<table id="myTable" class="table table-bordered table-hover table-striped table-sm" cellspacing="0"
-						width="100%">
-						<thead class="wb_thead">
-							<tr>
-                                <th style="min-width: 100px;">Meter Number</th>
-								<th style="min-width: 100px;">Account Number</th>
-								<th style="min-width: 100px;">Customer</th>
-								<th style="min-width: 100px;">Previous Reading</th>
-								<th style="min-width: 100px;">Current Reading</th>
-							</tr>
-						</thead>
-						<tbody class="wb_tbody">
-							{% for bill in bills_list %}
-							<tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">
-								<td>{{bill.consumer_id}}</td>
-								<td>{{bill.meternumber}}</td>
-								<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
-								<td>{{bill.installation_address}}</td>
-								<td class="balance"> &#8369; {{bill.current_bal|floatformat:2|intcomma}}</td>
-							</tr>
-							{% endfor %}
-							<script src="{% static 'jquery/jquery.js' %}"></script>
-							<script>
-								jQuery(document).ready(function($) {
-									$(".clickable-row").click(function() {
-										window.location = $(this).data("href");
-									});
-								});
-							</script> 
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="row">
-				<div class="d-flex justify-content-center">
-					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
-						<ul style="display: flex; padding-left: 0; list-style: none;">
-							{% if bills_list.paginator.num_pages > 5 %}
-								{% if bills_list.number < 5 %}
-									{% if bills_list.has_previous %}
-									<a href="?page={{ bills_list.previous_page_number }}">
-										<li class="paginate_button page-item previous">Previous</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item previous">Previous</li>
-									{% endif %}
-									{% for i in five %}
-										{% if i == bills_list.number %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item active">{{i}}</li>
-											</a>
-										{% else %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item">{{i}}</li>
-											</a>
-										{% endif %}
-									{% endfor %}
-									<li class="paginate_button disabled page-item">...</li>
-									<a href="?page={{ bills_list.paginator.num_pages }}">
-										<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
-									</a>
-									{% if bills_list.has_next %}
-									<a href="?page={{ bills_list.next_page_number }}">
-										<li class="paginate_button page-item next">Next</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item next">Next</li>
-									{% endif %}
-								{% else %}
-									{% if bills_list.number > bills_list.paginator.num_pages|add:'-3'%}
-										{% if bills_list.has_previous %}
-										<a href="?page={{ bills_list.previous_page_number }}">
-											<li class="paginate_button page-item previous">Previous</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										<a href="?page=1">
-											<li class="paginate_button page-item">1</li>
-										</a>
-										<li class="paginate_button disabled page-item">...</li>
-										{% for i in last %}
-											{% if i == bills_list.number %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item active">{{i}}</li>
-												</a>
-											{% else %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item">{{i}}</li>
-												</a>
-											{% endif %}
-										{% endfor %}
-										{% if bills_list.number == bills_list.paginator.num_pages %}
-										<a href="?page={{ bills_list.paginator.num_pages }}">
-											<li class="paginate_button page-item active">{{ bills_list.paginator.num_pages }}</li>
-										</a>
-										{% else %}
-										<a href="?page={{ bills_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
-										</a>
-										{% endif %}
-										{% if bills_list.has_next %}
-										<a href="?page={{ bills_list.next_page_number }}">
-											<li class="paginate_button page-item next">Next</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item next">Next</li>
-										{% endif %}
-									{% else %}
-										{% if bills_list.has_previous %}
-											<a href="?page={{ bills_list.previous_page_number }}">
-												<li class="paginate_button page-item previous">Previous</li>
-											</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										{% if bills_list.number > 2 %}
-											<a href="?page=1">
-												<li class="paginate_button page-item">1</li>
-											</a>
-											{% if bills_list.number > 3 %}
-												<li class="paginate_button disabled page-item">...</li>
-											{% endif %}
-										{% endif %}
-
-										{% for num in bills_list.paginator.page_range %}
-										{% if bills_list.number == num %}<a href="?page={{ num }}">
-										<li class="paginate_button page-item active">
-											{{ num }}
-										</li></a>
-										{% elif num > bills_list.number|add:'-2' and num < bills_list.number|add:'2' %}
-											<a href="?page={{ num }}"> 
-												<li class="paginate_button page-item">{{ num }}</li>
-											</a>
-											{% endif %}
-											{% endfor %}
-
-										{% if bills_list.number < bills_list.paginator.num_pages|add:'-2' %}
-											<li class="paginate_button disabled page-item">...</li>
-											<a href="?page={{ bills_list.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
-											</a>
-										{% elif bills_list.number < bills_list.paginator.num_pages|add:'-1' %} 
-											<a href="?page={{ bills_list.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
-											</a>
-										{% endif %}
-										{% if bills_list.has_next %}
-											<a href="?page={{ bills_list.next_page_number }}">
-												<li class="paginate_button page-item next">Next</li>
-											</a>
-										{% else %}
-											<li class="paginate_button page-item disabled next">Next</li>
-										{% endif %}
-									{% endif %}
-								{% endif %}
-							{% endif %}
-						</ul>
-
-                        <div class="row w-100 m-auto pt-2">
-                            <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-                                <button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
-                                    <i class="fa fa-copy"></i>
-                                    Save
-                                </button>
-                            </div>
-						<style>
-						a{		
-							-webkit-touch-callout: none;
-							-webkit-user-select: none;
-							-khtml-user-select: none;
-							-moz-user-select: none;
-							-ms-user-select: none;
-							user-select: none;
-							cursor: default;
-							text-decoration: none;
-						}
-						.paginate_button {
-							cursor: pointer;
-							position: relative;
-							display: block;
-							padding: 0.375rem 0.75rem;
-							font-size: 1rem;
-							color: var(--main-color);
-							text-decoration: none;
-							background-color: white;
-							border: 1px solid #dee2e6;
-							transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-						}
-						.active>.paginate_button, .paginate_button.active {
-							z-index: 3;
-							color: white !important;
-							background-color: var(--main-color);
-							border-color: #dee2e6;
-						}
-						.previous {
-							border-top-left-radius: .375rem;
-							border-bottom-left-radius: .375rem;
-						}
-						.next {
-							border-top-right-radius: .375rem;
-							border-bottom-right-radius: .375rem;
-						}
-						.disabled {		
-							-webkit-touch-callout: none;
-							-webkit-user-select: none;
-							-khtml-user-select: none;
-							-moz-user-select: none;
-							-ms-user-select: none;
-							user-select: none;
-							cursor: default;
-							color: #6c757d;
-						}
-                        
-                        .hide {
-                            opacity: 0;
-                            transition: 0.3s all ease-in-out;
-                        }
-                    
-                        .showOnHover:hover .hide {
-                            opacity: 1;
-                            transition: 0.3s all ease-in-out;
-                        }
-                        .button2 {
-                            background-color: var(--main-color); 
-                            color: white;
-                            padding: 8px 30px;
-                            border: none;
-                            border-radius: 15px;
-                            box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-                            transition: all ease 0.3s;
-                        }
-                        .btn.button2:hover {
-                            background: var(--main-color);
-                            color: #ffffff;
-                            border-radius: 30px;
-                            box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-                            transition: all ease-in 0.5s;
-                        }
-                        .btn.button2:focus {
-                            background: var(--main-color);
-                            color: #ffffff;
-                            border-radius: 30px;
-                            box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-                            transition: all 0.1s;
-                        }
-						</style>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</div>
-</div>
-<script>
-	function myFunction() {
-		// Declare variables 
-		var input, filter, table, tr, i, j, column_length, count_td;
-		column_length = document.getElementById('myTable').rows[0].cells.length;
-		input = document.getElementById("myInput");
-		filter = input.value.toUpperCase();
-		table = document.getElementById("myTable");
-		tr = table.getElementsByTagName("tr");
-		for (i = 1; i < tr.length; i++) { // except first(heading) row
-			count_td = 0;
-			for (j = 1; j < column_length - 1; j++) { // except first column
-				td = tr[i].getElementsByTagName("td")[j];
-				/* ADD columns here that you want you to filter to be used on */
-				if (td) {
-					if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-						count_td++;
-					}
-				}
-			}
-			if (count_td > 0) {
-				tr[i].style.display = "";
-			} else {
-				tr[i].style.display = "none";
-			}
+		<style>
+		.hide {
+			opacity: 0;
+			transition: 0.3s all ease-in-out;
 		}
-
-	}
-
-</script>
-
+	
+		.showOnHover:hover .hide {
+			opacity: 1;
+			transition: 0.3s all ease-in-out;
+		}
+		.button2 {
+			background-color: var(--main-color); 
+			color: white;
+			padding: 8px 30px;
+			border: none;
+			border-radius: 15px;
+			box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+			transition: all ease 0.3s;
+		}
+		.btn.button2:hover {
+			background: var(--main-color);
+			color: #ffffff;
+			border-radius: 30px;
+			box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+			transition: all ease-in 0.5s;
+		}
+		.btn.button2:focus {
+			background: var(--main-color);
+			color: #ffffff;
+			border-radius: 30px;
+			box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+			transition: all 0.1s;
+		}
+		</style>
+</div>
 {% endblock bulkreading %}

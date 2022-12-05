@@ -4,8 +4,8 @@
     --main-color: #006c85;
     --highlight-color: #7AE4FF;
     --gray-text: #d6d6d6;
-    --light-color: white;
     --light-bg: #e5ebec;
+    --light-color: white;
 }
 html {
     height: 100%;

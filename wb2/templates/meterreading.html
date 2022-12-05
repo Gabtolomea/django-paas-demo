@@ -63,39 +63,52 @@ Meter Reading
 
 
 
-<!-- Button trigger modal -->
 
-			<button type="button"  class="btn button2" data-toggle="modal" data-target="#myModal">
-				<i class="fa fa-copy"></i>
-				Bulk Reading
-			</button>
-  <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<button type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal">
+	<i class="fa fa-copy"></i>
+	Bulk Reading
+</button>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-	  <div class="modal-content">
-		<div class="modal-header">
-		  <h5  style = "font-size: 30px; font-weight: 100px; text-align: center;"class="modal-title" id="exampleModalLongTitle">BULK METER READING ENTRY</h5>
-		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
-		  </button>
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form action="{% url 'bulkreading' %}" method="POST">
+				{% csrf_token %}
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Select Year</label>
+						<select name="year" id="" class="form-select" required>
+							<option value=""></option>
+							{% for y in years reversed %}
+							<option value="{{y}}">{{y}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Select Month</label>
+						<select name="month" id="" class="form-select" required>
+							<option value=""></option>
+							{% for m in months %}
+							<option value="{{m}}">{{m}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+					<button type="submit" class="btn btn-primary">Proceed</button>
+				</div>
+			</form>
 		</div>
-		<div class="modal-body">
-		<h4 style="text-align: center;">Please specify month and year.</h4>
-		<form>
-		  <div class="form-group">
-			<label for="recipient-name" class="col-form-label">Select Year</label>
-			<input type="text" class="form-control" id="recipient-name">
-			<label for="recipient-name" class="col-form-label">Select Month</label>
-			<input type="text" class="form-control" id="recipient-name">
-		  </div>
-		</form>
-		</div>
-		<div class="modal-footer">
-		  <button style="text-align: center;" type="button" class="btn btn-primary">Proceed</button>
-		</div>
-	  </div>
 	</div>
-  </div>
+</div>
 
 
 <div class="container-fluid p-0">

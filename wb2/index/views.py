@@ -327,16 +327,24 @@ def password_reset_form(request):
 # @authenticated_user
 def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
-    context = {
-        'meterred': meterred,
-        'year': datetime.today().year,
-        'user': request.session.get(ReqParams.username)
-    }
+    months = []
+    years = []
+    for i in range(1, 13):
+        month = calendar.month_name[i]
+        months.append(month)
     
     pages = int(p)
     user = request.session.get(ReqParams.username)
     meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    
+    
     count = meterred.count()
+    
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
@@ -360,6 +368,8 @@ def meterreading_p(request, p):
         'meterred': m,
         'user': user,
         'year': datetime.today().year,
+        'months': months,
+        'years':years
     }
     return render(request, 'meterreading.html', context)
 
@@ -937,7 +947,6 @@ def usage_report_data(request, year):
     return render(request, 'usage_report_data.html', context)
 
 def bbm (request,id):
-    
     m = BarangayRecord.objects.filter(barangayrec_id = id).aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
@@ -1223,4 +1232,17 @@ def penalty(request):
 
 
 def bulkreading(request):
-    return render(request,'bulkreading.html')
+    year = 0
+    month = ''
+    if request.method == "POST":
+        year = int(request.POST["year"])
+        month = request.POST["month"]
+    consumers_list = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    
+    context = {
+        'year':year,
+        'month':month,
+        'consumers_list':consumers_list,
+        'user':request.session.get(ReqParams.username)
+    }
+    return render(request,'bulkreading.html', context)

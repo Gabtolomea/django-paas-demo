@@ -62,7 +62,7 @@ Consumer Type
         </table>
     </div>
 </div>
-<button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Add</button>
+<button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#payment" >Add</button>
 
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
@@ -79,50 +79,26 @@ Consumer Type
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-                        <label>New Consumer Type:</label>
+                        <label>Consumer Type:</label>
                         {{form.contype}}
                     </div>
                     <div class="form-group">    
-                        <label>New Minimum Water Reading:</label>
+                        <label>Minimum Water Reading:</label>
                         {{form.minReading}}
                     </div>
 					<div class="form-group">
-						<label for="exampleInputPassword1">OR Number</label>
-						<input type="number" name="or_num" id="id_or_num" class="input form-control">
+                        <label>Minimum Water Reading Charge:</label>
+                        {{form.minReadingCharge}}
+					</div>
+					<div class="form-group">
+                        <label>Rate After Minimum Reading:</label>
+                        {{form.rateAfterMin}}
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>
-                <div class="container">
-                    <div class="shadow wrapper">
-                        <div class="row form-group w-100 m-auto">
-                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                                <label>New Consumer Type:</label>
-                                {{form.contype}}
-                            </div>
-                            
-                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">    
-                                <label>New Minimum Water Reading:</label>
-                                {{form.minReading}}
-                            </div>
-                        </div>
-        
-                        <div class="row form-group w-100 m-auto">
-                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                                <label>New Minimum Water Reading Charge:</label>
-                                {{form.minReadingCharge}}
-                            </div>
-                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                                <label>New Rate After Minimum Reading:</label>
-                                {{form.rateAfterMin}}
-                            </div>
-                        </div>
-                        <br>
-                        <center><button type="submit" id="footer-subscription-button" class="btn button2">Submit</button></center>
-                    </div>       
-                </div>
             </form> 
 		</div>
 	</div>

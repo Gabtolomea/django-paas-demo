@@ -76,7 +76,7 @@ Billing
 										window.location = $(this).data("href");
 									});
 								});
-							</script> 
+							</script>
 						</tbody>
 					</table>
 				</div>
@@ -262,20 +262,18 @@ Billing
 </div>
 <script>
 	function myFunction() {
-		// Declare variables 
 		var input, filter, table, tr, i, j, column_length, count_td;
 		column_length = document.getElementById('myTable').rows[0].cells.length;
 		input = document.getElementById("myInput");
 		filter = input.value.toUpperCase();
 		table = document.getElementById("myTable");
 		tr = table.getElementsByTagName("tr");
-		for (i = 1; i < tr.length; i++) { // except first(heading) row
+		for (i = 1; i < tr.length; i++) {
 			count_td = 0;
-			for (j = 1; j < column_length - 1; j++) { // except first column
+			for (j = 1; j < column_length - 1; j++) {
 				td = tr[i].getElementsByTagName("td")[j];
-				/* ADD columns here that you want you to filter to be used on */
-				if (td) {
-					if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+				if (td){
+					if (td.innerHTML.toUpperCase().indexOf(filter) > -1){
 						count_td++;
 					}
 				}
@@ -288,5 +286,4 @@ Billing
 		}
 	}
 </script>
-
 {% endblock billslist %}
