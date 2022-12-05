@@ -138,6 +138,7 @@ Usage Report
 		body {
 			font-family: "Open Sans", sans-serif;
 			line-height: 1.25;
+		}
 
 			table td::before {
 				/*
@@ -153,12 +154,6 @@ Usage Report
 			table td:last-child {
 				border-bottom: 0;
 			}
-		}
-
-		body {
-			font-family: "Open Sans", sans-serif;
-			line-height: 1.25;
-		}
 
 		@media (max-width: 400px) {
 			h2 {
@@ -190,6 +185,7 @@ Usage Report
 			border-radius: 50px;
 
 		}
+	}
 </style>
 
 {% endblock style %}
@@ -211,6 +207,31 @@ Usage Report
 			Get a Copy
 		</button>
 	</div>
+  {% csrf_token %}
+  <div class="col-sm-offset-12 col-sm-12">
+    <div class="form-group">
+      <label for="exampleInputBarangay">Select Year: </label>
+      <form id="yearselection" action="GET">
+        <select class="form-select" id="selector" onchange="change()">
+          <option value="{{cur_year}}">{{cur_year}}</option>
+        {% for i in years reversed %}
+        <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+        </select>
+      </form>
+      <script>
+        yearselection = document.getElementById("yearselection")
+        selector = document.getElementById("selector")
+        function change() {
+          yearselection.action = selector.value
+          yearselection.submit()
+          console.log("selction testing")
+          
+        }
+      </script>
+    </div>
+
+  </div>
 	<div>
 		<label for="exampleInputBarangay">Select Year</label>
 		<form id="yearselection" action="">
@@ -245,6 +266,9 @@ Usage Report
   <center>
       <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
     </center>
+
+
+    <div class="chartbox">
     <canvas id="myChart" width="800" height="150"></canvas>
 <section>
 	</div>
@@ -332,6 +356,39 @@ Usage Report
 
 	});
 </script>
+
+<br>
+
+<section>
+	<canvas id="barangay" width="800" height="150"></canvas>
+	<canvas id="monthly_views" width="800" height="150"></canvas>
+	<br>
+	<br>
+	<br>
+</section>
+
+
+    <section>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <center>
+        <h4><strong>Barangay Total Usage: Year {{cur_year}}</strong></h4>
+      </center>
+      <canvas id="barangay" width="800" height="150"></canvas>
+      <br>
+      <br>
+      <br>
+      <center>
+        <h4><strong>Monthly Usage Per Barangay(Select Barangay Bar): Year {{cur_year}}</strong></h4>
+      </center>
+      <canvas id="monthly_views" width="800" height="150"></canvas>
+      <br>
+      <br>
+      <br>
+    </section>
 <script>
 	// setup 
 	const data = {
