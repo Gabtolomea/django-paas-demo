@@ -92,11 +92,9 @@ def bills_list_p(request, p):
     if search:
         bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search))
     else:
-        bills = ConsumerInfo.objects.all()
-        
+        bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')        
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    # bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = bills.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
