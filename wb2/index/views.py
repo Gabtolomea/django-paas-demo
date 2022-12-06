@@ -1253,28 +1253,35 @@ def bulkreading(request):
     month = int(request.GET["month"])
     monthname = calendar.month_name[month]
     consumers = ConsumerInfo.objects.all()
+    for i in years:
+        if i > year:
+            years.remove(i)
     for i in consumers:
         try:
-            cur = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing").meterReading
+            tran = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing")
+            cur = tran.meterReading
         except ObjectDoesNotExist:
             cur = 0
+    
         flag = False
         prev = 0
         f = None
-        # for y in years:
-        #     for m in range(12, 0, -1):
-        #         if f is not None:
-        #             prev = f.meterReading
-        #             flag = True
-        #             break
-        #         else:
-        #             try:
-        #                 f = Transactions.objects.get(acctID_id=i.consumer_id,month=m,year=y,transType = "Billing")
-        #             except ObjectDoesNotExist:
-        #                 f = None
-        #     if flag:
-        #         break
-        
+        x = month-1
+        for y in years:
+            for m in range(x, 0, -1):
+                if f is not None:
+                    prev = f.meterReading
+                    flag = True
+                    break
+                else:
+                    try:
+                        f = Transactions.objects.get(acctID_id=i.consumer_id,month=m,year=y,transType = "Billing")
+                    except ObjectDoesNotExist:
+                        f = None
+            if y > 0:
+                x = 12
+            if flag:
+                break
         consumers_list.append(new_con(i, prev, cur))
     context = {
         'year':year,
@@ -1283,3 +1290,8 @@ def bulkreading(request):
         'user':request.session[ReqParams.username]
     }
     return render(request,'bulkreading.html', context)
+
+def save_bulk_reading(request):
+    if request.method == "POST":
+        print("asdjfhsf")
+    return redirect('meterreading')
