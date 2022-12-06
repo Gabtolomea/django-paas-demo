@@ -334,6 +334,7 @@ def meterreading_p(request, p):
         'user': request.session.get(ReqParams.username)
     }
     
+    
     pages = int(p)
     user = request.session.get(ReqParams.username)
     meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
