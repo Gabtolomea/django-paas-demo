@@ -329,9 +329,13 @@ def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     months = []
     years = []
+    class monthname():
+        def __init__(self, name, num):
+            self.name = name
+            self.num = num
     for i in range(1, 13):
         month = calendar.month_name[i]
-        months.append(month)
+        months.append(monthname(month, i))
     
     pages = int(p)
     user = request.session.get(ReqParams.username)
@@ -1232,17 +1236,50 @@ def penalty(request):
 
 
 def bulkreading(request):
-    year = 0
-    month = ''
-    if request.method == "POST":
-        year = int(request.POST["year"])
-        month = request.POST["month"]
-    consumers_list = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
-    
+    consumers_list = []
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if years[0]<years[len(years)-1]:
+        years.reverse()
+    class new_con():
+        def __init__(self, con, prev, cur):
+            self.con = con
+            self.prev = prev
+            self.cur = cur
+    year = int(request.GET["year"])
+    month = int(request.GET["month"])
+    monthname = calendar.month_name[month]
+    consumers = ConsumerInfo.objects.all()
+    for i in consumers:
+        try:
+            cur = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing").meterReading
+        except ObjectDoesNotExist:
+            cur = 0
+        flag = False
+        prev = 0
+        f = None
+        # for y in years:
+        #     for m in range(12, 0, -1):
+        #         if f is not None:
+        #             prev = f.meterReading
+        #             flag = True
+        #             break
+        #         else:
+        #             try:
+        #                 f = Transactions.objects.get(acctID_id=i.consumer_id,month=m,year=y,transType = "Billing")
+        #             except ObjectDoesNotExist:
+        #                 f = None
+        #     if flag:
+        #         break
+        
+        consumers_list.append(new_con(i, prev, cur))
     context = {
         'year':year,
-        'month':month,
+        'month':monthname,
         'consumers_list':consumers_list,
-        'user':request.session.get(ReqParams.username)
+        'user':request.session[ReqParams.username]
     }
     return render(request,'bulkreading.html', context)

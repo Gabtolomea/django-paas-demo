@@ -79,8 +79,7 @@ Meter Reading
 				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<form action="{% url 'bulkreading' %}" method="POST">
-				{% csrf_token %}
+			<form action="{% url 'bulkreading' %}" method="GET">
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="recipient-name" class="col-form-label">Select Year</label>
@@ -96,7 +95,7 @@ Meter Reading
 						<select name="month" id="" class="form-select" required>
 							<option value=""></option>
 							{% for m in months %}
-							<option value="{{m}}">{{m}}</option>
+							<option value="{{m.num}}">{{m.name}}</option>
 							{% endfor %}
 						</select>
 					</div>

@@ -33,37 +33,31 @@ Bulk Reading
 <h1 class="mb-3 text-center">Bulk Input Reading for {{month}} {{year}}</h1>
 
 <div class="row w-100 m-auto pt-2">
-    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-        <button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
-            <i class="fa fa-copy"></i>
-        BACK
-        </button>
-    </div>
-
-	<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0"
-		width="100%">
-		<thead class="wb_thead">
-			<tr>
-				<th style="min-width: 100px;">Meter Number</th>
-				<th style="min-width: 100px;">Account Number</th>
-				<th style="min-width: 100px;">Customer</th>
-				<th style="min-width: 100px;">Previous Reading</th>
-				<th style="min-width: 100px;">Current Reading</th>
-			</tr>
-		</thead>
-		<tbody class="wb_tbody">
-			{% for consumer in consumers_list %}
-			<tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'ledger' consumer.consumer_id %}">
-				<td>{{consumer.meternumber}}</td>
-				<td>{{consumer.consumer_id}}</td>
-				<td>{{consumer.lastname}}, {{consumer.firstname}} {{consumer.middlename}}</td>
-				<td>{{consumer.installation_address}}</td>
-				<td class="balance"> &#8369; {{consumer.current_bal|floatformat:2|intcomma}}</td>
-			</tr>
-			{% endfor %}
-			<script src="{% static 'jquery/jquery.js' %}"></script>
-		</tbody>
-	</table>
+	<form action="" method="post">
+		<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0"
+			width="100%">
+			<thead class="wb_thead">
+				<tr>
+					<th>Meter Number</th>
+					<th>Account Number</th>
+					<th>Customer</th>
+					<th>Previous Reading</th>
+					<th>Current Reading</th>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				{% for c in consumers_list %}
+				<tr>
+					<td>{{c.con.meternumber}}</td>
+					<td>{{c.con.consumer_id}}</td>
+					<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
+					<td>{{c.prev}}</td>
+					<td class="balance"><input type="number" class="form-control" name="" id="" value="{{c.cur}}"></td>
+				</tr>
+				{% endfor %}
+				<script src="{% static 'jquery/jquery.js' %}"></script>
+			</tbody>
+		</table>
 		<div class="row w-100 m-auto pt-2">
 			<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
 				<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
@@ -71,18 +65,35 @@ Bulk Reading
 					Save
 				</button>
 			</div>
-		<style>
+		</div>
+	</form>
+	<style>
+		.page-link {
+			position: relative;
+			display: block;
+			color: #006c85;
+			text-decoration: none;
+			background-color: #fff;
+			border: 1px solid #dee2e6;
+			transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+		}
+		.page-item.active .page-link {
+			z-index: 3;
+			color: #fff;
+			background-color: #006c85;
+			border-color: #006c85;
+		}
 		.hide {
 			opacity: 0;
 			transition: 0.3s all ease-in-out;
 		}
-	
+
 		.showOnHover:hover .hide {
 			opacity: 1;
 			transition: 0.3s all ease-in-out;
 		}
 		.button2 {
-			background-color: var(--main-color); 
+			background-color: var(--highlight-color); 
 			color: white;
 			padding: 8px 30px;
 			border: none;
@@ -91,19 +102,19 @@ Bulk Reading
 			transition: all ease 0.3s;
 		}
 		.btn.button2:hover {
-			background: var(--main-color);
+			background: var(--highlight-color);
 			color: #ffffff;
 			border-radius: 30px;
 			box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
 			transition: all ease-in 0.5s;
 		}
 		.btn.button2:focus {
-			background: var(--main-color);
+			background: var(--highlight-color);
 			color: #ffffff;
 			border-radius: 30px;
 			box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 			transition: all 0.1s;
 		}
-		</style>
+	</style>
 </div>
 {% endblock bulkreading %}
