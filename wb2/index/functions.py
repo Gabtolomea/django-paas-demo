@@ -54,8 +54,8 @@ def gen_token():
     alphabet = list(string.ascii_lowercase)
     choices = nums + alphabet
     token = ""
-    
-    random.seed(datetime.now())
+    d = datetime.now().timestamp()
+    random.seed(d)
     for i in range(10):
         char = random.choice(choices)
         token+=(char)
