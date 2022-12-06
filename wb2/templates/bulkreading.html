@@ -41,7 +41,6 @@ Bulk Reading
 					<th>Meter Number</th>
 					<th>Account Number</th>
 					<th>Customer</th>
-					<th>Previous Reading</th>
 					<th>Current Reading</th>
 				</tr>
 			</thead>
@@ -51,7 +50,6 @@ Bulk Reading
 					<td>{{c.con.meternumber}}</td>
 					<td>{{c.con.consumer_id}}</td>
 					<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
-					<td>{{c.prev}}</td>
 					<td class="balance"><input type="number" class="form-control" name="" id="" value="{{c.cur}}"></td>
 				</tr>
 				{% endfor %}

@@ -1245,9 +1245,8 @@ def bulkreading(request):
     if years[0]<years[len(years)-1]:
         years.reverse()
     class new_con():
-        def __init__(self, con, prev, cur):
+        def __init__(self, con, cur):
             self.con = con
-            self.prev = prev
             self.cur = cur
     year = int(request.GET["year"])
     month = int(request.GET["month"])
@@ -1258,24 +1257,7 @@ def bulkreading(request):
             cur = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing").meterReading
         except ObjectDoesNotExist:
             cur = 0
-        flag = False
-        prev = 0
-        f = None
-        # for y in years:
-        #     for m in range(12, 0, -1):
-        #         if f is not None:
-        #             prev = f.meterReading
-        #             flag = True
-        #             break
-        #         else:
-        #             try:
-        #                 f = Transactions.objects.get(acctID_id=i.consumer_id,month=m,year=y,transType = "Billing")
-        #             except ObjectDoesNotExist:
-        #                 f = None
-        #     if flag:
-        #         break
-        
-        consumers_list.append(new_con(i, prev, cur))
+        consumers_list.append(new_con(i, cur))
     context = {
         'year':year,
         'month':monthname,
