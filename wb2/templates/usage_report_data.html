@@ -254,24 +254,8 @@ Usage Report
 			datasets: [{
 				label: 'Barangay Usage',
 				data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
-				backgroundColor: [
-					'rgba(255, 26, 104, 1)',
-					'rgba(54, 162, 235, 1)',
-					'rgba(255, 206, 86, 1)',
-					'rgba(75, 192, 192, 1)',
-					'rgba(153, 102, 255, 1)',
-					'rgba(255, 159, 64, 1)',
-					'rgba(0, 0, 0, 1)'
-				],
-					borderColor: [
-						'rgba(255, 26, 104, 0.2)',
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(75, 192, 192, 0.2)',
-						'rgba(153, 102, 255, 0.2)',
-						'rgba(255, 159, 64, 0.2)',
-						'rgba(0, 0, 0, 0.2)'
-					],
+				backgroundColor: ['#FD2F02'],
+					borderColor: ['#FD2F02'],
 						borderWidth: 1,
 		}]
    	}
@@ -295,6 +279,7 @@ Usage Report
 				ctx2,
 				config
 			);
+
 
 		</script>
 
@@ -354,7 +339,7 @@ Usage Report
 					value="{{looc.jan}}, {{looc.feb}}, {{looc.mar}}, {{looc.apr}}, {{looc.may}}, {{looc.jun}}, {{looc.jul}}, {{looc.aug}}, {{looc.sept}}, {{looc.oct}}, {{looc.nov}}, {{looc.dec}} ">
 					Looc</option>
 				<option
-					value="{{malats.jan}}, {{malats.feb}}, {{malats.mar}}, {{malats.apr}}, {{malats.may}}, {{malats.jun}}, {{malats.jul}}, {{malats.aug}}, {{malats.sept}}, {{malats.oct}}, {{looc.nov}}, {{looc.dec}} ">
+					value="{{malat.jan}}, {{malat.feb}}, {{malat.mar}}, {{malat.apr}}, {{malat.may}}, {{malat.jun}}, {{malat.jul}}, {{malat.aug}}, {{malat.sept}}, {{malat.oct}}, {{malat.nov}}, {{malat.dec}} ">
 					Malatbo</option>
 
 
@@ -380,8 +365,9 @@ Usage Report
 						label: 'Total Monthly',
 						data: [{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} ],
 						fill: false,
-						borderColor: ['#3090C7'],
-						tension: 0.1
+						backgroundColor: ['#FD2F02'],
+						borderColor: ['#FD2F02'],
+						tension: 0.1,
 					}]
 				},
 				options: {

@@ -25,7 +25,8 @@ from .functions import *
 import math
 from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
-from django.db.models import F, Sum, Q
+from django.db.models import F, Sum
+from django.db.models.functions import Greatest
 from .decorators import unauthenticated_user
 
 
@@ -907,7 +908,10 @@ def usage_report_data(request, year):
     )
     
     # By Barangay total Usage
-    tu_bay = BarangayRecord.objects.filter(year=year,).annotate(sum=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec')))
+    tu_bay = BarangayRecord.objects.filter(year=year,).annotate(
+        sums=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'))).annotate(
+        sum =Greatest(F('sums'),0)
+    )
     
     #bitch this is something long muhahaha
     ana = BarangayRecord.objects.filter(year = year, barangaycode = '1').aggregate(
@@ -925,7 +929,6 @@ def usage_report_data(request, year):
         dec=Sum('total_usage_dec'),
     )
     anao = dict((i, j) for i, j in ana.items() if j >=0)
-
     manga = BarangayRecord.objects.filter(year = year, barangaycode = '10').aggregate(
         jan=Sum('total_usage_jan'),
         feb=Sum('total_usage_feb'),
@@ -972,7 +975,7 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-    poblacion = dict((i, j) for i, j in pala.items() if j >=0)
+    poblacion = dict((i, j) for i, j in pob.items() if j >=0)
 
     salam = BarangayRecord.objects.filter(year = year, barangaycode = '13').aggregate(
         jan=Sum('total_usage_jan'),
