@@ -28,6 +28,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
 from django.shortcuts import render
+from django.db.models import Q
 
 
 def porter(request):
@@ -87,14 +88,15 @@ def meterreading(request):
 
 # @authenticated_user
 def bills_list_p(request, p):   
-    if 'search' in request.GET:
-        search = request.GET['search']
-        bill = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)| Q(lastname__icontains=search)
-                                | Q(email__icontains=search))
-        print(bill)
+    search = request.GET.get("search", "")
+    if search:
+        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search))
+    else:
+        bills = ConsumerInfo.objects.all()
+        
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    # bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = bills.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
