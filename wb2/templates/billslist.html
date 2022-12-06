@@ -42,7 +42,11 @@ Billing
 				<div class="col-sm-12 col-md-6">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<label>Search:
-							<input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+							<form action="" method="get">
+								<input id="Search_Bar" type="text" name="s">
+								<button id="Button_Search" type="submit"></button>
+							</form>
+							<!-- <input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
 						</label>
 					</div>
 				</div>
