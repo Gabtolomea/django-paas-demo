@@ -2,10 +2,10 @@
     --dark-color: black;
     --dark-text: #004757;
     --main-color: #006c85;
-    --highlight-color: #7AE4FF;
+    --highlight-color: #00b17a;
     --gray-text: #d6d6d6;
-    --light-color: white;
     --light-bg: #e5ebec;
+    --light-color: white;
 }
 html {
     height: 100%;
@@ -560,6 +560,53 @@ li.active {
     transition: opacity 1s;
 }
 
+.page-link {
+    position: relative;
+    display: block;
+    color: #006c85;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #006c85;
+    border-color: #006c85;
+}
+.hide {
+    opacity: 0;
+    transition: 0.3s all ease-in-out;
+}
+
+.showOnHover:hover .hide {
+    opacity: 1;
+    transition: 0.3s all ease-in-out;
+}
+.button2 {
+    background-color: var(--main-color); 
+    color: white;
+    padding: 8px 30px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+    transition: all ease 0.3s;
+}
+.btn.button2:hover {
+    background: var(--main-color);
+    color: #ffffff;
+    border-radius: 30px;
+    box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+    transition: all ease-in 0.5s;
+}
+.btn.button2:focus {
+    background: var(--main-color);
+    color: #ffffff;
+    border-radius: 30px;
+    box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+    transition: all 0.1s;
+}
 /* @media(max-width: 720px) {
     .toggle_desktop{
         display: none;

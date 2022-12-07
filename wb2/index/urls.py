@@ -8,7 +8,6 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('port',views.porter,name='port'),
     path('',views.lp,name='landing'),
-    # path('dashboard',views.dashboard,name='dashboard'),
     path('login/',views.signin,name='login'),
     path('user_creation', views.user_creation,name='user_creation'),
     path('signout', views.signout,name='signout'),
@@ -17,6 +16,7 @@ urlpatterns = [
     path('bills_list/ledger/<id>/', views.ledger,name='ledger'),
     path('payment/<id>/', views.payment, name='payment'),
     path('meterreading', views.meterreading,name='meterreading'),
+    path('meterreading/bulkreading', views.bulkreading,name='bulkreading'),
     path('meterreading/p/<int:p>', views.meterreading_p,name='meterreading_p'),
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),

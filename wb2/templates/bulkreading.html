@@ -1,0 +1,117 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+Bulk Reading
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
+{% endblock style %}
+{% block script %}
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'DataTables/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'DataTables/js/dataTables.bootstrap5.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+
+{% endblock script %}
+
+{% block bulkreading %}
+<h1 class="mb-3 text-center">BULK READING ENTRY</h1>
+<h1 class="mb-3 text-center">Bulk Input Reading for {{month}} {{year}}</h1>
+
+<div class="row w-100 m-auto pt-2">
+	<form action="{% url 'bulkreading' %}" method="post">
+		{% csrf_token %}
+		<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
+			<thead class="wb_thead">
+				<tr>
+					<th>Meter Number</th>
+					<th>Account Number</th>
+					<th>Customer</th>
+					<th>Previous Reading</th>
+					<th>Current Reading</th>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				{% for c in consumers_list %}
+				<tr>
+					<td>{{c.con.meternumber}}</td>
+					<td>{{c.con.consumer_id}}</td>
+					<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
+					<td>{{c.prev}}</td>
+					<td class="balance"><input title="Current Reading" type="number" class="form-control" name="con{{c.con.consumer_id}}" id="" value="{{c.cur}}"></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="row w-100 m-auto pt-2">
+			<div class="col-lg-12 col-md-12 col-sm-12">
+				<button type="submit" class="btn button2">
+					Save
+				</button>
+			</div>
+		</div>
+	</form>
+	<style>
+		.page-link {
+			position: relative;
+			display: block;
+			color: #006c85;
+			text-decoration: none;
+			background-color: #fff;
+			border: 1px solid #dee2e6;
+			transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+		}
+		.page-item.active .page-link {
+			z-index: 3;
+			color: #fff;
+			background-color: #006c85;
+			border-color: #006c85;
+		}
+		.hide {
+			opacity: 0;
+			transition: 0.3s all ease-in-out;
+		}
+
+		.showOnHover:hover .hide {
+			opacity: 1;
+			transition: 0.3s all ease-in-out;
+		}
+		.button2 {
+			background-color: var(--highlight-color); 
+			color: white;
+			padding: 8px 30px;
+			border: none;
+			border-radius: 15px;
+			box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+			transition: all ease 0.3s;
+		}
+		.btn.button2:hover {
+			background: var(--highlight-color);
+			color: #ffffff;
+			border-radius: 30px;
+			box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+			transition: all ease-in 0.5s;
+		}
+		.btn.button2:focus {
+			background: var(--highlight-color);
+			color: #ffffff;
+			border-radius: 30px;
+			box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+			transition: all 0.1s;
+		}
+	</style>
+</div>
+{% endblock bulkreading %}

@@ -96,14 +96,14 @@ class ConsumerCreationForm(ModelForm):
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}))
-    sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=CHOICES)
+    sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
     sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}),required=False)
     meternumber = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
-    installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Barangays.objects.all())
-    rateid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=ConsumerType.objects.all())
+    installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select'}),queryset=Barangays.objects.all())
+    rateid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select'}),queryset=ConsumerType.objects.all())
 
     class Meta():
         model = ConsumerInfo
@@ -136,14 +136,14 @@ class Userinfoupdate(ModelForm):
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}))
-    sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=CHOICES)
+    sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
     sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
     meternumber = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
-    installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=Barangays.objects.all())
-    rateid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),queryset=ConsumerType.objects.all())
+    installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select'}),queryset=Barangays.objects.all())
+    rateid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select'}),queryset=ConsumerType.objects.all())
 
     class Meta():
         model = ConsumerInfo

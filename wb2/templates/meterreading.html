@@ -18,6 +18,41 @@ Meter Reading
         transition: 0.3s all ease-in-out;
 
     }
+
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+	.button2 {
+		background-color: var(--main-color); 
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
 </style>
 {% endblock style %}
 {% block script %}
@@ -25,6 +60,56 @@ Meter Reading
 {% block meterreading %}
 
 <h1 class="mb-3 text-center">Meter Reading</h1>
+
+
+
+
+<button type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal">
+	<i class="fa fa-copy"></i>
+	Bulk Reading
+</button>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form action="{% url 'bulkreading' %}" method="GET">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Select Year</label>
+						<select name="year" id="" class="form-select" required>
+							<option value=""></option>
+							{% for y in years reversed %}
+							<option value="{{y}}">{{y}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Select Month</label>
+						<select name="month" id="" class="form-select" required>
+							<option value=""></option>
+							{% for m in months %}
+							<option value="{{m.num}}">{{m.name}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+					<button type="submit" class="btn btn-primary">Proceed</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
@@ -48,7 +133,7 @@ Meter Reading
 						selector = document.getElementById("selector")
 						function change() {
 							yearselection.action = selector.value
-							yearselection.submit('')
+							yearselection.submit()
 						}
 					</script>
 				</div>
@@ -100,12 +185,7 @@ Meter Reading
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12 col-md-5">
-                    <div class="dataTables_info" id="table_info" role="status" aria-live="polite">
-
-                    </div>
-                </div>
-				<div class="col-sm-12 col-md-7">
+				<div class="d-flex justify-content-center">
 					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
 						<ul style="display: flex; padding-left: 0; list-style: none;">
 							{% if meterred.paginator.num_pages > 5 %}

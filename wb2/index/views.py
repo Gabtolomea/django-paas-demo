@@ -28,6 +28,8 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from django.db.models.functions import Greatest
 from .decorators import unauthenticated_user
+from django.shortcuts import render
+from django.db.models import Q
 
 
 def porter(request):
@@ -86,16 +88,22 @@ def meterreading(request):
     return redirect('meterreading_p', p=10)
 
 # @authenticated_user
-def bills_list_p(request, p):
+def bills_list_p(request, p):   
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
+
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = bills.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
 
     paginator = Paginator(bills, paginate_by)
     try:
@@ -106,8 +114,9 @@ def bills_list_p(request, p):
 
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
-
+    
     context = {
+        'search':search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -121,6 +130,7 @@ def signout(request):
     lr.delete()
     messages.success(request, 'Logout successful')
     return redirect('login')
+
 
 # @authenticated_user
 def user_creation(request):
@@ -328,16 +338,29 @@ def password_reset_form(request):
 # @authenticated_user
 def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
-    context = {
-        'meterred': meterred,
-        'year': datetime.today().year,
-        'user': request.session.get(ReqParams.username)
-    }
+    months = []
+    years = []
+    class monthname():
+        def __init__(self, name, num):
+            self.name = name
+            self.num = num
+    for i in range(1, 13):
+        month = calendar.month_name[i]
+        months.append(monthname(month, i))
+    
     
     pages = int(p)
     user = request.session.get(ReqParams.username)
     meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    
+    
     count = meterred.count()
+    
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
@@ -361,6 +384,8 @@ def meterreading_p(request, p):
         'meterred': m,
         'user': user,
         'year': datetime.today().year,
+        'months': months,
+        'years':years
     }
     return render(request, 'meterreading.html', context)
 
@@ -1287,7 +1312,6 @@ def view_unsettled_bills(request, id, year):
     years = []
     table = []
     uv = ConsumerInfo.objects.get(consumer_id=id)
-
     class view_utang():
         def __init__(self, month, reading, reading_date, usage, total_bill, total_amount_paid):
             self.month = month
@@ -1331,11 +1355,9 @@ def view_unsettled_bills(request, id, year):
                 reading_date = billing[j].date
                 total_bill = billing[j].bill
                 j += 1
-
-        a = view_utang(month, reading, reading_date, usage,
+                a = view_utang(month, reading, reading_date, usage,
                        total_bill, total_amount_paid)
         table.append(a)
-
     context = {'uv': uv,
                'years': years,
                'current': year,
@@ -1424,3 +1446,58 @@ def penalty(request):
     }
 
     return render(request, 'penalty.html', context)
+
+
+def bulkreading(request):
+    consumers_list = []
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if years[0]<years[len(years)-1]:
+        years.reverse()
+    class new_con():
+        def __init__(self, con, prev, cur):
+            self.con = con
+            self.prev = prev
+            self.cur = cur
+    year = int(request.GET["year"])
+    month = int(request.GET["month"])
+    monthname = calendar.month_name[month]
+    consumers = ConsumerInfo.objects.all()
+    for i in years:
+        if i > year:
+            years.remove(i)
+    for i in consumers:
+        try:
+            tran = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing")
+            cur = tran.meterReading
+        except ObjectDoesNotExist: 
+            cur = 0
+        try:
+            if month == 1:
+                tran = Transactions.objects.get(acctID_id=i.consumer_id,month=12,year=year-1,transType = "Billing")
+            else:    
+                tran = Transactions.objects.get(acctID_id=i.consumer_id,month=month-1,year=year,transType = "Billing")
+            prev = tran.meterReading
+        except ObjectDoesNotExist:
+            prev = 0
+    
+        consumers_list.append(new_con(i, prev, cur))
+    
+    if request.method == "POST":
+        cons = ConsumerInfo.objects.all()
+        for c in cons:
+            a = request.POST.get(f"con{c.consumer_id}", None)
+            if a:
+                print(c.consumer_id)
+                
+    context = {
+        'year':year,
+        'month':monthname,
+        'consumers_list':consumers_list,
+        'user':request.session[ReqParams.username]
+    }
+    return render(request,'bulkreading.html', context)
+

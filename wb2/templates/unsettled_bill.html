@@ -26,13 +26,12 @@ Unsettled Bills
 {% endblock style %}
 
 {% block unsettled_bills %}
-
 <h1 class="mb-3 text-center">Unsettled Bills</h1>
 <center>
-    <h4><strong>Total Balance of all Unsettled Bills : &#8369; {{tb.tots|floatformat:2|intcomma}} </strong></h4>
+    <h4>
+        <strong>Total Balance of all Unsettled Bills : &#8369; {{tb.tots|floatformat:2|intcomma}}</strong>
+    </h4>
 </center>
-
-
 <div class="container-fluid p-0">
     <div class="table-responsive">
         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
@@ -104,8 +103,7 @@ Unsettled Bills
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12 col-md-5"></div>
-                <div class="col-sm-12 col-md-7">
+                <div class="d-flex justify-content-center">
                     <div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
                         <ul style="display: flex; padding-left: 0; list-style: none;">
                             {% if ub.paginator.num_pages > 5 %}
