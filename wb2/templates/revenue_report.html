@@ -14,11 +14,15 @@ Revenue Report
 		font-weight: bold;
 		margin-top: 40px;
 	}
+  .row {
+    position: sticky;
+    top: 0;
+  }
 
 	h3 {
 		font-weight: bold;
-		margin-top: 30px;
-		margin-bottom: 30px;
+		margin-top: 25px;
+		margin-bottom: 20px;
 	}
 
 	@media (max-width: 450px) {
@@ -49,6 +53,29 @@ Revenue Report
 {% endblock style %}
 
 {% block revenue_report %}
+<div class="row w-100 m-auto">
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
+			<div class="active" style="text-align: center;">
+			  <a  style="color: white; text-decoration: none;  text-align: center;" href="{% url 'reports' %}" style="margin-left: 2px;"><i class="fa fa-line-chart"></i>
+				  <span>Barangay Report</span>
+			  </a>
+			</div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-4"  style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a  style="color: white; text-decoration: none;  text-align: center;" href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
+			  <span>Usage Report</span>
+      </a>
+		</div>
+</div>
+	<div class="col-lg-4 col-md-4 col-sm-4"  style="background-color: white; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a  style="color: black; text-decoration: none;  text-align: center;" href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
+			  <span>Revenue Report</span></a>
+		  </div>
+    </div>
+
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <div>
 	{% csrf_token %}
@@ -57,7 +84,7 @@ Revenue Report
   <div>
     <div class="form-group">
      <label class="header" for="exampleInputBarangay">Select Year: </label>
-      <form id="yearselection" action="GET">
+      <form id="yearselection" action="GET" style="margin-right: 1370px">
         <select class="form-select" id="selector" onchange="change()">
           <option value="{{cur_year}}">{{cur_year}}</option>
         {% for i in years reversed %}
@@ -80,17 +107,17 @@ Revenue Report
 <body>
   <div id="reportPage">
     
-    
-    {% comment %} <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button> {% endcomment %}
+<!--     
+    {% comment %} <button type="button" id="postbtn" onclick="this_record()">Get a Copy</button> {% endcomment %} -->
 
     <div class="row">
-      <div class="col-md-4 col-lg-2">
-        <button type="button" id="postbtn" onclick="this_record() "class="btn btn-info  btn-block" style="border-radius: 25px; margin-top: 30px;">Get a Copy</button>
+      <div class="col-md-12 col-lg-12">
+        <button type="button" id="postbtn" onclick="this_record() "class="btn btn-info  btn-block" style="background-color:  #0093b7; color:white; border-radius: 30px; margin-top: -60px; float: right; width: 120px;">Get a Copy</button>
       </div><!-- /col -->
     </div><!-- /row -->
     
     {% comment %} <div class="button-container"> {% endcomment %}
-      {% comment %} <button type="button" id="postbtn" onclick="this_record()" style="background-color:  #0093b7; color:black;  border-radius:25px; width: 10%; margin-top: 30px;" {% endcomment %}
+      {% comment %} <button type="button" id="postbtn" onclick="this_record()" style="background-color:  #0093b7; color:black;  border-radius:30px; width: 10%; margin-top: 30pxx" {% endcomment %}
            {% comment %} class="btn">Get Copy</button> {% endcomment %}
 
   {% comment %} </div> {% endcomment %}

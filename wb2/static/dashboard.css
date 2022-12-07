@@ -475,8 +475,7 @@ button.btn.btn-wb-copy:hover {
 }
 
 .wb_thead {
-    position: sticky;
-    top: 0;
+    
     background-color: var(--main-color);
     text-align: center;
     color: white;

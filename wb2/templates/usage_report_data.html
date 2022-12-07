@@ -6,6 +6,7 @@ Usage Report
 
 {% block style %}
 <style>
+	
   .select {
     font-weight: bold;
     font-size: 20px;
@@ -18,20 +19,41 @@ Usage Report
 {% endblock style %}
 {% block usage_report_data %}
 
-<a href = "{% url 'barangayreport' cur_year %}">Barangay Report</a>
-<a href = "{% url 'usage_report_data' cur_year %}">Usage Report</a>
-<a href = "{% url 'revenue_report' cur_year %}">Revenue Report</a>
-<a href = "{% url 'unsettled_bills' %}">Unsettled Bills</a>
 
-<p>Testing Bitch</p>
+<div class="row w-100 m-auto">
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap;padding: 5px;">
+			<div class="active" style="text-align: center;">
+			  <a  style="color: white; text-decoration: none;  " href="{% url 'reports' %}" style="margin-left: 2px;"><i class="fa fa-line-chart"></i>
+				<span>Barangay Report</span>
+			  </a>
+			</div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-4"  style="background-color:white; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a  style="color: black; text-decoration: none; " href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
+			  <span>Usage Report</span></a>
+		  </div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-4"  style="background-color:#0093b7; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a  style="color: white; text-decoration: none; " href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
+			  <span>Revenue Report</span></a>
+		  </div>
+	</div>
+</div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 {% csrf_token %}
 <div>
 	<div>
+		<h2 style="font-weight: bold; margin-bottom: 30px;  text-align: center; margin-top: 30px;">Usage Report Data</h2>
+	</div>
+
+	<div style="padding-top: 25px;">
 		<label for="exampleInputBarangay">Select Year</label>
-		<form id="yearselection" action="">
+		<form id="yearselection" action="" style="margin-right: 1370px">
 			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
 				{% for i in years reversed %}
@@ -50,6 +72,13 @@ Usage Report
 	</div>
 
   <body>
+	<script>
+		jQuery(document).ready(function ($) {
+			$(".clickable-row").click(function () {
+				window.location = $(this).data("href");
+			});
+		});
+	</script>
     <center>
       <h4><strong>Monthly Total Usage: Year {{cur_year}}</strong></h4>
     </center>
