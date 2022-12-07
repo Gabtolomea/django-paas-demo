@@ -1357,7 +1357,7 @@ def view_unsettled_bills(request, id, year):
                 j += 1
                 a = view_utang(month, reading, reading_date, usage,
                        total_bill, total_amount_paid)
-        table.append(a)
+    table.append(a)
     context = {'uv': uv,
                'years': years,
                'current': year,
