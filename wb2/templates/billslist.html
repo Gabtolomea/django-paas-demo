@@ -34,7 +34,6 @@ Billing
 {% block billslist %}
 <h1 class="mb-3 text-center">Bills List</h1>
 <div class="container-fluid p-0">
-	<!-- <div class="table-responsive"> -->
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
 				<div class="col-sm-12 col-md-6">
@@ -63,10 +62,35 @@ Billing
 				<div class="col-sm-12 col-md-6">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<label>Search:
-							<form class="input-group" action="" method="GET" role="form">
-								<input type="text" name="search" id="" class="form-control" placeholder="Search" value="{{ search}}">
+							<form class="input-group" action="" id ="form" method="GET" role="form">
+								<input type="text" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">
 							</form>
-							<!-- <input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
+							<script>
+								//setup before functions
+							let typingTimer;                //timer identifier
+							let doneTypingInterval = 0;  //time in ms (2 seconds)
+							let myInput = document.getElementById('myInput');
+							form = document.getElementById('form')
+							//on keyup, start the countdown
+							myInput.addEventListener('keyup', () => {
+								clearTimeout(typingTimer);
+								if (myInput.value) {
+									typingTimer = setTimeout(doneTyping, doneTypingInterval);
+								}
+							});
+							//user is "finished typing," do something
+							function doneTyping () {
+								var newURL = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname + window.location.search
+								form.action = newURL + "?search="+myInput.value
+								form.submit()
+							}
+							window.onload = function() {
+							var input = document.getElementById("myInput");
+							const end = input.value.length;
+							input.setSelectionRange(end, end);
+							input.focus();
+							}
+								</script>							
 						</label>
 					</div>
 				</div>
@@ -285,33 +309,7 @@ Billing
 					</div>
 				</div>
 			</div>
-		</div>
 	</div>
 </div>
-<script>
-	function myFunction() {
-		var input, filter, table, tr, i, j, column_length, count_td;
-		column_length = document.getElementById('myTable').rows[0].cells.length;
-		input = document.getElementById("myInput");
-		filter = input.value.toUpperCase();
-		table = document.getElementById("myTable");
-		tr = table.getElementsByTagName("tr");
-		for (i = 1; i < tr.length; i++) {
-			count_td = 0;
-			for (j = 1; j < column_length - 1; j++) {
-				td = tr[i].getElementsByTagName("td")[j];
-				if (td){
-					if (td.innerHTML.toUpperCase().indexOf(filter) > -1){
-						count_td++;
-					}
-				}
-			}
-			if (count_td > 0) {
-				tr[i].style.display = "";
-			} else {
-				tr[i].style.display = "none";
-			}
-		}
-	}
-</script>
+
 {% endblock billslist %}
