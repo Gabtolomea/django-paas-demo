@@ -1361,7 +1361,8 @@ def view_unsettled_bills(request, id, year):
     context = {'uv': uv,
                'years': years,
                'current': year,
-               'table': table, }
+               'table': table,
+               'user':request.session.get(ReqParams.username) }
     return render(request, 'view_unsettled_bills.html', context)
 
 
