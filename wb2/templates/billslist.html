@@ -5,7 +5,29 @@
 Billing
 {% endblock title %}
 {% block style %}
+<style>
+	.odd{
+	font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
 
+    caption-side: bottom;
+    font-family: Arial;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    box-sizing: border-box;
+    border-color: inherit;
+    border-style: solid;
+    border-width: 1px 0;
+    color: #212529;
+	}
+
+	.dataTables_empty{
+		text-align: center;
+		}
+</style>
 {% endblock style %}
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -15,7 +37,7 @@ Billing
 
 
 <div class="container-fluid p-0">
-	<div class="table-responsive">
+	<!-- <div class="table-responsive"> -->
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
 				<div class="col-sm-12 col-md-6">
@@ -43,7 +65,7 @@ Billing
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<label>Search:
 							<form class="input-group" action="" method="GET" role="form">
-								<input type="text" name="search" id="" class="form-control" placeholder="Search">
+								<input type="text" name="search" id="" class="form-control" placeholder="Search" value="{{ search}}">
 							</form>
 							<!-- <input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
 						</label>
@@ -64,15 +86,19 @@ Billing
 							</tr>
 						</thead>
 						<tbody class="wb_tbody">
-							{% for bill in bills_list %}
-							<tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">
-								<td>{{bill.consumer_id}}</td>
-								<td>{{bill.meternumber}}</td>
-								<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
-								<td>{{bill.installation_address}}</td>
-								<td class="balance"> &#8369; {{bill.current_bal|floatformat:2|intcomma}}</td>
-							</tr>
-							{% endfor %}
+							{% if bills_list %}
+								{% for bill in bills_list %}
+								<tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">
+									<td>{{bill.consumer_id}}</td>
+									<td>{{bill.meternumber}}</td>
+									<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
+									<td>{{bill.installation_address}}</td>
+									<td class="balance"> &#8369; {{bill.current_bal|floatformat:2|intcomma}}</td>
+								</tr>
+								{% endfor %}
+							{% else %}
+							<tr class="odd"><td valign="top" colspan="5" class="dataTables_empty">No matching records found</td></tr>
+							{% endif %}
 							<script>
 								jQuery(document).ready(function($) {
 									$(".clickable-row").click(function() {
@@ -92,7 +118,7 @@ Billing
 							{% if bills_list.paginator.num_pages > 5 %}
 								{% if bills_list.number < 5 %}
 									{% if bills_list.has_previous %}
-									<a href="?page={{ bills_list.previous_page_number }}">
+									<a href="?page={{ bills_list.previous_page_number }}&search={{search}}">
 										<li class="paginate_button page-item previous">Previous</li>
 									</a>
 									{% else %}
@@ -100,21 +126,21 @@ Billing
 									{% endif %}
 									{% for i in five %}
 										{% if i == bills_list.number %}
-											<a href="?page={{i}}">
+											<a href="?page={{i}}&search={{search}}">
 												<li class="paginate_button page-item active">{{i}}</li>
 											</a>
 										{% else %}
-											<a href="?page={{i}}">
+											<a href="?page={{i}}&search={{search}}">
 												<li class="paginate_button page-item">{{i}}</li>
 											</a>
 										{% endif %}
 									{% endfor %}
 									<li class="paginate_button disabled page-item">...</li>
-									<a href="?page={{ bills_list.paginator.num_pages }}">
+									<a href="?page={{ bills_list.paginator.num_pages }}&search={{search}}">
 										<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
 									</a>
 									{% if bills_list.has_next %}
-									<a href="?page={{ bills_list.next_page_number }}">
+									<a href="?page={{ bills_list.next_page_number }}&search={{search}}">
 										<li class="paginate_button page-item next">Next</li>
 									</a>
 									{% else %}
@@ -123,38 +149,38 @@ Billing
 								{% else %}
 									{% if bills_list.number > bills_list.paginator.num_pages|add:'-3'%}
 										{% if bills_list.has_previous %}
-										<a href="?page={{ bills_list.previous_page_number }}">
+										<a href="?page={{ bills_list.previous_page_number }}&search={{search}}">
 											<li class="paginate_button page-item previous">Previous</li>
 										</a>
 										{% else %}
 											<li class="paginate_button disabled page-item previous">Previous</li>
 										{% endif %}
-										<a href="?page=1">
+										<a href="?page=1&search={{search}}">
 											<li class="paginate_button page-item">1</li>
 										</a>
 										<li class="paginate_button disabled page-item">...</li>
 										{% for i in last %}
 											{% if i == bills_list.number %}
-												<a href="?page={{i}}">
+												<a href="?page={{i}}&search={{search}}">
 													<li class="paginate_button page-item active">{{i}}</li>
 												</a>
 											{% else %}
-												<a href="?page={{i}}">
+												<a href="?page={{i}}&search={{search}}">
 													<li class="paginate_button page-item">{{i}}</li>
 												</a>
 											{% endif %}
 										{% endfor %}
 										{% if bills_list.number == bills_list.paginator.num_pages %}
-										<a href="?page={{ bills_list.paginator.num_pages }}">
+										<a href="?page={{ bills_list.paginator.num_pages }}&search={{search}}">
 											<li class="paginate_button page-item active">{{ bills_list.paginator.num_pages }}</li>
 										</a>
 										{% else %}
-										<a href="?page={{ bills_list.paginator.num_pages }}">
+										<a href="?page={{ bills_list.paginator.num_pages }}&search={{search}}">
 											<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
 										</a>
 										{% endif %}
 										{% if bills_list.has_next %}
-										<a href="?page={{ bills_list.next_page_number }}">
+										<a href="?page={{ bills_list.next_page_number }}&search={{search}}">
 											<li class="paginate_button page-item next">Next</li>
 										</a>
 										{% else %}
@@ -162,14 +188,14 @@ Billing
 										{% endif %}
 									{% else %}
 										{% if bills_list.has_previous %}
-											<a href="?page={{ bills_list.previous_page_number }}">
+											<a href="?page={{ bills_list.previous_page_number }}&search={{search}}">
 												<li class="paginate_button page-item previous">Previous</li>
 											</a>
 										{% else %}
 											<li class="paginate_button disabled page-item previous">Previous</li>
 										{% endif %}
 										{% if bills_list.number > 2 %}
-											<a href="?page=1">
+											<a href="?page=1&search={{search}}">
 												<li class="paginate_button page-item">1</li>
 											</a>
 											{% if bills_list.number > 3 %}
@@ -178,12 +204,12 @@ Billing
 										{% endif %}
 
 										{% for num in bills_list.paginator.page_range %}
-										{% if bills_list.number == num %}<a href="?page={{ num }}">
+										{% if bills_list.number == num %}<a href="?page={{ num }}&search={{search}}">
 										<li class="paginate_button page-item active">
 											{{ num }}
 										</li></a>
 										{% elif num > bills_list.number|add:'-2' and num < bills_list.number|add:'2' %}
-											<a href="?page={{ num }}"> 
+											<a href="?page={{ num }}&search={{search}}"> 
 												<li class="paginate_button page-item">{{ num }}</li>
 											</a>
 											{% endif %}
@@ -191,16 +217,16 @@ Billing
 
 										{% if bills_list.number < bills_list.paginator.num_pages|add:'-2' %}
 											<li class="paginate_button disabled page-item">...</li>
-											<a href="?page={{ bills_list.paginator.num_pages }}">
+											<a href="?page={{ bills_list.paginator.num_pages }}&search={{search}}">
 												<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
 											</a>
 										{% elif bills_list.number < bills_list.paginator.num_pages|add:'-1' %} 
-											<a href="?page={{ bills_list.paginator.num_pages }}">
+											<a href="?page={{ bills_list.paginator.num_pages }}&search={{search}}">
 												<li class="paginate_button page-item">{{ bills_list.paginator.num_pages }}</li>
 											</a>
 										{% endif %}
 										{% if bills_list.has_next %}
-											<a href="?page={{ bills_list.next_page_number }}">
+											<a href="?page={{ bills_list.next_page_number }}&search={{search}}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 										{% else %}
@@ -262,7 +288,7 @@ Billing
 					</div>
 				</div>
 			</div>
-		</div>
+		<!-- </div> -->
 
 	</div>
 </div>
