@@ -350,8 +350,14 @@ def meterreading_p(request, p):
     
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
-    
+
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
     count = meterred.count()
     
@@ -377,6 +383,7 @@ def meterreading_p(request, p):
         m = paginator.page(paginator.num_pages)
 
     context = {
+        'search':search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -1152,7 +1159,7 @@ def view_unsettled_bills(request, id, year):
                 j += 1
                 a = view_utang(month, reading, reading_date, usage,
                        total_bill, total_amount_paid)
-        table.append(a)
+                table.append(a)
     context = {'uv': uv,
                'years': years,
                'current': year,
