@@ -1052,7 +1052,7 @@ def unsettled_bills_p(request, p):
     tb = ubs.aggregate(tots = Sum('current_bal'))
     table = []
     for j in ubs:
-        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('year')
+        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
         if alltran[0].year is not None:
             a = alltran[0].year
         else:
