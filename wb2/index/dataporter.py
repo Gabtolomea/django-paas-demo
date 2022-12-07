@@ -4,7 +4,6 @@ from .colnames import *
 from datetime import datetime
 import math
 import mysql.connector
-import base64
 
 tablenames = [
     "accountinfo",
