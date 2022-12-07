@@ -8,7 +8,7 @@ Usage Report
 <style>
 	canvas {
 		border: 10px outset #63CDD7;
-        padding: 20px;
+		padding: 20px;
 
 	}
 
@@ -143,20 +143,20 @@ Usage Report
 			line-height: 1.25;
 		}
 
-			table td::before {
-				/*
+		table td::before {
+			/*
         * aria-label has no advantage, it won't be read inside a table
         content: attr(aria-label);
         */
-				content: attr(data-label);
-				float: left;
-				font-weight: bold;
-				text-transform: uppercase;
-			}
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
 
-			table td:last-child {
-				border-bottom: 0;
-			}
+		table td:last-child {
+			border-bottom: 0;
+		}
 
 		@media (max-width: 400px) {
 			h2 {
@@ -200,15 +200,37 @@ Usage Report
 {% csrf_token %}
 
 
-<a href="{% url 'reports' %}">Barangay Report</a>
-<a href="{% url 'usage_report_data' cur_year %}">Usage Report</a>
-<a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
+<div class="row w-100 m-auto">
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
+		<div class="active" style="text-align: center;">
+			<a style="color: white; text-decoration: none;  text-align: center;" href="{% url 'reports' %}"
+				style="margin-left: 2px;"><i class="fa fa-line-chart"></i>
+				<span>Barangay Report</span>
+			</a>
+		</div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a style="color: white; text-decoration: none;  text-align: center;"
+				href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
+				<span>Usage Report</span>
+			</a>
+		</div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: white; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a style="color: black; text-decoration: none;  text-align: center;"
+				href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
+				<span>Revenue Report</span></a>
+		</div>
+	</div>
 
+</div>
 
 <div>
-		<div>
-			<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Usage Report</h2>
-		</div>
+	<div>
+		<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Usage Report</h2>
+	</div>
 	<div>
 		<label for="exampleInputBarangay">Select Year</label>
 		<form id="yearselection" action="">
@@ -230,76 +252,76 @@ Usage Report
 	</div>
 
 
-	
-		<center>
-			<label><strong>Barangay Total Usage: Year {{cur_year}}</strong></label>
-		</center>
 
-		<br>
+	<center>
+		<label><strong>Barangay Total Usage: Year {{cur_year}}</strong></label>
+	</center>
+
+	<br>
 
 
-		<div class="chartBox">
+	<div class="chartBox">
 		<canvas id="barangay" width="500" height="150"></canvas>
-		</div>
-		
+	</div>
 
-		<script>
-			// setup 
-			const data = {
-				labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
-			datasets: [{
-				label: 'Barangay Usage',
-				data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
-				backgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(75, 200, 100, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-						borderWidth: 1,
+
+	<script>
+		// setup 
+		const data = {
+			labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
+		datasets: [{
+			label: 'Barangay Usage',
+			data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
+			backgroundColor: [
+				'rgba(255, 99, 132, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(75, 200, 100, 1)',
+				'rgba(153, 102, 255, 1)',
+				'rgba(255, 159, 64, 1)'
+			],
+				borderColor: [
+					'rgba(255, 99, 132, 1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(75, 192, 192, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+				],
+					borderWidth: 1,
 		}]
    	}
 
-			// config 
-			const config = {
-				type: 'bar',
-				data,
-				options: {
-					scales: {
-						y: {
-							beginAtZero: true
-						}
+		// config 
+		const config = {
+			type: 'bar',
+			data,
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
 					}
 				}
-			};
+			}
+		};
 
-			// render init block
-			const ctx2 = document.getElementById('barangay');
-			const barangay = new Chart(
-				ctx2,
-				config
-			);
+		// render init block
+		const ctx2 = document.getElementById('barangay');
+		const barangay = new Chart(
+			ctx2,
+			config
+		);
 
 
-		</script>
+	</script>
 
+	<br>
+
+	<center>
+		<label><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></label>
 		<br>
+		<p2><i>click on select to view individual barangay monnhly usage</i></p2>
+	</center>
 
-		<center>
-			<label><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></label>
-			<br>
-			<p2><i>click on select to view individual barangay monnhly usage</i></p2>
-		</center>
-
-		<center>
+	<center>
 		<div class="selectBox">
 			<label>Select Barangay</label>
 			<select id="coffeesales">
@@ -356,49 +378,49 @@ Usage Report
 			</select>
 
 		</div>
-		</center>
-		<br>
+	</center>
+	<br>
 
-		<div class="chartBox">
-			<canvas id="myChart" width="500" height="150"></canvas>
-		</div>
+	<div class="chartBox">
+		<canvas id="myChart" width="500" height="150"></canvas>
+	</div>
 
-		<script>
-			const ctx = document.getElementById('myChart').getContext('2d');
-			const myChart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-					datasets: [{
-						label: 'Total Monthly',
-						data: [{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} ],
-						fill: false,
-						backgroundColor: ['#FD2F02'],
-						borderColor: ['#FD2F02'],
-						tension: 0.1,
+	<script>
+		const ctx = document.getElementById('myChart').getContext('2d');
+		const myChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+				datasets: [{
+					label: 'Total Monthly',
+					data: [{{ tu_mon.jan }}, {{ tu_mon.feb }}, {{ tu_mon.mar }}, { { tu_mon.apr } }, { { tu_mon.may } }, { { tu_mon.jun } }, { { tu_mon.jul } }, { { tu_mon.aug } }, { { tu_mon.sept } }, { { tu_mon.oct } }, { { tu_mon.nov } }, { { tu_mon.dec } } ],
+		fill: false,
+			backgroundColor: ['#FD2F02'],
+				borderColor: ['#FD2F02'],
+					tension: 0.1,
 					}]
 				},
-				options: {
-					scales: {
-						y: {
-							beginAtZero: true
-						}
-					}
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
 				}
-			});
-			const coffeesales = document.getElementById('coffeesales');
-			coffeesales.addEventListener('change', salesTracker);
-			function salesTracker() {
-				const label = coffeesales.options[coffeesales.selectedIndex].text;
-				myChart.data.datasets[0].label = label;
-				myChart.data.datasets[0].data = coffeesales.value.split(',');
-
-				myChart.update()
 			}
+		}
+			});
+		const coffeesales = document.getElementById('coffeesales');
+		coffeesales.addEventListener('change', salesTracker);
+		function salesTracker() {
+			const label = coffeesales.options[coffeesales.selectedIndex].text;
+			myChart.data.datasets[0].label = label;
+			myChart.data.datasets[0].data = coffeesales.value.split(',');
 
-		</script>
+			myChart.update()
+		}
 
-<br>
+	</script>
+
+	<br>
 
 
 
