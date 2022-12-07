@@ -4,25 +4,15 @@
 
 
 {% block view_unsettled_bills %}
-<<<<<<< HEAD
 <table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
-    <thead class="header">
-        <tr>
+    <thead class="wb_thead">
+        <tr class="header ">
             <th scope="col" style="min-width:110px">Account ID</th>
             <th scope="col" style="min-width:110px">Meter Number</th>
             <th scope="col" style="min-width:110px">Name</th>
             <th scope="col" style="min-width:110px">Address</th>
-=======
-<div class="table-responsive">
-<table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
-    <thead class="header">
-        <tr style="background-color: #0093b7; color: white;">
-            <th scope="col" style="min-width: 25px">Account ID</th>
-            <th scope="col" style="min-width: 25px">Meter Number</th>
-            <th scope="col" style="min-width: 25px">Name</th>
-            <th scope="col" style="min-width: 25px">Address</th>
->>>>>>> jazzy
         </tr>
+  </thead>
         <tbody class="wb_tbody">
     <tr>
       <td>{{uv.consumer_id}}</td>
@@ -30,7 +20,7 @@
       <td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
       <td>{{uv.installation_address}}</td>
     </tr>
-  </thead>
+    </tbody>
 </table>
 <label for="years" style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">SelectYear:</label>
 <form id="yearselection" action="">
@@ -63,7 +53,6 @@
     </tr>
   </thead>
   <tbody class="wb_tbody">
-  </tbody>
   {% for t in table %}
   <tr>
     <td>{{t.month}}</td>
@@ -74,6 +63,7 @@
     <td>&#8369;  {{t.total_amount_paid|floatformat:2|intcomma}}</td>
   </tr>
   {% endfor %}
+  </tbody>
 </table>
 {%  endblock view_unsettled_bills %}
 

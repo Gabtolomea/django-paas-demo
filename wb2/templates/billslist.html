@@ -66,31 +66,30 @@ Billing
 								<input type="search" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">
 							</form>
 							<script>
-								//setup before functions
-							let typingTimer;                //timer identifier
-							let doneTypingInterval = 0;  //time in ms (2 seconds)
-							let myInput = document.getElementById('myInput');
-							form = document.getElementById('form')
-							//on keyup, start the countdown
-							myInput.addEventListener('keyup', () => {
-								clearTimeout(typingTimer);
-								if (myInput.value) {
-									typingTimer = setTimeout(doneTyping, doneTypingInterval);
+								let typingTimer;                //timer identifier
+								let doneTypingInterval = 0;  //time in ms (2 seconds)
+								let myInput = document.getElementById('myInput');
+								form = document.getElementById('form')
+								//on keyup, start the countdown
+								myInput.addEventListener('keyup', () => {
+									clearTimeout(typingTimer);
+									if (myInput.value) {
+										typingTimer = setTimeout(doneTyping, doneTypingInterval);
+									}
+								});
+								//user is "finished typing," do something
+								function doneTyping () {
+									var newURL = window.location.href
+									form.action = newURL + "?search="+myInput.value
+									form.submit()
 								}
-							});
-							//user is "finished typing," do something
-							function doneTyping () {
-								var newURL = window.location.href
-								form.action = newURL + "?search="+myInput.value
-								form.submit()
-							}
-							window.onload = function() {
-							var input = document.getElementById("myInput");
-							const end = input.value.length;
-							input.setSelectionRange(end, end);
-							input.focus();
-							}
-								</script>							
+								window.onload = function() {
+									var input = document.getElementById("myInput");
+									const end = input.value.length;
+									input.setSelectionRange(end, end);
+									input.focus();
+								}
+							</script>							
 						</label>
 					</div>
 				</div>
