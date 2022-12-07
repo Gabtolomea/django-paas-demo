@@ -28,6 +28,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
 from django.shortcuts import render
+from django.db.models import Q
 
 
 def porter(request):
@@ -86,23 +87,22 @@ def meterreading(request):
     return redirect('meterreading_p', p=10)
 
 # @authenticated_user
-def bills_list_p(request, p):
-    # if cache.get('message') is not None:
-    #     if cache.get('message').trigger > 1:
-    #         m = []
-    #     else:
-    #         m = [cache.get('message')]
-    # else:
-    #     m = []
+def bills_list_p(request, p):   
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
+
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = bills.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
 
     paginator = Paginator(bills, paginate_by)
     try:
@@ -113,9 +113,9 @@ def bills_list_p(request, p):
 
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
-
+    
     context = {
-        # 'messages':m,
+        'search':search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -263,13 +263,8 @@ def ledger(request, id):
             prev = p
     year = date.today().year
     
-    query = request.GET.get('q', '')
-    if query:
-        results = ConsumerInfo.objects.filter(name__icontains=query).distinct()
-    else:
-        results = []
+
     context = {
-        'results':results,
         'month':calendar.month_name[date.today().month-1],
         'date_today':date.today(),
         'u': u,
@@ -283,7 +278,7 @@ def ledger(request, id):
         'pen':pen,
         'bal':bal,
         'bill':bill,
-        'user':request.session[ReqParams.username]
+        # 'user':request.session[ReqParams.username]
     }
     return render(request, 'ledger.html', context)
     
@@ -341,6 +336,7 @@ def meterreading_p(request, p):
         'year': date.today().year,
         'user': request.session.get(ReqParams.username)
     }
+    
     
     pages = int(p)
     user = request.session.get(ReqParams.username)
