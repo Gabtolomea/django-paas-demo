@@ -27,6 +27,8 @@ from .tokens import generate_token
 from django.core.files.storage import FileSystemStorage
 from django.db.models import F, Sum
 from .decorators import unauthenticated_user
+from django.shortcuts import render
+from django.db.models import Q
 
 
 def porter(request):
@@ -88,13 +90,11 @@ def meterreading(request):
 def bills_list_p(request, p):
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = bills.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
 
     paginator = Paginator(bills, paginate_by)
     try:
@@ -105,7 +105,7 @@ def bills_list_p(request, p):
 
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
-
+    
     context = {
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
@@ -120,6 +120,7 @@ def signout(request):
     lr.delete()
     messages.success(request, 'Logout successful')
     return redirect('login')
+
 
 # @authenticated_user
 def user_creation(request):
@@ -336,6 +337,7 @@ def meterreading_p(request, p):
     for i in range(1, 13):
         month = calendar.month_name[i]
         months.append(monthname(month, i))
+    
     
     pages = int(p)
     user = request.session.get(ReqParams.username)
@@ -1096,7 +1098,6 @@ def view_unsettled_bills(request, id, year):
     years = []
     table = []
     uv = ConsumerInfo.objects.get(consumer_id=id)
-
     class view_utang():
         def __init__(self, month, reading, reading_date, usage, total_bill, total_amount_paid):
             self.month = month
@@ -1140,11 +1141,9 @@ def view_unsettled_bills(request, id, year):
                 reading_date = billing[j].date
                 total_bill = billing[j].bill
                 j += 1
-
-        a = view_utang(month, reading, reading_date, usage,
+                a = view_utang(month, reading, reading_date, usage,
                        total_bill, total_amount_paid)
         table.append(a)
-
     context = {'uv': uv,
                'years': years,
                'current': year,
