@@ -32,10 +32,9 @@ Bulk Reading
 <h1 class="mb-3 text-center">Bulk Input Reading for {{month}} {{year}}</h1>
 
 <div class="row w-100 m-auto pt-2">
-	<form action="{% url 'savebulkreading' %}" method="post">
+	<form action="{% url 'bulkreading' %}" method="post">
 		{% csrf_token %}
-		<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0"
-			width="100%">
+		<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr>
 					<th>Meter Number</th>
@@ -52,7 +51,7 @@ Bulk Reading
 					<td>{{c.con.consumer_id}}</td>
 					<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
 					<td>{{c.prev}}</td>
-					<td class="balance"><input title="Current Reading" type="number" class="form-control" name="{{c.con.consumer_id}}" id="" value="{{c.cur}}"></td>
+					<td class="balance"><input title="Current Reading" type="number" class="form-control" name="con{{c.con.consumer_id}}" id="" value="{{c.cur}}"></td>
 				</tr>
 				{% endfor %}
 			</tbody>

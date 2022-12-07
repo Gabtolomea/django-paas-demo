@@ -87,7 +87,15 @@ def meterreading(request):
     return redirect('meterreading_p', p=10)
 
 # @authenticated_user
-def bills_list_p(request, p):
+def bills_list_p(request, p):   
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
+
     pages = int(p)
     user = request.session.get(ReqParams.username)
     count = bills.count()
@@ -107,6 +115,7 @@ def bills_list_p(request, p):
         bills_list = paginator.page(paginator.num_pages)
     
     context = {
+        'search':search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -1271,6 +1280,14 @@ def bulkreading(request):
             prev = 0
     
         consumers_list.append(new_con(i, prev, cur))
+    
+    if request.method == "POST":
+        cons = ConsumerInfo.objects.all()
+        for c in cons:
+            a = request.POST.get(f"con{c.consumer_id}", None)
+            if a:
+                print(c.consumer_id)
+                
     context = {
         'year':year,
         'month':monthname,
@@ -1279,7 +1296,3 @@ def bulkreading(request):
     }
     return render(request,'bulkreading.html', context)
 
-def save_bulk_reading(request):
-    if request.method == "POST":
-        print("asdjfhsf")
-    return redirect('meterreading')

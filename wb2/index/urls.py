@@ -17,7 +17,6 @@ urlpatterns = [
     path('payment/<id>/', views.payment, name='payment'),
     path('meterreading', views.meterreading,name='meterreading'),
     path('meterreading/bulkreading', views.bulkreading,name='bulkreading'),
-    path('meterreading/savebulkreading', views.save_bulk_reading,name='savebulkreading'),
     path('meterreading/p/<int:p>', views.meterreading_p,name='meterreading_p'),
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
