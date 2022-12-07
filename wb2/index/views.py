@@ -1260,27 +1260,17 @@ def bulkreading(request):
         try:
             tran = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing")
             cur = tran.meterReading
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist: 
             cur = 0
+        try:
+            if month == 1:
+                tran = Transactions.objects.get(acctID_id=i.consumer_id,month=12,year=year-1,transType = "Billing")
+            else:    
+                tran = Transactions.objects.get(acctID_id=i.consumer_id,month=month-1,year=year,transType = "Billing")
+            prev = tran.meterReading
+        except ObjectDoesNotExist:
+            prev = 0
     
-        prev = 0
-        # f = None
-        # x = month-1
-        # for y in years:
-        #     for m in range(x, 0, -1):
-        #         if f is not None:
-        #             prev = f.meterReading
-        #             flag = True
-        #             break
-        #         else:
-        #             try:
-        #                 f = Transactions.objects.get(acctID_id=i.consumer_id,month=m,year=y,transType = "Billing")
-        #             except ObjectDoesNotExist:
-        #                 f = None
-        #     if y > 0:
-        #         x = 12
-        #     if flag:
-        #         break
         consumers_list.append(new_con(i, prev, cur))
     context = {
         'year':year,
