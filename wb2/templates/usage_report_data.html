@@ -209,17 +209,17 @@ Usage Report
 			</a>
 		</div>
 	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: white; white-space: nowrap; padding: 5px;">
 		<div style="text-align: center;">
-			<a style="color: white; text-decoration: none;  text-align: center;"
+			<a style="color: black; text-decoration: none;  text-align: center;"
 				href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
 				<span>Usage Report</span>
 			</a>
 		</div>
 	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: white; white-space: nowrap; padding: 5px;">
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
 		<div style="text-align: center;">
-			<a style="color: black; text-decoration: none;  text-align: center;"
+			<a style="color: white; text-decoration: none;  text-align: center;"
 				href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
 				<span>Revenue Report</span></a>
 		</div>
@@ -232,7 +232,7 @@ Usage Report
 		<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Usage Report</h2>
 	</div>
 	<div>
-		<label for="exampleInputBarangay">Select Year</label>
+		<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year</label>
 		<form id="yearselection" action="">
 			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
