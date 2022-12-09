@@ -351,8 +351,14 @@ def meterreading_p(request, p):
     
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
-    
+
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
     count = meterred.count()
     
@@ -378,6 +384,7 @@ def meterreading_p(request, p):
         m = paginator.page(paginator.num_pages)
 
     context = {
+        'search':search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
@@ -818,7 +825,6 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
-
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -895,18 +901,6 @@ def view_barangay(request, id):
 
     }
     return render(request, 'view_barangay.html', context)
-
-
-def unsettled_bill(request):
-    ub = ConsumerInfo.objects.all()
-    year = datetime.today().year
-    print(year)
-    context = {
-        'year': year,
-        'ub': ub
-    }
-    return render(request, 'unsettled_bill.html', context)
-
 
 def usage_report_data(request, year):
     years = []
@@ -1264,42 +1258,36 @@ def unsettled_bills_p(request, p):
         def __init__(self, y, u):
             self.y = y
             self.u = u
-    tb =ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
     pages = int(p)
     ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
-    
+    tb = ubs.aggregate(tots = Sum('current_bal'))
     table = []
-    for j in ubs:
-        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing')
-        years = []
-        for i in alltran:
-            if i.year not in years:
-                if i.year is not None:
-                    years.append(i.year)
-        years.reverse()
-        if years:
-            a = years[0]
-        else:
-            a = 0
-        yeah = ub_year(a,j)
-        table.append(yeah)
-    count = len(table)
+    count = len(ubs)
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
     page = request.GET.get('page')
 
-    paginator = Paginator (table,paginate_by)
+    paginator = Paginator (ubs,paginate_by)
     try:
         ub = paginator.page(page)
-    
     except PageNotAnInteger:
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
+    for j in ub:
+        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
+        if alltran[0].year is not None:
+            a = alltran[0].year
+        else:
+            a = 0
+        yeah = ub_year(a,j)
+        table.append(yeah)
+    
     context = {
         'ub': ub,
+        'table':table,
         'paginate_by': paginate_by,
         'last' : range(paginator.num_pages-3, paginator.num_pages),
         'five' : range(1,6),
@@ -1344,6 +1332,7 @@ def view_unsettled_bills(request, id, year):
         total_bill = 0
         reading_date = ''
         total_amount_paid = 0
+
         if c < pcount and pcount != 0:
             if i == payment[c].month:
                 total_amount_paid = payment[c].payment
@@ -1355,14 +1344,14 @@ def view_unsettled_bills(request, id, year):
                 reading_date = billing[j].date
                 total_bill = billing[j].bill
                 j += 1
-                a = view_utang(month, reading, reading_date, usage,
-                       total_bill, total_amount_paid)
-    table.append(a)
-    context = {'uv': uv,
-               'years': years,
-               'current': year,
-               'table': table,
-               'user':request.session.get(ReqParams.username) }
+                a = view_utang(month, reading, reading_date, usage,total_bill, total_amount_paid)
+                table.append(a)
+    context = {
+        'uv': uv,
+        'years': years,
+        'current': year,
+        'table': table, 
+    }
     return render(request, 'view_unsettled_bills.html', context)
 
 
@@ -1449,7 +1438,13 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def bulkreading(request):
+def bulkreading(request, year, month, p):
+    if request.method == "POST":
+        cons = ConsumerInfo.objects.all()
+        for c in cons:
+            a = request.POST.get(f"con{c.consumer_id}", None)
+            if a is not None:
+                print(f"{c.consumer_id} {a}")
     consumers_list = []
     years = []
     my = BarangayRecord.objects.all()
@@ -1463,14 +1458,29 @@ def bulkreading(request):
             self.con = con
             self.prev = prev
             self.cur = cur
-    year = int(request.GET["year"])
-    month = int(request.GET["month"])
     monthname = calendar.month_name[month]
-    consumers = ConsumerInfo.objects.all()
+    consumers = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    
+    pages = int(p)
+    count = len(consumers)
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator (consumers,paginate_by)
+    try:
+        ub = paginator.page(page)
+    except PageNotAnInteger:
+        ub = paginator.page(1)
+    except EmptyPage:
+        ub = paginator.page(paginator.num_pages)
+
     for i in years:
         if i > year:
             years.remove(i)
-    for i in consumers:
+    for i in ub:
         try:
             tran = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing")
             cur = tran.meterReading
@@ -1484,20 +1494,18 @@ def bulkreading(request):
             prev = tran.meterReading
         except ObjectDoesNotExist:
             prev = 0
-    
         consumers_list.append(new_con(i, prev, cur))
-    
-    if request.method == "POST":
-        cons = ConsumerInfo.objects.all()
-        for c in cons:
-            a = request.POST.get(f"con{c.consumer_id}", None)
-            if a:
-                print(c.consumer_id)
-                
+
+
     context = {
         'year':year,
         'month':monthname,
+        'monthval':month,
         'consumers_list':consumers_list,
+        'ub':ub,
+        'paginate_by': paginate_by,
+        'last' : range(paginator.num_pages-3, paginator.num_pages),
+        'five' : range(1,6),
         'user':request.session[ReqParams.username]
     }
     return render(request,'bulkreading.html', context)
