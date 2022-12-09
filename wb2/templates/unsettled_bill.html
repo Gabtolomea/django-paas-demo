@@ -81,7 +81,7 @@ Unsettled Bills
                             </tr>
                         </thead>
                         <tbody class="wb_tbody">
-                            {% for ub in ub %}
+                            {% for ub in table %}
                             <tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' ub.u.consumer_id ub.y %}">
                                 <td>{{ub.u.consumer_id}}</td>
                                 <td>{{ub.u.lastname}} {{ub.u.firstname}} {{ub.u.middlename}}</td>
