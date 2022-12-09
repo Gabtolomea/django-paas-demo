@@ -2,7 +2,6 @@
 {% load active_link_tags %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>
         {% block title %}
@@ -32,9 +31,9 @@
 </head>
 
 <body>
-    <div id="loading">
+    <!-- <div id="loading">
         <img id="loading-image" src="{% static 'img/loading.gif'%}" alt="Loading..." />
-    </div>
+    </div> -->
     <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -178,7 +177,7 @@
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
                     <i class="fa-solid fa-user fa-2x"></i>
-                    <span style="  padding-left: 23px; font-size: 20px;">Consumer Users</span>
+                    <span class="sidenav_text">Consumers</span>
                 </li>
             </a>
             <a href="{% url 'reports' %}" style="color: white; text-decoration: none">

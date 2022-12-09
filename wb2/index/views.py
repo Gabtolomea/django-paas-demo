@@ -825,7 +825,6 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
-
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -1263,7 +1262,21 @@ def unsettled_bills_p(request, p):
     ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     tb = ubs.aggregate(tots = Sum('current_bal'))
     table = []
-    for j in ubs:
+    count = len(ubs)
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator (ubs,paginate_by)
+    try:
+        ub = paginator.page(page)
+    except PageNotAnInteger:
+        ub = paginator.page(1)
+    except EmptyPage:
+        ub = paginator.page(paginator.num_pages)
+    for j in ub:
         alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
         if alltran[0].year is not None:
             a = alltran[0].year
@@ -1271,23 +1284,10 @@ def unsettled_bills_p(request, p):
             a = 0
         yeah = ub_year(a,j)
         table.append(yeah)
-    count = len(table)
-    if pages == 0:
-        paginate_by = request.GET.get('paginate_by', count)
-    else:
-        paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
-
-    paginator = Paginator (table,paginate_by)
-    try:
-        ub = paginator.page(page)
     
-    except PageNotAnInteger:
-        ub = paginator.page(1)
-    except EmptyPage:
-        ub = paginator.page(paginator.num_pages)
     context = {
         'ub': ub,
+        'table':table,
         'paginate_by': paginate_by,
         'last' : range(paginator.num_pages-3, paginator.num_pages),
         'five' : range(1,6),
@@ -1438,7 +1438,7 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def bulkreading(request, year, month):
+def bulkreading(request, year, month, p):
     if request.method == "POST":
         cons = ConsumerInfo.objects.all()
         for c in cons:
@@ -1459,11 +1459,28 @@ def bulkreading(request, year, month):
             self.prev = prev
             self.cur = cur
     monthname = calendar.month_name[month]
-    consumers = ConsumerInfo.objects.all()
+    consumers = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    
+    pages = int(p)
+    count = len(consumers)
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator (consumers,paginate_by)
+    try:
+        ub = paginator.page(page)
+    except PageNotAnInteger:
+        ub = paginator.page(1)
+    except EmptyPage:
+        ub = paginator.page(paginator.num_pages)
+
     for i in years:
         if i > year:
             years.remove(i)
-    for i in consumers:
+    for i in ub:
         try:
             tran = Transactions.objects.get(acctID_id=i.consumer_id,month=month,year=year,transType = "Billing")
             cur = tran.meterReading
@@ -1477,15 +1494,18 @@ def bulkreading(request, year, month):
             prev = tran.meterReading
         except ObjectDoesNotExist:
             prev = 0
-    
         consumers_list.append(new_con(i, prev, cur))
-    
-                
+
+
     context = {
         'year':year,
         'month':monthname,
         'monthval':month,
         'consumers_list':consumers_list,
+        'ub':ub,
+        'paginate_by': paginate_by,
+        'last' : range(paginator.num_pages-3, paginator.num_pages),
+        'five' : range(1,6),
         'user':request.session[ReqParams.username]
     }
     return render(request,'bulkreading.html', context)
