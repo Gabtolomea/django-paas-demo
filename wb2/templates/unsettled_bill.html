@@ -84,7 +84,7 @@ Unsettled Bills
                             {% for ub in ub %}
                             <tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' ub.u.consumer_id ub.y %}">
                                 <td>{{ub.u.consumer_id}}</td>
-                                <td>{{ub.u.lastname}} {{ub.u.firsname}} {{ub.u.middlename}}</td>
+                                <td>{{ub.u.lastname}} {{ub.u.firstname}} {{ub.u.middlename}}</td>
                                 <td>{{ub.u.meternumber}}</td>
                                 <td>{{ub.u.installation_address}}</td>
                                 <td>&#8369; {{ub.u.current_bal|floatformat:2|intcomma}}</td>

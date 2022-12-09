@@ -1226,7 +1226,13 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def bulkreading(request):
+def bulkreading(request, year, month):
+    if request.method == "POST":
+        cons = ConsumerInfo.objects.all()
+        for c in cons:
+            a = request.POST.get(f"con{c.consumer_id}", None)
+            if a is not None:
+                print(f"{c.consumer_id} {a}")
     consumers_list = []
     years = []
     my = BarangayRecord.objects.all()
@@ -1240,8 +1246,6 @@ def bulkreading(request):
             self.con = con
             self.prev = prev
             self.cur = cur
-    year = int(request.GET["year"])
-    month = int(request.GET["month"])
     monthname = calendar.month_name[month]
     consumers = ConsumerInfo.objects.all()
     for i in years:
@@ -1264,16 +1268,11 @@ def bulkreading(request):
     
         consumers_list.append(new_con(i, prev, cur))
     
-    if request.method == "POST":
-        cons = ConsumerInfo.objects.all()
-        for c in cons:
-            a = request.POST.get(f"con{c.consumer_id}", None)
-            if a:
-                print(c.consumer_id)
                 
     context = {
         'year':year,
         'month':monthname,
+        'monthval':month,
         'consumers_list':consumers_list,
         'user':request.session[ReqParams.username]
     }
