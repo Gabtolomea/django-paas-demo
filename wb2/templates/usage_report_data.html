@@ -200,12 +200,6 @@ Usage Report
 <a href="{% url 'revenue_report' cur_year %}">Revenue Report</a>
 
 <div>
-	<!-- <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-		<button type="button" onclick="pdf()" class="btn button2" style="float:right;">
-			<i class="fa fa-copy" aria-hidden="true"></i>
-			Get a Copy
-		</button>
-	</div> -->
 	<style>
 		button {
 			cursor: pointer;
@@ -216,51 +210,6 @@ Usage Report
 			border: 3px solid rgba(255, 255, 255, .2);
 			border-radius: 18px;
 			transition: .4s;
-		}
-	
-		button:hover {
-			z-index: 0;
-			border-color: transparent;
-			background: linear-gradient(90deg,
-					#f9d923,
-					#00a19d,
-					#0c87b7,
-					#cb49ff,
-					#ff6666,
-					#f9d923);
-			background-size: 400%;
-			box-shadow: 0 0 15px rgb(2, 4, 24);
-			animation: glow 12s linear forwards;
-		}
-	
-		@keyframes glow {
-	
-			from {
-				background-position: 0%;
-			}
-	
-			to {
-				background-position: 400%;
-			}
-	
-		}
-	
-		button::before {
-			content: '';
-			position: absolute;
-			top: -1px;
-			right: -1px;
-			bottom: -1px;
-			left: -1px;
-			background: inherit;
-			filter: blur(36px);
-			opacity: 0;
-			transition: .4s ease-out;
-		}
-	
-		button:hover::before {
-			opacity: 1;
-			z-index: -1;
 		}
 	</style>
 	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
