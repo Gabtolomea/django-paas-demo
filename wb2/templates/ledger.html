@@ -15,33 +15,36 @@ Account Ledger
 		opacity: 1;
 		transition: 0.3s all ease-in-out;
 	}
-    .button2 {
-        background-color: var(--main-color); 
-        color: white;
-        padding: 8px 30px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-    }
-    .btn.button2:hover {
-        background: var(--main-color);
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
-    .btn.button2:focus {
-        background: var(--main-color);
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-        transition: all 0.1s;
-    }
+
+	.button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
-		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
+		<table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr class="header">
 					<th scope="col" style="min-width:25px">Account ID</th>
@@ -51,13 +54,15 @@ Account Ledger
 				</tr>
 			</thead>
 			<tbody>
-				<tr class="showOnHover" >
-					<td class="table-light"style="">{{u.consumer_id}}</td>
-					<td class="table-light"style="">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
-					<td class="table-light"style="">{{u.meternumber}}</td>
-					<td class="table-light"style="">&#8369; {{u.current_bal|floatformat:2|intcomma}}
-						<button type="button" class=" hide btn btn-primary"style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
-						<button type="button" class="hide btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
+				<tr class="showOnHover">
+					<td class="table-light" style="">{{u.consumer_id}}</td>
+					<td class="table-light" style="">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<td class="table-light" style="">{{u.meternumber}}</td>
+					<td class="table-light" style="">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+						<button type="button" class=" hide btn btn-primary" style="float: right; margin-left: 5px;"
+							onclick=print()>Get Bill</button>
+						<button type="button" class="hide btn btn-success" data-bs-toggle="modal"
+							data-bs-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
@@ -244,15 +249,16 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369;{% endif %} {{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}
+						{{t.bill|floatformat:2|intcomma}}</td>
 					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">{% if t.bal %}&#8369;{% endif %} {{t.bal|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bal %} &#8369; {{t.bal|floatformat:2|intcomma}}{% endif %}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
-		</table id="tabs">
+		</table>
 	</div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
@@ -272,18 +278,7 @@ Account Ledger
 
 	function getpdf() {
 		var doc = new jsPDF('landscape', 'pt', 'legal');
-		var htmlstring = '';
-		var tempVarToCheckPageHeight = 0;
-		var pageHeight = 0;
 
-		pageHeight = doc.internal.pageSize.height;
-		specialElementHandlers = {
-			// element with id of "bypass" - jQuery style selector
-			'#bypassme': function (element, renderer) {
-				// true = "handled elsewhere, bypass text extraction"
-				return true
-			}
-		};
 		margins = {
 			top: 150,
 			bottom: 60,
@@ -291,21 +286,74 @@ Account Ledger
 			right: 40,
 			width: 600
 		};
-		const formatter = new Intl.NumberFormat('en-US', {
+
+		const numberformat = new Intl.NumberFormat('en-US', {
 			style: 'currency',
-			currency: 'Php',
-			minimumFractionDigits: 2
-		})
+			currency: 'PHP',
+			currencyDisplay: 'code'
+
+
+		});
+
+
+		var y = 20;
+		var x = 40;
+
+		doc.setFont("Courier");
+		doc.setFontType("bold");
+		doc.setLineWidth(10);
+		doc.setFontSize(20);
+		doc.text(420, y = y + 20, "GINATILAN WATER ");
+
+
+		// var imgData = ("{% static 'images/govlog.png' %}");
+		var y = 60;
+		var x = 40;
+		doc.setFont("Courier");
+		doc.setLineWidth(5);
+		doc.setFontSize(15);
+		doc.text(x, y = y + 10, "Account ID:");
+		doc.text(300, y, "{{u.consumer_id}}")
+		doc.text(x, y = y + 15, "Name:");
+		doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}")
+		doc.text(x, y = y + 15, "Meter Number:");
+		doc.text(300, y, "{{u.meternumber}}");
+		doc.text(x, y = y + 15, "Balance:");
+		doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
+		// doc.addImage(imgData, 'PNG', 15, 40, 180, 160);
 		
-			y = doc.lastAutoTable.finalY
-			console.log(y);
-			if (y > 600) {
-				doc.addPage()
-				y = 20
-			}
-			
-		console.log("testing")
-		doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+
+		y = y + 70
+		doc.setFont("Courier");
+		doc.setFontType("bold");
+		doc.setLineWidth(10);
+		doc.setFontSize(20);
+		doc.text(420, y = y + 30, "ACCOUNT LEDGER");
+
+		var table = [{% for t in table reversed %}
+	['{{t.transid}}', '{{t.date}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
+		]
+	y = y + 5
+	doc.setLineWidth(2);
+	doc.setFontSize(11);
+	doc.autoTable({
+		head: [['Transaction ID', 'Date', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Connectiong Type', 'Amount', 'Payment', 'Processed By', 'OR Number', 'Current Balance']],
+		pageBreak: 'auto',
+		body: table,
+		theme: 'striped',
+		startY: y = y + 30,
+		styles: { font: "Courier" }
+
+	})
+
+	if (y > 600) {
+		doc.addPage()
+		y = 20
+	}
+
+
+	console.log("testing")
+	doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
 	}
 </script>
 </body>
