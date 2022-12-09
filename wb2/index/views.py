@@ -902,18 +902,6 @@ def view_barangay(request, id):
     }
     return render(request, 'view_barangay.html', context)
 
-
-def unsettled_bill(request):
-    ub = ConsumerInfo.objects.all()
-    year = datetime.today().year
-    print(year)
-    context = {
-        'year': year,
-        'ub': ub
-    }
-    return render(request, 'unsettled_bill.html', context)
-
-
 def usage_report_data(request, year):
     
     years = []
@@ -1066,21 +1054,14 @@ def unsettled_bills_p(request, p):
         def __init__(self, y, u):
             self.y = y
             self.u = u
-    tb =ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
     pages = int(p)
     ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
-    
+    tb = ubs.aggregate(tots = Sum('current_bal'))
     table = []
     for j in ubs:
-        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing')
-        years = []
-        for i in alltran:
-            if i.year not in years:
-                if i.year is not None:
-                    years.append(i.year)
-        years.reverse()
-        if years:
-            a = years[0]
+        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
+        if alltran[0].year is not None:
+            a = alltran[0].year
         else:
             a = 0
         yeah = ub_year(a,j)
@@ -1146,6 +1127,7 @@ def view_unsettled_bills(request, id, year):
         total_bill = 0
         reading_date = ''
         total_amount_paid = 0
+
         if c < pcount and pcount != 0:
             if i == payment[c].month:
                 total_amount_paid = payment[c].payment
@@ -1157,13 +1139,14 @@ def view_unsettled_bills(request, id, year):
                 reading_date = billing[j].date
                 total_bill = billing[j].bill
                 j += 1
-                a = view_utang(month, reading, reading_date, usage,
-                       total_bill, total_amount_paid)
+                a = view_utang(month, reading, reading_date, usage,total_bill, total_amount_paid)
                 table.append(a)
-    context = {'uv': uv,
-               'years': years,
-               'current': year,
-               'table': table, }
+    context = {
+        'uv': uv,
+        'years': years,
+        'current': year,
+        'table': table, 
+    }
     return render(request, 'view_unsettled_bills.html', context)
 
 
@@ -1250,7 +1233,13 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def bulkreading(request):
+def bulkreading(request, year, month):
+    if request.method == "POST":
+        cons = ConsumerInfo.objects.all()
+        for c in cons:
+            a = request.POST.get(f"con{c.consumer_id}", None)
+            if a is not None:
+                print(f"{c.consumer_id} {a}")
     consumers_list = []
     years = []
     my = BarangayRecord.objects.all()
@@ -1264,8 +1253,6 @@ def bulkreading(request):
             self.con = con
             self.prev = prev
             self.cur = cur
-    year = int(request.GET["year"])
-    month = int(request.GET["month"])
     monthname = calendar.month_name[month]
     consumers = ConsumerInfo.objects.all()
     for i in years:
@@ -1288,16 +1275,11 @@ def bulkreading(request):
     
         consumers_list.append(new_con(i, prev, cur))
     
-    if request.method == "POST":
-        cons = ConsumerInfo.objects.all()
-        for c in cons:
-            a = request.POST.get(f"con{c.consumer_id}", None)
-            if a:
-                print(c.consumer_id)
                 
     context = {
         'year':year,
         'month':monthname,
+        'monthval':month,
         'consumers_list':consumers_list,
         'user':request.session[ReqParams.username]
     }
