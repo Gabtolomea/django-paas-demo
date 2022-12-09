@@ -441,7 +441,7 @@ Account Ledger
 
 		});
 
-		
+
 		var y = 20;
 		var x = 40;
 
@@ -451,14 +451,23 @@ Account Ledger
 		doc.setFontSize(20);
 		doc.text(420, y = y + 20, "GINATILAN WATER ");
 
+
+		// var imgData = ("{% static 'images/govlog.png' %}");
 		var y = 60;
 		var x = 40;
 		doc.setFont("Courier");
-		doc.text(x, y = y + 10,  "Account ID:                  {{u.consumer_id}}");
-		doc.text(x, y = y + 25,  "Name:                           {{u.firstname}} {{u.middlename}} {{u.lastname}}");
-		doc.text(x, y = y + 35,  "Meter Number:            {{u.meternumber}}");
-		doc.text(x, y = y + 40,  "Balance:            	    PHP {{u.current_bal|floatformat:2|intcomma}}");
-
+		doc.setLineWidth(5);
+		doc.setFontSize(15);
+		doc.text(x, y = y + 10, "Account ID:");
+		doc.text(300, y, "{{u.consumer_id}}")
+		doc.text(x, y = y + 15, "Name:");
+		doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}")
+		doc.text(x, y = y + 15, "Meter Number:");
+		doc.text(300, y, "{{u.meternumber}}");
+		doc.text(x, y = y + 15, "Balance:");
+		doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
+		// doc.addImage(imgData, 'PNG', 15, 40, 180, 160);
+		
 
 		y = y + 70
 		doc.setFont("Courier");
@@ -472,14 +481,14 @@ Account Ledger
 		]
 	y = y + 5
 	doc.setLineWidth(2);
-	doc.setFontSize(20);
+	doc.setFontSize(11);
 	doc.autoTable({
 		head: [['Transaction ID', 'Date', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Connectiong Type', 'Amount', 'Payment', 'Processed By', 'OR Number', 'Current Balance']],
 		pageBreak: 'auto',
 		body: table,
 		theme: 'striped',
 		startY: y = y + 30,
-		styles: {font: "Courier"},
+		styles: { font: "Courier" }
 
 	})
 
