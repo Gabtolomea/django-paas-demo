@@ -36,7 +36,6 @@ urlpatterns = [
     path('reports/waterusage/<int:year>', views.barangayreport, name='barangayreport'),
     path('reports/view_barangay/<id>/', views.view_barangay, name='view_barangay'),
     path('reports/usage_report_data/<int:year>', views.usage_report_data, name='usage_report_data'),
-    path('reports/bbm/<id>',views.bbm, name='bbm'),
     path('reports/revenue_report/<int:year>', views.revenue_report, name='revenue_report'),
     path('unsettled_bills/',views.unsettled_bills, name='unsettled_bills'),
     path('unsettled_bills/p/<int:p>', views.unsettled_bills_p, name='unsettled_bills_p'),
@@ -45,6 +44,8 @@ urlpatterns = [
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
+
+
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
 ]
