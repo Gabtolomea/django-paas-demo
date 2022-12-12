@@ -28,6 +28,25 @@ def camelize():
         c.lastname = c.lastname.title()
         c.middlename = c.middlename.title()
         c.save()
+def enye():
+    cons = ConsumerInfo.objects.all()
+    for c in cons:
+        char = "ãƒâ€˜"
+        if char in c.firstname:
+            c.firstname = c.firstname.replace(char, "ñ")
+        if char in c.lastname:
+            c.lastname = c.lastname.replace(char, "ñ")
+        if char in c.middlename:
+            c.middlename = c.middlename.replace(char, "ñ")
+        c.save()
+def capitalize():
+    cons = ConsumerInfo.objects.all()
+    for c in cons:
+        c.firstname = c.firstname.upper()
+        c.lastname = c.lastname.upper()
+        c.middlename = c.middlename.upper()
+        c.save()
+
 def last_reading(id, year, month):
     cont = month-1
     while year:
