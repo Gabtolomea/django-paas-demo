@@ -1367,6 +1367,7 @@ def view_unsettled_bills(request, id, year):
 
 
 def discount(request):
+    username = SystemUsers.objects.get(pk = username)
     d = Discount.objects.all()
     form = addDiscount()
     discountidcount = len(Discount.objects.all())
@@ -1378,19 +1379,20 @@ def discount(request):
             addD = Discount()
             addD.discountcode = "D00"+str(discountidcount+1)
             addD.discount_rate = discount_rate
+            addD.added_by = SystemUsers.objects.get(pk = username)
             addD.save()
     context = {
         'd': d,
         'form': form,
         'errors': form.errors,
-        'user':user
+        'user': username
     }
     return render(request, 'discount.html', context)
 
 
 # @authenticated_user
 def new_consumertype(request):
-  
+    username = request.session.get(ReqParams.username)
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
@@ -1407,18 +1409,19 @@ def new_consumertype(request):
             ct.minReading = minReading
             ct.minReadingCharge = minReadingCharge
             ct.rateAfterMin = rateAfterMin
-            ct.added_by = None
+            ct.added_by = SystemUsers.objects.get(pk = username)
             ct.save()
     context = {
         'c': c,
         'form': form,
         'errors': form.errors,
-        'user' : request.session.get(ReqParams.username)
+        'user' : username
     }
     return render(request, 'new_consumertype.html', context)
 
 @authenticated_user
 def penalty(request):
+    username = request.session.get(ReqParams.username)
     p = Penalty.objects.all()
     form = addPenalty
     penaltycounter = len(Penalty.objects.all())
@@ -1435,7 +1438,7 @@ def penalty(request):
             pen.penalty_rate = penalty_rate
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
-            pen.added_by = None
+            pen.added_by = SystemUsers.objects.get(pk = username)
             pen.save()
         else:
             print("way ayo")
@@ -1443,7 +1446,7 @@ def penalty(request):
         'p': p,
         'form': form,
         'errors': form.errors,
-        'user' : request.session.get(ReqParams.username)
+        'user' : username
     }
 
     return render(request, 'penalty.html', context)
