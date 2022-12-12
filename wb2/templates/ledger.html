@@ -174,7 +174,7 @@ Account Ledger
                 <label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
                 <label for="accnt">Account ID: {{u.consumer_id}}</label><br>
                 <label for="meter">Meter Number: {{u.meternumber}}</label><br>
-                <label for="addr">Address: {{u.installation_address}}</label>
+                <label for="addr">Address: {{u.installation_address}}</label><br>
                 <label for="zip">Zip Code: 6028</label><br>
                 <label for="country">Country: Philippines</label><br>
                 <label for="connect-type">Connection Type: {{u.contypeid}}</label><br>
@@ -208,7 +208,7 @@ Account Ledger
             console.log(window);
             var opt = {
                 margin: .5,
-                filename: 'myfile.pdf',
+                filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
