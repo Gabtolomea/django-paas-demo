@@ -46,6 +46,7 @@ def porter(request):
 
 # @unauthenticated_user
 def lp(request):
+    camelize()
     return render(request, "landing.html")
 
 # @unauthenticated_user
@@ -510,7 +511,7 @@ def inputreading(request, id, year):
                             bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
                             t.bill = bill
                         t.payment = 0
-                        t.processedBy = user.username
+                        t.processedBy = request.session[ReqParams.username]
                         t.save()
                         if interest:
                             t = Transactions()
@@ -772,20 +773,18 @@ def sysuser(request):
 
 # @authenticated_user
 def userupdate(request, id):
-    user = ConsumerInfo.objects.get(consumer_id=id)
-    form = Userinfoupdate(instance=user)
+    con = ConsumerInfo.objects.get(consumer_id=id)
+    form = Userinfoupdate(instance=con)
     if request.method == 'POST':
-        form = Userinfoupdate(request.POST, instance=user)
+        form = Userinfoupdate(request.POST, instance=con)
         if form.is_valid():
             form.save()
             return redirect('consumer_list')
     context = {
         'form': form,
-        'user': user
-
+        'user': request.session[ReqParams.username]
     }
-
-    return render(request, 'userupdate.html', context)
+    return render(request, 'consumercreation.html', context)
 
 # @authenticated_user
 def user_edit(request, id):
@@ -1379,7 +1378,6 @@ def discount(request):
 
 # @authenticated_user
 def new_consumertype(request):
-  
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
@@ -1441,12 +1439,83 @@ def penalty(request):
 def bulkreading(request, year, month, p):
     if request.method == "POST":
         cons = ConsumerInfo.objects.all()
+        interest = 0
         for c in cons:
             a = request.POST.get(f"con{c.consumer_id}", None)
             if a is not None:
-                print(f"{c.consumer_id} {a}")
-    consumers_list = []
+                a = int(a)
+                try:
+                    tran = Transactions.objects.get(acctID_id=c.consumer_id,month=month,year=year,transType = "Billing")
+                    tran.meterReading = a
+                    tran.save()
+                except ObjectDoesNotExist:
+                    t = Transactions()
+                    try:
+                        if month == 1:
+                            tran = Transactions.objects.get(acctID_id=c.consumer_id,month=12,year=year-1,transType = "Billing")
+                        else:    
+                            tran = Transactions.objects.get(acctID_id=c.consumer_id,month=month-1,year=year,transType = "Billing")
+                        prev = tran.meterReading
+                    except ObjectDoesNotExist:
+                        prev = 0
+                    cummulative = get_cummulative(c.consumer_id)
+                    con_penalty = Penalty.objects.get(penaltycode=c.penaltycode)
+                    if c.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
+                        xy = con_penalty.penalty_rate * cummulative
+                        interest = xy/100
+                    t.acctID = c
+                    t.transType = 'Billing'
+                    t.date = datetime.today()
+                    t.month = month
+                    t.year = year
+                    t.meterReading = a
+                    t.usage = a - prev
+                    usage = a - prev
+                    t.contypeid = c.contypeid_id
+                    rate = ConsumerType.objects.get(contypeid=c.contypeid_id)
+                    if t.usage <= rate.minReading:
+                        t.bill = rate.minReadingCharge
+                    else:
+                        bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                        t.bill = bill
+                    t.payment = 0
+                    t.processedBy = request.session[ReqParams.username]
+                    t.save()
+                    if interest:
+                        t = Transactions()
+                        t.acctID = c
+                        t.transType = 'Penalty'
+                        t.date = datetime.today()
+                        t.month = month
+                        t.year = year
+                        t.bill = interest
+                        bill += interest
+                        t.payment = 0
+                        t.processedBy = request.session[ReqParams.username]
+                        t.save()
+                    if c.discountcode is not None:
+                        discount = c.discountcode
+                        t = Transactions()
+                        t.acctID = c
+                        t.transType = 'Discount'
+                        t.date = datetime.today()
+                        t.month = month
+                        t.year = year
+                        t.bill = 0
+                        t.payment = bill-(bill*(discount.discount_rate/100))
+                        bill -= bill*(discount.discount_rate/100)
+                        t.processedBy = request.session[ReqParams.username]
+                        t.save()
+    months = []
     years = []
+    class monthname():
+        def __init__(self, name, num):
+            self.name = name
+            self.num = num
+    for i in range(1, 13):
+        m = calendar.month_name[i]
+        months.append(monthname(m, i))
+    consumers_list = []
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -1500,6 +1569,8 @@ def bulkreading(request, year, month, p):
     context = {
         'year':year,
         'month':monthname,
+        'years':years,
+        'months':months,
         'monthval':month,
         'consumers_list':consumers_list,
         'ub':ub,

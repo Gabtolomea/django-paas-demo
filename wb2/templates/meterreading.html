@@ -64,11 +64,6 @@ Meter Reading
 
 
 
-<button type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal">
-	<i class="fa fa-copy"></i>
-	Bulk Reading
-</button>
-
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
@@ -83,7 +78,7 @@ Meter Reading
 				<div class="form-group">
 					<label for="recipient-name" class="col-form-label">Select Year</label>
 					<select name="year" id="year" class="form-control" required>
-						<option value="">Enter Year</option>
+						<option value=""></option>
 						{% for y in years reversed %}
 						<option value="{{y}}">{{y}}</option>
 						{% endfor %}
@@ -92,7 +87,7 @@ Meter Reading
 				<div class="form-group">
 					<label for="recipient-name" class="col-form-label">Select Month</label>
 					<select name="month" id="month" class="form-control" required>
-						<option value="">Enter Month</option>
+						<option value=""></option>
 						{% for m in months %}
 						<option value="{{m.num}}">{{m.name}}</option>
 						{% endfor %}
@@ -124,7 +119,14 @@ Meter Reading
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
+				
+
 				<div class="col-sm-12 col-md-6">
+					<button type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal">
+						<i class="fa fa-copy"></i>
+						Bulk Reading
+					</button>
+	
 					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
 						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">

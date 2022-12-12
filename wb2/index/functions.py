@@ -21,7 +21,13 @@ def str_int(var):
         return 0
     else:
         return int(var)
-
+def camelize():
+    cons = ConsumerInfo.objects.all()
+    for c in cons:
+        c.firstname = c.firstname.title()
+        c.lastname = c.lastname.title()
+        c.middlename = c.middlename.title()
+        c.save()
 def last_reading(id, year, month):
     cont = month-1
     while year:
