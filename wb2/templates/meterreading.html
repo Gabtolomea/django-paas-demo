@@ -79,42 +79,32 @@ Meter Reading
 				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label for="recipient-name" class="col-form-label">Select Year</label>
-					<select name="year" id="year" class="form-select" required>
-						<option value=""></option>
-						{% for y in years reversed %}
-						<option value="{{y}}">{{y}}</option>
-						{% endfor %}
-					</select>
+			<form action="{% url 'bulkreading' %}" method="GET">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Select Year</label>
+						<select name="year" id="" class="form-select" required>
+							<option value=""></option>
+							{% for y in years reversed %}
+							<option value="{{y}}">{{y}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Select Month</label>
+						<select name="month" id="" class="form-select" required>
+							<option value=""></option>
+							{% for m in months %}
+							<option value="{{m.num}}">{{m.name}}</option>
+							{% endfor %}
+						</select>
+					</div>
 				</div>
-				<div class="form-group">
-					<label for="recipient-name" class="col-form-label">Select Month</label>
-					<select name="month" id="month" class="form-select" required>
-						<option value=""></option>
-						{% for m in months %}
-						<option value="{{m.num}}">{{m.name}}</option>
-						{% endfor %}
-					</select>
+				<div class="modal-footer">
+					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+					<button type="submit" class="btn btn-primary">Proceed</button>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
-				<button type="button" onclick=go() class="btn btn-primary">Proceed</button>
-				<a id="aydi" style="display: none;" href=""></a>
-			</div>
-			<script>
-				function go(){
-					year = document.getElementById("year")
-					aydi = document.getElementById("aydi")
-					month = document.getElementById("month")
-					if (year.value != "" && month.value != ""){
-						aydi.href = "/meterreading/bulkreading/"+year.value+"/"+month.value+"/10"
-						aydi.click()
-					}
-				}
-			</script>
+			</form>
 		</div>
 	</div>
 </div>
@@ -135,7 +125,8 @@ Meter Reading
 							<option value="100">100</option>
 							<option value="0">All</option>
 						</select> entries</label>
-					</form>					
+					</form>
+					
 					<script src="{% static 'jquery/jquery.js' %}"></script>
 					<script>
 						yearselection = document.getElementById("yearselection")
@@ -149,34 +140,7 @@ Meter Reading
 				<div class="col-sm-12 col-md-6">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<label>Search:
-							<form class="input-group" action="" id ="form" method="GET" role="form">
-								<input type="search" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">
-							</form>
-							<script>
-								let typingTimer;                //timer identifier
-								let doneTypingInterval = 0;  //time in ms (2 seconds)
-								let myInput = document.getElementById('myInput');
-								form = document.getElementById('form')
-								//on keyup, start the countdown
-								myInput.addEventListener('keyup', () => {
-									clearTimeout(typingTimer);
-									if (myInput.value) {
-										typingTimer = setTimeout(doneTyping, doneTypingInterval);
-									}
-								});
-								//user is "finished typing," do something
-								function doneTyping () {
-									var newURL = window.location.href
-									form.action = newURL + "?search="+myInput.value
-									form.submit()
-								}
-								window.onload = function() {
-									var input = document.getElementById("myInput");
-									const end = input.value.length;
-									input.setSelectionRange(end, end);
-									input.focus();
-								}
-							</script>							
+							<input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
 						</label>
 					</div>
 				</div>
@@ -398,7 +362,13 @@ Meter Reading
 				</div>
 			</div>
 		</div>
+
 	</div>
+</div>
+<div>
+	<span>
+
+	</span>
 </div>
 <script>
 	function myFunction() {

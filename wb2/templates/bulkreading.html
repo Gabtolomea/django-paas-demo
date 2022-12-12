@@ -8,313 +8,110 @@ Bulk Reading
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
 {% endblock style %}
 {% block script %}
-<script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
-<script src="{% static 'popper.min.js' %}"></script>
+<script src="{% static 'DataTables/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'DataTables/js/dataTables.bootstrap5.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+
 {% endblock script %}
 
 {% block bulkreading %}
 <h1 class="mb-3 text-center">BULK READING ENTRY</h1>
 <h1 class="mb-3 text-center">Bulk Input Reading for {{month}} {{year}}</h1>
 
-
-<div class="container-fluid p-0">
-	<div class="table-responsive">
-		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			<div class="row">
-				<div class="col-sm-12 col-md-6">
-					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
-						<label style="display:flex;">Show
-						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
-							<option disabled selected value>--Select--</option>
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
-							<option value="0">All</option>
-						</select> entries</label>
-					</form>
-					
-					<script src="{% static 'jquery/jquery.js' %}"></script>
-					<script>
-						yearselection = document.getElementById("yearselection")
-						selector = document.getElementById("selector")
-						function change() {
-							yearselection.action = selector.value
-							yearselection.submit()
-						}
-					</script>
-				</div>
-				<div class="col-sm-12 col-md-6">
-					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<label>Search:
-							<input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<form action="{% url 'bulkreading' year monthval 10 %}" method="post">
-						{% csrf_token %}
-						<table id="myTable" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
-							<thead class="wb_thead">
-								<tr>
-									<th>Meter Number</th>
-									<th>Account Number</th>
-									<th>Customer</th>
-									<th>Previous Reading</th>
-									<th>Current Reading</th>
-								</tr>
-							</thead>
-							<tbody class="wb_tbody">
-								{% for c in consumers_list %}
-								<tr>
-									<td>{{c.con.meternumber}}</td>
-									<td>{{c.con.consumer_id}}</td>
-									<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
-									<td>{{c.prev}}</td>
-									<td class="balance"><input title="Current Reading" type="number" class="form-control" name="con{{c.con.consumer_id}}" id="" value="{{c.cur}}"></td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-						
-						<div class="row w-100 m-auto pt-2">
-							<div class="col-lg-12 col-md-12 col-sm-12">
-								<button type="submit" class="btn button2">
-									Save
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-			<div class="row">
-				<div class="d-flex justify-content-center">
-					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
-						<ul style="display: flex; padding-left: 0; list-style: none;">
-							{% if ub.paginator.num_pages > 5 %}
-								{% if ub.number < 5 %}
-									{% if ub.has_previous %}
-									<a href="?page={{ ub.previous_page_number }}">
-										<li class="paginate_button page-item previous">Previous</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item previous">Previous</li>
-									{% endif %}
-									{% for i in five %}
-										{% if i == ub.number %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item active">{{i}}</li>
-											</a>
-										{% else %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item">{{i}}</li>
-											</a>
-										{% endif %}
-									{% endfor %}
-									<li class="paginate_button disabled page-item">...</li>
-									<a href="?page={{ ub.paginator.num_pages }}">
-										<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-									</a>
-									{% if ub.has_next %}
-									<a href="?page={{ ub.next_page_number }}">
-										<li class="paginate_button page-item next">Next</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item next">Next</li>
-									{% endif %}
-								{% else %}
-									{% if ub.number > ub.paginator.num_pages|add:'-3'%}
-										{% if ub.has_previous %}
-										<a href="?page={{ ub.previous_page_number }}">
-											<li class="paginate_button page-item previous">Previous</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										<a href="?page=1">
-											<li class="paginate_button page-item">1</li>
-										</a>
-										<li class="paginate_button disabled page-item">...</li>
-										{% for i in last %}
-											{% if i == ub.number %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item active">{{i}}</li>
-												</a>
-											{% else %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item">{{i}}</li>
-												</a>
-											{% endif %}
-										{% endfor %}
-										{% if ub.number == ub.paginator.num_pages %}
-										<a href="?page={{ ub.paginator.num_pages }}">
-											<li class="paginate_button page-item active">{{ ub.paginator.num_pages }}</li>
-										</a>
-										{% else %}
-										<a href="?page={{ ub.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-										</a>
-										{% endif %}
-										{% if ub.has_next %}
-										<a href="?page={{ ub.next_page_number }}">
-											<li class="paginate_button page-item next">Next</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item next">Next</li>
-										{% endif %}
-									{% else %}
-										{% if ub.has_previous %}
-											<a href="?page={{ ub.previous_page_number }}">
-												<li class="paginate_button page-item previous">Previous</li>
-											</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										{% if ub.number > 2 %}
-											<a href="?page=1">
-												<li class="paginate_button page-item">1</li>
-											</a>
-											{% if ub.number > 3 %}
-												<li class="paginate_button disabled page-item">...</li>
-											{% endif %}
-										{% endif %}
-
-										{% for num in ub.paginator.page_range %}
-										{% if ub.number == num %}<a href="?page={{ num }}">
-										<li class="paginate_button page-item active">
-											{{ num }}
-										</li></a>
-										{% elif num > ub.number|add:'-2' and num < ub.number|add:'2' %}
-											<a href="?page={{ num }}"> 
-												<li class="paginate_button page-item">{{ num }}</li>
-											</a>
-											{% endif %}
-											{% endfor %}
-
-										{% if ub.number < ub.paginator.num_pages|add:'-2' %}
-											<li class="paginate_button disabled page-item">...</li>
-											<a href="?page={{ ub.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-											</a>
-										{% elif ub.number < ub.paginator.num_pages|add:'-1' %} 
-											<a href="?page={{ ub.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-											</a>
-										{% endif %}
-										{% if ub.has_next %}
-											<a href="?page={{ ub.next_page_number }}">
-												<li class="paginate_button page-item next">Next</li>
-											</a>
-										{% else %}
-											<li class="paginate_button page-item disabled next">Next</li>
-										{% endif %}
-									{% endif %}
-								{% endif %}
-							{% endif %}
-						</ul>
-						<style>
-							a{		
-								-webkit-touch-callout: none;
-								-webkit-user-select: none;
-								-khtml-user-select: none;
-								-moz-user-select: none;
-								-ms-user-select: none;
-								user-select: none;
-								cursor: default;
-								text-decoration: none;
-							}
-							.paginate_button {
-								cursor: pointer;
-								position: relative;
-								display: block;
-								padding: 0.375rem 0.75rem;
-								font-size: 1rem;
-								color: var(--main-color);
-								text-decoration: none;
-								background-color: white;
-								border: 1px solid #dee2e6;
-								transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-							}
-							.active>.paginate_button, .paginate_button.active {
-								z-index: 3;
-								color: white !important;
-								background-color: var(--main-color);
-								border-color: #dee2e6;
-							}
-							.previous {
-								border-top-left-radius: .375rem;
-								border-bottom-left-radius: .375rem;
-							}
-							.next {
-								border-top-right-radius: .375rem;
-								border-bottom-right-radius: .375rem;
-							}
-							.disabled {		
-								-webkit-touch-callout: none;
-								-webkit-user-select: none;
-								-khtml-user-select: none;
-								-moz-user-select: none;
-								-ms-user-select: none;
-								user-select: none;
-								cursor: default;
-								color: #6c757d;
-							}
-										
-							.page-link {
-								position: relative;
-								display: block;
-								color: #006c85;
-								text-decoration: none;
-								background-color: #fff;
-								border: 1px solid #dee2e6;
-								transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-							}
-							.page-item.active .page-link {
-								z-index: 3;
-								color: #fff;
-								background-color: #006c85;
-								border-color: #006c85;
-							}
-							.hide {
-								opacity: 0;
-								transition: 0.3s all ease-in-out;
-							}
-
-							.showOnHover:hover .hide {
-								opacity: 1;
-								transition: 0.3s all ease-in-out;
-							}
-							.button2 {
-								background-color: var(--highlight-color); 
-								color: white;
-								padding: 8px 30px;
-								border: none;
-								border-radius: 15px;
-								box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-								transition: all ease 0.3s;
-							}
-							.btn.button2:hover {
-								background: var(--highlight-color);
-								color: #ffffff;
-								border-radius: 30px;
-								box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-								transition: all ease-in 0.5s;
-							}
-							.btn.button2:focus {
-								background: var(--highlight-color);
-								color: #ffffff;
-								border-radius: 30px;
-								box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-								transition: all 0.1s;
-							}
-						</style>
-					</div>
-				</div>
+<div class="row w-100 m-auto pt-2">
+	<form action="{% url 'bulkreading' %}" method="post">
+		{% csrf_token %}
+		<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
+			<thead class="wb_thead">
+				<tr>
+					<th>Meter Number</th>
+					<th>Account Number</th>
+					<th>Customer</th>
+					<th>Previous Reading</th>
+					<th>Current Reading</th>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				{% for c in consumers_list %}
+				<tr>
+					<td>{{c.con.meternumber}}</td>
+					<td>{{c.con.consumer_id}}</td>
+					<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
+					<td>{{c.prev}}</td>
+					<td class="balance"><input title="Current Reading" type="number" class="form-control" name="con{{c.con.consumer_id}}" id="" value="{{c.cur}}"></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="row w-100 m-auto pt-2">
+			<div class="col-lg-12 col-md-12 col-sm-12">
+				<button type="submit" class="btn button2">
+					Save
+				</button>
 			</div>
 		</div>
-	</div>
+	</form>
+	<style>
+		.page-link {
+			position: relative;
+			display: block;
+			color: #006c85;
+			text-decoration: none;
+			background-color: #fff;
+			border: 1px solid #dee2e6;
+			transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+		}
+		.page-item.active .page-link {
+			z-index: 3;
+			color: #fff;
+			background-color: #006c85;
+			border-color: #006c85;
+		}
+		.hide {
+			opacity: 0;
+			transition: 0.3s all ease-in-out;
+		}
+
+		.showOnHover:hover .hide {
+			opacity: 1;
+			transition: 0.3s all ease-in-out;
+		}
+		.button2 {
+			background-color: var(--highlight-color); 
+			color: white;
+			padding: 8px 30px;
+			border: none;
+			border-radius: 15px;
+			box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+			transition: all ease 0.3s;
+		}
+		.btn.button2:hover {
+			background: var(--highlight-color);
+			color: #ffffff;
+			border-radius: 30px;
+			box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+			transition: all ease-in 0.5s;
+		}
+		.btn.button2:focus {
+			background: var(--highlight-color);
+			color: #ffffff;
+			border-radius: 30px;
+			box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+			transition: all 0.1s;
+		}
+	</style>
 </div>
 {% endblock bulkreading %}

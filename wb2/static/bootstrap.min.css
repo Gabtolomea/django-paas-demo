@@ -2446,7 +2446,7 @@ textarea.form-control-lg {
 
 .form-select {
     display: block;
-    width: 135px;
+    width: 100%;
     padding: .375rem 2.25rem .375rem .75rem;
     -moz-padding-start: calc(0.75rem - 3px);
     font-size: 1rem;
@@ -3298,8 +3298,15 @@ fieldset:disabled .btn {
 }
 
 .btn-info {
-    color: white;
-    background-color:#0093b7;
+    color: #000;
+    background-color: #0dcaf0;
+    border-color: #0dcaf0
+}
+
+.btn-info:hover {
+    color: #000;
+    background-color: #31d2f2;
+    border-color: #25cff2
 }
 
 .btn-check:focus+.btn-info,
