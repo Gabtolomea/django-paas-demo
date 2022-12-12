@@ -82,8 +82,8 @@ Meter Reading
 			<div class="modal-body">
 				<div class="form-group">
 					<label for="recipient-name" class="col-form-label">Select Year</label>
-					<select name="year" id="year" class="form-select" required>
-						<option value=""></option>
+					<select name="year" id="year" class="form-control" required>
+						<option value="">Enter Year</option>
 						{% for y in years reversed %}
 						<option value="{{y}}">{{y}}</option>
 						{% endfor %}
@@ -91,8 +91,8 @@ Meter Reading
 				</div>
 				<div class="form-group">
 					<label for="recipient-name" class="col-form-label">Select Month</label>
-					<select name="month" id="month" class="form-select" required>
-						<option value=""></option>
+					<select name="month" id="month" class="form-control" required>
+						<option value="">Enter Month</option>
 						{% for m in months %}
 						<option value="{{m.num}}">{{m.name}}</option>
 						{% endfor %}
@@ -153,29 +153,20 @@ Meter Reading
 								<input type="search" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">
 							</form>
 							<script>
-								let typingTimer;                //timer identifier
-								let doneTypingInterval = 0;  //time in ms (2 seconds)
 								let myInput = document.getElementById('myInput');
-								form = document.getElementById('form')
-								//on keyup, start the countdown
-								myInput.addEventListener('keyup', () => {
-									clearTimeout(typingTimer);
-									if (myInput.value) {
-										typingTimer = setTimeout(doneTyping, doneTypingInterval);
-									}
-								});
-								//user is "finished typing," do something
-								function doneTyping () {
-									var newURL = window.location.href
-									form.action = newURL + "?search="+myInput.value
-									form.submit()
-								}
-								window.onload = function() {
-									var input = document.getElementById("myInput");
-									const end = input.value.length;
-									input.setSelectionRange(end, end);
-									input.focus();
-								}
+							form = document.getElementById('form')
+							//on keyup, start the countdown
+							myInput.addEventListener('keyup', () => {
+								var newURL = window.location.href
+								form.action = newURL + "?search="+myInput.value
+								form.submit()
+							});
+							window.onload = function() {
+								var input = document.getElementById("myInput");
+								const end = input.value.length;
+								input.setSelectionRange(end, end);
+								input.focus();
+							}
 							</script>							
 						</label>
 					</div>
