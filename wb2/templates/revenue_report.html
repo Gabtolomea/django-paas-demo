@@ -139,7 +139,7 @@ Revenue Report
 
         <center><strong>Total Monthly Collection for The Year of {{cur_year}}: </strong></center>
         <center><strong>&#8369; {{col|floatformat:2|intcomma}}</strong></center>
-        <canvas id="myChart" width="800" height="150">
+        <canvas id="myChart"  width="500" height="150">
           <script>
             var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             y = ['{{rev_col.jan}}', '{{rev_col.feb}}', '{{rev_col.mar}}', '{{rev_col.apr}}', '{{rev_col.may}}', '{{rev_col.jun}}', '{{rev_col.jul}}', '{{rev_col.aug}}', '{{rev_col.sept}}', '{{rev_col.oct}}', '{{rev_col.nov}}', '{{rev_col.dec}}'];
@@ -185,7 +185,7 @@ Revenue Report
           <br>
           <center><strong>Total Monthly Collictables for The Year of {{cur_year}}:</strong></center>
           <center><strong>&#8369; {{rec|floatformat:2|intcomma}}</strong></center>
-          <canvas id="receivable" width="800" height="150">
+          <canvas id="receivable"  width="500" height="150">
 
         </section>
         <script>
