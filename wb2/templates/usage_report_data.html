@@ -190,6 +190,26 @@
 {% csrf_token %}
 
 <div class="row w-100 m-auto">
+	<div class="col-lg-4 col-md-4 col-sm-4">
+		<a href="{% url 'reports' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+			<i class="fa fa-address-book"><span style="padding: 12px; font-family: Arial;">Barangay Reports</span></i></a>
+	</div>
+
+	<div class="col-lg-4 col-md-4 col-sm-4">
+		<a href="{% url 'usage_report_data' cur_year %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;"> 
+			<i class="fa fa-line-chart"><span style="padding: 12px; font-family: Arial;">Usage Report Data</span></i></a>
+	</div>
+
+	<div class="col-lg-4 col-md-4 col-sm-4">
+		<a href="{% url 'revenue_report' cur_year %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+			<i class="fa fa-bar-chart"><span style="padding: 12px; font-family: Arial;">Revenue Reports</span></i></a>
+	</div>
+</div>
+
+<!-- <div class="row w-100 m-auto">
 	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
 		<div class="active" style="text-align: center;">
 			<a style="color: white; text-decoration: none;  text-align: center;" href="{% url 'reports' %}"
@@ -213,11 +233,8 @@
 				<span>Revenue Report</span></a>
 		</div>
 	</div>
-	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-		<button onclick="pdf()" class="btn button2" style="float:right;"><i class="fa fa-copy" aria-hidden="true"></i>
-			GET COPY</button>
-	</div>
-</div>
+
+</div> -->
 
 <div>
 	<div>

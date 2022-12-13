@@ -3299,7 +3299,7 @@ fieldset:disabled .btn {
 
 .btn-info {
     color: white;
-    background-color:#0093b7;
+    background-color:#006c85;
 }
 
 .btn-check:focus+.btn-info,
@@ -5224,8 +5224,8 @@ fieldset:disabled .btn {
 .page-item.active .page-link {
     z-index: 3;
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #006c85;
+    border-color: #006c85;
 }
 
 .page-item.disabled .page-link {
