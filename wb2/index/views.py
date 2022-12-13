@@ -273,7 +273,7 @@ def ledger(request, id):
 
     context = {
         'month':calendar.month_name[datetime.today().month-1],
-        'date_today':datetime.today(),
+        'date_today':date.today(),
         'u': u,
         'table': table,
         'year': year,       
@@ -647,9 +647,17 @@ def consumer_list(request):
 
 
 def consumer_list_p(request, p):
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
+    
+    
     pages = int(p)
     user = request.session.get(ReqParams.username)
-    cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     count = cons.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
@@ -668,6 +676,7 @@ def consumer_list_p(request, p):
         cons_list = paginator.page(paginator.num_pages)
 
     context = {
+        'search' :search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
