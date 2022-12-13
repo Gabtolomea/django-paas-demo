@@ -273,7 +273,7 @@ def ledger(request, id):
 
     context = {
         'month':calendar.month_name[datetime.today().month-1],
-        'date_today':date.today(),
+        'date_today':datetime.today(),
         'u': u,
         'table': table,
         'year': year,       

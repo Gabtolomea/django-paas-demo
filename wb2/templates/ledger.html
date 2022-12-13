@@ -42,8 +42,6 @@ Account Ledger
 		transition: all 0.1s;
 	}
 
-
-
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -111,106 +109,137 @@ Account Ledger
 		</button>
 	</div>
 
-	<div id="billing" style="display:none;">
+	<div id="billing">
 		<style>
-		#logo{
-		vertical-align: middle;
-		border-style: none;
-		height: 113px;
-		position: absolute;
-		left: 17%;
-		opacity: 100;
-		top: 2%;
+			/* =============================================================
+			GENERAL STYLES
+		  ============================================================ */
+		 .pad-top-botm {
+			 padding-bottom:0;
+			 padding-top:0;
+		 }		 
+		 .pad-top-botmm {
+			padding-bottom:40px;
+			padding-top:24px;
 		}
-	
-		.consumer_info{
-			background-color: #f8f9fa;
-			padding-left: 10px
-		}
-		.bills_info{
-			background-color: #f8f9fa;
-			padding-left: 10px;
-			padding-bottom: 104px;
-		}
-		#logo{
-		vertical-align: middle;
-		border-style: none;
-		height: 113px;
-		}
-		.mun-header{
-		font-size: 38px;
-		font-family: emoji;
-		font-weight: 700;
-		}
-		.mun{
-		font-family: emoji;
-		font-size: 25px;
-		font-weight: 900;
-		margin-top: -16px;
-		}	
-		.style{
-		padding-left: 10px;
-		text-align: center;
-		margin-bottom: 0;
-		background-color: #a4cdf1b3;
-	}
-	.image-logo{
-		position: absolute;
-		left: 17%;
-		opacity: 100;
-		top: 2%;
-	}
-	.for-bot{
-		margin: 0%;
-	}
-	.for-top{
-		margin: 10px;
-	}
+		 .ddd {
+			 text-transform:uppercase;
+		 }
+		 /* =============================================================
+			PAGE STYLES
+		  ============================================================ */
+		 
+		 .contact-info span {
+			 font-size:14px;
+			 padding:0px 50px 0px 50px;
+			 color:white;
+		 }
+		 
+		 .contact-info hr {
+			 margin-top: 0px;
+		 margin-bottom: 0px;
+		 }
+		 
+		 .client-info {
+			 font-size:15px;
+		 }
+		 
+		 .ttl-amts {
+			 text-align:right;
+			 padding-right:50px;
+		 }
+		 .mun-header{
+			font-size: 38px;
+			font-family: emoji;
+			font-weight: 700;
+			}
+			.mun{
+			font-family: emoji;
+			font-size: 25px;
+			font-weight: 900;
+			margin-top: -16px;
+			}	
 	</style>
 	
 	
 	<div id="invoice">
-		 <div class="header" style="text-align:center; margin-top: 30px;">
-			<h1 class="mun-header">Municipality of Ginatilan</h1>
-			<p class="mun"> Ginatilan Water Station</p>
-		</div> 
-		<div class="image-logo">
-			<img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
-		</div>
-		<hr class="for-top">
-		<div class="row w-100 m-auto">
-			<div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
-				<h2 class="style">Consumer Info</h2>
-				<div class="consumer_info">
-					<label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
-					<label for="accnt">Account ID: {{u.consumer_id}}</label><br>
-					<label for="meter">Meter Number: {{u.meternumber}}</label><br>
-					<label for="addr">Address: {{u.installation_address}}</label><br>
-					<label for="zip">Zip Code: 6028</label><br>
-					<label for="country">Country: Philippines</label><br>
-					<label for="connect-type">Connection Type: {{u.contypeid}}</label><br>
-					<label for="contact-info">Contact Info: {{u.mobilenum}}</label>
-				</div>
-	
-			</div>
-			<div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
-				<h2 class="style">Bills Info</h2>
-				<div class="bills_info">
-					<label for="current-reading">Current Reading: {{cur}}</label><br>
-					<label for="prev-reading">Previous Reading: {{pre}}</label><br>
-					<label for="usage">Usage: {{usage}}</label><br>	
+		<div class="container" style="padding-top: 11px;">
+			<div class="header" style="text-align:center; margin-top: 30px;">
+				<h1 class="mun-header">Municipality of Ginatilan</h1>
+				<p class="mun"> Ginatilan Water Station</p>
+			</div> 
+     
+			<div class="row pad-top-botm ">
+			   <div >
+				  <img id="logo" src="{% static 'images/lgulogo.png'%}" style="padding-bottom:20px; position:absolute; left: 17%; opacity: 100; top: 2%;" alt="LOGO"/>
+			   </div>
+		   </div>
+		   <div class="row text-center contact-info">
+			   <div class="col-lg-12 col-md-12 col-sm-12" style="background-color:var(--dark-text);">
+				   <hr>
+				   <span>
+					   <strong>Email : </strong>  brian@brianbossierdesign.com 
+				   </span>
+				   <span>
+					   <strong>Call : </strong>  +1-623-777-9044 
+				   </span>
+				   <hr>
+			   </div>
+		   </div>
+		   <div class="row pad-top-botmm client-info">
+			<div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 101px;">
+				<h4 class="ddd">  <strong>Consumer Information</strong></h4>
+			   		<b>Account ID :</b> {{u.consumer_id}}
 					<br>
-				</div>
-			   
-			</div>
-		</div>
-		<hr class="for-bot">
-		<div class="bill row w-100 m-auto pt-3">
-			<label for="penalty">Penalty: {{pen}}</label><br>
-			<label for="total-bill">Total Bill:</label><br>
-			<label for="prev-due">Previous Due:</label><br>
-			<label for="total-balance">Total Balance:</label><br>
-		</div>
+					<b>Name :</b> {{u.firstname}} {{u.middlename}} {{u.lastname}}
+					<br>
+					<b>Address :</b> {{u.installation_address}}
+					<br>
+				   <b>Meter Number :</b> {{u.meternumber}}
+					<br>
+				   <b>Mobile Number :</b> {{u.mobilenum}}
+			   </div>
+				<div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 101px;">
+					 <h4 class="ddd"> <strong>Payment Details </strong></h4>
+				  <b>Bill Amount :  990 USD </b>
+					<br>
+					 Bill Date :  01th August 2014
+					<br>
+					 <b>Payment Status :  Paid </b>
+					 <br>
+					 Delivery Date :  10th August 2014
+					<br>
+					 Purchase Date :  30th July 2014
+			   </div>
+		   </div>
+		   <div class="row">
+			   <div class="col-lg-12 col-md-12 col-sm-12">
+				 <div class="table-responsive">
+								<table class="table table-bordered table-hover">
+								  <thead class="wb_thead">
+									  <tr class="header">
+										  <th scope="col" style="min-width:25px">PENALTY</th>
+										  <th scope="col" style="min-width:25px">TOTAL BILL</th>
+										  <th scope="col" style="min-width:25px">PREVIOUS DUE</th>
+										  <th scope="col" style="min-width:25px">TOTAL BALANCE</th>
+									  </tr>
+								  </thead>
+								  <tbody class="wb_tbody">
+									  <tr>
+										  <td class="table-light">SHOE DESIGN 2</td>
+										  <td class="table-light">BLACK</td>
+										  <td class="table-light">3</td>
+										  <td class="table-light">$435 USD</td>
+									  </tr>
+								  </tbody>
+							  </table>
+              <div class="ttl-amts">
+                  <h4> <strong>Bill Amount : 990 USD</strong> </h4>
+             </div>
+					 </div>	  
+			   </div>
+		   </div>
+	   </div>
 		</div>
 		<script>
 			function print(){
