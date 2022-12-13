@@ -56,6 +56,8 @@ Consumer Creation
 <div class="shadow wrapper">
     <form action="{% url 'consumercreation' %}" method="POST">
         {% csrf_token %}
+        <input type="hidden" name="isUpdate" value="{{isUpdate}}">
+        <input type="hidden" name="conid" value="{{conid}}">
         <div class="form-header">
             <h1>Consumer Creation</h1>
         </div>
@@ -98,7 +100,7 @@ Consumer Creation
             </div>
             <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
                 <label for="id"style="font-size: 20px;">Rate I.D.*</label>
-                {{form.rateid}}
+                {{form.contypeid}}
             </div>
         </div>
         <div class="row form-group w-100 m-auto">
@@ -121,8 +123,12 @@ Consumer Creation
                 {{form.mobilenum}}
             </div>
             <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for="formFile" class=""style="font-size: 20px;">Picture*</label>
+                <label for="" class=""style="font-size: 20px;">Picture*</label>
                 {{form.picture}}
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
+                <label for="" class=""style="font-size: 20px;">Penalty Code</label>
+                {{form.penaltycode}}
             </div>
         </div>
         <center class="pb-4">

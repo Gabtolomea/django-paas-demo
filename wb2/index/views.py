@@ -44,7 +44,7 @@ def porter(request):
     return render(request, "landing.html")
 
 
-# @unauthenticated_user
+@unauthenticated_user
 def lp(request):
     # sys = SystemUsers.objects.all()
     # for s in sys:
@@ -56,7 +56,7 @@ def lp(request):
     # capitalize()
     return render(request, "landing.html")
 
-# @unauthenticated_user
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -87,7 +87,7 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-# @authenticated_user
+@authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
@@ -95,7 +95,7 @@ def bills_list(request):
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
-# @authenticated_user
+@authenticated_user
 def bills_list_p(request, p):   
     search = request.GET.get("search", "")
     page = request.GET.get('page')
@@ -152,7 +152,6 @@ def user_creation(request):
         mobilenum = request.POST['mobilenum']
         email = request.POST['email']
         password2 = request.POST['password2']
-        is_admin = request.POST['is_admin'] == 'on'
         is_teller = request.POST['is_teller'] == 'on'
         is_admin = request.POST['is_admin'] == 'on'
         is_supervisor = request.POST['is_supervisor'] == 'on'
@@ -173,7 +172,6 @@ def user_creation(request):
             user.email = email
             user.is_admin = is_admin
             user.is_teller = is_teller
-            user.is_admin = is_admin
             user.is_supervisor = is_supervisor
             user.is_manager = is_manager
             user.is_reader = is_reader
@@ -679,11 +677,13 @@ def sysuser(request):
 
 # @authenticated_user
 def consumercreation(request):
-    form = ConsumerCreationForm()
+    form = ConsumerForm()
     cons = ConsumerInfo.objects.all().order_by("-consumer_id")
     last = cons[0].consumer_id
     if request.method == "POST":
-        form = ConsumerCreationForm(request.POST)
+        isUpdate = request.POST['isUpdate']
+        conid = request.POST['conid']
+        form = ConsumerForm(request.POST)
         firstname = request.POST['firstname']
         middlename = request.POST['middlename']
         lastname = request.POST['lastname']
@@ -697,34 +697,54 @@ def consumercreation(request):
         meternumber = request.POST['meternumber']
         initialmeterreading = request.POST['initialmeterreading']
         installation_address = request.POST['installation_address']
-        rateid = request.POST['rateid']
+        contypeid = request.POST['contypeid']
+        penaltycode = request.POST['penaltycode']
         if form.is_valid():
-            cr = ConsumerInfo()
-            cr.consumer_id = last + 1
-            cr.firstname = firstname
-            cr.middlename = middlename
-            cr.lastname = lastname
-            cr.mobilenum = mobilenum
-            cr.email = email
-            cr.birthdate = birthdate
-            cr.sex = sex
-            cr.status = 1
-            cr.stopmeterflag = 0
-            cr.deleteflag = 0
-            cr.penaltycode = "P001"
-            cr.penaltycounter = 0
-            cr.sitio = sitio
-            cr.homeaddress = homeaddress
-            cr.picture = picture
-            cr.meternumber = meternumber
-            cr.initialmeterreading = initialmeterreading
-            cr.installation_address = Barangays.objects.get(id=installation_address) 
-            cr.contypeid = ConsumerType.objects.get(contypeid=rateid) 
-            cr.save()
+            if isUpdate:
+                c = ConsumerInfo.objects.get(consumer_id=conid)
+            else:
+                c = ConsumerInfo()
+                c.status = 1
+                c.stopmeterflag = 0
+                c.deleteflag = 0
+                c.penaltycounter = 0
+                c.consumer_id = conid
+            c.firstname = firstname
+            c.middlename = middlename
+            c.lastname = lastname
+            c.mobilenum = mobilenum
+            c.email = email
+            c.birthdate = birthdate
+            c.sex = sex
+            c.penaltycode = Penalty.objects.get(penaltycode=penaltycode) 
+            c.sitio = sitio
+            c.homeaddress = homeaddress
+            c.picture = picture
+            c.meternumber = meternumber
+            c.initialmeterreading = initialmeterreading
+            c.installation_address = Barangays.objects.get(id=installation_address) 
+            c.contypeid = ConsumerType.objects.get(contypeid=contypeid) 
+            c.save()
+            return redirect('consumer_list')
     context = {
+        'conid':last,
         'form': form,
         'errors': form.errors,
         'user': request.session.get(ReqParams.username)
+    }
+    return render(request, 'consumercreation.html', context)
+
+# @authenticated_user
+def consumerupdate(request, id):
+    con = ConsumerInfo.objects.get(consumer_id=id)
+    form = ConsumerForm(instance=con)
+    penaltyc = con.penaltycounter
+    context = {
+        'pc':penaltyc,
+        'conid':id,
+        'isUpdate':True,
+        'form': form,
+        'user': request.session[ReqParams.username]
     }
     return render(request, 'consumercreation.html', context)
 
@@ -775,20 +795,6 @@ def sysuser(request):
     }
     return render(request, 'sysuser.html', context)
 
-# @authenticated_user
-def userupdate(request, id):
-    con = ConsumerInfo.objects.get(consumer_id=id)
-    form = Userinfoupdate(instance=con)
-    if request.method == 'POST':
-        form = Userinfoupdate(request.POST, instance=con)
-        if form.is_valid():
-            form.save()
-            return redirect('consumer_list')
-    context = {
-        'form': form,
-        'user': request.session[ReqParams.username]
-    }
-    return render(request, 'consumercreation.html', context)
 
 # @authenticated_user
 def user_edit(request, id):
