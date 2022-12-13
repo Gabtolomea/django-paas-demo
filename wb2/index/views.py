@@ -823,7 +823,7 @@ def userupdate(request, id):
 
     }
 
-    return render(request, 'userupdate.html', context)
+    return render(request, 'consumercreation.html', context)
 
 # @authenticated_user
 
