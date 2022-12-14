@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
+from django.contrib.auth import authenticate, login
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
@@ -46,11 +47,6 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
-    # sys = SystemUsers.objects.all()
-    # for s in sys:
-    #     p=base64.b64decode(s.password)
-    #     pw = p.decode("ascii")
-    #     print(f"username: {s.username}        password: {pw}")
     # enye()
     camelize()
     # capitalize()
@@ -61,28 +57,23 @@ def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-        pkval = SystemUsers.objects.filter(username=u)
-        passAscii = password.encode("ascii")
-        p = base64.b64encode(passAscii)
-        if pkval.exists():
+        auth = authenticate(username=u, password=password)
+        if auth is not None:
             user = SystemUsers.objects.get(username=u)
-            if user.password == p:
-                login_rec = LoginRec()
-                request.session[ReqParams.username] = user.username
-                request.session[ReqParams.auth] = True
-                request.session.modified = True
-                # cache.set('message', message('success', 'Logged in as '+user.username, 5))
-                login_rec.username = user.username
-                login_rec.token = gen_token()
-                login_rec.last_access = timezone.now()
-                login_rec.expiration = login_rec.last_access + \
-                    timedelta(minutes=ReqParams.expiration_time)
-                login_rec.save()
-                return redirect('bills_list')
-            else:
-                messages.error(request, "Invalid Password")
+            login_rec = LoginRec()
+            request.user = user.username
+            request.session[ReqParams.auth] = True
+            request.session.modified = True
+            # cache.set('message', message('success', 'Logged in as '+user.username, 5))
+            login_rec.username = user.username
+            login_rec.token = gen_token()
+            login_rec.last_access = timezone.now()
+            login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
+            login_rec.save()
+            login(request, auth)
+            return redirect('bills_list')
         else:
-            messages.error(request, "Invalid Username")
+            messages.error(request, "Invalid Username or Password")
     context = {
         'ReqParams': ReqParams,
     }
@@ -110,7 +101,7 @@ def bills_list_p(request, p):
             'lastname', 'firstname', 'middlename')
 
     pages = int(p)
-    user = request.session.get(ReqParams.username)
+    user = request.user
     count = bills.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
@@ -139,7 +130,7 @@ def bills_list_p(request, p):
 
 
 def signout(request):
-    lr = LoginRec.objects.get(username=request.session[ReqParams.username])
+    lr = LoginRec.objects.get(username=request.user)
     lr.delete()
     messages.success(request, 'Logout successful')
     return redirect('login')
@@ -166,9 +157,7 @@ def user_creation(request):
         profilepic = request.POST['profilepic']
         if form.is_valid():
             user = SystemUsers()
-            passAscii = password2.encode("ascii")
-            p = base64.b64encode(passAscii)
-            user.password = p
+            user.set_password(password2)
             user.username = username
             user.first_name = firstname
             user.mid_name = midname
@@ -367,7 +356,7 @@ def meterreading_p(request, p):
         months.append(monthname(month, i))
 
     pages = int(p)
-    user = request.session.get(ReqParams.username)
+    user = request.user
 
     search = request.GET.get("search", "")
     page = request.GET.get('page')
@@ -521,7 +510,7 @@ def inputreading(request, id, year):
                         bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
                         t.bill = bill
                     t.payment = 0
-                    t.processedBy = request.session[ReqParams.username]
+                    t.processedBy = request.user
                     t.save()
                     if interest:
                         t = Transactions()
@@ -533,7 +522,7 @@ def inputreading(request, id, year):
                         t.bill = interest
                         bill += interest
                         t.payment = 0
-                        t.processedBy = request.session[ReqParams.username]
+                        t.processedBy = request.user
                         t.save()
                     if consumer.discountcode is not None:
                         discount = consumer.discountcode
@@ -546,7 +535,7 @@ def inputreading(request, id, year):
                         t.bill = 0
                         t.payment = bill-(bill*(discount.discount_rate/100))
                         bill -= bill*(discount.discount_rate/100)
-                        t.processedBy = request.session[ReqParams.username]
+                        t.processedBy = request.user
                         t.save()
                 else:
                     # print("update transaction")
@@ -568,7 +557,7 @@ def inputreading(request, id, year):
                         t.bill = rate.minReadingCharge
                     else:
                         t.bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                    t.processedBy = request.session[ReqParams.username]
+                    t.processedBy = request.user
 
                     t.save()
                     if interest:
@@ -580,7 +569,7 @@ def inputreading(request, id, year):
                         t.year = year
                         t.bill = interest
                         t.payment = 0
-                        t.processedBy = request.session[ReqParams.username]
+                        t.processedBy = request.user
                         t.save()
                     if consumer.discountcode is not None:
                         discount = consumer.discountcode
@@ -593,7 +582,7 @@ def inputreading(request, id, year):
                         t.bill = 0
                         t.payment = bill-(bill*(discount.discount_rate/100))
                         bill -= bill*(discount.discount_rate/100)
-                        t.processedBy = request.session[ReqParams.username]
+                        t.processedBy = request.user
                         t.save()
                 get_balance(id)
             match d:
@@ -656,7 +645,7 @@ def consumer_list(request):
 
 def consumer_list_p(request, p):
     pages = int(p)
-    user = request.session.get(ReqParams.username)
+    user = request.user
     cons = ConsumerInfo.objects.all().order_by(
         'lastname', 'firstname', 'middlename')
     count = cons.count()
@@ -763,7 +752,7 @@ def consumerupdate(request, id):
         'conid':id,
         'isUpdate':True,
         'form': form,
-        'user': request.session[ReqParams.username]
+        'user': request.user
     }
     return render(request, 'consumercreation.html', context)
 
@@ -822,9 +811,6 @@ def sysuser(request):
 
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
-    encoded = sys.password
-    decode64 = base64.b64decode(encoded)
-    password = decode64.decode("ascii")
     form = sysup(instance=sys)
     if request.method == 'POST':
         form = sysup(request.POST, instance=sys)
@@ -840,7 +826,6 @@ def user_edit(request, id):
     context = {
         'sys': sys,
         'form': form,
-        'password': password,
         'user': request.session.get(ReqParams.username)
     }
     return render(request, 'user_edit.html', context)
@@ -868,7 +853,7 @@ def payment(request, id):
         t.year = datetime.today().year
         t.month = datetime.today().month
         t.payment = amount
-        t.processedBy = request.session[ReqParams.username]
+        t.processedBy = request.user
         t.or_number = or_num
         t.save()
         get_balance(id)
@@ -1399,7 +1384,7 @@ def discount(request):
     d = Discount.objects.all()
     form = addDiscount()
     discountidcount = len(Discount.objects.all())
-    user = request.session.get(ReqParams.username)
+    user = request.user
     if request.method == "POST":
         form = addDiscount(request.POST)
         discount_rate = request.POST['discount_rate']
@@ -1521,7 +1506,7 @@ def bulkreading(request, year, month, p):
                         bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
                         t.bill = bill
                     t.payment = 0
-                    t.processedBy = request.session[ReqParams.username]
+                    t.processedBy = request.user
                     t.save()
                     if interest:
                         t = Transactions()
@@ -1533,7 +1518,7 @@ def bulkreading(request, year, month, p):
                         t.bill = interest
                         bill += interest
                         t.payment = 0
-                        t.processedBy = request.session[ReqParams.username]
+                        t.processedBy = request.user
                         t.save()
                     if c.discountcode is not None:
                         discount = c.discountcode
@@ -1546,7 +1531,7 @@ def bulkreading(request, year, month, p):
                         t.bill = 0
                         t.payment = bill-(bill*(discount.discount_rate/100))
                         bill -= bill*(discount.discount_rate/100)
-                        t.processedBy = request.session[ReqParams.username]
+                        t.processedBy = request.user
                         t.save()
     months = []
     years = []
@@ -1623,6 +1608,6 @@ def bulkreading(request, year, month, p):
         'paginate_by': paginate_by,
         'last' : range(paginator.num_pages-3, paginator.num_pages),
         'five' : range(1,6),
-        'user':request.session[ReqParams.username]
+        'user':request.user
     }
     return render(request,'bulkreading.html', context)
