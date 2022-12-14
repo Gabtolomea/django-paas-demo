@@ -5,152 +5,173 @@ Consumer Creation
 {% endblock title %}
 {% block consumercreation %}
 <style>
-    html{
-    height: 100% !important ;                                                  ;
-    }
-    body{
+    html {
         height: auto;
-        background-image: linear-gradient(white, #0093b7);
-    }
-    .form-header {
-    font-family: Arial;
-    margin: 0px 0px 16px;
-    padding: 0px 12px;
-    text-align: center;
-    }
-    .consumer{
-    box-sizing: content-box;
-    }
-    .container-fluid{
-    font-family: Arial;
-    color: #ffffff;
-    width: 100%;
-    margin-right: auto;
-    margin-left: auto;
-    }
-    .wrapper{
-    font: 16px Arial;
-    background-color:#0093b7;
-    border-radius: 50px;
-    padding-top: 30px;
-    }
-    .btn{
-    background-color: #0cb3c2;
-    color: #ffffff;
-    padding: 8px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    transition-duration: 0.4s;
-    cursor: pointer;
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-    }
-    .btn:first-child:hover, :not(.btn-check)+.btn:hover{
-    background-color:white !important;
-    color:black;
+        min-height: 100% !important;
+        ;
     }
 
+    body {
+        height: auto;
+        /* background-image: linear-gradient(white, #0093b7); */
+    }
+
+    label {
+        font-size: 20px;
+    }
+
+    .form-header {
+        font-family: Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+        text-align: center;
+    }
+
+    .consumer {
+        box-sizing: content-box;
+    }
+
+    .container-fluid {
+        font-family: Arial;
+        color: #ffffff;
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .wrapper {
+        font-size: 20px;
+        font-family: Arial;
+        margin-top: 80px;
+        padding: 0px 12px;
+        background: #006c85;
+        border-radius: 40px;
+        padding: 30px;
+    }
+
+    .button2 {
+        background-color: #63CDD7;
+        color: black;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
 </style>
+
 <body>
-<div class="shadow wrapper">
-    <div class="form-header">
-        <h1>Consumer Creation</h1>
-    </div>
-    <div class="row form-group w-100 m-auto">
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">First Name*</label>
-            {{form.firstname}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Middle Name*</label>
-           {{form.middlename}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Last Name*</label>
-            {{form.lastname}}
-        </div>
-    </div>
-    <div class="row form-group w-100 m-auto">
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Home Address*</label>
-            {{form.homeaddress}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Sitio*</label>
-            {{form.sitio}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Email*</label>
-           {{form.email}}
-        </div>
-    </div>
-    <div class="row form-group w-100 m-auto">
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Meter Number*</label>
-            {{form.meternumber}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Initial Meter Reading*</label>
-            {{form.initialmeterreading}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for="id"style="font-size: 20px;">Rate I.D.*</label>
-            {{form.rateid}}
-        </div>
-    </div>
-    <div class="row form-group w-100 m-auto">
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Installation Address*</label>
-           {{form.installation_address}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for="start"style="font-size: 20px;">Birthdate*</label>
-            {{form.birthdate}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Sex*</label>
-            {{form.sex}}
-            <!-- <select name="" id="" class="form-control">
+    <div class="container-fluid">
+        <div class="shadow wrapper">
+            <div class="form-header">
+                <h1>Consumer Creation</h1>
+            </div>
+            <div class="row form-group w-100 m-auto">
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">First Name*</label>
+                    {{form.firstname}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Middle Name*</label>
+                    {{form.middlename}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Last Name*</label>
+                    {{form.lastname}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Mobile Number*</label>
+                    {{form.mobilenum}}
+                </div>
+            </div>
+            <div class="row form-group w-100 m-auto">
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Sitio*</label>
+                    {{form.sitio}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Email*</label>
+                    {{form.email}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Meter Number*</label>
+                    {{form.meternumber}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Initial Meter Reading*</label>
+                    {{form.initialmeterreading}}
+                </div>
+            </div>
+            <div class="row form-group w-100 m-auto">
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="start" style="font-size: 20px;">Birthdate*</label>
+                    {{form.birthdate}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="id" style="font-size: 20px;">Rate I.D.*</label>
+                    {{form.rateid}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Installation Address*</label>
+                    {{form.installation_address}}
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Sex*</label>
+                    {{form.sex}}
+                    <!-- <select name="" id="" class="form-control">
                 <option>Male</option>
                 <option>Female</option>
             </select> -->
+                </div>
+            </div>
+            <div class="row form-group w-100 m-auto">
+                <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
+                    <label for="" style="font-size: 20px;">Home Address*</label>
+                    {{form.homeaddress}}
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
+                    <label for="formFile" class="" style="font-size: 20px;">Picture*</label>
+                    {{form.picture}}
+                </div>
+            </div>
+
+            <div class="row form-group m-auto" style="display: block; text-align: center;">
+                <button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-check-square-o">
+                        <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
+            </div>
         </div>
     </div>
-    <div class="row form-group w-100 m-auto">
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for=""style="font-size: 20px;">Mobile Number*</label>
-            {{form.mobilenum}}
-        </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-            <label for="formFile" class=""style="font-size: 20px;">Picture*</label>
-            {{form.picture}}
-        </div>
-    </div>
-
-        <center class="pb-4"><button type="submit" id="footer-subscription-button" class="btn submit" >Submit</button></center>
-</div>
-
-
 </body>
 {% block script %}
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  function fireSweetAlert() {
-    {% for message in messages %}
+    function fireSweetAlert() {
+        {% for message in messages %}
         {% if message %}
-            Swal.fire(
-                'Good job!',
-                '{{ message }}',
-                'success'
-            )
+        Swal.fire(
+            'Good job!',
+            '{{ message }}',
+            'success'
+        )
         {% endif %}
-    {% endfor %}
-  }
-  </script>
+        {% endfor %}
+    }
+</script>
 {% endblock script %}
 {% endblock consumercreation %}
-
-
-

@@ -14,7 +14,7 @@ Registration Form
 
     body {
         height: auto;
-        background-image: linear-gradient(white, #0093b7);
+        /* background-image: linear-gradient(white, #0093b7); */
     }
 
     h3 {
@@ -40,9 +40,9 @@ Registration Form
     .wrapper {
         font-size: 20px;
         font-family: Arial;
-        margin: 0px 0px 16px;
+        margin-top: 80px;
         padding: 0px 12px;
-        background: #0093b7;
+        background: #006c85;
         border-radius: 40px;
         padding: 30px;
     }
@@ -53,24 +53,30 @@ Registration Form
         padding: 0px 12px;
     }
 
-    .btn {
-        background-color: #0cb3c2;
-        color: #ffffff;
-        padding: 8px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        transition-duration: 0.4s;
-        cursor: pointer;
-        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    .button2 {
+        background-color: #63CDD7;
+        color: black;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
     }
 
-    .btn:first-child:hover,
-    :not(.btn-check)+.btn:hover {
-        background-color: white !important;
-        color: black;
+    .btn.button2:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
     }
 </style>
 {% endblock style %}
@@ -220,7 +226,10 @@ Registration Form
                         <label for="formFile" class="form-label">Profile Picture*</label>
                         {{form.profilepic}}
                     </div>
-                    <center><button type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
+                    <div class="row form-group m-auto" style="display: block; text-align: center;">
+                        <button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-check-square-o">
+                                <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
+                    </div>
                 </div>
             </div>
         </div>
