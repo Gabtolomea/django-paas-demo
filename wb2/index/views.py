@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
@@ -52,7 +52,7 @@ def lp(request):
     # capitalize()
     return render(request, "landing.html")
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -79,7 +79,7 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-@authenticated_user
+# @authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
@@ -87,7 +87,7 @@ def bills_list(request):
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
-@authenticated_user
+# @authenticated_user
 def bills_list_p(request, p):   
     search = request.GET.get("search", "")
     page = request.GET.get('page')
@@ -128,6 +128,7 @@ def bills_list_p(request, p):
 def signout(request):
     lr = LoginRec.objects.get(username=request.user)
     lr.delete()
+    logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
 
