@@ -1,57 +1,7 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
-<table id="table" class="table table-bordered table-hover table-striped table-sm " width="100%">
-			<thead class="wb_thead">
-				<tr>
-					<th scope="col" style="background-color: #0093b7;">Barangay</th>
-					<th scope="col" style="background-color: #0093b7">Total Usage(&#13221;)</th>
-					<th scope="col" style="background-color: #0093b7">Total Receivables</th>
-					<th scope="col" style="background-color: #0093b7">Total Collection</th>
-					<th scope="col" style="background-color: #0093b7">Collection Rate</th>
-				</tr>
-			</thead>
-			<tbody class="wb_tbody">
-				{% for br in br %}
-				<tr class='clickable-row' style="cursor: pointer;"
-					data-href="{% url 'view_barangay' br.barangayrec_id %}">
-					<td data-label="Barangay">
-						{{br.barangaycode}}
-					</td>
-					<td data-label="Total Usage(Cu. Meter)">
-						{{br.total_usage|floatformat:2}} &#13221;
-					</td>
-					<td data-label="Total Receivables" class="total_paid">
-						{{br.total_rec|floatformat:1}}
-					</td>
-					<td data-label="Total Collection" class="total_due">
-						{{br.total_paid|floatformat:1}}
-					</td>
-					<td data-label="Collection Rate" class="rate">
-					</td>
-				</tr>
-				{% endfor %}
-				<tr>
-					<td data-label="Barangay" style="background-color: #0093b7; color: white; font-weight: bold;">Total
-					</td>
-					<td data-label="Total Usage(Cu. Meter)" class="total_paid">
-						{{fr.tu|floatformat:1}}</td>
-					<td data-label="Total Receivables">{{fr.tr|floatformat:1}}</td>
-					<td data-label="Total Collection" class="total_due">
-						{{fr.tp|floatformat:1}}
-					</td>
-					<td data-label="Collection Rate" class="rate"></td>
-				</tr>
-				<script>
-					jQuery(document).ready(function ($) {
-						$(".clickable-row").click(function () {
-							window.location = $(this).data("href");
-						});
-					});
-				</script>
-			</tbody>
-		</table>
-{% block title %}	
+{% block title %}
 Input Reading
 {% endblock title %}
 
@@ -100,8 +50,7 @@ Input Reading
 	<div class="table_responsive" style="max-height: 922px;">
 		<table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
-				<tr class="header">
-					<th scope="col" style="min-width:110px">Account ID</th>
+				<tr class="header">					<th scope="col" style="min-width:110px">Account ID</th>
 					<th scope="col" style="min-width:120px">Name</th>
 					<th scope="col" style="min-width:100px">Meter Number</th>
 					<th scope="col" style="min-width:100px">Address</th>
@@ -114,7 +63,7 @@ Input Reading
 					</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="wb_tbody">
 				<tr>
 					<td>{{consumer.consumer_id}}</td>
 					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>

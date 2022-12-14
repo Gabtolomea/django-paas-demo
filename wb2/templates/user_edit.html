@@ -158,32 +158,6 @@ System User
 						{{form.username}}
 					</div>
 				</div>
-
-				<div class="row form-group w-100 m-auto">
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-						{% if form.errors %}
-						{% for error in form.password.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Password*</label>
-						<input type="password" name="" id="id_password1" class="form-control" value="{{password}}">
-					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-						{% if form.errors %}
-						{% for error in form.password.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Password*</label>
-						<input type="password" name="" id="id_password2" class="form-control" value="{{password}}">
-					</div>
-				</div>
-
 				<div class="row m-auto w-100">
 					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 						<h3>Type of User</h3>
