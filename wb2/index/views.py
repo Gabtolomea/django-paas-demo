@@ -1267,9 +1267,15 @@ def unsettled_bills_p(request, p):
         def __init__(self, y, u):
             self.y = y
             self.u = u
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
-    ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
-    tb = ubs.aggregate(tots = Sum('current_bal'))
+    tb = ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
     table = []
     count = len(ubs)
     if pages == 0:
@@ -1295,6 +1301,7 @@ def unsettled_bills_p(request, p):
         table.append(yeah)
     
     context = {
+        'search': search,
         'ub': ub,
         'table':table,
         'paginate_by': paginate_by,

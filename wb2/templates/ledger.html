@@ -159,11 +159,32 @@ Account Ledger
 			font-weight: 900;
 			margin-top: -16px;
 			}	
+		.vertical {
+			border-left: 2px solid black;
+			height: 248px;
+			margin-left: 512px;
+			position: absolute;
+			margin-top: -41px;
+			}
+		.vertical1 {
+			border-left: 2px solid black;
+			height: 248px;
+			margin-left: 1007px;
+			position: absolute;
+			margin-top: -41px;
+		}
+		.vertical2 {
+			border-left: 2px solid black;
+			height: 248px;
+			margin-left: 12px;
+			position: absolute;
+			margin-top: -41px;
+			}
 	</style>
 	
 	
 	<div id="invoice">
-		<div class="container" style="padding-top: 11px;">
+		<div class="container" style="padding-top: 11px;padding-left: 40px;">
 			<div class="header" style="text-align:center; margin-top: 30px;">
 				<h1 class="mun-header">Municipality of Ginatilan</h1>
 				<p class="mun"> Ginatilan Water Station</p>
@@ -171,23 +192,14 @@ Account Ledger
      
 			<div class="row pad-top-botm ">
 			   <div >
-				  <img id="logo" src="{% static 'images/lgulogo.png'%}" style="padding-bottom:20px; position:absolute; left: 17%; opacity: 100; top: 2%;" alt="LOGO"/>
+				  <img id="logo" src="{% static 'images/lgulogo.png'%}" style="display:none; padding-bottom:20px; position:absolute; left: 17%; opacity: 100; top: 2%;" alt="LOGO"/>
 			   </div>
 		   </div>
-		   <div class="row text-center contact-info">
-			   <div class="col-lg-12 col-md-12 col-sm-12" style="background-color:var(--dark-text);">
-				   <hr>
-				   <span>
-					   <strong>Email : </strong>  brian@brianbossierdesign.com 
-				   </span>
-				   <span>
-					   <strong>Call : </strong>  +1-623-777-9044 
-				   </span>
-				   <hr>
-			   </div>
-		   </div>
+		   <div class="col-lg-12 col-md-12 col-sm-12" style="background-color:var(--dark-text);">
+			<hr>
+		</div>
 		   <div class="row pad-top-botmm client-info">
-			<div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 101px;">
+			<div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 54px;">
 				<h4 class="ddd">  <strong>Consumer Information</strong></h4>
 			   		<b>Account ID :</b> {{u.consumer_id}}
 					<br>
@@ -199,8 +211,11 @@ Account Ledger
 					<br>
 				   <b>Mobile Number :</b> {{u.mobilenum}}
 			   </div>
-				<div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 101px;">
-					 <h4 class="ddd"> <strong>Payment Details </strong></h4>
+			   <div class="vertical"></div>
+			   <div class="vertical1"></div>
+			   <div class="vertical2"></div>
+				<div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 148px; position: absolute; margin-left: 408px;">
+				<h4 class="ddd"> <strong>Payment Details </strong></h4>
 				  <b>Bill Amount :  990 USD </b>
 					<br>
 					 Bill Date :  01th August 2014
@@ -212,32 +227,14 @@ Account Ledger
 					 Purchase Date :  30th July 2014
 			   </div>
 		   </div>
+			<div class="col-lg-12 col-md-12 col-sm-12" style="background-color:var(--dark-text);">
+				<hr>
+			</div>
 		   <div class="row">
-			   <div class="col-lg-12 col-md-12 col-sm-12">
-				 <div class="table-responsive">
-								<table class="table table-bordered table-hover">
-								  <thead class="wb_thead">
-									  <tr class="header">
-										  <th scope="col" style="min-width:25px">PENALTY</th>
-										  <th scope="col" style="min-width:25px">TOTAL BILL</th>
-										  <th scope="col" style="min-width:25px">PREVIOUS DUE</th>
-										  <th scope="col" style="min-width:25px">TOTAL BALANCE</th>
-									  </tr>
-								  </thead>
-								  <tbody class="wb_tbody">
-									  <tr>
-										  <td class="table-light">SHOE DESIGN 2</td>
-										  <td class="table-light">BLACK</td>
-										  <td class="table-light">3</td>
-										  <td class="table-light">$435 USD</td>
-									  </tr>
-								  </tbody>
-							  </table>
               <div class="ttl-amts">
                   <h4> <strong>Bill Amount : 990 USD</strong> </h4>
              </div>
-					 </div>	  
-			   </div>
+					 
 		   </div>
 	   </div>
 		</div>
