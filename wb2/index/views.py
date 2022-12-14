@@ -289,7 +289,7 @@ def ledger(request, id):
     }
     return render(request, 'ledger.html', context)
 
-@unauthenticated_user
+# @unauthenticated_user
 def forgetpassword(request):
     if request.method == "POST":
         u_email = request.POST['email']
@@ -1298,8 +1298,7 @@ def unsettled_bills_p(request, p):
         else:
             a = 0
         yeah = ub_year(a,j)
-        table.append(yeah)
-    
+        table.append(yeah)    
     context = {
         'search': search,
         'ub': ub,
