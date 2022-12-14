@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
@@ -132,6 +132,7 @@ def bills_list_p(request, p):
 def signout(request):
     lr = LoginRec.objects.get(username=request.user)
     lr.delete()
+    logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
 
@@ -176,7 +177,7 @@ def user_creation(request):
     context = {
         'form': form,
         'errors': form.errors,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'registration.html', context)
 
@@ -288,7 +289,7 @@ def ledger(request, id):
         'pen': pen,
         'bal': bal,
         'bill': bill,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'ledger.html', context)
 
@@ -325,8 +326,8 @@ def forgetpassword(request):
                 request, 'Please verify your account by clicking the link in your email: '+str(u_email))
 
             return redirect('login')
-
-        context = {'email': email, 'errors': errors}
+        else:
+            messages.error(request, 'Please verify your account by clicking the link in your email: '+str(u_email))
     return render(request, 'forgetpassword.html')
 
 # @unauthenticated_user
@@ -633,7 +634,7 @@ def inputreading(request, id, year):
         'table': table,
         'cur_year': year,
         'years': years,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -738,7 +739,7 @@ def consumercreation(request):
         'conid':last,
         'form': form,
         'errors': form.errors,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'consumercreation.html', context)
 
@@ -801,7 +802,7 @@ def sysuser(request):
         table.append(su)
     context = {
         'table': table,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'sysuser.html', context)
 
@@ -826,7 +827,7 @@ def user_edit(request, id):
     context = {
         'sys': sys,
         'form': form,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'user_edit.html', context)
 
@@ -907,7 +908,7 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'waterusage.html', context)
 
@@ -1195,7 +1196,7 @@ def usage_report_data(request, year):
         'guiwan': guiwan,
         'looc': looc,
         'malat': malat,
-        'user': request.session.get(ReqParams.username),
+        'user': request.user,
 
     }
     return render(request, 'usage_report_data.html', context)
@@ -1313,7 +1314,7 @@ def unsettled_bills_p(request, p):
         'last': range(paginator.num_pages-3, paginator.num_pages),
         'five': range(1, 6),
         'tb': tb,
-        'user': request.session.get(ReqParams.username),
+        'user': request.user,
     }
     return render(request, 'unsettled_bill.html', context)
 
@@ -1426,7 +1427,7 @@ def new_consumertype(request):
         'c': c,
         'form': form,
         'errors': form.errors,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'new_consumertype.html', context)
 
@@ -1457,7 +1458,7 @@ def penalty(request):
         'p': p,
         'form': form,
         'errors': form.errors,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
 
     return render(request, 'penalty.html', context)
