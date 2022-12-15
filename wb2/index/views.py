@@ -79,7 +79,7 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-@authenticated_user
+# @authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
@@ -89,7 +89,7 @@ def bills_list(request):
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
-@authenticated_user
+# @authenticated_user
 def bills_list_p(request, p):   
     search = request.GET.get("search", "")
     page = request.GET.get('page')
