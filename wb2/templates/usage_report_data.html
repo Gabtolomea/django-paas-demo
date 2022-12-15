@@ -249,7 +249,8 @@
 				<option value="{{i}}">{{i}}</option>
 				{% endfor %}
 			</select>
-		</form>	<script>
+		</form>
+		<script>
 			yearselection = document.getElementById("yearselection")
 			selector = document.getElementById("selector")
 			function change() {
@@ -262,8 +263,6 @@
   <center>
     <label><strong>Barangay Total Usage: Year {{cur_year}}</strong></label>
   </center>
-
-  <br />
 
   <div class="chartBox">
     <canvas id="barangay" width="500" height="150"></canvas>
@@ -446,7 +445,6 @@
   </script>
 
   <br />
-
 	<center>
 		<label><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></label>
 		<br>

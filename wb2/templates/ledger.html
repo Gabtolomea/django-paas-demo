@@ -41,6 +41,132 @@ Account Ledger
 		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 		transition: all 0.1s;
 	}
+
+	/* ============================================================================================= */
+
+	.invoice-box {
+		max-width: 1044px;
+		margin: auto;
+		padding: 0;
+		border: 1px solid #000;
+		box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+		font-size: 17px;
+		line-height: 16px;
+		font-family: monospace;
+		color: #000;
+	}
+
+	.invoice-box table {
+		width: 100%;
+		line-height: inherit;
+		text-align: left;
+	}
+
+	.invoice-box table td {
+		padding: 11px;
+		vertical-align: top;
+	}
+
+	.invoice-box table tr td:nth-child(2) {
+		text-align: right;
+	}
+
+	.invoice-box table tr.top table td {
+		padding-bottom: 0px;
+	}
+
+	.invoice-box table tr.top table td.title {
+		font-size: 45px;
+		line-height: 45px;
+		color: #333;
+	}
+
+	.invoice-box table tr.information table td {
+		padding-top: 0;
+	}
+
+	.invoice-box table tr.heading td {
+		background: #eee;
+		border-bottom: 1px solid #ddd;
+		font-weight: bold;
+	}
+
+	.invoice-box table tr.details td {
+		padding-bottom: 0px;
+	}
+
+	.invoice-box table tr.item td {
+		border-bottom: 1px solid #eee;
+	}
+
+	.invoice-box table tr.item.last td {
+		border-bottom: none;
+	}
+
+	.invoice-box table tr.total td:nth-child(2) {
+		border-top: 2px solid #eee;
+		font-weight: bold;
+	}
+
+	@media only screen and (max-width: 600px) {
+		.invoice-box table tr.top table td {
+			width: 100%;
+			display: block;
+			text-align: center;
+		}
+
+		.invoice-box table tr.information table td {
+			width: 100%;
+			display: block;
+			text-align: center;
+		}
+	}
+
+	/** RTL **/
+	.rtl {
+		direction: rtl;
+		font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+	}
+
+	.rtl table {
+		text-align: right;
+	}
+
+	.rtl table tr td:nth-child(2) {
+		text-align: left;
+	}
+
+	#logo {
+		vertical-align: middle;
+		border-style: none;
+		height: 90px;
+	}
+
+	.total {
+		font-weight: bold;
+		color: blue;
+		border-width: 1px;
+		border-style: solid;
+		border-color: black;
+	}
+
+	.mun {
+		font-family: monospace;
+		font-size: 25px;
+		font-weight: bold;
+	}
+
+	.mun-header {
+		font-size: 38px;
+		font-family: monospace;
+		font-weight: bold;
+	}
+
+	.st {
+		font-size: 21px;
+		font-weight: bold;
+		font-family: emoji;
+	}
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -107,113 +233,115 @@ Account Ledger
 			Get a Copy
 		</button>
 	</div>
-	
-<!-- mao ni sha ang div sa bill-pdf -->
-<div id="billing" style="display:none;">
-	<style>
-    .consumer_info{
-        background-color: #f8f9fa;
-        padding-left: 10px
-    }
-    .bills_info{
-        background-color: #f8f9fa;
-        padding-left: 10px;
-        padding-bottom: 104px;
-    }
-	#logo{
-	vertical-align: middle;
-    border-style: none;
-    height: 113px;
-	}
-	.mun-header{
-    font-size: 38px;
-    font-family: emoji;
-	font-weight: 700;
-	}
-	.mun{
-    font-family: emoji;
-    font-size: 25px;
-	font-weight: 900;
-	margin-top: -16px;
-	}	
-	.style{
-    padding-left: 10px;
-    text-align: center;
-    margin-bottom: 0;
-    background-color: #a4cdf1b3;
-}
-.image-logo{
-    position: absolute;
-    left: 17%;
-    opacity: 100;
-    top: 2%;
-}
-.for-bot{
-	margin: 0%;
-}
-.for-top{
-	margin: 10px;
-}
-</style>
+	<div class="billling" style="display:none;">
+		<div id="invoice">
+			<div class="invoice-box">
+				<table cellpadding="0" cellspacing="0">
+					<tbody class="ttt">
+						<tr class="top">
+							<td colspan="2">
+								<table>
+									<tr>
+										<td style="padding-bottom: 0px;
+								padding-left: 44%;">
+											<img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
+										</td>
+									</tr>
+									<tr>
+										<td style="text-align:center;">
+											<p class="mun"> Ginatilan Water</p>
+			</div>
+			</td>
+			</tr>
+			</table>
+			</td>
+			</tr>
+			<tr class="information">
+				<td colspan="2">
+					<table>
+						<tr>
+							<td style="line-height: 0px;">
+								<h4 class="st">Consumer Info</h4>
+								<h6 class="sk"><b>Name: </b>{{u.firstname}} {{u.middlename}} {{u.lastname}} </h6><br>
+								<h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
+								<h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
+								<h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
+								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid}}</h6><br>
+								<h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
 
+			<tr class="heading">
+				<td>
+					BILL INFO
+				</td>
 
-<div id="invoice">
-    <div class="header" style="text-align:center; margin-top: 30px;">
-        <h1 class="mun-header">Municipality of Ginatilan</h1>
-        <p class="mun"> Ginatilan Water Station</p>
-    </div> 
-	<div class="image-logo">
-        <img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
+				<td>
+
+				</td>
+			</tr>
+
+			<tr class="item">
+				<td>
+					<strong>Current Reading</strong>
+				</td>
+
+				<td>
+					<b>{{cur}}</b>
+				</td>
+			</tr>
+
+			<tr class="item">
+				<td>
+					<strong>Previous Reading</strong>
+				</td>
+
+				<td>
+					<b>{{pre}}</b>
+				</td>
+			</tr>
+
+			<tr class="item last">
+				<td>
+					<strong>Usage</strong>
+				</td>
+
+				<td>
+					<b>{{usage}}</b>
+				</td>
+			</tr>
+
+			<tr class="total">
+				<td>
+					<strong>Penalty: <b>{{pen}}</b></strong><br>
+					<strong>Previous Due: <b></b></strong><br>
+					<strong>Total Balance: <b>&#8369;{{bal}}</b></strong><br>
+					<strong>Total Bill: <b>&#8369;{{bill}}</b></strong>
+
+				</td>
+			</tr>
+			</table>
+			<footer style="text-align:center;margin-top: 16px;font-size: 13px;">Bill Issued:{{date_today}}</footer>
+		</div>
 	</div>
-    <hr class="for-top">
-    <div class="row w-100 m-auto">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
-			<h2 class="style">Consumer Info</h2>
-            <div class="consumer_info">
-                <label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
-                <label for="accnt">Account ID: {{u.consumer_id}}</label><br>
-                <label for="meter">Meter Number: {{u.meternumber}}</label><br>
-                <label for="addr">Address: {{u.installation_address}}</label>
-                <label for="zip">Zip Code: 6028</label><br>
-                <label for="country">Country: Philippines</label><br>
-                <label for="connect-type">Connection Type: {{u.contypeid}}</label><br>
-                <label for="contact-info">Contact Info: {{u.mobilenum}}</label>
-            </div>
-
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
-			<h2 class="style">Bills Info</h2>
-            <div class="bills_info">
-                <label for="current-reading">Current Reading: {{cur}}</label><br>
-                <label for="prev-reading">Previous Reading: {{pre}}</label><br>
-                <label for="usage">Usage: {{usage}}</label><br>	
-				<br>
-            </div>
-           
-        </div>
-    </div>
-    <hr class="for-bot">
-    <div class="bill row w-100 m-auto pt-3">
-        <label for="penalty">Penalty: {{pen}}</label><br>
-        <label for="total-bill">Total Bill:</label><br>
-        <label for="prev-due">Previous Due:</label><br>
-        <label for="total-balance">Total Balance:</label><br>
-    </div>
 	<script>
-		function print(){
-			  const invoice = this.document.getElementById("invoice");
-            console.log(invoice);
-            console.log(window);
-            var opt = {
-                margin: .5,
-                filename: 'myfile.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().from(invoice).set(opt).save();
+		function print() {
+			const invoice = this.document.getElementById("invoice");
+			console.log(invoice);
+			console.log(window);
+			var opt = {
+				margin: .5,
+				filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
+				image: { type: 'png', quality: 0.98 },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+			};
+			html2pdf().from(invoice).set(opt).save();
 		}
-	
+
 	</script>
 </div>
 
@@ -245,8 +373,10 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %} {{t.bill|floatformat:2|intcomma}}</td>
-					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}
+						{{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+					</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
 					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
@@ -316,7 +446,7 @@ Account Ledger
 		doc.text(x, y = y + 15, "Balance:");
 		doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
 		// doc.addImage(imgData, 'PNG', 15, 40, 180, 160);
-		
+
 
 		y = y + 70
 		doc.setFont("Courier");
@@ -351,7 +481,5 @@ Account Ledger
 	doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
 	}
 </script>
-</body>
-
 
 {% endblock ledger %}

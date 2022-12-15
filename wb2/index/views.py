@@ -48,7 +48,8 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
-    # enye()
+    enye(ConsumerInfo.objects.all())
+    enye(Barangays.objects.all())
     camelize()
     # capitalize()
     return render(request, "landing.html")
@@ -294,7 +295,6 @@ def ledger(request, id):
         'user': request.user
     }
     return render(request, 'ledger.html', context)
-
 
 # @unauthenticated_user
 def forgetpassword(request):
@@ -645,10 +645,17 @@ def consumer_list(request):
 
 
 def consumer_list_p(request, p):
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
+    
+    
     pages = int(p)
     user = request.user
-    cons = ConsumerInfo.objects.all().order_by(
-        'lastname', 'firstname', 'middlename')
     count = cons.count()
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
@@ -667,8 +674,9 @@ def consumer_list_p(request, p):
         cons_list = paginator.page(paginator.num_pages)
 
     context = {
-        'last': range(paginator.num_pages - 3, paginator.num_pages),
-        'five': range(1, 6),
+        'search' :search,
+        'last':range(paginator.num_pages - 3, paginator.num_pages),
+        'five':range(1,6),
         'paginate_by': paginate_by,
         'consumer_list': cons_list,
         'user': user,
@@ -1296,9 +1304,15 @@ def unsettled_bills_p(request, p):
         def __init__(self, y, u):
             self.y = y
             self.u = u
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    tb = ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
+    if search:
+        ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search), current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
+    else:
+        ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
-    ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
-    tb = ubs.aggregate(tots = Sum('current_bal'))
     table = []
     count = len(ubs)
     if pages == 0:
@@ -1316,14 +1330,17 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(paginator.num_pages)
     for j in ub:
         alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
-        if alltran[0].year is not None:
-            a = alltran[0].year
+        if not alltran:
+            print("")
         else:
-            a = 0
+            if alltran[0].year is not None:
+                a = alltran[0].year
+            else:
+                a = 0
         yeah = ub_year(a,j)
-        table.append(yeah)
-    
+        table.append(yeah)    
     context = {
+        'search': search,
         'ub': ub,
         'table':table,
         'paginate_by': paginate_by,
