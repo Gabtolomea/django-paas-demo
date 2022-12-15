@@ -1306,13 +1306,13 @@ def unsettled_bills_p(request, p):
             self.u = u
     search = request.GET.get("search", "")
     page = request.GET.get('page')
+    tb = ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
     if search:
         ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search), current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     else:
         ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
-    tb = ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
     table = []
     count = len(ubs)
     if pages == 0:
