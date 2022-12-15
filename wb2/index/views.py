@@ -173,7 +173,7 @@ def user_creation(request):
     context = {
         'form': form,
         'errors': form.errors,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'registration.html', context)
 
@@ -282,7 +282,7 @@ def ledger(request, id):
         'pen':pen,
         'bal':bal,
         'bill':bill,
-        'user':request.session.get(ReqParams.username)
+        'user':request.user
     }
     return render(request, 'ledger.html', context)
 
@@ -621,7 +621,7 @@ def inputreading(request, id, year):
         'table': table,
         'cur_year': year,
         'years': years,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -722,7 +722,7 @@ def consumercreation(request):
         'conid':last,
         'form': form,
         'errors': form.errors,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'consumercreation.html', context)
 
@@ -783,7 +783,7 @@ def sysuser(request):
         table.append(su)
     context = {
         'table': table,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'sysuser.html', context)
 
@@ -806,7 +806,7 @@ def user_edit(request, id):
     context = {
         'sys': sys,
         'form': form,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'user_edit.html', context)
 
@@ -885,7 +885,7 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        'user': request.session.get(ReqParams.username)
+        'user': request.user
     }
     return render(request, 'waterusage.html', context)
 
@@ -1185,7 +1185,7 @@ def usage_report_data(request, year):
         'guiwan'    : guiwan,
         'looc'      : looc,
         'malat'     : malat,
-        'user':request.session.get(ReqParams.username),
+        'user':request.user,
 
     }
     return render(request, 'usage_report_data.html', context)
@@ -1286,13 +1286,23 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
+    for j in ub:
+        alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
+        if alltran[0].year is not None:
+            a = alltran[0].year
+        else:
+            a = 0
+        yeah = ub_year(a,j)
+        table.append(yeah)
+    
     context = {
         'ub': ub,
+        'table':table,
         'paginate_by': paginate_by,
-        'last' : range(paginator.num_pages-3, paginator.num_pages),
-        'five' : range(1,6),
-        'tb' : tb,
-        'user' : request.session.get(ReqParams.username),
+        'last': range(paginator.num_pages-3, paginator.num_pages),
+        'five': range(1, 6),
+        'tb': tb,
+        'user': request.user,
     }
     return render(request, 'unsettled_bill.html', context)
 
@@ -1408,7 +1418,7 @@ def new_consumertype(request):
 
 @authenticated_user
 def penalty(request):
-    username = request.session.get(ReqParams.username)
+    username = request.user
     p = Penalty.objects.all()
     form = addPenalty
     penaltycounter = len(Penalty.objects.all())

@@ -53,12 +53,12 @@ Account Ledger
 					<th scope="col" style="min-width:25px">Current Balance</th>
 				</tr>
 			</thead>
-			<tbody class="wb_tbody">
+			<tbody>
 				<tr class="showOnHover">
-					<td class="table-light">{{u.consumer_id}}</td>
-					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
-					<td class="table-light">{{u.meternumber}}</td>
-					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+					<td class="table-light" style="">{{u.consumer_id}}</td>
+					<td class="table-light" style="">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<td class="table-light" style="">{{u.meternumber}}</td>
+					<td class="table-light" style="">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class=" hide btn btn-primary" style="float: right; margin-left: 5px;"
 							onclick=print()>Get Bill</button>
 						<button type="button" class="hide btn btn-success" data-bs-toggle="modal"
@@ -156,9 +156,10 @@ Account Ledger
 }
 </style>
 
+<body>
 
 <div id="invoice">
-    <div class="header" style="text-align:center; margin-top: 30px;">
+     <div class="header" style="text-align:center; margin-top: 30px;">
         <h1 class="mun-header">Municipality of Ginatilan</h1>
         <p class="mun"> Ginatilan Water Station</p>
     </div> 
@@ -199,6 +200,7 @@ Account Ledger
         <label for="prev-due">Previous Due:</label><br>
         <label for="total-balance">Total Balance:</label><br>
     </div>
+    </div>
 	<script>
 		function print(){
 			  const invoice = this.document.getElementById("invoice");
@@ -222,6 +224,7 @@ Account Ledger
 	<div class="table-responsive">
 		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
+
 				<tr>
 					<th style="min-width: 100px;">Transaction ID</th>
 					<th style="min-width: 100px;">Date</th>
@@ -236,6 +239,7 @@ Account Ledger
 					<th style="min-width: 100px;">Current Balance</th>
 				</tr>
 			</thead>
+
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
 				<tr>
@@ -245,11 +249,12 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %} {{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}
+						{{t.bill|floatformat:2|intcomma}}</td>
 					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bal %} &#8369; {{t.bal|floatformat:2|intcomma}}{% endif %}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
