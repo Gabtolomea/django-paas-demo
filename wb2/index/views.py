@@ -1293,10 +1293,13 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(paginator.num_pages)
     for j in ub:
         alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
-        if alltran[0].year is not None:
-            a = alltran[0].year
-        else:
-            a = 0
+        try:
+            if alltran[0].year is not None:
+                a = alltran[0].year
+            else:
+                a = 0
+        except:
+            print("")
         yeah = ub_year(a,j)
         table.append(yeah)    
     context = {

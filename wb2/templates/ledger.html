@@ -41,8 +41,9 @@ Account Ledger
 		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 		transition: all 0.1s;
 	}
-/* ============================================================================================= */
-	
+
+	/* ============================================================================================= */
+
 	.invoice-box {
 		max-width: 1044px;
 		margin: auto;
@@ -53,7 +54,8 @@ Account Ledger
 		line-height: 16px;
 		font-family: monospace;
 		color: #000;
-		}
+	}
+
 	.invoice-box table {
 		width: 100%;
 		line-height: inherit;
@@ -81,7 +83,7 @@ Account Ledger
 
 	.invoice-box table tr.information table td {
 		padding-top: 0;
-		}
+	}
 
 	.invoice-box table tr.heading td {
 		background: #eee;
@@ -134,35 +136,37 @@ Account Ledger
 		text-align: left;
 	}
 
-	#logo{
+	#logo {
 		vertical-align: middle;
 		border-style: none;
 		height: 90px;
-		}
-	.total{
-		font-weight:bold;
-		color:blue;
+	}
+
+	.total {
+		font-weight: bold;
+		color: blue;
 		border-width: 1px;
 		border-style: solid;
 		border-color: black;
 	}
-	.mun{
+
+	.mun {
 		font-family: monospace;
 		font-size: 25px;
 		font-weight: bold;
-		}
-	.mun-header{
-    font-size: 38px;
-    font-family: monospace;
-	font-weight: bold ;
 	}
-	.st{
-		font-size: 21px;		
+
+	.mun-header {
+		font-size: 38px;
+		font-family: monospace;
+		font-weight: bold;
+	}
+
+	.st {
+		font-size: 21px;
 		font-weight: bold;
 		font-family: emoji;
 	}
-	
-
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -175,13 +179,13 @@ Account Ledger
 					<th scope="col" style="min-width:25px">Current Balance</th>
 				</tr>
 			</thead>
-			
+
 			<tbody>
 				<tr class="showOnHover">
 					<td class="table-light">{{u.consumer_id}}</td>
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
-					<td class="table-light" >{{u.meternumber}}</td>
-					<td class="table-light" >&#8369; {{u.current_bal|floatformat:2|intcomma}}
+					<td class="table-light">{{u.meternumber}}</td>
+					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class=" hide btn btn-primary" style="float: right; margin-left: 5px;"
 							onclick=print()>Get Bill</button>
 						<button type="button" class="hide btn btn-success" data-bs-toggle="modal"
@@ -230,115 +234,115 @@ Account Ledger
 			Get a Copy
 		</button>
 	</div>
-<div class="billling" style="display:none;">
-	<div id="invoice" >
-		<div class="invoice-box">
-			<table cellpadding="0" cellspacing="0">
-				<tbody class="ttt">
-				<tr class="top">
-					<td colspan="2">
-						<table>
-							<tr>
-								<td style="padding-bottom: 0px;
+	<div class="billling" style="display:none;">
+		<div id="invoice">
+			<div class="invoice-box">
+				<table cellpadding="0" cellspacing="0">
+					<tbody class="ttt">
+						<tr class="top">
+							<td colspan="2">
+								<table>
+									<tr>
+										<td style="padding-bottom: 0px;
 								padding-left: 44%;">
-									<img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
-								</td>
-							</tr>
-							<tr>
-								<td style="text-align:center;">
-										<p class="mun"> Ginatilan Water</p>
-									</div> 
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr class="information">
-					<td colspan="2">
-						<table>
-							<tr>
-								<td style="line-height: 0px;">
-									<h4 class="st">Consumer Info</h4>
-									<h6 class="sk"><b>Name: </b>{{u.firstname}} {{u.middlename}} {{u.lastname}} </h6><br>
-									<h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
-									<h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
-									<h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
-									<h6 class="sk"><b>Connection Type: </b>{{u.contypeid}}</h6><br>
-									<h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-	
-				<tr class="heading">
-					<td>
-						BILL INFO
-					</td>
-	
-					<td>
+											<img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
+										</td>
+									</tr>
+									<tr>
+										<td style="text-align:center;">
+											<p class="mun"> Ginatilan Water</p>
+			</div>
+			</td>
+			</tr>
+			</table>
+			</td>
+			</tr>
+			<tr class="information">
+				<td colspan="2">
+					<table>
+						<tr>
+							<td style="line-height: 0px;">
+								<h4 class="st">Consumer Info</h4>
+								<h6 class="sk"><b>Name: </b>{{u.firstname}} {{u.middlename}} {{u.lastname}} </h6><br>
+								<h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
+								<h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
+								<h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
+								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid}}</h6><br>
+								<h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
 
-					</td>
-				</tr>
-	
-				<tr class="item">
-					<td>
-						<strong>Current Reading</strong>
-					</td>
-	
-					<td>
-						<b>{{cur}}</b>
-					</td>
-				</tr>
-	
-				<tr class="item">
-					<td>
-						<strong>Previous Reading</strong>
-					</td>
-	
-					<td>
-						<b>{{pre}}</b>
-					</td>
-				</tr>
-	
-				<tr class="item last">
-					<td>
-						<strong>Usage</strong>
-					</td>
-	
-					<td>
-						<b>{{usage}}</b>
-					</td>
-				</tr>
-	
-				<tr class="total">
-					<td >
-						<strong>Penalty: <b>{{pen}}</b></strong><br>
-						<strong>Previous Due: <b>{{bal}}</b></strong><br>
-						<strong>Total Balance: <b></b></strong><br>
-						<strong>Total Bill: <b>{{bill}}</b></strong>
+			<tr class="heading">
+				<td>
+					BILL INFO
+				</td>
 
-					</td>
-				</tr>
+				<td>
+
+				</td>
+			</tr>
+
+			<tr class="item">
+				<td>
+					<strong>Current Reading</strong>
+				</td>
+
+				<td>
+					<b>{{cur}}</b>
+				</td>
+			</tr>
+
+			<tr class="item">
+				<td>
+					<strong>Previous Reading</strong>
+				</td>
+
+				<td>
+					<b>{{pre}}</b>
+				</td>
+			</tr>
+
+			<tr class="item last">
+				<td>
+					<strong>Usage</strong>
+				</td>
+
+				<td>
+					<b>{{usage}}</b>
+				</td>
+			</tr>
+
+			<tr class="total">
+				<td>
+					<strong>Penalty: <b>{{pen}}</b></strong><br>
+					<strong>Previous Due: <b></b></strong><br>
+					<strong>Total Balance: <b>&#8369;{{bal}}</b></strong><br>
+					<strong>Total Bill: <b>&#8369;{{bill}}</b></strong>
+
+				</td>
+			</tr>
 			</table>
 			<footer style="text-align:center;margin-top: 16px;font-size: 13px;">Bill Issued:{{date_today}}</footer>
 		</div>
 	</div>
 	<script>
-		function print(){
-			  const invoice = this.document.getElementById("invoice");
-            console.log(invoice);
-            console.log(window);
-            var opt = {
-                margin: .5,
-                filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
-                image: { type: 'png', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().from(invoice).set(opt).save();
+		function print() {
+			const invoice = this.document.getElementById("invoice");
+			console.log(invoice);
+			console.log(window);
+			var opt = {
+				margin: .5,
+				filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
+				image: { type: 'png', quality: 0.98 },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+			};
+			html2pdf().from(invoice).set(opt).save();
 		}
-	
+
 	</script>
 </div>
 
@@ -374,7 +378,8 @@ Account Ledger
 					<td class="{{t.style}}">{{t.rateid}}</td>
 					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}
 						{{t.bill|floatformat:2|intcomma}}</td>
-					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}</td>
+					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+					</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
 					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
@@ -444,7 +449,7 @@ Account Ledger
 		doc.text(x, y = y + 15, "Balance:");
 		doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
 		// doc.addImage(imgData, 'PNG', 15, 40, 180, 160);
-		
+
 
 		y = y + 70
 		doc.setFont("Courier");
