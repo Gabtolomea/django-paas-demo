@@ -52,7 +52,7 @@
                         <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="{% url 'bills_list' %}"
                                 style="color: white; text-decoration: none;">
-                                <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                                <i class="fa fa-money fa-2x"></i>
                                 <span class="sidenav_text">Billing</span>
                             </a>
                         </li>
@@ -66,7 +66,7 @@
                         <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="{% url 'consumer_list' %}"
                                 style="color: white; text-decoration: none">
-                                <i class="fa-solid fa-user fa-2x"></i>
+                                <i class="fa fa-user fa-2x"></i>
                                 <span class="sidenav_text">Consumers</span>
                             </a>
                         </li>
@@ -80,7 +80,7 @@
                         <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="{% url 'unsettled_bills' %}"
                                 style="color: white; text-decoration: none">
-                                <i class="fa fa-line-chart fa-2x"></i>
+                                <i class="fa fa-newspaper-o fa-2x"></i>
                                 <span class="sidenav_text">Unsettled Bills</span>
                             </a>
                         </li>
@@ -88,13 +88,13 @@
                         <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="{% url 'sysuser' %}"
                                 style="color: white; text-decoration: none">
-                                <i class="fa-solid fa-user-group fa-2x"></i>
+                                <i class="fa fa-group fa-2x"></i>
                                 <span class="sidenav_text"> System Users</span>
                             </a>
                         </li>
                         <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
-                                <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                                <i class="fa fa-gear fa-2x"></i>
                                 <span class="sidenav_text">Account Settings</span>
                             </a>
                         </li>
@@ -148,7 +148,7 @@
         </div>
     </header>
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
-        <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
+        <div class="user_info"><i class="fa fa-user-circle fa-8x"></i>
             <p style="font-size: 30px;">{{user}}</p>
 
         </div>
@@ -156,7 +156,7 @@
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
-                    <i class="fa-solid fa-money-bill-wave fa-2x">
+                    <i class="fa fa-money fa-2x">
                         <div class="icon payment"></div>
                     </i>
                     <span style="    padding-left: 14px; font-size: 20px;">Billing</span>
@@ -171,7 +171,7 @@
             </a>
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
-                    <i class="fa-solid fa-user fa-2x"></i>
+                    <i class="fa fa-user fa-2x"></i>
                     <span style="  padding-left: 23px; font-size: 20px;">Consumer Users</span>
                 </li>
             </a>
@@ -183,19 +183,19 @@
             </a>
             <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
-                    <i class="fa fa-line-chart fa-2x"></i>
+                    <i class="fa fa-newspaper-o fa-2x"></i>
                     <span class="sidenav_text">Unsettled Bills</span>
                 </li>
             </a>
             <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
-                    <i class="fa-solid fa-user-group fa-2x"></i>
+                    <i class="fa fa-group fa-2x"></i>
                     <span style=" padding-left: 14px; font-size: 20px;">System Users</span>
                 </li>
             </a>
             <a href="/" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link '/' 'active' %}">
-                    <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                    <i class="fa fa-gear fa-2x"></i>
                     <span style="font-size: 20px; padding-left: 15px;">Account Settings</span>
                 </li>
             </a>
