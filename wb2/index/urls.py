@@ -20,12 +20,11 @@ urlpatterns = [
     path('meterreading/p/<int:p>', views.meterreading_p,name='meterreading_p'),
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
-    path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),name="password_reset_confirm"),
     path('consumercreation', views.consumercreation,name='consumercreation'),
     path('consumer_list/', views.consumer_list, name='consumer_list'),
     path('consumer_list/p/<int:p>', views.consumer_list_p, name='consumer_list_p'),
     path('consumer_list/consumercreation', views.consumercreation,name='consumercreation'),
-    path('consumer_list/<int:id>/', views.userupdate, name='userupdate'),
+    path('consumer_list/<int:id>/', views.consumerupdate, name='consumerupdate'),
     path('deleteconsumer/<int:id>', views.deleteconsumer,name='deleteconsumer'),
     path('sysuser/', views.sysuser,name='sysuser'),
     path('user_creation', views.user_creation,name='user_creation'),
@@ -44,6 +43,11 @@ urlpatterns = [
     path('new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('discount',views.discount, name='discount'),
     path('penalty', views.penalty, name='penalty'),
+
+    path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),name="password_reset_confirm"),
+    path('reset_password/',auth_views.PasswordResetView.as_view(template_name="password_reset.html"),name="reset_password"),
+    path('reset_password_sent/',auth_views.PasswordResetDoneView.as_view(template_name="password_reset_sent.html"),name="password_reset_done"),
+    path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
 
     # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),

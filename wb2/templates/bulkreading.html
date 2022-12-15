@@ -18,11 +18,63 @@ Bulk Reading
 <h1 class="mb-3 text-center">Bulk Input Reading for {{month}} {{year}}</h1>
 
 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="recipient-name" class="col-form-label">Select Year</label>
+					<select name="year" id="year" class="form-control" required>
+						<option value=""></option>
+						{% for y in years %}
+						<option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="recipient-name" class="col-form-label">Select Month</label>
+					<select name="month" id="month" class="form-control" required>
+						<option value=""></option>
+						{% for m in months %}
+						<option value="{{m.num}}" {% if m.num == monthval %} selected {% endif %}>{{m.name}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+				<button type="button" onclick=go() class="btn btn-primary">Proceed</button>
+				<a id="aydi" style="display: none;" href=""></a>
+			</div>
+			<script>
+				function go(){
+					year = document.getElementById("year")
+					aydi = document.getElementById("aydi")
+					month = document.getElementById("month")
+					if (year.value != "" && month.value != ""){
+						aydi.href = "/meterreading/bulkreading/"+year.value+"/"+month.value+"/10"
+						aydi.click()
+					}
+				}
+			</script>
+		</div>
+	</div>
+</div>
+
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
 				<div class="col-sm-12 col-md-6">
+					<button type="button"  class="btn button-main" data-bs-toggle="modal" data-bs-target="#myModal">
+						<i class="fa fa-copy"></i>
+						Bulk Reading
+					</button>
+
 					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
 						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
@@ -55,7 +107,7 @@ Bulk Reading
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<form action="{% url 'bulkreading' year monthval 10 %}" method="post">
+					<form id="post" action="{% url 'bulkreading' year monthval 10 %}" method="post">
 						{% csrf_token %}
 						<table id="myTable" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
 							<thead class="wb_thead">
@@ -79,7 +131,6 @@ Bulk Reading
 								{% endfor %}
 							</tbody>
 						</table>
-						
 						<div class="row w-100 m-auto pt-2">
 							<div class="col-lg-12 col-md-12 col-sm-12">
 								<button type="submit" class="btn button2">
@@ -88,6 +139,17 @@ Bulk Reading
 							</div>
 						</div>
 					</form>
+					
+					<script>
+						$(document).ready(function() {
+							$("input[type='number']").on('change', function() {
+								$(this).addClass('changed');
+							});
+							$('#post').on('submit', function() {
+								$("input[type='number']:not(.changed)").prop('disabled', true);
+							});
+						});
+					</script>
 				</div>
 			</div>
 			<div class="row">
@@ -97,7 +159,7 @@ Bulk Reading
 							{% if ub.paginator.num_pages > 5 %}
 								{% if ub.number < 5 %}
 									{% if ub.has_previous %}
-									<a href="?page={{ ub.previous_page_number }}">
+									<a class="add-product-save-link" data-href="?page={{ ub.previous_page_number }}">
 										<li class="paginate_button page-item previous">Previous</li>
 									</a>
 									{% else %}
@@ -105,21 +167,21 @@ Bulk Reading
 									{% endif %}
 									{% for i in five %}
 										{% if i == ub.number %}
-											<a href="?page={{i}}">
+											<a class="add-product-save-link" data-href="?page={{i}}">
 												<li class="paginate_button page-item active">{{i}}</li>
 											</a>
 										{% else %}
-											<a href="?page={{i}}">
+											<a class="add-product-save-link" data-href="?page={{i}}">
 												<li class="paginate_button page-item">{{i}}</li>
 											</a>
 										{% endif %}
 									{% endfor %}
 									<li class="paginate_button disabled page-item">...</li>
-									<a href="?page={{ ub.paginator.num_pages }}">
+									<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}">
 										<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 									</a>
 									{% if ub.has_next %}
-									<a href="?page={{ ub.next_page_number }}">
+									<a class="add-product-save-link" data-href="?page={{ ub.next_page_number }}">
 										<li class="paginate_button page-item next">Next</li>
 									</a>
 									{% else %}
@@ -128,38 +190,38 @@ Bulk Reading
 								{% else %}
 									{% if ub.number > ub.paginator.num_pages|add:'-3'%}
 										{% if ub.has_previous %}
-										<a href="?page={{ ub.previous_page_number }}">
+										<a class="add-product-save-link" data-href="?page={{ ub.previous_page_number }}">
 											<li class="paginate_button page-item previous">Previous</li>
 										</a>
 										{% else %}
 											<li class="paginate_button disabled page-item previous">Previous</li>
 										{% endif %}
-										<a href="?page=1">
+										<a class="add-product-save-link" data-href="?page=1">
 											<li class="paginate_button page-item">1</li>
 										</a>
 										<li class="paginate_button disabled page-item">...</li>
 										{% for i in last %}
 											{% if i == ub.number %}
-												<a href="?page={{i}}">
+												<a class="add-product-save-link" data-href="?page={{i}}">
 													<li class="paginate_button page-item active">{{i}}</li>
 												</a>
 											{% else %}
-												<a href="?page={{i}}">
+												<a class="add-product-save-link" data-href="?page={{i}}">
 													<li class="paginate_button page-item">{{i}}</li>
 												</a>
 											{% endif %}
 										{% endfor %}
 										{% if ub.number == ub.paginator.num_pages %}
-										<a href="?page={{ ub.paginator.num_pages }}">
+										<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}">
 											<li class="paginate_button page-item active">{{ ub.paginator.num_pages }}</li>
 										</a>
 										{% else %}
-										<a href="?page={{ ub.paginator.num_pages }}">
+										<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}">
 											<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 										</a>
 										{% endif %}
 										{% if ub.has_next %}
-										<a href="?page={{ ub.next_page_number }}">
+										<a class="add-product-save-link" data-href="?page={{ ub.next_page_number }}">
 											<li class="paginate_button page-item next">Next</li>
 										</a>
 										{% else %}
@@ -167,14 +229,14 @@ Bulk Reading
 										{% endif %}
 									{% else %}
 										{% if ub.has_previous %}
-											<a href="?page={{ ub.previous_page_number }}">
+											<a class="add-product-save-link" data-href="?page={{ ub.previous_page_number }}">
 												<li class="paginate_button page-item previous">Previous</li>
 											</a>
 										{% else %}
 											<li class="paginate_button disabled page-item previous">Previous</li>
 										{% endif %}
 										{% if ub.number > 2 %}
-											<a href="?page=1">
+											<a class="add-product-save-link" data-href="?page=1">
 												<li class="paginate_button page-item">1</li>
 											</a>
 											{% if ub.number > 3 %}
@@ -183,12 +245,12 @@ Bulk Reading
 										{% endif %}
 
 										{% for num in ub.paginator.page_range %}
-										{% if ub.number == num %}<a href="?page={{ num }}">
+										{% if ub.number == num %}<a class="add-product-save-link" data-href="?page={{ num }}">
 										<li class="paginate_button page-item active">
 											{{ num }}
 										</li></a>
 										{% elif num > ub.number|add:'-2' and num < ub.number|add:'2' %}
-											<a href="?page={{ num }}"> 
+											<a class="add-product-save-link" data-href="?page={{ num }}"> 
 												<li class="paginate_button page-item">{{ num }}</li>
 											</a>
 											{% endif %}
@@ -196,16 +258,16 @@ Bulk Reading
 
 										{% if ub.number < ub.paginator.num_pages|add:'-2' %}
 											<li class="paginate_button disabled page-item">...</li>
-											<a href="?page={{ ub.paginator.num_pages }}">
+											<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}">
 												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 											</a>
 										{% elif ub.number < ub.paginator.num_pages|add:'-1' %} 
-											<a href="?page={{ ub.paginator.num_pages }}">
+											<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}">
 												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 											</a>
 										{% endif %}
 										{% if ub.has_next %}
-											<a href="?page={{ ub.next_page_number }}">
+											<a class="add-product-save-link" data-href="?page={{ ub.next_page_number }}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 										{% else %}
@@ -215,6 +277,16 @@ Bulk Reading
 								{% endif %}
 							{% endif %}
 						</ul>
+						<script>
+							post = document.getElementById('post')
+							$(document).ready(function() { 
+								$('.add-product-save-link').click(function() {
+									$("input[type='number']:not(.changed)").prop('disabled', true);
+									post.action = post.action + $(this).data("href");
+									post.submit();
+								});
+							});
+						</script>
 						<style>
 							a{		
 								-webkit-touch-callout: none;
@@ -296,6 +368,15 @@ Bulk Reading
 								box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
 								transition: all ease 0.3s;
 							}
+							.button-main {
+								background-color: var(--main-color); 
+								color: white;
+								padding: 8px 30px;
+								border: none;
+								border-radius: 15px;
+								box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+								transition: all ease 0.3s;
+							}
 							.btn.button2:hover {
 								background: var(--highlight-color);
 								color: #ffffff;
@@ -305,6 +386,20 @@ Bulk Reading
 							}
 							.btn.button2:focus {
 								background: var(--highlight-color);
+								color: #ffffff;
+								border-radius: 30px;
+								box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+								transition: all 0.1s;
+							}
+							.btn.button-main:hover {
+								background: var(--main-color);
+								color: #ffffff;
+								border-radius: 30px;
+								box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+								transition: all ease-in 0.5s;
+							}
+							.btn.button-main:focus {
+								background: var(--main-color);
 								color: #ffffff;
 								border-radius: 30px;
 								box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;

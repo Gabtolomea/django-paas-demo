@@ -4,45 +4,14 @@ from .DBdb import *
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 
-def unauthenticated_user(view_func):
-	def wrapper_func(request, *args, **kwargs):
-		try:
-			request.session[ReqParams.username]
-		except KeyError:
-			username = ''
-		else:
-			username = request.session[ReqParams.username]
-		try:
-			LoginRec.objects.get(username = username)
-		except ObjectDoesNotExist:
-			a = False
-		else:
-			a = True
-		if a:
-			return redirect('bills_list')
-		else:
-			return view_func(request, *args, **kwargs)
-	return wrapper_func
 
-def authenticated_user(view_func):
-	def wrapper_func(request, *args, **kwargs):
-		try:
-			request.session[ReqParams.username]
-		except KeyError:
-			username = ''
-		else:
-			username = request.session[ReqParams.username]
-		try:
-			LoginRec.objects.get(username = username)
-		except ObjectDoesNotExist:
-			a = True
-		else:
-			a = False
-		if a:
-			return redirect('login')
-		else:
-			return view_func(request, *args, **kwargs)
-	return wrapper_func
+def unauthenticated_user(view_func):
+    def wrapper_func(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('bills_list')
+        else:
+            return view_func(request, *args, **kwargs)
+    return wrapper_func
 
 def allowed_users(allowed_roles=[]):
 	def decorator(view_func):
