@@ -1,20 +1,19 @@
-import mysql.connector
+# import mysql.connector
 from .models import *
 from .colnames import *
 from datetime import datetime
 import math
+import mysql.connector
+import base64
 
 tablenames = [
-    "accountinfo",
-    "accountrecord",
-    "barangay_record",
-    "consumerinfo",
-    "gettotalbill",
-    "oldconsumerinfo",
-    "payment_history",
-    "ratestable",
-    "revenuecode",
-    "systemuser",
+    "accountinfo",     #0
+    "accountrecord",   #1
+    "barangay_record", #2
+    "consumerinfo",    #3
+    "payment_history", #4
+    "ratestable",      #5
+    "systemuser",      #6
     # "yearly_records"
 ]
 alltables = [
@@ -22,22 +21,23 @@ alltables = [
     accountrecord,
     barangay_record,
     consumerinfo,
-    gettotalbill,
-    oldconsumerinfo,
     payment_history,
     ratestable,
-    revenuecode,
     systemuser,
-    # yearly_records,
+    #yearly_records,
 ]
+
+
 sorted_tables = []
+
 # mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="yjh434ctuG@-@",
-#     database="lgu_ginatilan_db"
+#    host="localhost",
+#    user="root",
+#    password="yjh434ctuG@-@",
+#    database="lgu_ginatilan_db"
 # )
 # mycursor = mydb.cursor()
+
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
@@ -63,8 +63,7 @@ def rearrange(var):
     sorted_tables.append(arr)
 con_info = ConsumerInfo()
 b_rec = BarangayRecord()
-sys_user = SystemUsers()
-rt = Rates()
+rt = ConsumerType()
 trans = Transactions()
 bar = [
     'Anao',
@@ -84,15 +83,22 @@ bar = [
 ]
 usage_rec = usage_record()
 def porter_out(tables):
+    penalty = Penalty()
+    penalty.penaltycode = 'P001'
+    penalty.penalty_after = 0
+    penalty.penalty_rate = 0
+    penalty.daysappliedafter = 0
+    penalty.penalty_info = ''
+    penalty.save()
     for i in bar:
         b = Barangays()
         b.barangay = i
         b.save()
     for i in tables[2]:
         b_rec_out(i)
-    for i in tables[7]:
+    for i in tables[5]:
         rt_out(i)
-    for i in tables[9]:
+    for i in tables[6]:
         sys_user_out(i)
     for i in range(len(tables[3])):
         con_info.consumer_id = int(tables[3][i][0])
@@ -103,23 +109,28 @@ def porter_out(tables):
         con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
-        con_info.rateid = Rates.objects.get(rate_id=tables[0][i][7])
+        con_info.contypeid = ConsumerType.objects.get(contypeid="C00"+tables[0][i][7]) 
+        con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.status = tables[0][i][8]
-        con_info.penaltyflag = tables[0][i][11]
+        con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
         con_info.deleteflag = tables[0][i][14]
         con_info.save()
-    for i in range(len(tables[6])):
-        trans.transactionid = tables[6][i][0]
-        trans.date = tables[6][i][2]
-        arr = tables[6][i][7].split("-")
+    for i in range(len(tables[4])):
+        trans.transactionid = tables[4][i][0]
+        trans.date = tables[4][i][2]
+        arr = tables[4][i][7].split("-")
         trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
         trans.transType = 'Payment'
-        trans.payment = tables[6][i][1]
-        trans.processedBy = tables[6][i][5]
-        trans.or_number = tables[6][i][3]
-        trans.year = tables[6][i][2].year
-        trans.month = tables[6][i][2].month
+        trans.payment = tables[4][i][1]
+        trans.processedBy = tables[4][i][5]
+        trans.or_number = tables[4][i][3]
+        if tables[4][i][2].month == 1:
+            trans.month = 12
+            trans.year = tables[4][i][2].year-1
+        else:
+            trans.month = tables[4][i][2].month-1
+            trans.year = tables[4][i][2].year
         trans.save()
     for i in tables[1]:
         usage_rec.accountid =	i[0]
@@ -286,15 +297,15 @@ def porter_out(tables):
         usage_rec.ior_dec	=i[162-1]
         arr= i[175].split('-')
         usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])
-        usage_rec.amountpaid_str_apr =	i[164-1]
-        usage_rec.amountpaid_str_aug = i[165-1]
-        usage_rec.amountpaid_str_dec = i[166-1]
-        usage_rec.amountpaid_str_feb = i[167-1]
-        usage_rec.amountpaid_str_jan = i[168-1]
-        usage_rec.amountpaid_str_jul = i[169-1]
-        usage_rec.amountpaid_str_jun = i[170-1]
-        usage_rec.amountpaid_str_mar = i[171-1]
-        usage_rec.amountpaid_str_may = i[172-1]
+        usage_rec.amountpaid_str_apr =	i[163]
+        usage_rec.amountpaid_str_aug = i[164]
+        usage_rec.amountpaid_str_dec = i[165]
+        usage_rec.amountpaid_str_feb = i[166]
+        usage_rec.amountpaid_str_jan = i[167]
+        usage_rec.amountpaid_str_jul = i[168]
+        usage_rec.amountpaid_str_jun = i[169]
+        usage_rec.amountpaid_str_mar = i[170]
+        usage_rec.amountpaid_str_may = i[171]
         usage_rec.amountpaid_str_nov = i[173-1]
         usage_rec.amountpaid_str_oct = i[174-1]
         usage_rec.amountpaid_str_sept = i[175-1]
@@ -304,12 +315,6 @@ def porter_out(tables):
         usage_rec.or_number_history = i[180-1]
         usage_rec.previous_reading = i[181-1]
         usage_rec.save()
-    penalty = Penalty()
-    penalty.penalty_after = 0
-    penalty.penalty_rate = 0
-    penalty.penalty_info = ''
-    penalty.save()
-
 
 def billing_out():
     u_rec = usage_record.objects.all()
@@ -317,7 +322,7 @@ def billing_out():
         if u.totalbill_jan != 0:
             jan = Transactions()
             jan.acctID = u.consumerid
-            jan.ratescode = u.rateid
+            jan.contypeid = "C00"+u.rateid
             jan.meterReading = u.reading_jan
             date_str = u.reading_date_jan
             if date_str!=" " and date_str!="":
@@ -334,7 +339,7 @@ def billing_out():
         if u.totalbill_feb != 0:
             feb = Transactions()
             feb.acctID = u.consumerid
-            feb.ratescode = u.rateid
+            feb.contypeid = "C00"+u.rateid
             feb.meterReading = u.reading_feb
             date_str = u.reading_date_feb
             if date_str!=" " and date_str!="":
@@ -350,7 +355,7 @@ def billing_out():
         if u.totalbill_mar != 0:
             mar = Transactions()
             mar.acctID = u.consumerid
-            mar.ratescode = u.rateid
+            mar.contypeid = "C00"+u.rateid
             mar.meterReading = u.reading_mar
             date_str = u.reading_date_mar
             if date_str!=" " and date_str!="":
@@ -366,7 +371,7 @@ def billing_out():
         if u.totalbill_apr != 0:
             apr = Transactions()
             apr.acctID = u.consumerid
-            apr.ratescode = u.rateid
+            apr.contypeid = "C00"+u.rateid
             apr.meterReading = u.reading_apr
             date_str = u.reading_date_apr
             if date_str!=" " and date_str!="":
@@ -382,7 +387,7 @@ def billing_out():
         if u.totalbill_may != 0:
             may = Transactions()
             may.acctID = u.consumerid
-            may.ratescode = u.rateid
+            may.contypeid = "C00"+u.rateid
             may.meterReading = u.reading_may
             date_str = u.reading_date_may
             if date_str!=" " and date_str!="":
@@ -398,7 +403,7 @@ def billing_out():
         if u.totalbill_jun != 0:
             jun = Transactions()
             jun.acctID = u.consumerid
-            jun.ratescode = u.rateid
+            jun.contypeid = "C00"+u.rateid
             jun.meterReading = u.reading_jun
             date_str = u.reading_date_jun
             if date_str!=" " and date_str!="":
@@ -414,7 +419,7 @@ def billing_out():
         if u.totalbill_jul != 0:
             jul = Transactions()
             jul.acctID = u.consumerid
-            jul.ratescode = u.rateid
+            jul.contypeid = "C00"+u.rateid
             jul.meterReading = u.reading_jul
             date_str = u.reading_date_jul
             if date_str!=" " and date_str!="":
@@ -430,7 +435,7 @@ def billing_out():
         if u.totalbill_aug != 0:
             aug = Transactions()
             aug.acctID = u.consumerid
-            aug.ratescode = u.rateid
+            aug.contypeid = "C00"+u.rateid
             aug.meterReading = u.reading_aug
             date_str = u.reading_date_aug
             if date_str!=" " and date_str!="":
@@ -446,7 +451,7 @@ def billing_out():
         if u.totalbill_sept != 0:
             sept = Transactions()
             sept.acctID = u.consumerid
-            sept.ratescode = u.rateid
+            sept.contypeid = "C00"+u.rateid
             sept.meterReading = u.reading_sept
             date_str = u.reading_date_sept
             if date_str!=" " and date_str!="":
@@ -462,7 +467,7 @@ def billing_out():
         if u.totalbill_oct != 0:
             oct = Transactions()
             oct.acctID = u.consumerid
-            oct.ratescode = u.rateid
+            oct.contypeid = "C00"+u.rateid
             oct.meterReading = u.reading_oct
             date_str = u.reading_date_oct
             if date_str!=" " and date_str!="":
@@ -479,7 +484,7 @@ def billing_out():
         if u.totalbill_nov != 0:
             nov = Transactions()
             nov.acctID = u.consumerid
-            nov.ratescode = u.rateid
+            nov.contypeid = "C00"+u.rateid
             nov.meterReading = u.reading_nov
             date_str = u.reading_date_nov
             if date_str!=" " and date_str!="":
@@ -495,7 +500,7 @@ def billing_out():
         if u.totalbill_dec != 0:
             dec = Transactions()
             dec.acctID = u.consumerid
-            dec.ratescode = u.rateid
+            dec.contypeid = "C00"+u.rateid
             dec.meterReading = u.reading_dec
             date_str = u.reading_date_dec
             if date_str!=" " and date_str!="":
@@ -522,26 +527,37 @@ def balance():
         user.current_bal = math.ceil(bal*100)/100
         user.save()
 
-def get_balance(id):
+
+
+def get_cummulative(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
-    trans = Transactions.objects.filter(acctID = id)
-    asc_trans = trans.order_by('year', 'month')
-    bal = 0
+    trans = Transactions.objects.filter(acctID = id, year = date.today().year)
+    asc_trans = trans.order_by('month','transactionid')
+    cum = 0
     for i in range(len(asc_trans)):
         if asc_trans[i].transType == 'Billing':
-            bal+=asc_trans[i].bill
+            cum+=asc_trans[i].bill
         elif asc_trans[i].transType == 'Payment':
-            bal=bal-asc_trans[i].payment
-    user.current_bal = math.ceil(bal*100)/100
+            cum=cum-asc_trans[i].payment
+    user.cummulative = math.ceil(cum*100)/100
     user.save()
+    return math.ceil(cum*100)/100
+
 def sys_user_out(i):
+    sys_user = SystemUsers()
     sys_user.is_admin = False
     sys_user.is_teller = False
     sys_user.is_supervisor = False
     sys_user.is_manager = False
     sys_user.is_reader = False
     sys_user.username = i[0]
-    sys_user.password = i[1]
+    passAscii = base64.b64decode(i[1])
+    print(f"{i[1]} {type(i[1])}")
+    print(f"{passAscii} {type(passAscii)}")
+    p = passAscii.decode("ascii")
+    print(f"{p} {type(p)}")
+    sys_user.set_password(str(p))
+    print(f"{sys_user.password} {type(sys_user.password)}")
     sys_user.first_name = i[2]
     sys_user.mid_name = i[3]
     sys_user.mobilenum = i[4]
@@ -562,16 +578,14 @@ def sys_user_out(i):
     sys_user.authorizedapprover = i[9]
     sys_user.save()
 def rt_out(i):
-    rt.rate_id = int(i[0])
+    rt.contypeid = "C00"+i[0]
     rt.minReading = i[1]
     rt.minReadingCharge = i[2]
     rt.rateAfterMin = i[3]
-    rt.ratePenalty = i[4]
-    rt.ratePenaltyFreq = i[5]
     if i[0] == '1':
-        rt.connectionType = 'Residential'
+        rt.contype = 'Residential'
     elif i[0] == '2':
-        rt.connectionType = 'Commercial'
+        rt.contype = 'Commercial'
     rt.added_by = None
     rt.date_added=date.today()
     rt.date_mod = date.today()

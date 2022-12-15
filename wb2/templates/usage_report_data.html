@@ -1,0 +1,560 @@
+{% extends 'dashboard.html' %} {% block title %} Usage Report {% endblock title%} {% block style %}
+<style>
+  canvas {
+    border: 10px outset #63cdd7;
+    padding: 20px;
+  }
+
+  html {
+    background-color: #f2f3f2;
+  }
+
+  table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .form-select {
+    width: 10%;
+    margin-left: 30px;
+  }
+
+  table caption {
+    font-size: 1.5em;
+    margin: 0.5em 0 0.75em;
+  }
+
+  table tr {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 0.35em;
+  }
+
+  table th,
+  table td {
+    padding: 0.625em;
+    text-align: center;
+  }
+
+  table th {
+    font-size: 0.85em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 600px) {
+    table {
+      border: 0;
+    }
+
+    table caption {
+      font-size: 1.3em;
+    }
+
+    table thead {
+      border: none;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+
+    table tr {
+      border-bottom: 3px solid #ddd;
+      display: block;
+      margin-bottom: 0.625em;
+    }
+
+    table td {
+      border-bottom: 1px solid #ddd;
+      display: block;
+      font-size: 0.8em;
+      text-align: right;
+    }
+
+    table th {
+      font-size: 0.85em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media screen and (max-width: 600px) {
+      table {
+        border: 0;
+      }
+
+      table caption {
+        font-size: 1.3em;
+      }
+
+      table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+
+      table tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: 0.625em;
+      }
+
+      table td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: 0.8em;
+        text-align: right;
+      }
+
+      table td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      table td:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    body {
+      font-family: "Open Sans", sans-serif;
+      line-height: 1.25;
+    }
+
+    table td::before {
+      /*
+        * aria-label has no advantage, it won't be read inside a table
+        content: attr(aria-label);
+        */
+      content: attr(data-label);
+      float: left;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    table td:last-child {
+      border-bottom: 0;
+    }
+
+    @media (max-width: 400px) {
+      h2 {
+        font-size: 20px;
+      }
+    }
+
+    @media (min-width: 401px) {
+      h2 {
+        font-size: 32px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      h3 {
+        font-size: 15px;
+      }
+    }
+
+    @media (min-width: 401px) {
+      h3 {
+        font-size: 20px;
+      }
+    }
+
+    #years {
+      width: 180px;
+      height: 23px;
+      border-radius: 50px;
+    }
+  }
+</style>
+
+{% endblock style %} {% block usage_report_data %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% csrf_token %}
+
+<div class="row w-100 m-auto">
+	<div class="col-lg-4 col-md-4 col-sm-4">
+		<a href="{% url 'reports' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+			<i class="fa fa-address-book"><span style="padding: 12px; font-family: Arial;">Barangay Reports</span></i></a>
+	</div>
+
+	<div class="col-lg-4 col-md-4 col-sm-4">
+		<a href="{% url 'usage_report_data' cur_year %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;"> 
+			<i class="fa fa-line-chart"><span style="padding: 12px; font-family: Arial;">Usage Report Data</span></i></a>
+	</div>
+
+	<div class="col-lg-4 col-md-4 col-sm-4">
+		<a href="{% url 'revenue_report' cur_year %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+			<i class="fa fa-bar-chart"><span style="padding: 12px; font-family: Arial;">Revenue Reports</span></i></a>
+	</div>
+</div>
+
+<!-- <div class="row w-100 m-auto">
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
+		<div class="active" style="text-align: center;">
+			<a style="color: white; text-decoration: none;  text-align: center;" href="{% url 'reports' %}"
+				style="margin-left: 2px;"><i class="fa fa-line-chart"></i>
+				<span>Barangay Report</span>
+			</a>
+		</div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: white; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a style="color: black; text-decoration: none;  text-align: center;"
+				href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
+				<span>Usage Report</span>
+			</a>
+		</div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
+		<div style="text-align: center;">
+			<a style="color: white; text-decoration: none;  text-align: center;"
+				href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
+				<span>Revenue Report</span></a>
+		</div>
+	</div>
+
+</div> -->
+
+<div>
+	<div>
+		<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Usage Report</h2>
+	</div>
+	<div>
+		<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year</label>
+		<form id="yearselection" action="">
+			<select class="form-select" id="selector" onchange="change()">
+				<option value="{{cur_year}}">{{cur_year}}</option>
+				{% for i in years reversed %}
+				<option value="{{i}}">{{i}}</option>
+				{% endfor %}
+			</select>
+		</form>	<script>
+			yearselection = document.getElementById("yearselection")
+			selector = document.getElementById("selector")
+			function change() {
+				yearselection.action = selector.value
+				yearselection.submit()
+			}
+		</script>
+	</div>
+
+  <center>
+    <label><strong>Barangay Total Usage: Year {{cur_year}}</strong></label>
+  </center>
+
+  <br />
+
+  <div class="chartBox">
+    <canvas id="barangay" width="500" height="150"></canvas>
+  </div>
+
+  <script>
+    // setup
+    const data = {
+    	labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
+    datasets: [{
+    	label: 'Barangay Usage',
+    	data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
+    	backgroundColor: [
+    		'rgba(255, 99, 132, 1)',
+    		'rgba(54, 162, 235, 1)',
+    		'rgba(75, 200, 100, 1)',
+    		'rgba(153, 102, 255, 1)',
+    		'rgba(255, 159, 64, 1)'
+    	],
+    		borderColor: [
+    			'rgba(255, 99, 132, 1)',
+    			'rgba(54, 162, 235, 1)',
+    			'rgba(75, 192, 192, 1)',
+    			'rgba(153, 102, 255, 1)',
+    			'rgba(255, 159, 64, 1)'
+    		],
+    			borderWidth: 1,
+    }]
+     	}
+
+    // config
+    const config = {
+    	type: 'bar',
+    	data,
+    	options: {
+    		scales: {
+    			y: {
+    				beginAtZero: true
+    			}
+    		}
+    	}
+    };
+
+    // render init block
+    const ctx2 = document.getElementById('barangay');
+    const barangay = new Chart(
+    	ctx2,
+    	config
+    );
+  </script>
+
+  <br />
+
+  <center>
+    <label><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></label>
+    <br />
+    <p2><i>click on select to view individual barangay monnhly usage</i></p2>
+  </center>
+
+  <center>
+    <div class="selectBox">
+      <label>Select Barangay</label>
+      <select id="coffeesales">
+        <option
+          value="{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} "
+        >
+          Total Monlthy
+        </option>
+        <option
+          value="{{anao.jan}}, {{anao.feb}}, {{anao.mar}}, {{anao.apr}}, {{anao.may}}, {{anao.jun}}, {{anao.jul}}, {{anao.aug}}, {{anao.sept}}, {{anao.oct}}, {{anao.nov}}, {{anao.dec}} "
+        >
+          Anao
+        </option>
+        <option
+          value="{{mangaco.jan}}, {{mangaco.feb}}, {{mangaco.mar}}, {{mangaco.apr}}, {{mangaco.may}}, {{mangaco.jun}}, {{mangaco.jul}}, {{mangaco.aug}}, {{mangaco.sept}}, {{mangaco.oct}}, {{mangaco.nov}}, {{mangaco.dec}} "
+        >
+          Mangaco
+        </option>
+        <option
+          value="{{palanas.jan}}, {{palanas.feb}}, {{palanas.mar}}, {{palanas.apr}}, {{palanas.may}}, {{palanas.jun}}, {{palanas.jul}}, {{palanas.aug}}, {{palanas.sept}}, {{palanas.oct}}, {{palanas.nov}}, {{palanas.dec}} "
+        >
+          Palanas
+        </option>
+        <option
+          value="{{poblacion.jan}}, {{poblacion.feb}}, {{poblacion.mar}}, {{poblacion.apr}}, {{poblacion.may}}, {{poblacion.jun}}, {{poblacion.jul}}, {{poblacion.aug}}, {{poblacion.sept}}, {{poblacion.oct}}, {{poblacion.nov}}, {{poblacion.dec}} "
+        >
+          Poblacion
+        </option>
+        <option
+          value="{{salamanca.jan}}, {{salamanca.feb}}, {{salamanca.mar}}, {{salamanca.apr}}, {{salamanca.may}}, {{salamanca.jun}}, {{salamanca.jul}}, {{salamanca.aug}}, {{salamanca.sept}}, {{salamanca.oct}}, {{salamanca.nov}}, {{salamanca.dec}} "
+        >
+          Salamanca
+        </option>
+        <option
+          value="{{sanroq.jan}}, {{sanroq.feb}}, {{sanroq.mar}}, {{sanroq.apr}}, {{sanroq.may}}, {{sanroq.jun}}, {{sanroq.jul}}, {{sanroq.aug}}, {{sanroq.sept}}, {{sanroq.oct}}, {{sanroq.nov}}, {{sanroq.dec}} "
+        >
+          San Roque
+        </option>
+        <option
+          value="{{cagsing.jan}}, {{cagsing.feb}}, {{cagsing.mar}}, {{cagsing.apr}}, {{cagsing.may}}, {{cagsing.jun}}, {{cagsing.jul}}, {{cagsing.aug}}, {{cagsing.sept}}, {{cagsing.oct}}, {{cagsing.nov}}, {{cagsing.dec}} "
+        >
+          Cagsing
+        </option>
+        <option
+          value="{{calabawan.jan}}, {{calabawan.feb}}, {{calabawan.mar}}, {{calabawan.apr}}, {{calabawan.may}}, {{calabawan.jun}}, {{calabawan.jul}}, {{calabawan.aug}}, {{calabawan.sept}}, {{calabawan.oct}}, {{calabawan.nov}}, {{calabawan.dec}} "
+        >
+          Calabawan
+        </option>
+        <option
+          value="{{cambagte.jan}}, {{cambagte.feb}}, {{cambagte.mar}}, {{cambagte.apr}}, {{cambagte.may}}, {{cambagte.jun}}, {{cambagte.jul}}, {{cambagte.aug}}, {{cambagte.sept}}, {{cambagte.oct}}, {{cambagte.nov}}, {{cambagte.dec}} "
+        >
+          Cambagte
+        </option>
+        <option
+          value="{{campisong.jan}}, {{campisong.feb}}, {{campisong.mar}}, {{campisong.apr}}, {{campisong.may}}, {{campisong.jun}}, {{campisong.jul}}, {{campisong.aug}}, {{campisong.sept}}, {{campisong.oct}}, {{campisong.nov}}, {{campisong.dec}} "
+        >
+          Campisong
+        </option>
+        <option
+          value="{{canorong.jan}}, {{canorong.feb}}, {{canorong.mar}}, {{canorong.apr}}, {{canorong.may}}, {{canorong.jun}}, {{canorong.jul}}, {{canorong.aug}}, {{canorong.sept}}, {{canorong.oct}}, {{canorong.nov}}, {{canorong.dec}} "
+        >
+          Cañorong
+        </option>
+        <option
+          value="{{guiwan.jan}}, {{guiwan.feb}}, {{guiwan.mar}}, {{guiwan.apr}}, {{guiwan.may}}, {{guiwan.jun}}, {{guiwan.jul}}, {{guiwan.aug}}, {{guiwan.sept}}, {{guiwan.oct}}, {{guiwan.nov}}, {{guiwan.dec}} "
+        >
+          Guiwanon
+        </option>
+        <option
+          value="{{looc.jan}}, {{looc.feb}}, {{looc.mar}}, {{looc.apr}}, {{looc.may}}, {{looc.jun}}, {{looc.jul}}, {{looc.aug}}, {{looc.sept}}, {{looc.oct}}, {{looc.nov}}, {{looc.dec}} "
+        >
+          Looc
+        </option>
+        <option
+          value="{{malat.jan}}, {{malat.feb}}, {{malat.mar}}, {{malat.apr}}, {{malat.may}}, {{malat.jun}}, {{malat.jul}}, {{malat.aug}}, {{malat.sept}}, {{malat.oct}}, {{malat.nov}}, {{malat.dec}} "
+        >
+          Malatbo
+        </option>
+      </select>
+    </div>
+  </center>
+  <br />
+
+  <div class="chartBox">
+    <canvas id="myChart" width="500" height="150"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+    	type: 'line',
+    	data: {
+    		labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    		datasets: [{
+    			label: 'Total Monthly',
+    			data: [{{ tu_mon.jan }}, {{ tu_mon.feb }}, {{ tu_mon.mar }}, {{ tu_mon.apr }}, {{ tu_mon.may }}, {{ tu_mon.jun }}, {{ tu_mon.jul }}, {{ tu_mon.aug }}, {{ tu_mon.sept }}, {{ tu_mon.oct }}, {{ tu_mon.nov }}, {{ tu_mon.dec }}],
+    fill: false,
+    	backgroundColor: ['#FD2F02'],
+    		borderColor: ['#FD2F02'],
+    			tension: 0.1,
+    			}]
+    		},
+    options: {
+    	scales: {
+    		y: {
+    			beginAtZero: true
+    		}
+    	}
+    }
+    	});
+    const coffeesales = document.getElementById('coffeesales');
+    coffeesales.addEventListener('change', salesTracker);
+    function salesTracker() {
+    	const label = coffeesales.options[coffeesales.selectedIndex].text;
+    	myChart.data.datasets[0].label = label;
+    	myChart.data.datasets[0].data = coffeesales.value.split(',');
+
+    	myChart.update()
+    }
+  </script>
+
+  <br />
+
+	<center>
+		<label><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></label>
+		<br>
+		<p2><i>click on select to view individual barangay monnhly usage</i></p2>
+	</center>
+
+	<center>
+		<div class="selectBox">
+			<label>Select Barangay</label>
+			<select id="coffeesales">
+
+				<option
+					value="{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} ">
+					Total Monlthy</option>
+				<option
+					value="{{anao.jan}}, {{anao.feb}}, {{anao.mar}}, {{anao.apr}}, {{anao.may}}, {{anao.jun}}, {{anao.jul}}, {{anao.aug}}, {{anao.sept}}, {{anao.oct}}, {{anao.nov}}, {{anao.dec}} ">
+					Anao</option>
+				<option
+					value="{{mangaco.jan}}, {{mangaco.feb}}, {{mangaco.mar}}, {{mangaco.apr}}, {{mangaco.may}}, {{mangaco.jun}}, {{mangaco.jul}}, {{mangaco.aug}}, {{mangaco.sept}}, {{mangaco.oct}}, {{mangaco.nov}}, {{mangaco.dec}} ">
+					Mangaco</option>
+				<option
+					value="{{palanas.jan}}, {{palanas.feb}}, {{palanas.mar}}, {{palanas.apr}}, {{palanas.may}}, {{palanas.jun}}, {{palanas.jul}}, {{palanas.aug}}, {{palanas.sept}}, {{palanas.oct}}, {{palanas.nov}}, {{palanas.dec}} ">
+					Palanas</option>
+				<option
+					value="{{poblacion.jan}}, {{poblacion.feb}}, {{poblacion.mar}}, {{poblacion.apr}}, {{poblacion.may}}, {{poblacion.jun}}, {{poblacion.jul}}, {{poblacion.aug}}, {{poblacion.sept}}, {{poblacion.oct}}, {{poblacion.nov}}, {{poblacion.dec}} ">
+					Poblacion</option>
+				<option
+					value="{{salamanca.jan}}, {{salamanca.feb}}, {{salamanca.mar}}, {{salamanca.apr}}, {{salamanca.may}}, {{salamanca.jun}}, {{salamanca.jul}}, {{salamanca.aug}}, {{salamanca.sept}}, {{salamanca.oct}}, {{salamanca.nov}}, {{salamanca.dec}} ">
+					Salamanca</option>
+				<option
+					value="{{sanroq.jan}}, {{sanroq.feb}}, {{sanroq.mar}}, {{sanroq.apr}}, {{sanroq.may}}, {{sanroq.jun}}, {{sanroq.jul}}, {{sanroq.aug}}, {{sanroq.sept}}, {{sanroq.oct}}, {{sanroq.nov}}, {{sanroq.dec}} ">
+					San Roque</option>
+				<option
+					value="{{cagsing.jan}}, {{cagsing.feb}}, {{cagsing.mar}}, {{cagsing.apr}}, {{cagsing.may}}, {{cagsing.jun}}, {{cagsing.jul}}, {{cagsing.aug}}, {{cagsing.sept}}, {{cagsing.oct}}, {{cagsing.nov}}, {{cagsing.dec}} ">
+					Cagsing</option>
+				<option
+					value="{{calabawan.jan}}, {{calabawan.feb}}, {{calabawan.mar}}, {{calabawan.apr}}, {{calabawan.may}}, {{calabawan.jun}}, {{calabawan.jul}}, {{calabawan.aug}}, {{calabawan.sept}}, {{calabawan.oct}}, {{calabawan.nov}}, {{calabawan.dec}} ">
+					Calabawan</option>
+				<option
+					value="{{cambagte.jan}}, {{cambagte.feb}}, {{cambagte.mar}}, {{cambagte.apr}}, {{cambagte.may}}, {{cambagte.jun}}, {{cambagte.jul}}, {{cambagte.aug}}, {{cambagte.sept}}, {{cambagte.oct}}, {{cambagte.nov}}, {{cambagte.dec}} ">
+					Cambagte</option>
+				<option
+					value="{{campisong.jan}}, {{campisong.feb}}, {{campisong.mar}}, {{campisong.apr}}, {{campisong.may}}, {{campisong.jun}}, {{campisong.jul}}, {{campisong.aug}}, {{campisong.sept}}, {{campisong.oct}}, {{campisong.nov}}, {{campisong.dec}} ">
+					Campisong</option>
+				<option
+					value="{{canorong.jan}}, {{canorong.feb}}, {{canorong.mar}}, {{canorong.apr}}, {{canorong.may}}, {{canorong.jun}}, {{canorong.jul}}, {{canorong.aug}}, {{canorong.sept}}, {{canorong.oct}}, {{canorong.nov}}, {{canorong.dec}} ">
+					Cañorong</option>
+				<option
+					value="{{guiwan.jan}}, {{guiwan.feb}}, {{guiwan.mar}}, {{guiwan.apr}}, {{guiwan.may}}, {{guiwan.jun}}, {{guiwan.jul}}, {{guiwan.aug}}, {{guiwan.sept}}, {{guiwan.oct}}, {{guiwan.nov}}, {{guiwan.dec}} ">
+					Guiwanon</option>
+				<option
+					value="{{looc.jan}}, {{looc.feb}}, {{looc.mar}}, {{looc.apr}}, {{looc.may}}, {{looc.jun}}, {{looc.jul}}, {{looc.aug}}, {{looc.sept}}, {{looc.oct}}, {{looc.nov}}, {{looc.dec}} ">
+					Looc</option>
+				<option
+					value="{{malat.jan}}, {{malat.feb}}, {{malat.mar}}, {{malat.apr}}, {{malat.may}}, {{malat.jun}}, {{malat.jul}}, {{malat.aug}}, {{malat.sept}}, {{malat.oct}}, {{malat.nov}}, {{malat.dec}} ">
+					Malatbo</option>
+
+
+
+
+			</select>
+
+		</div>
+	</center>
+	<br>
+
+	<div class="chartBox">
+		<canvas id="myChart" width="500" height="150"></canvas>
+	</div>
+
+	<script>
+		const ctx = document.getElementById('myChart').getContext('2d');
+		const myChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+				datasets: [{
+					label: 'Total Monthly',
+					data: [{{ tu_mon.jan }}, {{ tu_mon.feb }}, {{ tu_mon.mar }}, {{ tu_mon.apr }}, {{ tu_mon.may }}, {{ tu_mon.jun }}, {{ tu_mon.jul }}, {{ tu_mon.aug }}, {{ tu_mon.sept }}, {{ tu_mon.oct }}, {{ tu_mon.nov }}, {{ tu_mon.dec }}],
+		fill: false,
+			backgroundColor: ['#FD2F02'],
+				borderColor: ['#FD2F02'],
+					tension: 0.1,
+					}]
+				},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+			});
+		const coffeesales = document.getElementById('coffeesales');
+		coffeesales.addEventListener('change', salesTracker);
+		function salesTracker() {
+			const label = coffeesales.options[coffeesales.selectedIndex].text;
+			myChart.data.datasets[0].label = label;
+			myChart.data.datasets[0].data = coffeesales.value.split(',');
+
+			myChart.update()
+		}
+
+	</script>
+
+	<br>
+
+
+
+
+	{% endblock usage_report_data %}

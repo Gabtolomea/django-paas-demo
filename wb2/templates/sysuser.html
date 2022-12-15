@@ -1,38 +1,81 @@
 {% extends 'dashboard.html' %}
 {% load static %}
+{% static "images" as images %}
 
-
-
+{% block title %}
+System User
+{% endblock title %}
 {% block style %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <style>
-    a{
-        text-decoration: none;
-        color: inherit;
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+
+	}
+	
+
+    .button2 {
+        background-color: var(--main-color); 
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
     }
 </style>
 {% endblock style %}
 {% block script %}
-    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#table').DataTable({
-			order: [[1, 'asc']],
-		});
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[1, 'asc']],
         });
-    </script>
-    {% endblock script %}
+    });
+</script>
+{% endblock script %}
 
 {% block sysuser %}
 <section id="main-content">
+    <h1 class="mb-3 text-center">System Users</h1>
+    <a href="{% url 'user_creation' %}">
+        <button class="btn button2">Add System User</button>
+    </a>
+    <br>
+    <br>
     <section id="main-content">
         <section class="wrapper">
             <br>
-            <div class="table-responsive">
+            <div class="table-responsive ">
 
-                <table id="table" class="table table-striped table-bordered" style="width:100%">
+                <table id="table" class="table table-bordered table-hover table-striped table-sm bg-white" cellspacing="0"width="100%">
                     <thead>
-                        <tr>
+                        <tr style="background-color:#006c85; color: white;">
                             <th scope="col">ID</th>
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
@@ -42,36 +85,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            {%for t in table%}
+                        {%for t in table%}
+                        <tr class="showOnHover">
                             <td> {{t.username }}</td>
-                            <td>{{t.first_name }} {{t.last_name }} {{t.midname}}</td>
+                            <td>{{t.first_name }} {{t.mid_name}} {{t.last_name }}</td>
                             <td>{{t.email }}</td>
                             <td>{{t.role}}</td>
                             <td>
-                                        <a href="{%url 'user_edit' t.username%}"><button class="btn btn-success btn-sm rounded-0" data-toggle="modal" type="button"     data-placement="top" title="Edit"><i class="fa fa-edit"></i></button></a>
-                                    </td>      
-                                    <td>
-                                        <a href=""><button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete this System User( {{ t.username }} )?')" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
-                                    </td>
+                                <a href="{%url 'user_edit' t.username%}">
+                                    <button class=" hide btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Edit">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{%url 'deleteUser' t.username%}">
+                                    <button class=" hide btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete this System User( {{ t.username }} )?')" data-placement="top" title="Delete">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </a>
+                            </td>
                         </tr>
-
                         {%endfor%}
                     </tbody>
-
-                    </tbody>
-
                 </table>
-
             </div>
-
-            </div>
-            </div>
-            </div>
-            </div>
-
         </section>
     </section>
 </section>
-
 {% endblock sysuser %}
+
+

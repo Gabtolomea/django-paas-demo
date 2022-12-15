@@ -3,50 +3,89 @@
 {% block title %}
 Account Ledger
 {% endblock title %}
+{% load humanize %}
 {% block ledger %}
+<style>
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
+</style>
 <div class="container-fluid p-0">
-	<div class="table_responsive" style="max-height: 922px;">
-		<table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+	<div class="table-responsive">
+		<table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr class="header">
-					<th scope="col" style="min-width:110px">Account ID</th>
-					<th scope="col" style="min-width:120px">Name</th>
-					<th scope="col" style="min-width:100px">Meter Number</th>
-					<th scope="col" style="min-width:100px">Current Balance</th>
+					<th scope="col" style="min-width:25px">Account ID</th>
+					<th scope="col" style="min-width:25px">Name</th>
+					<th scope="col" style="min-width:25px">Meter Number</th>
+					<th scope="col" style="min-width:25px">Current Balance</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
+			<tbody class="wb_tbody">
+				<tr class="showOnHover">
 					<td class="table-light">{{u.consumer_id}}</td>
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light">{{u.meternumber}}</td>
-					<td class="table-light">{{u.current_bal}}
-						<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-							<button id="" type="button" class="btn btn-success" data-toggle="modal"
-								data-target="#payment">Pay</button>
-						</div>
+					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+						<button type="button" class=" hide btn btn-primary" style="float: right; margin-left: 5px;"
+							onclick=print()>Get Bill</button>
+						<button type="button" class="hide btn btn-success" data-bs-toggle="modal"
+							data-bs-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
 <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
-
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<form action="{% url 'payment' u.consumer_id %}" method="post">
 				{% csrf_token %}
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+					<button type="button" class="btn border close" data-bs-dismiss="modal" aria-label="Close">
+						<i class="fa fa-xmark"></i>
 					</button>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="exampleInputPassword1">Amount</label>
-						<input type="number" name="amount" min="25"  id="id_amount" class="input form-control">
+						<input type="number" name="amount" min="1" id="id_amount" class="input form-control">
 					</div>
 					<div class="form-group">
 						<label for="exampleInputPassword1">OR Number</label>
@@ -54,28 +93,135 @@ Account Ledger
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
-<div class="row w-100 m-auto">
-	<div class="col-lg-6 col-md-6 col-sm-6">
-		<a href="{% url 'bills_list' %}"><button type="button" class="btn btn-wb-back">Back</button></a>
-	</div>
-	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-		<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy">Get a Copy
+<div class="row w-100 m-auto pt-2">
+	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+		<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
+			<i class="fa fa-copy"></i>
+			Get a Copy
 		</button>
 	</div>
+	
+<!-- mao ni sha ang div sa bill-pdf -->
+<div id="billing" style="display:none;">
+	<style>
+    .consumer_info{
+        background-color: #f8f9fa;
+        padding-left: 10px
+    }
+    .bills_info{
+        background-color: #f8f9fa;
+        padding-left: 10px;
+        padding-bottom: 104px;
+    }
+	#logo{
+	vertical-align: middle;
+    border-style: none;
+    height: 113px;
+	}
+	.mun-header{
+    font-size: 38px;
+    font-family: emoji;
+	font-weight: 700;
+	}
+	.mun{
+    font-family: emoji;
+    font-size: 25px;
+	font-weight: 900;
+	margin-top: -16px;
+	}	
+	.style{
+    padding-left: 10px;
+    text-align: center;
+    margin-bottom: 0;
+    background-color: #a4cdf1b3;
+}
+.image-logo{
+    position: absolute;
+    left: 17%;
+    opacity: 100;
+    top: 2%;
+}
+.for-bot{
+	margin: 0%;
+}
+.for-top{
+	margin: 10px;
+}
+</style>
+
+
+<div id="invoice">
+    <div class="header" style="text-align:center; margin-top: 30px;">
+        <h1 class="mun-header">Municipality of Ginatilan</h1>
+        <p class="mun"> Ginatilan Water Station</p>
+    </div> 
+	<div class="image-logo">
+        <img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
+	</div>
+    <hr class="for-top">
+    <div class="row w-100 m-auto">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
+			<h2 class="style">Consumer Info</h2>
+            <div class="consumer_info">
+                <label for="name">Name: {{u.firstname}} {{u.middlename}} {{u.lastname}}</label><br>
+                <label for="accnt">Account ID: {{u.consumer_id}}</label><br>
+                <label for="meter">Meter Number: {{u.meternumber}}</label><br>
+                <label for="addr">Address: {{u.installation_address}}</label>
+                <label for="zip">Zip Code: 6028</label><br>
+                <label for="country">Country: Philippines</label><br>
+                <label for="connect-type">Connection Type: {{u.contypeid}}</label><br>
+                <label for="contact-info">Contact Info: {{u.mobilenum}}</label>
+            </div>
+
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
+			<h2 class="style">Bills Info</h2>
+            <div class="bills_info">
+                <label for="current-reading">Current Reading: {{cur}}</label><br>
+                <label for="prev-reading">Previous Reading: {{pre}}</label><br>
+                <label for="usage">Usage: {{usage}}</label><br>	
+				<br>
+            </div>
+           
+        </div>
+    </div>
+    <hr class="for-bot">
+    <div class="bill row w-100 m-auto pt-3">
+        <label for="penalty">Penalty: {{pen}}</label><br>
+        <label for="total-bill">Total Bill:</label><br>
+        <label for="prev-due">Previous Due:</label><br>
+        <label for="total-balance">Total Balance:</label><br>
+    </div>
+	<script>
+		function print(){
+			  const invoice = this.document.getElementById("invoice");
+            console.log(invoice);
+            console.log(window);
+            var opt = {
+                margin: .5,
+                filename: 'myfile.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().from(invoice).set(opt).save();
+		}
+	
+	</script>
 </div>
+
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
-
 				<tr>
 					<th style="min-width: 100px;">Transaction ID</th>
 					<th style="min-width: 100px;">Date</th>
@@ -90,7 +236,6 @@ Account Ledger
 					<th style="min-width: 100px;">Current Balance</th>
 				</tr>
 			</thead>
-
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
 				<tr>
@@ -100,36 +245,35 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{{t.bill}}</td>
-					<td class="{{t.style}}">{{t.payment}}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %} {{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">{{t.bal}}</td>
+					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
-		</table id="tabs">
+		</table>
 	</div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy"
+		style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
+	</button>
 </div>
 </div id="elementH">
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+	integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script type="text/javascript">
 
 	function getpdf() {
 		var doc = new jsPDF('landscape', 'pt', 'legal');
-		var htmlstring = '';
-		var tempVarToCheckPageHeight = 0;
-		var pageHeight = 0;
 
-		pageHeight = doc.internal.pageSize.height;
-		specialElementHandlers = {
-			// element with id of "bypass" - jQuery style selector
-			'#bypassme': function (element, renderer) {
-				// true = "handled elsewhere, bypass text extraction"
-				return true
-			}
-		};
 		margins = {
 			top: 150,
 			bottom: 60,
@@ -137,62 +281,75 @@ Account Ledger
 			right: 40,
 			width: 600
 		};
-		const formatter = new Intl.NumberFormat('en-US', {
+
+		const numberformat = new Intl.NumberFormat('en-US', {
 			style: 'currency',
-			currency: 'Php',
-			minimumFractionDigits: 2
-		})
+			currency: 'PHP',
+			currencyDisplay: 'code'
+
+
+		});
+
 
 		var y = 20;
 		var x = 40;
-		doc.text(420, y = y + 30, "Copy of Account Ledger ");
-		doc.setLineWidth(2);
-		doc.setFontSize(11);
-		doc.autoTable({
-			html: '#dtBasicExample',
-			theme: 'striped',
-			startY: y = y + 20,
-		})
-		y = y + 40
-		doc.setLineWidth(2);
-		doc.setFontSize(14);
-		var tables = document.getElementsByClassName("table-sm")
-		for (i = 0; i < 13; i++) {
 
-			doc.autoTable({
-				html: tables[i],
-				startY: y = y + 15,
-				theme: 'striped',
-				pageBreak: 'auto',
-				columnStyles: {
-					0: {
-						cellWidth: 75,
-					},
-					1: {
-						cellWidth: 80,
-					},
-					4: {
-						cellWidth: 70,
-					}
-				},
-				styles: {
-					minCellHeight: 30
+		doc.setFont("Courier");
+		doc.setFontType("bold");
+		doc.setLineWidth(10);
+		doc.setFontSize(20);
+		doc.text(420, y = y + 20, "GINATILAN WATER ");
 
-				},
-			})
-			y = doc.lastAutoTable.finalY
-			console.log(y);
-			if (y > 600) {
-				doc.addPage()
-				y = 20
-			}
-		}
 
-		console.log("testing")
-		doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+		// var imgData = ("{% static 'images/govlog.png' %}");
+		var y = 60;
+		var x = 40;
+		doc.setFont("Courier");
+		doc.setLineWidth(5);
+		doc.setFontSize(15);
+		doc.text(x, y = y + 10, "Account ID:");
+		doc.text(300, y, "{{u.consumer_id}}")
+		doc.text(x, y = y + 15, "Name:");
+		doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}")
+		doc.text(x, y = y + 15, "Meter Number:");
+		doc.text(300, y, "{{u.meternumber}}");
+		doc.text(x, y = y + 15, "Balance:");
+		doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
+		// doc.addImage(imgData, 'PNG', 15, 40, 180, 160);
+		
+
+		y = y + 70
+		doc.setFont("Courier");
+		doc.setFontType("bold");
+		doc.setLineWidth(10);
+		doc.setFontSize(20);
+		doc.text(420, y = y + 30, "ACCOUNT LEDGER");
+
+		var table = [{% for t in table reversed %}
+	['{{t.transid}}', '{{t.date}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
+		]
+	y = y + 5
+	doc.setLineWidth(2);
+	doc.setFontSize(11);
+	doc.autoTable({
+		head: [['Transaction ID', 'Date', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Connectiong Type', 'Amount', 'Payment', 'Processed By', 'OR Number', 'Current Balance']],
+		pageBreak: 'auto',
+		body: table,
+		theme: 'striped',
+		startY: y = y + 30,
+		styles: { font: "Courier" }
+
+	})
+
+	if (y > 600) {
+		doc.addPage()
+		y = 20
 	}
 
 
+	console.log("testing")
+	doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+	}
 </script>
 </body>
 

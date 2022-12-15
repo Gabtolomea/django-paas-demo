@@ -1,16 +1,21 @@
-
-from datetime import date
-from email.policy import default
-from operator import is_
-from unittest.util import _MAX_LENGTH
+from datetime import date, datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
+
+class LoginRec(models.Model):
+    username = models.CharField(max_length=20,primary_key = True)
+    token = models.CharField(max_length = 10)
+    last_access = models.DateTimeField()
+    expiration = models.DateTimeField(default = datetime.now())
+
+
+    
+
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
-    password = models.BinaryField(max_length=450, blank=True, editable = True)  
-    username = models.CharField(primary_key=True, max_length=20)
+    username = models.CharField(max_length=20,primary_key = True)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
@@ -26,31 +31,33 @@ class SystemUsers(AbstractUser):
         return self.username
 
 
-class Rates(models.Model):
-    rate_id = models.CharField(primary_key=True, max_length=20)
-    connectionType = models.CharField(max_length=20, blank=True, null=True)
+class ConsumerType(models.Model):
+    contypeid = models.CharField(primary_key=True, max_length=20)
+    contype = models.CharField(max_length=20)
     minReading = models.IntegerField()
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
-    ratePenalty = models.IntegerField()
-    ratePenaltyFreq = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)
     date_mod = models.DateField(auto_now=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
     def __str__(self) -> str:
-        return self.connectionType
+        return self.contypeid
 
 class Penalty(models.Model):
+    penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty_after =  models.IntegerField(default = 0)#months
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
     date_added = models.DateField(auto_now_add=True)
+    daysappliedafter = models.IntegerField(default=0)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
+    def __str__(self) -> str:
+        return self.penaltycode
 
 
 class Discount(models.Model):
-    discount_id = models.CharField(primary_key=True, max_length=20)
+    discountcode = models.CharField(primary_key=True, max_length=20)
     discount_rate = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
@@ -63,42 +70,42 @@ class BarangayRecord(models.Model):
     barangayrec_id = models.CharField(primary_key = True ,max_length=20)
     barangaycode = models.ForeignKey(Barangays,on_delete=models.SET_NULL, null=True)
     year = models.IntegerField()
-    total_due_jan = models.IntegerField(null=True)
-    total_paid_jan = models.IntegerField(null=True)
-    total_usage_jan = models.IntegerField(null=True)
-    total_due_feb = models.IntegerField(null=True)
-    total_paid_feb = models.IntegerField(null=True)
-    total_usage_feb = models.IntegerField(null=True)
-    total_due_mar = models.IntegerField(null=True)
-    total_paid_mar = models.IntegerField(null=True)
-    total_usage_mar = models.IntegerField(null=True)
-    total_due_apr = models.IntegerField(null=True)
-    total_paid_apr = models.IntegerField(null=True)
-    total_usage_apr = models.IntegerField(null=True)
-    total_due_may = models.IntegerField(null=True)
-    total_paid_may = models.IntegerField(null=True)
-    total_usage_may = models.IntegerField(null=True)
-    total_due_jun = models.IntegerField(null=True)
-    total_paid_jun = models.IntegerField(null=True)
-    total_usage_jun = models.IntegerField(null=True)
-    total_due_jul = models.IntegerField(null=True)
-    total_paid_jul = models.IntegerField(null=True)
-    total_usage_jul = models.IntegerField(null=True)
-    total_due_aug = models.IntegerField(null=True)
-    total_paid_aug = models.IntegerField(null=True)
-    total_usage_aug = models.IntegerField(null=True)
-    total_due_sept = models.IntegerField(null=True)
-    total_paid_sept = models.IntegerField(null=True)
-    total_usage_sept = models.IntegerField(null=True)
-    total_due_oct = models.IntegerField(null=True)
-    total_paid_oct = models.IntegerField(null=True)
-    total_usage_oct = models.IntegerField(null=True)
-    total_due_nov = models.IntegerField(null=True)
-    total_paid_nov = models.IntegerField(null=True)
-    total_usage_nov = models.IntegerField(null=True)
-    total_due_dec = models.IntegerField(null=True)
-    total_paid_dec = models.IntegerField(null=True)
-    total_usage_dec = models.IntegerField(null=True)
+    total_due_jan = models.IntegerField()
+    total_paid_jan = models.IntegerField()
+    total_usage_jan = models.IntegerField()
+    total_due_feb = models.IntegerField()
+    total_paid_feb = models.IntegerField()
+    total_usage_feb = models.IntegerField()
+    total_due_mar = models.IntegerField()
+    total_paid_mar = models.IntegerField()
+    total_usage_mar = models.IntegerField()
+    total_due_apr = models.IntegerField()
+    total_paid_apr = models.IntegerField()
+    total_usage_apr = models.IntegerField()
+    total_due_may = models.IntegerField()
+    total_paid_may = models.IntegerField()
+    total_usage_may = models.IntegerField()
+    total_due_jun = models.IntegerField()
+    total_paid_jun = models.IntegerField()
+    total_usage_jun = models.IntegerField()
+    total_due_jul = models.IntegerField()
+    total_paid_jul = models.IntegerField()
+    total_usage_jul = models.IntegerField()
+    total_due_aug = models.IntegerField()
+    total_paid_aug = models.IntegerField()
+    total_usage_aug = models.IntegerField()
+    total_due_sept = models.IntegerField()
+    total_paid_sept = models.IntegerField()
+    total_usage_sept = models.IntegerField()
+    total_due_oct = models.IntegerField()
+    total_paid_oct = models.IntegerField()
+    total_usage_oct = models.IntegerField()
+    total_due_nov = models.IntegerField()
+    total_paid_nov = models.IntegerField()
+    total_usage_nov = models.IntegerField()
+    total_due_dec = models.IntegerField()
+    total_paid_dec = models.IntegerField()
+    total_usage_dec = models.IntegerField()
 
 
 #Consumer Creation
@@ -111,9 +118,9 @@ class ConsumerInfo(models.Model):
     homeaddress = models.CharField(max_length=50, blank=True)
     installation_address = models.ForeignKey(Barangays, on_delete=models.CASCADE)
     initialmeterreading = models.IntegerField()
-    rateid = models.ForeignKey(Rates,on_delete=models.CASCADE)
+    contypeid = models.ForeignKey(ConsumerType,on_delete=models.CASCADE)#consumertype
     status = models.IntegerField()
-    penaltycounter = models.IntegerField()
+    penaltycounter = models.IntegerField(null=True)
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
@@ -123,10 +130,16 @@ class ConsumerInfo(models.Model):
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
+    cummulative = models.FloatField(default=0)
+    penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
+    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
+    
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
         ('Payment','Payment'),
+        ('Penalty','Penalty'),
+        ('Discount','Discount'),
     )
     transactionid = models.AutoField(primary_key=True)
     date = models.DateField(null=True, blank=True)
@@ -134,9 +147,9 @@ class Transactions(models.Model):
     transType = models.CharField(max_length=20, choices=TRANS_TYPE)
     meterReading = models.IntegerField(blank=True, null=True)
     usage = models.IntegerField(blank=True, null=True)
-    ratescode = models.CharField(max_length=20, blank=True, null=True)
-    # penaltyCode = models.ForeignKey(Penalties, on_delete= models.CASCADE)
-    # discountcode = models.ForeignKey(Discounts, on_delete= models.CASCADE)
+    contypeid = models.CharField(max_length=20, blank=True, null=True)#consumertype
+    penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
+    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
     bill = models.FloatField(null=True)
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
@@ -369,3 +382,4 @@ class revenuecode(models.Model):
     penalty_after = models.IntegerField(default = 0)#months
     fix_amount_penalty = models.FloatField(default = 0)
     percentage_penalty = models.FloatField(default = 0)
+

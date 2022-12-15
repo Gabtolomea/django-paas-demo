@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page</title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
     <link rel="stylesheet" type="templates/images" href="wb2/templates/images">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="/waterbilling2.0/wb2/static/landing.css" />
+    <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet">
+    <!-- <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'landing.css'%}" />
 </head>
-<body>
+<body data-spy="scroll" data-target=".menu_header" data-offset="50">
     <header class="header_nav" style="position:sticky; top: 0;">
         <nav class="p-0 navbar navbar-expand-lg navbar-light bg-light">
             <div class="row w-100 m-auto" style="background-color:#0093B7 ;">
@@ -21,97 +22,104 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
-
-                <div class="water_billing_mobile_header col-lg-5 col-md-12 col-sm-12 col-10  ml-2" style="text-align: center;  color: white; background-color: #0093B7; ">
+                <div class="water_billing_mobile_header col-lg-5 col-md-12 col-sm-12 col-10  ml-2" style="text-align: center;  color: white; background-color: #0093B7; padding: 15px 0; ">
                     <h2 style="font-weight: bold; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25);">Water Billing</h2>
                     <h4 style="font-weight: bold; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25);">version 2.0</h4>
                 </div>
                 <div class="contacts_header col-lg-7 col-md-6 col-sm-6 col-6 p-0" style="background-color: #0093B7">
-                    <div class="contacts_header col-lg-12 col-md-12 col-sm-12 col-12 row w-100 m-auto" style="background:black; color:white; padding: 8px; text-align: right;">
+                    <div class="contacts_header col-lg-12 col-md-12 col-sm-12 col-12 row w-100 m-auto" style="background:#165665; color:white; padding: 8px; text-align: right; border-radius: 0 0 0 30px;">
                         <div class="col-lg-4 col-md-4 col-sm-4 text-center"><i style="padding: 0 5px;" class="fa-sharp fa-solid fa-location-dot mr-2"></i> Lgu-Ginatilan</div>
                         <div class="col-lg-4 col-md-4 col-sm-4 text-center"><i style="padding: 0 5px;" class="fa-solid fa-phone" ></i>09001122334</div>
                         <div class="col-lg-4 col-md-4 col-sm-4 text-center" style="white-space: nowrap;"><i style="padding: 0 5px; " class="fa-solid fa-envelope ml-2" ></i>waterbilling@gmail.com</div>
                     </div>
                 </div>
             </div>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-
-                <ul class="navbar-nav" >
-                    <li class="nav-item active ">
-                        <a class="nav-link" onclick="remove_show()" href="#Home" style="color: black !important;"><i style="padding: 0 10px !Important;" class="fa fa-home " aria-hidden="true"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" onclick="remove_show()" href="#About" style="color: black !important;"><i style="padding: 0 10px !Important;" class="fa fa-info-circle" aria-hidden="true"></i> About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" onclick="remove_show()" href="#Services" style="color: black !important;"><i style="padding: 0 10px !Important;" class="fa fa-globe" aria-hidden="true"></i> Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" onclick="remove_show()" href="#Contacts" style="color: black !important;"><i style="padding: 0 10px !Important;" class="fa fa-phone-square" aria-hidden="true"></i> Contacts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" onclick="remove_show()" href="#" style="color: black !important;"><i style="padding: 0 10px !Important;" class="fa fa-user-plus" aria-hidden="true"></i> Register</a>
-                    </li>
-                </ul>
+        </nav>
+        <div class="collapse navbar-collapse bg-white" id="navbarTogglerDemo01">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a href="#Home" class="nav-link" style="padding-left: 9px;" onclick="remove_show()"><i class="fa fa-home"></i>
+                    <span>Home</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#About" class="nav-link" style="padding-left: 9px;" onclick="remove_show()"><i class="fa fa-info-circle" ></i>
+                    <span>About</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#Services" class="nav-link" style="padding-left: 9px;" onclick="remove_show()"><i class="fa fa-question-circle"></i>
+                    <span>Services</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#Contacts" class="nav-link" style="padding-left: 9px;"  onclick="remove_show()"><i class="fa fa-phone-square"></i>
+                    <span>Contacts</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" style="padding-left: 9px;" onclick="remove_show()" ><i class="fa fa-registered"></i>
+                    <span>Register</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        <nav class="row w-100 m-auto" style="background-color: #165665;">
+            <div class="menu_header active col-lg-12 col-md-12 col-sm-12 col-12  ml-2" style="text-align: center; padding: 10px; font-weight: 500;">
+                <a class="menu nav_link" href="#Home" style="color: white ; margin-right: 8%; text-decoration-line: none; border: 0;">Home</a>
+                <a class="menu nav_link"  href="#About" style="color: white ; margin-right: 8%;  text-decoration-line: none; border: 0;" >About</a>
+                <a class="menu nav_link"  href="#Services" style="color: white ; margin-right: 8%; text-decoration-line: none; border: 0;" >Services</a>
+                <a class="menu nav_link" href="#Contacts" style="color: white ; margin-right: 8%;  text-decoration-line: none; border: 0;">Contacts</a>
+                <a class="menu nav_link"  href="#" style="color: white ; margin-right: 8%; text-decoration-line: none; border: 0;">Register</a>
             </div>
         </nav>
-        <div class="row w-100 m-auto" style="background-color: black;  ">
-            <div class="menu_header col-lg-12 col-md-12 col-sm-12 col-12  ml-2" style="text-align: center; padding: 10px;" id="menu_button">
-
-                <a class="menu"  href="#Home" style="color: white ; margin-right: 8%; text-decoration-line: none; border: 0;">Home</a>
-                <a class="menu"  href="#About" style="color: white ; margin-right: 8%;  text-decoration-line: none; border: 0;" >About</a>
-                <a class="menu"  href="#Services" style="color: white ; margin-right: 8%; text-decoration-line: none; border: 0;" >Services</a>
-                <a class="menu" href="#Contacts" style="color: white ; margin-right: 8%;  text-decoration-line: none; border: 0;">Contacts</a>
-                <a class="menu"  href="#" style="color: white ; margin-right: 8%; text-decoration-line: none; border: 0;">Register</a>
-            </div>
-        </div>
     </header>
     <section class="page-section" id="Home">
         <div class="row w-100 m-auto ">
             <div class="main_contain col-lg-8 col-md-12 col-sm-12 col-12">
                 <div class="container text-center" style="height: 100%; display: flex; justify-content:center; align-items: center;">
                     <div class="wrapper">
-                        <p style="font-size: 300%; font-weight: bold; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25);">ONLINE WATER BILLING</p>
+                        <p style="font-size: 300%; font-weight: bold; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25);">WATER BILLING</p>
                         <p style="color: #0093B7; font-size: 300%; font-weight: bold; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25);">STATION</p>
                         <h4 style="color:black; text-align: center;">"Water is life, and clean water means health"</h4>
                         <h4 style="color: black; text-align: center;">-Audrey  Hepburn</h4>
 
                         <div class="button_login" style="margin-top: 100px;">
-                            <button type="button" class="btn btn-primary" style="float: left; font-size: 20px; background-color: #0093B7; color: white; border: 0;" >System User's Login</button>
-                            <button type="button" class="btn btn-dark" style="float: right; font-size: 20px; background-color: #0093B7; color: white; border: 0;">Consumer's Login</button>
+                            <a href="{% url 'login' %}"><button type="button" class="btn btn-primary" style="font-size: 20px; background-color: #045163; color: white; border: 0; margin-bottom: 10px; border-radius: 25px; box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);" >System User's Login</button></a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="screen_size_md_none col-lg-4">
                 <div class="w-100 h-50">
-                    <img class="img-fluid" src="images/billing.svg.svg" style="max-height: 200px; height: auto; min-height: 120px; float: right;">
+                    <img class="img-fluid" src="{% static 'img/mobile.svg.svg'%}" style="max-height: 200px; height: auto; min-height: 120px; float: right; width: 75%;">
                 </div>
                 <div class="w-100 h-50">
-                    <img class="img-fluid" src="images/system.svg.svg" style="max-height: 200px; height: auto; min-height: 120px; float: left;">
+                    <img class="img-fluid" src="{% static 'img/system.svg.svg'%}" style="max-height: 200px; height: auto; min-height: 120px; float: left;">
                 </div>
-
             </div>
     </section>
-    <div class="horizontal_line row w-100 m-auto" style="background-color:#0093B7; padding: 10px;" id="About"></div>
-    <section class="page-section">
+    <div class="horizontal_line row w-100 m-auto" style="background-color:#045163; padding: 10px;" id="About"></div>
+    <section class="page-section" data-spy="scroll" data-target=".navbar" data-offset="50">
         <div class="row w-100 m-auto">
             <div class="screen_size_md_none col-lg-6" style="text-align: end;">
-                <img  class="img-fluid" src="images/about.svg.svg">
+                <img  class="img-fluid" src="{% static 'img/about.svg.svg'%}">
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12 col-12 " style=" text-align: start;">
                 <h4 style="color: #0093B7; font-family: 'Poppins', sans-serif; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25); text-align: center; font-weight: 800; ">ABOUT OUR WATER BILLING STATION</h4>
                 <p style=" text-align: start; font-size: 30px; padding-top: 25px;">An automated system called the Water Billing System was built around paying water.<br> This system is capable of handling tasks like invoicing and client bill payment.<br>
+
                      It will monitor all of the customer's data to determine if payments were made on time or not.
+
                 </p>
             </div>
         </div>
     </section>
-    <div class="horizontal_line row w-100 m-auto" style="background-color:#0093B7; padding: 10px;" id="Services"></div>
+    <div class="horizontal_line row w-100 m-auto" style="background-color:#045163; padding: 10px;" id="Services"></div>
     <section class="page-section">
         <div class="row w-100 m-auto">
             <div class="screen_size_md_none col-lg-6" style="text-align: start;">
-                <img  class="img-fluid" src="images/services.svg.svg">
+                <img  class="img-fluid" src="{% static 'img/services.svg.svg'%}">
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12 col-12 " style=" text-align: start;">
                 <h3 style="color: #0093B7; font-family: 'Poppins', sans-serif; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25); text-align: center; font-weight: 800;">SERVICES</h3>
@@ -124,8 +132,7 @@
             </div>
         </div>
     </section>
-    <div class="horizontal_line row w-100 m-auto" style="background-color:#0093B7; padding: 10px;" id="Contacts"></div>
-
+    <div class="horizontal_line row w-100 m-auto" style="background-color:#045163; padding: 10px;" id="Contacts"></div>
     <section class="page-section" id="Contacts">
         <div class="row w-100 m-auto pb-2">
             <div class="col-lg-6 col-md-12 col-sm-12 col-12 " style=" text-align: center; padding-top: 10%;">
@@ -133,12 +140,12 @@
                 <h5>-Leonardo da Vinci</h5>
             </div>
             <div class="screen_size_md_none col-lg-6" style="text-align: start;">
-                <img  class="img-fluid w-50" src="images/services.svg.svg">
+                <img  class="img-fluid w-50" src="{% static 'img/mobile2.svg.svg'%}">
             </div>
         </div>
             <div class="row w-100 m-auto pb-2">
                 <div class="col-lg-6 col-md-12 col-sm-12 col-12 " style=" text-align: center;">
-                    <img  class="img-fluid w-50" src="images/about1.svg.svg" style="height: auto;">
+                    <img  class="img-fluid w-50" src="{% static 'img/about1.svg.svg'%}" style="height: auto;">
                 </div>
                 <div class="screen_size_md_none col-lg-6" style="text-align: start; padding-top: 50px;">
                     <h4 style="color: #0093B7; font-family: 'Poppins', sans-serif; text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25); font-weight: 700;">“Pure water is the world's first <br> and foremost medicine”</h4>
@@ -151,24 +158,24 @@
                         <h5>-H.Auden</h5>
                     </div>
                     <div class="screen_size_md_none col-lg-6 " style="text-align: start;">
-                        <img  class="img-fluid w-50" src="images/about3.svg.svg">
+                        <img  class="img-fluid w-50" src="{% static 'img/about3.svg.svg'%}">
                     </div>
                 </div>
     </section>
-    <section class="page-section">
-         <div class="row w-100 m-auto padding:150px; background-color: #E6ECEB;">
-    <footer class="footer text-center">
-        <section class="page-section screen_size_md_block" style="display: none; background-color: black; color: white;">
+    <div class="row w-100 m-auto padding:150px; background-color: #E6ECEB;">
+        <footer class="footer text-center p-0">
+            <section class="screen_size_md_block" style="display: none; background-color: #045163; color: white;">
                 <div class="row w-100 m-auto">
                     <div class="col-md-4 col-sm-12  pb-1 text-center"><i style=" padding-right: 10px;" class="fa-sharp fa-solid fa-location-dot mr-2"></i><span style="font-family: 'Poppins', sans-serif;">Lgu-Ginatilan</span></div>
                     <div class="col-md-4 col-sm-12 pb-1 text-center"><i style=" padding-right: 10px;" class="fa-solid fa-phone" ></i>09001122334</div>
                     <div class="col-md-4 col-sm-12 pb-1 text-center"><i style=" padding-right: 10px;" class="fa-solid fa-envelope ml-2" ></i>waterbilling@gmail.com</div>
                 </div>
-        </section>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+            </section>
+        </footer>
+    </div>
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap.min.js' %}"></script>
     <script>
 
         function media_query_575(screen_size) {
@@ -181,11 +188,12 @@
         var screen_size = window.matchMedia("(max-width: 575px)")
         media_query_575(screen_size) // Call listener function at run time
         screen_size.addListener(media_query_575) // Attach listener function on state changes
-
-
         function remove_show() {
             document.getElementById("navbarTogglerDemo01").classList.remove("show");
         }
     </script>
 </body>
 </html>
+ 
+ 
+

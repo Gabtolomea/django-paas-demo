@@ -1,0 +1,107 @@
+
+{% extends 'dashboard.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+Consumer Type
+{% endblock title %}
+{% load humanize %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+{% endblock style %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            order: [[2, 'asc']],
+            stateSave: true,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All'],
+            ],
+        });
+    });
+</script>
+{% endblock script %}
+{% block new_contype %}
+    <h1>Consumer Type</h1>
+    <div class="container-fluid p-0"> 
+        <div class="table-responsive">
+            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+                <thead class="wb-thead">
+                    <tr style="background: #0093b7; color: white;">
+                        <th>Code</th>
+                        <th>Consumer Type</th>
+                        <th>Minimum Water Reading</th>
+                        <th>Minimum Water Reading Charge</th>
+                        <th>Rate After Minimum Reading</th>
+                        <th>Added By</th>
+                        <th>Date Added</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {% for c in c %}
+                    <tr>
+                        <td>{{c.contypeid}}</td>
+                        <td>{{c.contype}}</td>
+                        <td>{{c.minReading}}</td>
+                        <td>{{c.minReadingCharge}}</td>
+                        <td>{{c.rateAfterMin}}</td>
+                        <td>{{c.added_by_id}}</td>
+                        <td>{{c.date_added}}</td>
+                    </tr>
+                        {% endfor %}
+                </tbody>
+        </table>
+    </div>
+</div>
+<button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#payment" >Add</button>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+<div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+            <form action="{% url 'new_consumertype' %}" method="POST">
+                {% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Add New Consumer Type</h5>
+					<button type="button" class="btn border close" data-bs-dismiss="modal" aria-label="Close">
+						<i class="fa fa-xmark"></i>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+                        <label>Consumer Type:</label>
+                        {{form.contype}}
+                    </div>
+                    <div class="form-group">    
+                        <label>Minimum Water Reading:</label>
+                        {{form.minReading}}
+                    </div>
+					<div class="form-group">
+                        <label>Minimum Water Reading Charge:</label>
+                        {{form.minReadingCharge}}
+					</div>
+					<div class="form-group">
+                        <label>Rate After Minimum Reading:</label>
+                        {{form.rateAfterMin}}
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+            </form> 
+		</div>
+	</div>
+</div>
+
+{% endblock new_contype %}
