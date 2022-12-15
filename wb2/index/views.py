@@ -333,6 +333,7 @@ def password_reset_form(request):
 
 
 # @authenticated_user
+@teller_login_required
 def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     months = []
@@ -663,9 +664,7 @@ def consumer_list_p(request, p):
     return render(request, 'conlist.html',context)
 
 # @authenticated_user
-def sysuser(request):
-    sysuser = SystemUsers.objects.all()
-    return render(request, 'sysuser.html', {'sysuser': sysuser})
+
 
 # @authenticated_user
 def consumercreation(request):
@@ -749,6 +748,7 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=datetime.today().year)
 
 # @authenticated_user
+@admin_login_required
 def sysuser(request):
     table = []
 
