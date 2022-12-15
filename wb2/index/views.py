@@ -48,7 +48,8 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
-    # enye()
+    enye(ConsumerInfo.objects.all())
+    enye(Barangays.objects.all())
     camelize()
     # capitalize()
     return render(request, "landing.html")
