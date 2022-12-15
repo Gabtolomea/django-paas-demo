@@ -52,7 +52,7 @@ def lp(request):
     # capitalize()
     return render(request, "landing.html")
 
-@unauthenticated_user
+# @unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -79,7 +79,7 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-@authenticated_user
+# @authenticated_user
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
@@ -89,7 +89,7 @@ def bills_list(request):
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
-@authenticated_user
+# @authenticated_user
 def bills_list_p(request, p):   
     search = request.GET.get("search", "")
     page = request.GET.get('page')
@@ -627,8 +627,6 @@ def inputreading(request, id, year):
             d += 1
         return redirect('inputreading', id=id, year=datetime.today().year)
 
-    # CHARLIE DIRI PAGHIMO
-
     context = {
         'consumer': consumer,
         'table': table,
@@ -674,13 +672,6 @@ def consumer_list_p(request, p):
         'user': user,
     }
     return render(request, 'conlist.html', context)
-
-# @authenticated_user
-
-
-def sysuser(request):
-    sysuser = SystemUsers.objects.all()
-    return render(request, 'sysuser.html', {'sysuser': sysuser})
 
 # @authenticated_user
 
@@ -814,8 +805,19 @@ def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     form = sysup(instance=sys)
     if request.method == 'POST':
+        username = request.POST['username']
+        firstname = request.POST['firstname']
+        midname = request.POST['midname']
+        lastname = request.POST['lastname']
+        mobilenum = request.POST['mobilenum']
+        email = request.POST['email']
+        is_teller = request.POST['is_teller'] == 'on'
+        is_admin = request.POST['is_admin'] == 'on'
+        is_supervisor = request.POST['is_supervisor'] == 'on'
+        is_manager = request.POST['is_manager'] == 'on'
+        is_reader = request.POST['is_reader'] == 'on'
+        profilepic = request.POST['profilepic']
         form = sysup(request.POST, instance=sys)
-        # pic = request.POST['profilepic']
         if form.is_valid():
             upload = request.FILES['profilepic']
             fss = FileSystemStorage()

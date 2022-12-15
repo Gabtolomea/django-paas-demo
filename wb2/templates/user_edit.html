@@ -175,39 +175,16 @@ System User
 				</div>
 				<div class="row w-100 m-auto mb-2">
 					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-    						<label for="state">Authorized Approver*</label>
-							<select id=""  class="form-control" name="">
-								<option value="approver">Approver for Inbound Application</option>
-								<option value="non approver">Non Approver</option>
-								<option value="supervisor">Supervisor</option>
-								<option value="engineer">Engineer's Office</option>
-								<option value="mayor">Mayor's Office</option>
-							</select>
-					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 						<label for="">Profile Picture*</label>
-						<input type="file"  class="form-control" id="choose-file" size="80">
+						<input type="file" class="form-control" id="choose-file" size="80">
 					</div>
 				</div>
-					<center><button onclick="fireSweetAlert()"
-						type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
-				
+				<center><button type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
 			</div>
 		</div>
 	</form>
 </section>
 {% endblock sysuserupdate %}
 {% block script %}
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
 
-    function fireSweetAlert() {
-        Swal.fire(
-            'Good job!',
-            'You clicked the button!',
-            'success'
-        )
-    }
-
-  </script>
 {% endblock script %}
