@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.contrib.auth import authenticate, login, logout
@@ -79,17 +80,17 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-# @authenticated_user
+@login_required(login_url='login')
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
-# @authenticated_user
+@login_required(login_url='login')
 
 
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
-# @authenticated_user
+@login_required(login_url='login')
 def bills_list_p(request, p):   
     search = request.GET.get("search", "")
     page = request.GET.get('page')
@@ -137,7 +138,7 @@ def signout(request):
     return redirect('login')
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -182,7 +183,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def ledger(request, id):
     table = []
     year = datetime.today().year
@@ -342,7 +343,7 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     months = []
@@ -403,7 +404,7 @@ def meterreading_p(request, p):
     }
     return render(request, 'meterreading.html', context)
 
-# @authenticated_user
+@login_required(login_url='login')
 
 
 def inputreading(request, id, year):
@@ -637,7 +638,7 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def consumer_list(request):
     return redirect('consumer_list_p', p=10)
 
@@ -673,7 +674,7 @@ def consumer_list_p(request, p):
     }
     return render(request, 'conlist.html', context)
 
-# @authenticated_user
+@login_required(login_url='login')
 
 
 def consumercreation(request):
@@ -734,7 +735,7 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-# @authenticated_user
+@login_required(login_url='login')
 def consumerupdate(request, id):
     con = ConsumerInfo.objects.get(consumer_id=id)
     form = ConsumerForm(instance=con)
@@ -748,7 +749,7 @@ def consumerupdate(request, id):
     }
     return render(request, 'consumercreation.html', context)
 
-# @authenticated_user
+@login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -756,7 +757,7 @@ def stopmeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=datetime.today().year)
 
-# @authenticated_user
+@login_required(login_url='login')
 
 
 def sysuser(request):
@@ -798,7 +799,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-# @authenticated_user
+@login_required(login_url='login')
 
 
 def user_edit(request, id):
@@ -866,7 +867,7 @@ def payment(request, id):
 def reports(request):
     return redirect('barangayreport', datetime.today().year)
 
-# @authenticated_user
+@login_required(login_url='login')
 
 
 def barangayreport(request, year):
@@ -1405,7 +1406,7 @@ def discount(request):
     return render(request, 'discount.html', context)
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def new_consumertype(request):
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
@@ -1434,7 +1435,7 @@ def new_consumertype(request):
     return render(request, 'new_consumertype.html', context)
 
 
-@authenticated_user
+@login_required(login_url='login')
 def penalty(request):
     p = Penalty.objects.all()
     form = addPenalty
