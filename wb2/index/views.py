@@ -53,7 +53,7 @@ def lp(request):
     # capitalize()
     return render(request, "landing.html")
 
-# @unauthenticated_user
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -144,19 +144,20 @@ def user_creation(request):
     if request.method == "POST":
         form = SystemUserForm(request.POST)
         username = request.POST['username']
-        firstname = request.POST['firstname']
-        midname = request.POST['midname']
-        lastname = request.POST['lastname']
+        firstname = request.POST['first_name']
+        midname = request.POST['mid_name']
+        lastname = request.POST['last_name']
         mobilenum = request.POST['mobilenum']
         email = request.POST['email']
         password2 = request.POST['password2']
-        is_teller = request.POST['is_teller'] == 'on'
-        is_admin = request.POST['is_admin'] == 'on'
-        is_supervisor = request.POST['is_supervisor'] == 'on'
-        is_manager = request.POST['is_manager'] == 'on'
-        is_reader = request.POST['is_reader'] == 'on'
+        is_teller = request.POST.get('is_teller','') == 'on'
+        is_admin = request.POST.get('is_admin','') == 'on'
+        is_supervisor = request.POST.get('is_supervisor','') == 'on'
+        is_manager = request.POST.get('is_manager','') == 'on'
+        is_reader = request.POST.get('is_reader','') == 'on'
         authorizedapprover = request.POST['authorizedapprover']
         profilepic = request.POST['profilepic']
+        print(form)
         if form.is_valid():
             user = SystemUsers()
             user.set_password(password2)
@@ -174,7 +175,7 @@ def user_creation(request):
             user.authorizedapprover = authorizedapprover
             user.profilepic = profilepic
             user.save()
-            return redirect('bills_list')
+        return redirect('sysuser')
     context = {
         'form': form,
         'errors': form.errors,
@@ -807,25 +808,37 @@ def user_edit(request, id):
     form = sysup(instance=sys)
     if request.method == 'POST':
         username = request.POST['username']
-        firstname = request.POST['firstname']
-        midname = request.POST['midname']
-        lastname = request.POST['lastname']
+        firstname = request.POST['first_name']
+        midname = request.POST['mid_name']
+        lastname = request.POST['last_name']
         mobilenum = request.POST['mobilenum']
         email = request.POST['email']
-        is_teller = request.POST['is_teller'] == 'on'
-        is_admin = request.POST['is_admin'] == 'on'
-        is_supervisor = request.POST['is_supervisor'] == 'on'
-        is_manager = request.POST['is_manager'] == 'on'
-        is_reader = request.POST['is_reader'] == 'on'
-        profilepic = request.POST['profilepic']
+        is_teller = request.POST.get('is_teller','') == 'on'
+        is_admin = request.POST.get('is_admin','') == 'on'
+        is_supervisor = request.POST.get('is_supervisor','') == 'on'
+        is_manager = request.POST.get('is_manager','') == 'on'
+        is_reader = request.POST.get('is_reader','') == 'on'
+        print(is_admin)
         form = sysup(request.POST, instance=sys)
         if form.is_valid():
-            upload = request.FILES['profilepic']
-            fss = FileSystemStorage()
-            fss.save(upload.name, upload)
+            sys.username = username
+            sys.first_name = firstname
+            sys.mid_name = midname
+            sys.last_name = lastname
+            sys.mobilenum = mobilenum
+            sys.email = email
+            sys.is_admin = is_admin
+            sys.is_teller = is_teller
+            sys.is_supervisor = is_supervisor
+            sys.is_manager = is_manager
+            sys.is_reader = is_reader
+            # upload = request.FILES['profilepic']
+            # fss = FileSystemStorage()
+            # fss.save(upload.name, upload)
             # sys.profilepic = pic
             sys.save()
-
+        else:
+            print("dili")
         return redirect('sysuser')
     context = {
         'sys': sys,
