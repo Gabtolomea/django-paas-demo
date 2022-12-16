@@ -32,7 +32,6 @@ def camelize():
         c.middlename = c.middlename.title()
         c.save()
 def enye(cons):
-    cons = ConsumerInfo.objects.all()
     for c in cons:
         chars = ["ã‘","ã±"]
         for char in chars:
