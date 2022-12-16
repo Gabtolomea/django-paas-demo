@@ -14,12 +14,12 @@ def is_admin(request):
 
 
 rec_login_required = user_passes_test(
-    lambda u: True if u.is_admin else False, login_url='login')
+    lambda u: True if u.is_admin else False)
 
 
 def admin_login_required(view_func):
     decorated_view_func = login_required(
-        rec_login_required(view_func), login_url='login')
+        rec_login_required(view_func))
     return decorated_view_func
 
 
@@ -31,12 +31,12 @@ def is_teller(request):
 
 
 rec_login_required = user_passes_test(
-    lambda u: True if u.is_teller else False, login_url='login')
+    lambda u: True if u.is_teller else False)
     
 
 def teller_login_required(view_func):
     decorated_view_func = login_required(
-        rec_login_required(view_func), login_url='login')
+        rec_login_required(view_func))
     return decorated_view_func
 
 
@@ -48,12 +48,12 @@ def is_supervisor(request):
 
 
 rec_login_required = user_passes_test(
-    lambda u: True if u.is_supervisor else False, login_url='login')
+    lambda u: True if u.is_supervisor else False)
 
 
 def supervisor_login_required(view_func):
     decorated_view_func = login_required(
-        rec_login_required(view_func), login_url='login')
+        rec_login_required(view_func))
     return decorated_view_func
 
 
@@ -65,12 +65,12 @@ def is_manager(request):
 
 
 rec_login_required = user_passes_test(
-    lambda u: True if u.is_manager else False, login_url='login')
+    lambda u: True if u.is_manager else False)
 
 
 def manager_login_required(view_func):
     decorated_view_func = login_required(
-        rec_login_required(view_func), login_url='login')
+        rec_login_required(view_func))
     return decorated_view_func
 
 
@@ -82,12 +82,12 @@ def is_reader(request):
 
 
 rec_login_required = user_passes_test(
-    lambda u: True if u.is_reader else False, login_url='login')
+    lambda u: True if u.is_reader else False)
 
 
 def reader_login_required(view_func):
     decorated_view_func = login_required(
-        rec_login_required(view_func), login_url='login')
+        rec_login_required(view_func))
     return decorated_view_func
 
 

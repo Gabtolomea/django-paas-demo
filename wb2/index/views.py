@@ -85,6 +85,8 @@ def signin(request):
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
+
+
 @teller_login_required
 @login_required(login_url='login')
 def meterreading(request):
@@ -335,6 +337,8 @@ def password_reset_form(request):
     #     form = SystemUserForm(request.POST)
 
     return render(request, 'password_reset_form')
+
+
 
 
 @teller_login_required
@@ -1411,6 +1415,7 @@ def view_unsettled_bills(request, id, year):
 
 
 
+
 @teller_login_required
 @login_required(login_url='login')
 def discount(request):
@@ -1435,6 +1440,7 @@ def discount(request):
         'user': username
     }
     return render(request, 'discount.html', context)
+
 
 
 @teller_login_required
@@ -1465,6 +1471,7 @@ def new_consumertype(request):
         'user' : request.user
     }
     return render(request, 'new_consumertype.html', context)
+
 
 
 @teller_login_required
@@ -1499,6 +1506,7 @@ def penalty(request):
     }
 
     return render(request, 'penalty.html', context)
+
 
 
 
