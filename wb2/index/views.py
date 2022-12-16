@@ -333,21 +333,23 @@ def resetpassword(request, uidb64, token):
         user = SystemUsers.objects.get(username=uid)
     except (TypeError,ValueError,OverflowError,SystemUsers.DoesNotExist):
         user = None
-
-    if user is not None and generate_token.check_token(user,token):
-        if request.method == 'POST':
+    print(user)
+    if request.method == 'POST':
+        if user is not None and generate_token.check_token(user,token):
             pass1 = request.POST['password1']
             pass2 = request.POST['password2']
             if pass1 == pass2:
+                print(pass1)
+                user.first_name = pass1
                 user.set_password(pass1)
                 user.save()
                 messages.success(request, 'Password reset successfully')
                 return redirect('login')
             else:
                 messages.error(request, 'Passwords do not match')
-    else:
-        messages.error(request, 'Password reset Failed')
-        redirect('login')
+        else:
+            messages.error(request, 'Password reset Failed')
+            redirect('login')
      
     context = {
         'uidb64':uidb64,
