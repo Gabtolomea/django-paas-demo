@@ -1,7 +1,7 @@
 {% load humanize %}
 
 <html>
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <style>
 	html {
@@ -23,7 +23,6 @@
 		margin: 0;
 		padding: 0;
 		width: 100%;
-		table-layout: fixed;
 	}
 
 
@@ -41,13 +40,11 @@
 
 	table th {
 		font-size: .85em;
-		letter-spacing: .1em;
 		text-transform: uppercase;
 	}
 
 	table td:last-child {
 		border-bottom: 0;
-	}
 	}
 
 	body {
@@ -86,16 +83,30 @@
 	}
 
 	.button2 {
-		background-color: #0E86D4;
-		color: white;
-		font-weight: bold;
-		width: 30%;
-		text-decoration: none;
-		padding: 8px 32px;
-		margin: 4px 2px;
-		border-radius: 30px;
-		box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
-	}
+        background-color: #006c85;
+        color: white;
+        padding: 10px 25px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
 
 	select {
 		width: 70px;
@@ -111,6 +122,8 @@
 
 <center class="header"><label> Barangay {{bang.barangaycode}} Monthly Records </label></center>
 
+<button class="btn button2" onclick="history.back()"><i class="fa fa-caret-square-o-left">
+	<span style="padding: 10px; font-family: Arial;">BACK</span></i></button>
 
 <title>Barangay {{bang.barangaycode}}</title>
 
@@ -118,10 +131,10 @@
 	<table style="margin-bottom: 30px; margin-top: 30px;">
 		<thead>
 			<tr>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Billing Cycle Cutoff Month</th>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Total Usage (Cubic Meter)</th>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Total Receivable</th>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Total Collection</th>
+				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Billing Cycle Cutoff Month</th>
+				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Total Usage (Cubic Meter)</th>
+				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Total Receivable</th>
+				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Total Collection</th>
 
 			</tr>
 		</thead>
@@ -272,11 +285,6 @@
 			</tr>
 		</tbody>
 	</table>
-
-
-
-
-	<a class="button2 btn-primary" role="button" onclick="history.back()">BACK</a>
 
 	<!--<button type="button" onclick="alert('Hello world!')"><a
   href="{&'url barangayreport'%}/bang.year">BACK</a></button>-->

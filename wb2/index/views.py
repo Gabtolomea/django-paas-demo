@@ -48,9 +48,8 @@ def porter(request):
 def lp(request):
     return render(request, "landing.html")
 
+
 # @unauthenticated_user
-
-
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
