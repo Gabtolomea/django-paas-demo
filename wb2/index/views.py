@@ -49,7 +49,6 @@ def porter(request):
 @unauthenticated_user
 def lp(request):
     enye(ConsumerInfo.objects.all())
-    enye(Barangays.objects.all())
     camelize()
     # capitalize()
     return render(request, "landing.html")
@@ -66,7 +65,6 @@ def signin(request):
             request.user = user.username
             request.session[ReqParams.auth] = True
             request.session.modified = True
-            # cache.set('message', message('success', 'Logged in as '+user.username, 5))
             login_rec.username = user.username
             login_rec.token = gen_token()
             login_rec.last_access = timezone.now()
@@ -302,9 +300,6 @@ def forgetpassword(request):
         u_email = request.POST['email']
         if SystemUsers.objects.filter(email=u_email).exists():
             user = SystemUsers.objects.get(email=u_email)
-            user.is_active = False
-            user.save()
-
             current_site = get_current_site(request)
             email_subject = "Confirm your Email"
             uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -324,26 +319,41 @@ def forgetpassword(request):
             )
             email.fail_silently = True
             email.send()
-            messages.success(
-                request, 'Please verify your account by clicking the link in your email: '+str(u_email))
-
+            messages.success(request, 'Please verify your account by clicking the link in your email: '+str(u_email))
             return redirect('login')
         else:
-            messages.error(request, 'Please verify your account by clicking the link in your email: '+str(u_email))
+            messages.error(request, 'Are you sure that is your email?')
     return render(request, 'forgetpassword.html')
 
-# @unauthenticated_user
 
 
-def password_reset_form(request):
-    # form = SystemUserForm()
-    # if request.method == "POST":
-    #     print(request.POST)
-    #     form = SystemUserForm(request.POST)
+def resetpassword(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = SystemUsers.objects.get(username=uid)
+    except (TypeError,ValueError,OverflowError,SystemUsers.DoesNotExist):
+        user = None
 
-    return render(request, 'password_reset_form')
-
-
+    if user is not None and generate_token.check_token(user,token):
+        if request.method == 'POST':
+            pass1 = request.POST['password1']
+            pass2 = request.POST['password2']
+            if pass1 == pass2:
+                user.set_password(pass1)
+                user.save()
+                messages.success(request, 'Password reset successfully')
+                return redirect('login')
+            else:
+                messages.error(request, 'Passwords do not match')
+    else:
+        messages.error(request, 'Password reset Failed')
+        redirect('login')
+     
+    context = {
+        'uidb64':uidb64,
+        'token':token,
+    }
+    return render(request, 'password_reset_form.html', context)
 @login_required(login_url='login')
 def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
@@ -1306,7 +1316,7 @@ def unsettled_bills_p(request, p):
             self.u = u
     search = request.GET.get("search", "")
     page = request.GET.get('page')
-    tb = ConsumerInfo.objects.all().aggregate(tots = Sum('current_bal'))
+    tb = ConsumerInfo.objects.filter(current_bal__gt=0).aggregate(tots = Sum('current_bal'))
     if search:
         ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
         | Q(lastname__icontains=search) | Q(meternumber__icontains=search), current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')

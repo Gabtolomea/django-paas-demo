@@ -1,3 +1,6 @@
+from base64 import urlsafe_b64decode
+
+from django.forms import ValidationError
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 import math
@@ -47,7 +50,6 @@ def capitalize():
         c.lastname = c.lastname.upper()
         c.middlename = c.middlename.upper()
         c.save()
-
 def last_reading(id, year, month):
     cont = month-1
     while year:
