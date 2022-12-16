@@ -52,7 +52,7 @@ def lp(request):
     # capitalize()
     return render(request, "landing.html")
 
-# @unauthenticated_user
+@unauthenticated_user
 def signin(request):
     if request.method == "POST":
         u = request.POST['username']
@@ -79,15 +79,20 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
-# @authenticated_user
+
+@teller_login_required
+@login_required(login_url='login')
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 
-# @authenticated_user
+@teller_login_required
+@login_required(login_url='login')
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
-# @authenticated_user
+
+@teller_login_required
+@login_required(login_url='login')
 def bills_list_p(request, p):   
     search = request.GET.get("search", "")
     page = request.GET.get('page')
@@ -133,7 +138,7 @@ def signout(request):
     return redirect('login')
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def user_creation(request):
     form = SystemUserForm()
     if request.method == "POST":
@@ -178,7 +183,7 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def ledger(request, id):
     table = []
     year = datetime.today().year
@@ -332,8 +337,8 @@ def password_reset_form(request):
     return render(request, 'password_reset_form')
 
 
-# @authenticated_user
 @teller_login_required
+@login_required(login_url='login')
 def meterreading_p(request, p):
     meterred = ConsumerInfo.objects.all()
     months = []
@@ -394,7 +399,9 @@ def meterreading_p(request, p):
     }
     return render(request, 'meterreading.html', context)
 
-# @authenticated_user
+
+
+@login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -627,11 +634,15 @@ def inputreading(request, id, year):
     return render(request, 'input-meter-reading.html', context)
 
 
-# @authenticated_user
+@teller_login_required
+@login_required(login_url='login')
 def consumer_list(request):
     return redirect('consumer_list_p', p=10)
 
 
+
+@teller_login_required
+@login_required(login_url='login')
 def consumer_list_p(request, p):
     pages = int(p)
     user = request.user
@@ -663,10 +674,11 @@ def consumer_list_p(request, p):
     }
     return render(request, 'conlist.html',context)
 
-# @authenticated_user
 
 
-# @authenticated_user
+
+@teller_login_required
+@login_required(login_url='login')
 def consumercreation(request):
     form = ConsumerForm()
     cons = ConsumerInfo.objects.all().order_by("-consumer_id")
@@ -725,7 +737,9 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-# @authenticated_user
+
+@teller_login_required
+@login_required(login_url='login')
 def consumerupdate(request, id):
     con = ConsumerInfo.objects.get(consumer_id=id)
     form = ConsumerForm(instance=con)
@@ -739,7 +753,7 @@ def consumerupdate(request, id):
     }
     return render(request, 'consumercreation.html', context)
 
-# @authenticated_user
+@login_required(login_url='login')
 def stopmeter(request, id):
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -747,7 +761,9 @@ def stopmeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=datetime.today().year)
 
-# @authenticated_user
+
+
+@login_required(login_url='login')
 @admin_login_required
 def sysuser(request):
     table = []
@@ -788,7 +804,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-# @authenticated_user
+@login_required(login_url='login')
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     form = sysup(instance=sys)
@@ -811,6 +827,7 @@ def user_edit(request, id):
     return render(request, 'user_edit.html', context)
 
 
+@login_required(login_url='login')
 def deleteUser(request, id):
     sys = SystemUsers.objects.get(username=id)
     if request.method == "POST":
@@ -819,10 +836,14 @@ def deleteUser(request, id):
     return render(request, 'delete.html',)
 
 
+@login_required(login_url='login')
 def about(request):
     return render(request, 'about.html')
 
 
+
+
+@login_required(login_url='login')
 def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
@@ -840,10 +861,16 @@ def payment(request, id):
         get_balance(id)
     return redirect('ledger', id=id)
 
+
+@teller_login_required
+@login_required(login_url='login')
 def reports(request):
     return redirect('barangayreport', datetime.today().year)
 
-# @authenticated_user
+
+
+@teller_login_required
+@login_required(login_url='login')
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -890,6 +917,7 @@ def barangayreport(request, year):
     return render(request, 'waterusage.html', context)
 
 
+@teller_login_required
 def view_barangay(request, id):
     bang = BarangayRecord.objects.get(barangayrec_id=id)
 
@@ -901,6 +929,8 @@ def view_barangay(request, id):
     return render(request, 'view_barangay.html', context)
 
 
+
+@login_required(login_url='login')
 def unsettled_bill(request):
     ub = ConsumerInfo.objects.all()
     year = datetime.today().year
@@ -912,6 +942,9 @@ def unsettled_bill(request):
     return render(request, 'unsettled_bill.html', context)
 
 
+
+@teller_login_required
+@login_required(login_url='login')
 def usage_report_data(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -1191,6 +1224,9 @@ def usage_report_data(request, year):
     return render(request, 'usage_report_data.html', context)
 
 
+
+@teller_login_required
+@login_required(login_url='login')
 def revenue_report(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -1254,15 +1290,22 @@ def revenue_report(request, year):
     return render(request, 'revenue_report.html',  context)
 
 
+
+@teller_login_required
+@login_required(login_url='login')
 def deleteconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id=id)
     con.delete()
     return redirect('consumer_list')
 
-
+@teller_login_required
+@login_required(login_url='login')
 def unsettled_bills(request):
     return redirect('unsettled_bills_p', p=10)
 
+
+@teller_login_required
+@login_required(login_url='login')
 def unsettled_bills_p(request, p):
     class ub_year:
         def __init__(self, y, u):
@@ -1306,6 +1349,9 @@ def unsettled_bills_p(request, p):
     }
     return render(request, 'unsettled_bill.html', context)
 
+
+@teller_login_required
+@login_required(login_url='login')
 def view_unsettled_bills(request, id, year):
     years = []
     table = []
@@ -1364,6 +1410,9 @@ def view_unsettled_bills(request, id, year):
     return render(request, 'view_unsettled_bills.html', context)
 
 
+
+@teller_login_required
+@login_required(login_url='login')
 def discount(request):
     username = SystemUsers.objects.get(pk = username)
     d = Discount.objects.all()
@@ -1388,7 +1437,8 @@ def discount(request):
     return render(request, 'discount.html', context)
 
 
-# @authenticated_user
+@teller_login_required
+@login_required(login_url='login')
 def new_consumertype(request):
     c = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
@@ -1412,11 +1462,13 @@ def new_consumertype(request):
         'c': c,
         'form': form,
         'errors': form.errors,
-        'user' : username
+        'user' : request.user
     }
     return render(request, 'new_consumertype.html', context)
 
-@authenticated_user
+
+@teller_login_required
+@login_required(login_url='login')
 def penalty(request):
     username = request.user
     p = Penalty.objects.all()
@@ -1449,6 +1501,9 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
+
+@teller_login_required
+@login_required(login_url='login')
 def bulkreading(request, year, month, p):
     if request.method == "POST":
         cons = ConsumerInfo.objects.all()
