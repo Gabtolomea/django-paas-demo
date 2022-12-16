@@ -22,6 +22,27 @@ Unsettled Bills
         transition: 0.3s all ease-in-out;
 
     }
+    .odd{
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
+
+        caption-side: bottom;
+        font-family: Arial;
+        border-collapse: separate !important;
+        border-spacing: 0;
+        box-sizing: border-box;
+        border-color: inherit;
+        border-style: solid;
+        border-width: 1px 0;
+        color: #212529;
+        }
+
+	.dataTables_empty{
+		text-align: center;
+		}
 </style>
 {% endblock style %}
 
@@ -109,15 +130,19 @@ Unsettled Bills
                             </tr>
                         </thead>
                         <tbody class="wb_tbody">
-                            {% for ub in table %}
-                            <tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' ub.u.consumer_id ub.y %}">
-                                <td>{{ub.u.consumer_id}}</td>
-                                <td>{{ub.u.lastname}} {{ub.u.firstname}} {{ub.u.middlename}}</td>
-                                <td>{{ub.u.meternumber}}</td>
-                                <td>{{ub.u.installation_address}}</td>
-                                <td>&#8369; {{ub.u.current_bal|floatformat:2|intcomma}}</td>
-                            </tr>
-                            {% endfor %}
+                            {% if table %}
+                                {% for ub in table %}
+                                <tr class='clickable-row' onclick="click" style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' ub.u.consumer_id ub.y %}">
+                                    <td>{{ub.u.consumer_id}}</td>
+                                    <td>{{ub.u.lastname}} {{ub.u.firstname}} {{ub.u.middlename}}</td>
+                                    <td>{{ub.u.meternumber}}</td>
+                                    <td>{{ub.u.installation_address}}</td>
+                                    <td>&#8369; {{ub.u.current_bal|floatformat:2|intcomma}}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                            <tr class="odd"><td valign="top" colspan="5" class="dataTables_empty">No matching records found</td></tr>
+							{% endif %}
                             <script src="{% static 'jquery/jquery.js' %}"></script>
                             <script>
                                 jQuery(document).ready(function ($) {

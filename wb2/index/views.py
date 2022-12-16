@@ -1475,7 +1475,13 @@ def bulkreading(request, year, month, p):
             self.prev = prev
             self.cur = cur
     monthname = calendar.month_name[month]
-    consumers = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
+        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+    else:
+        consumers = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     
     pages = int(p)
     count = len(consumers)
@@ -1514,6 +1520,7 @@ def bulkreading(request, year, month, p):
 
 
     context = {
+        'search' :search,
         'year':year,
         'month':monthname,
         'monthval':month,
