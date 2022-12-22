@@ -1,6 +1,9 @@
 import calendar
 from datetime import datetime, timedelta
 import datetime
+
+from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail, BadHeaderError
 from email import errors
 from django.contrib import messages
 from django.shortcuts import render
@@ -10,12 +13,16 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 from wb2.settings import EMAIL_HOST_USER
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django import template
+
+from django.contrib.auth.tokens import default_token_generator
 import base64
 from .DBdb import *
 from wb2 import settings
@@ -58,6 +65,8 @@ def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
+        print(u)
+        print(password)
         auth = authenticate(username=u, password=password)
         if auth is not None:
             user = SystemUsers.objects.get(username=u)
@@ -71,6 +80,7 @@ def signin(request):
             login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
             login_rec.save()
             login(request, auth)
+            messages.success(request, "Logged In as " + user.username)
             return redirect('bills_list')
         else:
             messages.error(request, "Invalid Username or Password")
@@ -303,22 +313,33 @@ def forgetpassword(request):
             current_site = get_current_site(request)
             email_subject = "Confirm your Email"
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = generate_token.make_token(user)
-            message = render_to_string('email_verif.html', {
+            token = default_token_generator.make_token(user)
+    
+            plaintext = template.loader.get_template('email_verif.txt')
+            htmltemp = template.loader.get_template('email_verif.html')
+            message = {
                 'name': user.first_name,
                 'domain': current_site.domain,
                 'uid': uid,
                 'token': token
-            })
-            print(f"http://{current_site.domain}/activate/{uid}/{token}")
-            email = EmailMessage(
-                email_subject,
-                message,
-                EMAIL_HOST_USER,
-                [user.email],
-            )
-            email.fail_silently = True
-            email.send()
+            }
+            print(f"http://{current_site.domain}/resetpassword/{uid}/{token}")
+            # email = EmailMessage(
+            #     email_subject,
+            #     message,
+            #     EMAIL_HOST_USER,
+            #     [user.email],
+            # )
+            # email.fail_silently = True
+            
+            text_content = plaintext.render(message)
+            html_content = htmltemp.render(message)
+            try:
+                msg = EmailMultiAlternatives(email_subject, text_content, 'Website <admin@example.com>', [user.email], headers = {'Reply-To': 'admin@example.com'})
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
             messages.success(request, 'Please verify your account by clicking the link in your email: '+str(u_email))
             return redirect('login')
         else:
@@ -331,6 +352,7 @@ def resetpassword(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = SystemUsers.objects.get(username=uid)
+        form = PasswordChangeForm(user)
     except (TypeError,ValueError,OverflowError,SystemUsers.DoesNotExist):
         user = None
     print(user)
@@ -338,10 +360,13 @@ def resetpassword(request, uidb64, token):
         if user is not None and generate_token.check_token(user,token):
             pass1 = request.POST['password1']
             pass2 = request.POST['password2']
+            print(user.password)
+            print(pass1)
+            print(pass2)
             if pass1 == pass2:
-                print(pass1)
                 user.first_name = pass1
                 user.set_password(pass1)
+                print(user.password)
                 user.save()
                 messages.success(request, 'Password reset successfully')
                 return redirect('login')
@@ -352,6 +377,7 @@ def resetpassword(request, uidb64, token):
             redirect('login')
      
     context = {
+        'form': form,
         'uidb64':uidb64,
         'token':token,
     }
