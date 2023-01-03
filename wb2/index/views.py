@@ -156,7 +156,6 @@ def user_creation(request):
         is_reader = request.POST.get('is_reader','') == 'on'
         authorizedapprover = request.POST['authorizedapprover']
         profilepic = request.POST['profilepic']
-        print(form)
         if form.is_valid():
             user = SystemUsers()
             user.set_password(password2)
@@ -1666,7 +1665,6 @@ def bulkreading(request, year, month, p):
 @login_required(login_url='login')
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
-    
     context= {
         'user':user
     }
