@@ -1663,11 +1663,9 @@ def bulkreading(request, year, month, p):
     }
     return render(request,'bulkreading.html', context)
 
+@login_required(login_url='login')
 def userprof(request):
-    login = LoginRec.objects.all()
-    print(login)
-    # print(profile)
+    
     context= {
     }
     return render(request, 'userprof.html', context)
-    
