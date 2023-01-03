@@ -1666,7 +1666,7 @@ def bulkreading(request, year, month, p):
 @login_required(login_url='login')
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
-    print(user.first_name)
+    
     context= {
         'user':user
     }
