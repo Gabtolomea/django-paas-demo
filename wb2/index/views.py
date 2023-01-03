@@ -1,44 +1,34 @@
+
+
 import calendar
-from datetime import datetime, timedelta
+import math
 import datetime
 
-from django.core.mail import EmailMultiAlternatives
-from django.core.mail import send_mail, BadHeaderError
-from email import errors
-from django.contrib import messages
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.utils import timezone
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.auth.decorators import login_required
-from django.utils.encoding import force_bytes, force_str
-from django.core.mail import EmailMessage
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.core.exceptions import ObjectDoesNotExist
-from wb2.settings import EMAIL_HOST_USER
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django import template
-
-from django.contrib.auth.tokens import default_token_generator
-import base64
-from .DBdb import *
-from wb2 import settings
-from .forms import *
-from .decorators import *
-from .models import *
 from .dataporter import *
+from .DBdb import *
+from .decorators import *
+from .forms import *
 from .functions import *
-import math
+from .models import *
 from .tokens import generate_token
-from django.core.files.storage import FileSystemStorage
-from django.db.models import F, Sum
+from datetime import datetime, timedelta
+from django import template
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMultiAlternatives, send_mail, BadHeaderError, EmailMessage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import F, Sum, Q
 from django.db.models.functions import Greatest
-from .decorators import unauthenticated_user
-from django.shortcuts import render
-from django.db.models import Q
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+
 
 
 def porter(request):
@@ -237,8 +227,10 @@ def ledger(request, id):
                 pre = asc_trans[i].meterReading - usage
                 pen = asc_trans[i].penaltyCode
                 bill = asc_trans[i].bill
-                connectionType = ConsumerType.objects.get(
-                    contypeid=asc_trans[i].contypeid).contype
+                try:
+                    connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
+                except ObjectDoesNotExist:
+                    connectionType = ''
                 cur = asc_trans[i].meterReading
                 current = cur
                 style = ''
@@ -271,6 +263,15 @@ def ledger(request, id):
                 style = 'text-primary table-primary'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
+            elif asc_trans[i].transType == 'Reset Reading':
+                usage = ''
+                bill = 0
+                connectionType = ''
+                prev = ''
+                cur = asc_trans[i].meterReading
+                style = 'table-warning'
+                pb = asc_trans[i].processedBy
+                bal += bill
             date = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
@@ -449,7 +450,6 @@ def meterreading_p(request, p):
 def inputreading(request, id, year):
     table = []
     years = []
-
     class meterreaderclass():
         def __init__(self, transid, month, usage, prev, reading, next, style):
             self.transid = transid
@@ -459,11 +459,10 @@ def inputreading(request, id, year):
             self.reading = reading
             self.next = next
             self.style = style
-    user = request.user
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
-    alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing')
-    trans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing', year=year)
+    alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Reading')
+    trans = alltrans.filter(year=year)
     
     lastreading = 0
     if not trans:
@@ -506,8 +505,7 @@ def inputreading(request, id, year):
                     lastreading = reading
                     style = 'table-success'
                     j += 1
-            m = meterreaderclass(transid, month, usage,
-                                 prev, reading, next, style)
+            m = meterreaderclass(transid, month, usage, prev, reading, next, style)
             table.append(m)
 
     con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
@@ -805,8 +803,37 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=datetime.today().year)
 
 @login_required(login_url='login')
+def enablemeter(request, id):
+    if request.method == 'POST':
+        is_new = request.POST.get('newmeter','off')=='on'
+        consumer = ConsumerInfo.objects.get(consumer_id=id)
+        consumer.stopmeterflag = not consumer.stopmeterflag
+        if is_new:
+            lasttranid = Transactions.objects.all().order_by('-transactionid')[0].transactionid
+            meternum = int(request.POST.get('meternum'))
+            consumer.meternumber = meternum
+            initialreading = int(request.POST.get('initialreading'))
+            tran = Transactions()
+            tran.transactionid = lasttranid + 1
+            tran.date = date.today()
+            tran.acctID = consumer
+            tran.transType = 'Billing'
+            print(initialreading)
+            tran.meterReading = initialreading
+            tran.usage = 0
+            tran.bill = 0
+            tran.month = date.today().month-1
+            if tran.month == 12:
+                tran.year = date.today().year-1
+            else:
+                tran.year = date.today().year
+            tran.processedBy = str(request.user)
+            tran.or_number = "N/A"
+            tran.save()
+        consumer.save()
+    return redirect('inputreading', id=id, year=datetime.today().year)
 
-
+@login_required(login_url='login')
 def sysuser(request):
     table = []
 
@@ -909,6 +936,8 @@ def payment(request, id):
     if request.method == 'POST':
         amount = request.POST['amount']
         or_num = request.POST['or_num']
+        pen_code = request.POST.get('pen_code', None)
+        dis_code = request.POST.get('dis_code', None)
         t = Transactions()
         t.acctID = ConsumerInfo.objects.get(consumer_id=id)
         t.transType = "Payment"
@@ -920,6 +949,16 @@ def payment(request, id):
         t.or_number = or_num
         t.save()
         get_balance(id)
+        if dis_code is not None:
+            t = Transactions()
+            t.acctID = ConsumerInfo.objects.get(consumer_id=id)
+            t.transType = "Discount"
+            t.date = datetime.today()
+            t.year = datetime.today().year
+            t.month = datetime.today().month
+            t.processedBy = request.user
+            t.or_number = or_num
+            t.save()
     return redirect('ledger', id=id)
 
 
@@ -927,8 +966,6 @@ def reports(request):
     return redirect('barangayreport', datetime.today().year)
 
 @login_required(login_url='login')
-
-
 def barangayreport(request, year):
     years = []
     my = BarangayRecord.objects.all()
@@ -1537,7 +1574,7 @@ def penalty(request):
 
 def bulkreading(request, year, month, p):
     if request.method == "POST":
-        cons = ConsumerInfo.objects.all()
+        cons = ConsumerInfo.objects.filter(stopmeterflag__lt = 1)
         interest = 0
         for c in cons:
             a = request.POST.get(f"con{c.consumer_id}", None)
@@ -1628,7 +1665,7 @@ def bulkreading(request, year, month, p):
             self.prev = prev
             self.cur = cur
     monthname = calendar.month_name[month]
-    consumers = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+    consumers = ConsumerInfo.objects.filter(stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
     
     pages = int(p)
     count = len(consumers)
