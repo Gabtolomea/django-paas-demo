@@ -445,8 +445,6 @@ def meterreading_p(request, p):
     return render(request, 'meterreading.html', context)
 
 @login_required(login_url='login')
-
-
 def inputreading(request, id, year):
     table = []
     years = []
@@ -463,7 +461,7 @@ def inputreading(request, id, year):
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
     trans = alltrans.filter(year=year)
-    lastreading = alltrans.filter(year__lt=year).order_by('-year','-month')[0].meterReading
+    lastreading = last_reading(id, year, 12)
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
@@ -480,9 +478,6 @@ def inputreading(request, id, year):
         asc_trans = trans.order_by('month')
         count = len(asc_trans)
         j = 0
-        if asc_trans[0].date.month == 1:
-            j = 1
-        
         for i in range(1, 13):
             month = calendar.month_name[i]
             lastid += 1
@@ -575,7 +570,9 @@ def inputreading(request, id, year):
                     t.acctID = consumer
                     t.transType = 'Billing'
                     t.date = datetime.today()
-                    t.month = d-1
+                    t.month = d
+                    if t.month == 0:
+                        t.month = 12
                     t.year = year
                     t.meterReading = i
                     t.usage = i - lastreading
@@ -616,24 +613,14 @@ def inputreading(request, id, year):
                         t.processedBy = request.user
                         t.save()
                 else:
-                    # print("update transaction")
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                    a = 1
-                    while(True):
-                        try:
-                            lasttran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d-a)
-                            lastreading = lasttran.meterReading
-                        except ObjectDoesNotExist:
-                            a+=1
-                        else:
-                            break
+                    lastreading = last_reading(id, year, d)
                     try:
                         next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d+1)
                         next.usage = next.meterReading - i
                         next.save()
                     except ObjectDoesNotExist:
                         print("asdf")
-                    print(lasttran)
                     t.meterReading = i
                     t.date = datetime.today()
                     t.usage = i - lastreading

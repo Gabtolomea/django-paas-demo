@@ -49,18 +49,20 @@ def capitalize():
         c.lastname = c.lastname.upper()
         c.middlename = c.middlename.upper()
         c.save()
-def last_reading(id, year, month):
-    cont = month-1
-    while year:
-        while cont>0:
-            try:
-                Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=cont)
-            except ObjectDoesNotExist:
-                cont-=1
-            else:
-                return Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=cont).meterReading
-        year-=1
-        cont=12
+
+def last_reading(id, year, mo):
+    ye = year
+    while(True):
+        try:
+            lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=ye, month=mo)
+            lastreading = lasttran.meterReading
+        except ObjectDoesNotExist:
+            mo-=1
+            if mo == 0:
+                mo = 12
+                ye-=1
+        else:
+            return lastreading
 
 def get_balance(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
