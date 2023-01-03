@@ -143,7 +143,7 @@ Input Reading
 <h1 class="mb-3 text-center">Input Reading</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">
-		<!-- <form id="yearselection" action="">
+		<form id="yearselection" action="">
 			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
 				{% for i in years reversed %}
@@ -158,7 +158,7 @@ Input Reading
 				yearselection.action = selector.value
 				yearselection.submit()
 			}
-		</script> -->
+		</script>
 		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
 			<thead class="wb_thead" >
 				<tr class="header ">
@@ -182,8 +182,8 @@ Input Reading
 							{{t.usage}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
-								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}} 
-								{% if t.next %}max="{{t.next}}" {%endif%} value="{{t.reading}}">
+								id="{{t.transid}}" onfocus="this.select()" disabled type="number"{% if t.prev %} min={{t.prev}} {% endif %}
+								{% if t.next %}max="{{t.next}}" {%endif%} {% if t.reading %}value="{{t.reading}}"{% endif %}>
 						</td>
 							{% if consumer.stopmeterflag %}
 							{% else %}
@@ -289,12 +289,8 @@ Input Reading
 			})
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
-			integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
-			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script
 			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script type="text/javascript">
 			
 	function print() {

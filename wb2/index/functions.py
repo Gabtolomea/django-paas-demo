@@ -71,7 +71,11 @@ def get_balance(id):
         if asc_trans[i].transType == 'Billing':
             bal+=asc_trans[i].bill
         elif asc_trans[i].transType == 'Payment':
-            bal=bal-asc_trans[i].payment
+            bal-=asc_trans[i].payment
+        elif asc_trans[i].transType == 'Penalty':
+            bal+=asc_trans[i].bill
+        elif asc_trans[i].transType == 'Discount':
+            bal-=asc_trans[i].payment
     user.current_bal = math.ceil(bal*100)/100
     user.save()
 

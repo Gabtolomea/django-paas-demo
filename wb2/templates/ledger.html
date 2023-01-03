@@ -210,8 +210,6 @@ Account Ledger
 						<input type="number" name="amount" min="1" id="id_amount" class="input form-control">
 						<label for="id_or_num">OR Number</label>
 						<input type="number" name="or_num" id="id_or_num" class="input form-control">
-						<label for="id_pen_code">Penalty Code</label>
-						<input type="text" name="pen_code" id="id_pen_code" class="input form-control">
 						<label for="id_dis_code">Discount Code</label>
 						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
 					</div>
@@ -371,8 +369,7 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}
-						{{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
 					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
 					</td>
 					<td class="{{t.style}}">{{t.pb}}</td>

@@ -552,12 +552,8 @@ def sys_user_out(i):
     sys_user.is_reader = False
     sys_user.username = i[0]
     passAscii = base64.b64decode(i[1])
-    print(f"{i[1]} {type(i[1])}")
-    print(f"{passAscii} {type(passAscii)}")
     p = passAscii.decode("ascii")
-    print(f"{p} {type(p)}")
     sys_user.set_password(str(p))
-    print(f"{sys_user.password} {type(sys_user.password)}")
     sys_user.first_name = i[2]
     sys_user.mid_name = i[3]
     sys_user.mobilenum = i[4]
