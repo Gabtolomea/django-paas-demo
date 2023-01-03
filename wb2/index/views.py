@@ -324,7 +324,7 @@ def forgetpassword(request):
                 'uid': uid,
                 'token': token
             }
-            print(f"http://{current_site.domain}/resetpassword/{uid}/{token}")
+            print(f"http://{current_site.domain}/reset/{uid}/{token}")
             # email = EmailMessage(
             #     email_subject,
             #     message,
@@ -576,7 +576,7 @@ def inputreading(request, id, year):
                     t.year = year
                     t.meterReading = i
                     t.usage = i - lastreading
-                    usage = i - lastreading
+                    usage = t.usage
                     t.contypeid = consumer.contypeid_id
                     rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
                     if t.usage <= rate.minReading:
@@ -614,9 +614,15 @@ def inputreading(request, id, year):
                         t.save()
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                    lastreading = last_reading(id, year, d)
+                    lastreading = last_reading(id, year, d-1)
+                    print(lastreading)
                     try:
-                        next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d+1)
+                        mo = d + 1
+                        ye = year
+                        if d == 12:
+                            mo = 1
+                            ye += 1
+                        next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
                         next.usage = next.meterReading - i
                         next.save()
                     except ObjectDoesNotExist:
@@ -624,7 +630,7 @@ def inputreading(request, id, year):
                     t.meterReading = i
                     t.date = datetime.today()
                     t.usage = i - lastreading
-                    usage = i - lastreading
+                    usage = t.usage
                     rate = ConsumerType.objects.get(contypeid=t.contypeid)
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
@@ -694,10 +700,11 @@ def inputreading(request, id, year):
                 case 12:
                     con_b_rec.total_due_dec += bill
                     con_b_rec.total_usage_dec += usage
+            bill = 0
+            usage = 0
             con_b_rec.save()
             d += 1
-        return redirect('inputreading', id=id, year=datetime.today().year)
-
+        return redirect('inputreading', id=id , year=year)
     context = {
         'consumer': consumer,
         'table': table,
@@ -1054,7 +1061,7 @@ def barangayreport(request, year):
         F('total_due_oct') + F('total_due_nov') + F('total_due_dec'),
         total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
         F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
-        F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
+        F('total_paid_oct') + F('total_paid_nov') + F('total_paid_dec'),
         total_rec=F('total_due') - F('total_paid')
     )
     fr = BarangayRecord.objects.filter(year=year).annotate(
@@ -1066,12 +1073,12 @@ def barangayreport(request, year):
         F('total_due_oct') + F('total_due_nov') + F('total_due_dec'),
         total_paid=F('total_paid_jan') + F('total_paid_feb') + F('total_paid_mar') + F('total_paid_apr') + F('total_paid_may') + F('total_paid_jun') +
         F('total_paid_jul') + F('total_paid_aug') + F('total_paid_sept') +
-        F('total_paid_oct') + F('total_due_nov') + F('total_paid_dec'),
+        F('total_paid_oct') + F('total_paid_nov') + F('total_paid_dec'),
         total_rec=F('total_due') - F('total_paid')
     ).aggregate(
         tu=Sum('total_usage'),
         tp=Sum('total_paid'),
-        tr=Sum('total_due') - Sum('total_paid')
+        tr=Sum('total_due')
     )
     context = {
         'br': br,
@@ -1640,11 +1647,57 @@ def penalty(request):
 
 def bulkreading(request, year, month, p):
     if request.method == "POST":
+
         cons = ConsumerInfo.objects.filter(stopmeterflag__lt = 1)
         interest = 0
         for c in cons:
             a = request.POST.get(f"con{c.consumer_id}", None)
+            try:
+                con_b_rec = BarangayRecord.objects.get(barangaycode_id=c.installation_address_id, year=year)
+            except ObjectDoesNotExist:
+                con_b_rec = BarangayRecord()
+                con_b_rec.barangayrec_id = f"{c.installation_address_id}-{year}"
+                con_b_rec.barangaycode = Barangays.objects.get(id=c.installation_address_id)
+                con_b_rec.year = year
+                con_b_rec.total_due_jan = 0
+                con_b_rec.total_due_feb = 0
+                con_b_rec.total_due_mar = 0
+                con_b_rec.total_due_apr = 0
+                con_b_rec.total_due_may = 0
+                con_b_rec.total_due_jun = 0
+                con_b_rec.total_due_jul = 0
+                con_b_rec.total_due_aug = 0
+                con_b_rec.total_due_sept = 0
+                con_b_rec.total_due_oct = 0
+                con_b_rec.total_due_nov = 0
+                con_b_rec.total_due_dec = 0
+                con_b_rec.total_paid_jan = 0
+                con_b_rec.total_paid_feb = 0
+                con_b_rec.total_paid_mar = 0
+                con_b_rec.total_paid_apr = 0
+                con_b_rec.total_paid_may = 0
+                con_b_rec.total_paid_jun = 0
+                con_b_rec.total_paid_jul = 0
+                con_b_rec.total_paid_aug = 0
+                con_b_rec.total_paid_sept = 0
+                con_b_rec.total_paid_oct = 0
+                con_b_rec.total_paid_nov = 0
+                con_b_rec.total_paid_dec = 0
+                con_b_rec.total_usage_jan = 0
+                con_b_rec.total_usage_feb = 0
+                con_b_rec.total_usage_mar = 0
+                con_b_rec.total_usage_apr = 0
+                con_b_rec.total_usage_may = 0
+                con_b_rec.total_usage_jun = 0
+                con_b_rec.total_usage_jul = 0
+                con_b_rec.total_usage_aug = 0
+                con_b_rec.total_usage_sept = 0
+                con_b_rec.total_usage_oct = 0
+                con_b_rec.total_usage_nov = 0
+                con_b_rec.total_usage_dec = 0
             if a is not None:
+                bill = 0
+                usage = 0
                 a = int(a)
                 try:
                     tran = Transactions.objects.get(acctID_id=c.consumer_id,month=month,year=year,transType = "Billing")
@@ -1708,6 +1761,43 @@ def bulkreading(request, year, month, p):
                         bill -= bill*(discount.discount_rate/100)
                         t.processedBy = request.user
                         t.save()
+                match month:
+                    case 1:
+                        con_b_rec.total_due_jan += bill
+                        con_b_rec.total_usage_jan += usage
+                    case 2:
+                        con_b_rec.total_due_feb += bill
+                        con_b_rec.total_usage_feb += usage
+                    case 3:
+                        con_b_rec.total_due_mar += bill
+                        con_b_rec.total_usage_mar += usage
+                    case 4:
+                        con_b_rec.total_due_apr += bill
+                        con_b_rec.total_usage_apr += usage
+                    case 5:
+                        con_b_rec.total_due_may += bill
+                        con_b_rec.total_usage_may += usage
+                    case 6:
+                        con_b_rec.total_due_jun += bill
+                        con_b_rec.total_usage_jun += usage
+                    case 7:
+                        con_b_rec.total_due_jul += bill
+                        con_b_rec.total_usage_jul += usage
+                    case 8:
+                        con_b_rec.total_due_aug += bill
+                        con_b_rec.total_usage_aug += usage
+                    case 9:
+                        con_b_rec.total_due_sept += bill
+                        con_b_rec.total_usage_sept += usage
+                    case 10:
+                        con_b_rec.total_due_oct += bill
+                        con_b_rec.total_usage_oct += usage
+                    case 11:
+                        con_b_rec.total_due_nov += bill
+                        con_b_rec.total_usage_nov += usage
+                    case 12:
+                        con_b_rec.total_due_dec += bill
+                        con_b_rec.total_usage_dec += usage
     months = []
     years = []
     class monthname():
