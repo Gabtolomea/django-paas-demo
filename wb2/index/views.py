@@ -208,6 +208,18 @@ def user_creation(request):
 
 @login_required(login_url='login')
 def ledger(request, id):
+
+
+    
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_teller:
+            template = "ledger.html"
+        else:
+            template = redirect('bills_list')
+            return template
+
     table = []
     year = datetime.today().year
     usage = 0
