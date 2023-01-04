@@ -80,8 +80,9 @@ def signin(request):
     return render(request, 'login.html', context)
 
 
-@teller_login_required
+
 @login_required(login_url='login')
+@teller_login_required
 def bills_list(request):
     return redirect('bills_list_p', p=10)
 

@@ -97,7 +97,7 @@ def unauthenticated_user(view_func):
             return redirect('bills_list')
         else:
             return view_func(request, *args, **kwargs)
-    return wrapper_func
+    return wrapper_func 
 
 
 # def allowed_users(user_roles=[]):
