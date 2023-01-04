@@ -93,7 +93,7 @@ def bills_list_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = redirect('bills_list_p', p=10)
         else:
             if LoginSession.is_admin:
@@ -214,7 +214,7 @@ def ledger(request, id):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "ledger.html"
         else:
             template = redirect('bills_list')
@@ -423,7 +423,7 @@ def meterreading_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader:
+        if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
             template = redirect('meterreading_p', p=10)
         else:
             template = redirect('bills_list')
@@ -493,8 +493,8 @@ def inputreading(request, id, year):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader:
-            template = redirect('inputreading')
+        if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
+            template = "input-meter-reading.html"
         else:
             template = redirect('bills_list')
             return template
@@ -778,7 +778,7 @@ def consumer_list_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "conlist.html"
         else:
             template = redirect('bills_list')
@@ -829,7 +829,7 @@ def consumercreation(request):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "consumercreation.html"
         else:
             template = redirect('bills_list')
@@ -897,7 +897,7 @@ def consumerupdate(request, id):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "consumercreation.html"
         else:
             template = redirect('bills_list')
@@ -920,7 +920,7 @@ def stopmeter(request, id):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader:
+        if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
             template = redirect('inputreading', id=id, year=datetime.today().year)
         else:
             template = redirect('bills_list')
@@ -939,7 +939,7 @@ def enablemeter(request, id):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader:
+        if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
             template = redirect('inputreading', id=id, year=datetime.today().year)
         else:
             template = redirect('bills_list')
@@ -1179,7 +1179,7 @@ def barangayreport(request, year):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "waterusage.html"
         else:
             template = redirect('bills_list')
@@ -1235,7 +1235,7 @@ def view_barangay(request, id):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "view_barangay.html"
         else:
             template = redirect('bills_list')
@@ -1253,7 +1253,7 @@ def usage_report_data(request, year):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "usage_report_data.html"
         else:
             template = redirect('bills_list')
@@ -1544,7 +1544,7 @@ def revenue_report(request, year):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "revenue_report.html"
         else:
             template = redirect('bills_list')
@@ -1614,7 +1614,7 @@ def deleteconsumer(request, id):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "consumercreation.html"
         else:
             template = redirect('bills_list')
@@ -1630,7 +1630,7 @@ def unsettled_bills(request):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = redirect('unsettled_bills_p', p=10)
         else:
             template = redirect('bills_list')
@@ -1645,7 +1645,7 @@ def unsettled_bills_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "unsettled_bill.html"
         else:
             template = redirect('bills_list')
@@ -1710,7 +1710,7 @@ def view_unsettled_bills(request, id, year):
     template = ""
     LoginSession = request.user
     if LoginSession:
-        if LoginSession.is_teller:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "view_unsettled_bills.html"
         else:
             template = redirect('bills_list')

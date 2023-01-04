@@ -147,7 +147,7 @@
 
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
 
-            {% if request.user.is_teller %}
+            {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
                     <i class="fa-solid fa-money-bill-wave fa-2x">
@@ -158,7 +158,7 @@
             </a>
             {% endif %}
 
-            {% if request.user.is_admin == False %}
+            {% if request.user.is_teller or request.user.is_reader or request.user.is_supervisor %}
             <a href="{% url 'meterreading' %}" style="color: white; text-decoration: none ">
                 <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
                     <i class="fa fa-tachometer fa-2x"></i>
@@ -168,7 +168,7 @@
             </a>
             {% endif %}
 
-            {% if request.user.is_teller %}
+            {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
                     <i class="fa-solid fa-user fa-2x"></i>
@@ -177,7 +177,7 @@
             </a>
             {% endif %}
 
-            {% if request.user.is_teller %}
+            {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'reports' 'active' %}">
                     <i class="fa fa-line-chart fa-2x"></i>
@@ -187,7 +187,7 @@
             {% endif %}
 
 
-            {% if request.user.is_teller %}
+            {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
                     <i class="fa fa-line-chart fa-2x"></i>
