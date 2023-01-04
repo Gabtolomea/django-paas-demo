@@ -49,7 +49,29 @@
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
     }
-
+    .fa-eye:before {
+        content: "\f06e";
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.25;
+        color: #495057;
+        text-align: center;
+        background-color: #e9ecef;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.25rem;
+        padding-bottom: 12px;
+    }
+    .fa-eye-slash:before {
+        padding: 0.5rem 0.75rem;
+        color: #495057;
+        text-align: center;
+        background-color: #e9ecef;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.25rem;
+        padding-bottom: 12px;
+    }
     @media (max-width: 350px) {
         h4 {
             font-size: 16px;
@@ -114,13 +136,28 @@
                 </div>
                 <center>
                     <div class="form-group m-2 w-75">
-                        <input type="username" name="username" style="border-radius: 20px;" class="form-control" placeholder="User ID">
+                        <input type="username" name="username" class="form-control" placeholder="User ID">
                     </div>
+                    <div class="row">
+                        <div class="">
+                            <form>
+                                <div class="form-group m-2 w-75">
+                                <div class="input-group" id="show_hide_password">
+                                    <input class="form-control" type="password" placeholder="Password">
+                                <div class="input-group-addon" style="margin-top: 5px;">
+                                    <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                </div>
+                                </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                     
 
-                    <div class="form-group m-2 w-75">
+                    <!-- <div class="form-group m-2 w-75">
                         <input type="password" name="password" style="border-radius: 20px;" class="form-control"
                             placeholder="Password">
-                    </div>
+                    </div> -->
 
                     <div class="button-container">
                         <button class="btn button2"><i class="fa fa-user-plus">
@@ -128,7 +165,7 @@
                     </div>
                     <br>
                     <div class="FP ">
-                        <a href="{% url 'forgetpassword' %}" style="color: #0093B7; font-size: 15px;">Forgot Password?</a>
+                        <a href="{% url 'forgetpassword' %}" style="color: #006c85; font-size: 15px;">Forgot Password?</a>
                     </div>
 
                     {% for message in messages %}
@@ -164,6 +201,22 @@
     setTimeout(function dispnone() {
         logout.style.display = "none"
     }, 4000)
+
+
+    $(document).ready(function() {
+    $("#show_hide_password a").on('click', function(event) {
+        event.preventDefault();
+        if($('#show_hide_password input').attr("type") == "text"){
+            $('#show_hide_password input').attr('type', 'password');
+            $('#show_hide_password i').addClass( "fa-eye-slash" );
+            $('#show_hide_password i').removeClass( "fa-eye" );
+        }else if($('#show_hide_password input').attr("type") == "password"){
+            $('#show_hide_password input').attr('type', 'text');
+            $('#show_hide_password i').removeClass( "fa-eye-slash" );
+            $('#show_hide_password i').addClass( "fa-eye" );
+        }
+    });
+});
 </script>
 
 </html>
