@@ -7,16 +7,13 @@ import mysql.connector
 import base64
 
 tablenames = [
-    "accountinfo",
-    "accountrecord",
-    "barangay_record",
-    "consumerinfo",
-    "gettotalbill",
-    "oldconsumerinfo",
-    "payment_history",
-    "ratestable",
-    "revenuecode",
-    "systemuser",
+    "accountinfo",     #0
+    "accountrecord",   #1
+    "barangay_record", #2
+    "consumerinfo",    #3
+    "payment_history", #4
+    "ratestable",      #5
+    "systemuser",      #6
     # "yearly_records"
 ]
 alltables = [
@@ -24,11 +21,8 @@ alltables = [
     accountrecord,
     barangay_record,
     consumerinfo,
-    gettotalbill,
-    oldconsumerinfo,
     payment_history,
     ratestable,
-    revenuecode,
     systemuser,
     #yearly_records,
 ]
@@ -36,13 +30,13 @@ alltables = [
 
 sorted_tables = []
 
-mydb = mysql.connector.connect(
-   host="localhost",
-   user="root",
-   password="yjh434ctuG@-@",
-   database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# mydb = mysql.connector.connect(
+#    host="localhost",
+#    user="root",
+#    password="yjh434ctuG@-@",
+#    database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 
 def porter_in():
     col = 0
@@ -102,9 +96,9 @@ def porter_out(tables):
         b.save()
     for i in tables[2]:
         b_rec_out(i)
-    for i in tables[7]:
+    for i in tables[5]:
         rt_out(i)
-    for i in tables[9]:
+    for i in tables[6]:
         sys_user_out(i)
     for i in range(len(tables[3])):
         con_info.consumer_id = int(tables[3][i][0])
@@ -122,21 +116,21 @@ def porter_out(tables):
         con_info.stopmeterflag = tables[0][i][12]
         con_info.deleteflag = tables[0][i][14]
         con_info.save()
-    for i in range(len(tables[6])):
-        trans.transactionid = tables[6][i][0]
-        trans.date = tables[6][i][2]
-        arr = tables[6][i][7].split("-")
+    for i in range(len(tables[4])):
+        trans.transactionid = tables[4][i][0]
+        trans.date = tables[4][i][2]
+        arr = tables[4][i][7].split("-")
         trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
         trans.transType = 'Payment'
-        trans.payment = tables[6][i][1]
-        trans.processedBy = tables[6][i][5]
-        trans.or_number = tables[6][i][3]
-        if tables[6][i][2].month == 1:
+        trans.payment = tables[4][i][1]
+        trans.processedBy = tables[4][i][5]
+        trans.or_number = tables[4][i][3]
+        if tables[4][i][2].month == 1:
             trans.month = 12
-            trans.year = tables[6][i][2].year-1
+            trans.year = tables[4][i][2].year-1
         else:
-            trans.month = tables[6][i][2].month-1
-            trans.year = tables[6][i][2].year
+            trans.month = tables[4][i][2].month-1
+            trans.year = tables[4][i][2].year
         trans.save()
     for i in tables[1]:
         usage_rec.accountid =	i[0]
@@ -558,12 +552,8 @@ def sys_user_out(i):
     sys_user.is_reader = False
     sys_user.username = i[0]
     passAscii = base64.b64decode(i[1])
-    print(f"{i[1]} {type(i[1])}")
-    print(f"{passAscii} {type(passAscii)}")
     p = passAscii.decode("ascii")
-    print(f"{p} {type(p)}")
     sys_user.set_password(str(p))
-    print(f"{sys_user.password} {type(sys_user.password)}")
     sys_user.first_name = i[2]
     sys_user.mid_name = i[3]
     sys_user.mobilenum = i[4]

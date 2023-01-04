@@ -40,9 +40,8 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'ajax_datatable',
-
+    'crispy_forms',
 ]
-
 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
