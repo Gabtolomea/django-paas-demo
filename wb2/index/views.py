@@ -1038,6 +1038,8 @@ def usage_report_data(request, year):
         'dec'
     ]
     bars = Barangays.objects.all()
+    mybars = []
+    mymonths = []
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -1065,241 +1067,30 @@ def usage_report_data(request, year):
         sums=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'))).annotate(
         sum=Greatest(F('sums'), 0)
     )
-
+    class br():
+        def __init__(self, name, months):
+            self.name = name
+            self.months = months
     # bitch this is something long muhahaha
+    # but now dis is samting short MUHAHAHAHAHA!!!!
     for b in bars:
         try:
-            brec = BarangayRecord.objects.get(barangay_rec_id=f"{b.id}-{year}")
+            brec = BarangayRecord.objects.get(barangayrec_id=f"{b.id}-{year}")
         except ObjectDoesNotExist:
             brec = None
-
-    ana = BarangayRecord.objects.filter(year=year, barangaycode='1').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    manga = BarangayRecord.objects.filter(year=year, barangaycode='10').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    pala = BarangayRecord.objects.filter(year=year, barangaycode='11').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    pob = BarangayRecord.objects.filter(year=year, barangaycode='12').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    salam = BarangayRecord.objects.filter(year=year, barangaycode='13').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    san = BarangayRecord.objects.filter(year=year, barangaycode='14').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    cag = BarangayRecord.objects.filter(year=year, barangaycode='2').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    calabaw = BarangayRecord.objects.filter(year=year, barangaycode='3').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    cambagt = BarangayRecord.objects.filter(year=year, barangaycode='4').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    campison = BarangayRecord.objects.filter(year=year, barangaycode='5').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    cano = BarangayRecord.objects.filter(year=year, barangaycode='6').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    gui = BarangayRecord.objects.filter(year=year, barangaycode='7').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    lo = BarangayRecord.objects.filter(year=year, barangaycode='8').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-
-    mala = BarangayRecord.objects.filter(year=year, barangaycode='9').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
+        for m in months:
+            mymonths.append(brec.__dict__[f"total_usage_{m}"])
+        n = br(b.barangay, mymonths)
+        mymonths = []
+        mybars.append(n)
+    
     context = {
+        'mybars':mybars,
         'tu_mon': tu_mon,
         'tu_bay': tu_bay,
         'cur_year': year,
         'years': years,
         'my': my,
-        'anao': ana,
-        'mangaco': manga,
-        'palanas': pala,
-        'poblacion': pob,
-        'salamanca': salam,
-        'sanroq': san,
-        'cagsing': cag,
-        'calabawan': calabaw,
-        'cambagte': cambagt,
-        'campisong': campison,
-        'canorong': cano,
-        'guiwan': gui,
-        'looc': lo,
-        'malat': mala,
         'user': request.user,
 
     }
