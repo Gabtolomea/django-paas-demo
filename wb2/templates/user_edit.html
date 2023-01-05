@@ -20,7 +20,7 @@ System User
 
     body {
         height: auto;
-        /* background-image: linear-gradient(white, #0093b7); */
+        background-image: linear-gradient(white, #0093b7);
     }
 
     h3 {
@@ -40,14 +40,14 @@ System User
     .container {
         font-family: Arial;
         color: #ffffff;
-		margin-top: 65px;
     }
 
     .wrapper {
         font-size: 20px;
         font-family: Arial;
+        margin: 0px 0px 16px;
         padding: 0px 12px;
-        background: #006c85;
+        background: #0093b7;
         border-radius: 40px;
         padding: 30px;
     }
@@ -58,30 +58,24 @@ System User
         padding: 0px 12px;
     }
 
-    .button2 {
-        background-color: #63CDD7;
+    .btn {
+        background-color: #0cb3c2;
+        color: #ffffff;
+        padding: 8px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .btn:first-child:hover,
+    :not(.btn-check)+.btn:hover {
+        background-color: white !important;
         color: black;
-        padding: 8px 30px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-    }
-
-    .btn.button2:hover {
-        background: #006c85;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
-
-    .btn.button2:focus {
-        background: #006c85;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-        transition: all 0.1s;
     }
 </style>
 {% endblock style %}
@@ -164,33 +158,8 @@ System User
 						{{form.username}}
 					</div>
 				</div>
-				<div class="row form-group w-100 m-auto">
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.password.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Password*</label>
-						<input type="password" name="" id="id_password1" class="form-control" value="{{password}}">
-					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.password.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Confirm Password*</label>
-						<input type="password" name="" id="id_password2" class="form-control" value="{{password}}">
-					</div>
-				</div>
-
 				<div class="row m-auto w-100">
-					<div class="col-lg-6 col-md-6 col-sm-12 m-3">
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 						<h3>Type of User</h3>
 						{{form.is_admin}}
 						<label for="id_is_admin">ADMIN</label><br>
@@ -205,41 +174,17 @@ System User
 					</div>
 				</div>
 				<div class="row w-100 m-auto mb-2">
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-    						<label for="state">Authorized Approver*</label>
-							<select id=""  class="form-control" name="">
-								<option value="approver">Approver for Inbound Application</option>
-								<option value="non approver">Non Approver</option>
-								<option value="supervisor">Supervisor</option>
-								<option value="engineer">Engineer's Office</option>
-								<option value="mayor">Mayor's Office</option>
-							</select>
-					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 						<label for="">Profile Picture*</label>
-						<input type="file"  class="form-control" id="choose-file" size="80">
+						<input type="file" name="profilepic" class="form-control" id="choose-file" size="80">
 					</div>
 				</div>
-				<div class="row form-group m-auto" style="display: block; text-align: center;">
-					<button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-check-square-o">
-							<span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
-				</div>
+				<center><button type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
 			</div>
 		</div>
 	</form>
 </section>
 {% endblock sysuserupdate %}
 {% block script %}
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
 
-    function fireSweetAlert() {
-        Swal.fire(
-            'Good job!',
-            'You clicked the button!',
-            'success'
-        )
-    }
-
-  </script>
 {% endblock script %}

@@ -113,38 +113,38 @@ Registration Form
                 <div class="row form-group w-100 m-auto">
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
                         {% if form.errors %}
-                        {% for error in form.firstname.errors %}
+                        {% for error in form.first_name.errors %}
                         <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
                             <strong>{{ error|escape }}</strong>
                         </div>
                         {% endfor %}
                         {% endif %}
                         <label for="">First Name*</label>
-                        {{form.firstname}}
+                        {{form.first_name}}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
                         {% if form.errors %}
-                        {% for error in form.midname.errors %}
+                        {% for error in form.mid_name.errors %}
                         <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
                             <strong>{{ error|escape }}</strong>
                         </div>
                         {% endfor %}
                         {% endif %}
                         <label for="">Middle Name*</label>
-                        {{form.midname}}
+                        {{form.mid_name}}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
                         {% if form.errors %}
-                        {% for error in form.lastname.errors %}
+                        {% for error in form.last_name.errors %}
                         <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
                             <strong>{{ error|escape }}</strong>
                         </div>
                         {% endfor %}
                         {% endif %}
                         <label for="">Last Name*</label>
-                        {{form.lastname}}
+                        {{form.last_name}}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">

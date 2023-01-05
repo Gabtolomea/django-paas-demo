@@ -15,29 +15,158 @@ Account Ledger
 		opacity: 1;
 		transition: 0.3s all ease-in-out;
 	}
-    .button2 {
-        background-color: var(--main-color); 
-        color: white;
-        padding: 8px 30px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-    }
-    .btn.button2:hover {
-        background: var(--main-color);
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
-    .btn.button2:focus {
-        background: var(--main-color);
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-        transition: all 0.1s;
-    }
+
+	.button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
+
+	/* ============================================================================================= */
+
+	.invoice-box {
+		max-width: 1044px;
+		margin: auto;
+		padding: 0;
+		border: 1px solid #000;
+		box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+		font-size: 17px;
+		line-height: 16px;
+		font-family: monospace;
+		color: #000;
+	}
+
+	.invoice-box table {
+		width: 100%;
+		line-height: inherit;
+		text-align: left;
+	}
+
+	.invoice-box table td {
+		padding: 11px;
+		vertical-align: top;
+	}
+
+	.invoice-box table tr td:nth-child(2) {
+		text-align: right;
+	}
+
+	.invoice-box table tr.top table td {
+		padding-bottom: 0px;
+	}
+
+	.invoice-box table tr.top table td.title {
+		font-size: 45px;
+		line-height: 45px;
+		color: #333;
+	}
+
+	.invoice-box table tr.information table td {
+		padding-top: 0;
+	}
+
+	.invoice-box table tr.heading td {
+		background: #eee;
+		border-bottom: 1px solid #ddd;
+		font-weight: bold;
+	}
+
+	.invoice-box table tr.details td {
+		padding-bottom: 0px;
+	}
+
+	.invoice-box table tr.item td {
+		border-bottom: 1px solid #eee;
+	}
+
+	.invoice-box table tr.item.last td {
+		border-bottom: none;
+	}
+
+	.invoice-box table tr.total td:nth-child(2) {
+		border-top: 2px solid #eee;
+		font-weight: bold;
+	}
+
+	@media only screen and (max-width: 600px) {
+		.invoice-box table tr.top table td {
+			width: 100%;
+			display: block;
+			text-align: center;
+		}
+
+		.invoice-box table tr.information table td {
+			width: 100%;
+			display: block;
+			text-align: center;
+		}
+	}
+
+	/** RTL **/
+	.rtl {
+		direction: rtl;
+		font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+	}
+
+	.rtl table {
+		text-align: right;
+	}
+
+	.rtl table tr td:nth-child(2) {
+		text-align: left;
+	}
+
+	#logo {
+		vertical-align: middle;
+		border-style: none;
+		height: 90px;
+	}
+
+	.total {
+		font-weight: bold;
+		color: blue;
+		border-width: 1px;
+		border-style: solid;
+		border-color: black;
+	}
+
+	.mun {
+		font-family: monospace;
+		font-size: 25px;
+		font-weight: bold;
+	}
+
+	.mun-header {
+		font-size: 38px;
+		font-family: monospace;
+		font-weight: bold;
+	}
+
+	.st {
+		font-size: 21px;
+		font-weight: bold;
+		font-family: emoji;
+	}
 </style>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
@@ -50,13 +179,13 @@ Account Ledger
 					<th scope="col" style="min-width:25px">Current Balance</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr class="showOnHover" >
-					<td class="table-light"style="">{{u.consumer_id}}</td>
-					<td class="table-light"style="">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
-					<td class="table-light"style="">{{u.meternumber}}</td>
-					<td class="table-light"style="">&#8369; {{u.current_bal|floatformat:2|intcomma}}
-						<button type="button" class=" hide btn btn-primary"style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
+			<tbody class="wb_tbody">
+				<tr class="showOnHover">
+					<td class="table-light">{{u.consumer_id}}</td>
+					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<td class="table-light">{{u.meternumber}}</td>
+					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+						<button type="button" class=" hide btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
 						<button type="button" class="hide btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
@@ -73,18 +202,16 @@ Account Ledger
 				{% csrf_token %}
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
-					<button type="button" class="btn border close" data-bs-dismiss="modal" aria-label="Close">
-						<i class="fa fa-xmark"></i>
-					</button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for="exampleInputPassword1">Amount</label>
+						<label for="id_amount">Amount</label>
 						<input type="number" name="amount" min="1" id="id_amount" class="input form-control">
-					</div>
-					<div class="form-group">
-						<label for="exampleInputPassword1">OR Number</label>
+						<label for="id_or_num">OR Number</label>
 						<input type="number" name="or_num" id="id_or_num" class="input form-control">
+						<label for="id_dis_code">Discount Code</label>
+						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -102,270 +229,123 @@ Account Ledger
 			Get a Copy
 		</button>
 	</div>
-	<div id="newtable" style="display: none;" class="col-sm-10 col-sm-offset-1">
-		<div class="widget-box">
-			<div class="widget-header widget-header-large">
-				<center>
-					<h3 class="widget-title grey lighter">
-						<i class="ace-icon fa fa-leaf green"></i>
-						Your Bill
-					</h3>
-				</center>
-
-				<div class="widget-toolbar no-border invoice-info">
-
-				</div>
-				<br>
-				<br>
-
+	<div class="billling" style="display:none;">
+		<div id="invoice">
+			<div class="invoice-box">
+				<table cellpadding="0" cellspacing="0">
+					<tbody class="ttt">
+						<tr class="top">
+							<td colspan="2">
+								<table>
+									<tr>
+										<td style="padding-bottom: 0px;
+								padding-left: 44%;">
+											<img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
+										</td>
+									</tr>
+									<tr>
+										<td style="text-align:center;">
+											<p class="mun"> Ginatilan Water</p>
 			</div>
+			</td>
+			</tr>
+			</table>
+			</td>
+			</tr>
+			<tr class="information">
+				<td colspan="2">
+					<table>
+						<tr>
+							<td style="line-height: 0px;">
+								<h4 class="st">Consumer Info</h4>
+								<h6 class="sk"><b>Name: </b>{{u.firstname}} {{u.middlename}} {{u.lastname}} </h6><br>
+								<h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
+								<h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
+								<h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
+								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid}}</h6><br>
+								<h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
 
-			<div class="widget-body">
-				<div class="widget-main padding-24">
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="row">
-								<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-									<b>Company Info</b>
-								</div>
-							</div>
+			<tr class="heading">
+				<td>
+					BILL INFO
+				</td>
 
-							<div>
-								<ul class="list-unstyled spaced">
-									<li>
-										<i></i>Name: <strong>Ginatilan Water</strong>
-									</li>
+				<td>
 
-									<li>
-										<i></i>Address: <strong>Poblacion,Ginatilan,Cebu</strong>
-									</li>
+				</td>
+			</tr>
 
-									<li>
-										<i></i>Zip Code: <strong>6028</strong>
-									</li>
+			<tr class="item">
+				<td>
+					<strong>Current Reading</strong>
+				</td>
 
-									<li>
-										<i></i>Country: <strong>Philippines</strong>
-									</li>
-									<li>
-										Phone:
-									</li>
+				<td>
+					<b>{{cur}}</b>
+				</td>
+			</tr>
 
-								</ul>
-							</div>
-						</div><!-- /.col -->
+			<tr class="item">
+				<td>
+					<strong>Previous Reading</strong>
+				</td>
 
-						<div class="col-sm-6">
-							<div class="row">
-								<div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
-									<b>Customer Info</b>
-								</div>
-							</div>
+				<td>
+					<b>{{pre}}</b>
+				</td>
+			</tr>
 
-							<div>
-								<ul>
-									<li>
-										Name: <strong>{{u.firstname}} {{u.middlename}} {{u.lastname}}</strong>
-									</li>
-									<li>
-										Account ID: <strong>{{tr.consumer_id}}</strong>
-									</li>
-									<li>
-										Meter Number: <strong>{{tr.meternumber}}</strong>
-									</li>
-									<li>
-										Address: <strong>{{tr.installation_address}}</strong>
-									</li>
+			<tr class="item last">
+				<td>
+					<strong>Usage</strong>
+				</td>
 
-									<li>
-										Zip Code:<strong>6028</strong>
-									</li>
+				<td>
+					<b>{{usage}}</b>
+				</td>
+			</tr>
 
-									<li>
-										<i></i>Country: <strong>Philippines</strong>
-									</li>
+			<tr class="total">
+				<td>
+					<strong>Penalty: <b>{{pen}}</b></strong><br>
+					<strong>Previous Due: <b></b></strong><br>
+					<strong>Total Balance: <b>&#8369;{{bal}}</b></strong><br>
+					<strong>Total Bill: <b>&#8369;{{bill}}</b></strong>
 
-									<li>
-										Contact Info: <strong>{{tr.mobilenum}}</strong>
-									</li>
-
-								</ul>
-							</div>
-						</div><!-- /.col -->
-					</div><!-- /.row -->
-					<br>
-					<br>
-					<div class="widget-main padding-24">
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="row">
-									<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-										<b>Bill Info</b>
-									</div>
-								</div>
-								<div>
-									<ul class="list-unstyled spaced">
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Month:
-											<strong>{{month}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Posted on:
-											<strong>{{date_today}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Posted by:
-											<strong>{{user}}</strong>
-										</li>
-										<li>
-											<i class="ace-icon fa fa-caret-right blue"></i>Payment Schedule:
-										</li>
-										<li class="divider"></li>
-									</ul>
-								</div>
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-						<div class="space"></div>
-						<br>
-						<br>
-						<div>
-							<table class="table table-striped table-bordered">
-								<tbody>
-									<tr>
-										<td>
-											Current Reading
-										</td>
-										<td class="hidden-xs">
-											{{u.meterReading}} m3
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Previous Reading
-										</td>
-										<td class="hidden-xs">
-											{{context.prev_reading}} m3
-										</td>
-									</tr>
-									<tr>
-										<td>Usage</td>
-										<td class="hidden-xs"> {{u.usage}} m3</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<br>
-						<br>
-						<div>
-							<table class="table table-striped table-bordered">
-								<tbody>
-									<tr>
-										<td>
-											Bill
-										</td>
-										<td class="hidden-xs">
-											Php. {{lat.bill}}
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Penalty
-										</td>
-										<td class="hidden-xs">
-											Php.{{context.penalty}}
-										</td>
-									</tr>
-									<tr>
-										<td>Total Bill</td>
-										<td class="hidden-xs"> Php.{{tr.cummulative}} </td>
-									</tr>
-									<tr>
-										<td>Previous Due</td>
-										<td class="hidden-xs"> Php.{{context.prev_balance}} </td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-						<div class="hr hr8 hr-double hr-dotted"></div>
-
-
-						<div class="row">
-							<div class="col-sm">
-								<div class="form-group">
-
-								</div>
-							</div>
-							<div class="col-sm">
-								<div class="form-group">
-
-								</div>
-							</div>
-							<div class="col-sm">
-								<div class="form-group">
-									<h4 class="pull-right">
-										Total amount :
-										<span class="red">Php.{{context.total_balance}}</span>
-									</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+				</td>
+			</tr>
+			</table>
+			<footer style="text-align:center;margin-top: 16px;font-size: 13px;">Bill Issued:{{date_today}}</footer>
 		</div>
 	</div>
 	<script>
 		function print() {
-			var doc = new jsPDF('landscape', 'pt', 'a4');
-			var htmlstring = '';
-			var tempVarToCheckPageHeight = 0;
-			var pageHeight = 0;
-
-			pageHeight = doc.internal.pageSize.height;
-			specialElementHandlers = {
-				// element with id of "bypass" - jQuery style selector
-				'#bypassme': function (element, renderer) {
-					// true = "handled elsewhere, bypass text extraction"
-					return true
-				}
+			const invoice = this.document.getElementById("invoice");
+			console.log(invoice);
+			console.log(window);
+			var opt = {
+				margin: .5,
+				filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
+				image: { type: 'png', quality: 0.98 },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
 			};
-			margins = {
-				top: 150,
-				bottom: 60,
-				left: 40,
-				right: 40,
-				width: 600
-			};
-			const formatter = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'Php',
-				minimumFractionDigits: 2
-			})
+			html2pdf().from(invoice).set(opt).save();
+		}
 
-			var y = 10;
-			var x = 20;
-			doc.text(420, y = y + 30, "Copy of Consumer's Meter Reading ");
-			doc.setLineWidth(2);
-			doc.setFontSize(15);
-			doc.fromHTML(
-				document.getElementById('newtable'),
-				15,
-				15,
-			)
-			y = doc.lastAutoTable.finalY
-			console.log(y);
-			console.log("testing")
-			doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
-		}				
 	</script>
 </div>
+
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
-
 				<tr>
 					<th style="min-width: 100px;">Transaction ID</th>
 					<th style="min-width: 100px;">Date</th>
@@ -380,7 +360,6 @@ Account Ledger
 					<th style="min-width: 100px;">Current Balance</th>
 				</tr>
 			</thead>
-
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
 				<tr>
@@ -390,20 +369,24 @@ Account Ledger
 					<td class="{{t.style}}">{{t.reading}}</td>
 					<td class="{{t.style}}">{{t.usage}}</td>
 					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}{% endif %}
-						&#8369; {{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
 					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
 					</td>
 					<td class="{{t.style}}">{{t.pb}}</td>
 					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">{% if t.bal %} &#8369; {{t.bal|floatformat:2|intcomma}}{% endif %}</td>
+					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
 				</tr>
 				{% endfor %}
-			</tbody> 
+			</tbody>
 		</table>
 	</div>
 </div>
-
+<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy"
+		style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
+	</button>
+</div>
+</div id="elementH">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
@@ -415,7 +398,7 @@ Account Ledger
 
 	function getpdf() {
 		var doc = new jsPDF('landscape', 'pt', 'legal');
-	
+
 		margins = {
 			top: 150,
 			bottom: 60,
@@ -425,56 +408,73 @@ Account Ledger
 		};
 
 		const numberformat = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'PHP',
-            currencyDisplay: 'code'
+			style: 'currency',
+			currency: 'PHP',
+			currencyDisplay: 'code'
 
 
-          });
+		});
 
-		var body = [
-				['{{u.consumer_id}}','{{u.firstname}} {{u.middlename}} {{u.lastname}}','{{u.meternumber}}',numberformat.format('{{u.current_bal}}')]
-			]
-	
+
 		var y = 20;
 		var x = 40;
-		doc.text(420, y = y + 30, "Copy of Account Ledger ");
-		doc.setLineWidth(10);
-		doc.setFontSize(14);
-		doc.autoTable({
-            head: [['Account ID', 'Name', 'Meter Number', 'Current Balance']],
-            body: body,
-            columnStyles: { align: "right" },
-            theme: 'striped',
-            startY: 60,
-          })
-	
-		var table = [{% for t in table reversed %}
-			['{{t.transid}}','{{t.date}}','{{t.prev}}','{{t.reading}}','{{t.usage}}','{{t.rateid}}',numberformat.format('{{t.bill}}'),numberformat.format('{{t.payment}}'),'{{t.pb}}','{{t.ornum}}',numberformat.format('{{t.bal}}')],{% endfor %}
-		]
-		y = y + 40
-		doc.setLineWidth(2);
-		doc.setFontSize(11);
-		doc.autoTable({
-			head: [['Transaction ID','Date','Previous','Current Reading','Cubic Meter Used','Connectiong Type','Amount','Payment','Processed By','OR Number','Current Balance']],
-			pageBreak: 'auto',
-			body: table,
-			theme: 'striped',
-			startY: y = y + 30,
-			
-		})
-			
-			if (y > 600) {
-				doc.addPage()
-				y = 20
-			}
-		
 
-		console.log("testing")
-		doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+		doc.setFont("Courier");
+		doc.setFontType("bold");
+		doc.setLineWidth(10);
+		doc.setFontSize(20);
+		doc.text(420, y = y + 20, "GINATILAN WATER ");
+
+
+		// var imgData = ("{% static 'images/govlog.png' %}");
+		var y = 60;
+		var x = 40;
+		doc.setFont("Courier");
+		doc.setLineWidth(5);
+		doc.setFontSize(15);
+		doc.text(x, y = y + 10, "Account ID:");
+		doc.text(300, y, "{{u.consumer_id}}")
+		doc.text(x, y = y + 15, "Name:");
+		doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}")
+		doc.text(x, y = y + 15, "Meter Number:");
+		doc.text(300, y, "{{u.meternumber}}");
+		doc.text(x, y = y + 15, "Balance:");
+		doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
+		// doc.addImage(imgData, 'PNG', 15, 40, 180, 160);
+
+
+		y = y + 70
+		doc.setFont("Courier");
+		doc.setFontType("bold");
+		doc.setLineWidth(10);
+		doc.setFontSize(20);
+		doc.text(420, y = y + 30, "ACCOUNT LEDGER");
+
+		var table = [{% for t in table reversed %}
+	['{{t.transid}}', '{{t.date}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
+		]
+	y = y + 5
+	doc.setLineWidth(2);
+	doc.setFontSize(11);
+	doc.autoTable({
+		head: [['Transaction ID', 'Date', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Connectiong Type', 'Amount', 'Payment', 'Processed By', 'OR Number', 'Current Balance']],
+		pageBreak: 'auto',
+		body: table,
+		theme: 'striped',
+		startY: y = y + 30,
+		styles: { font: "Courier" }
+
+	})
+
+	if (y > 600) {
+		doc.addPage()
+		y = 20
+	}
+
+
+	console.log("testing")
+	doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
 	}
 </script>
-</body>
-
 
 {% endblock ledger %}

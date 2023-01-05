@@ -1,56 +1,7 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
-{% block title %}	<table id="table" class="table table-bordered table-hover table-striped table-sm " width="100%">
-			<thead class="wb_thead">
-				<tr>
-					<th scope="col" style="background-color: #0093b7;">Barangay</th>
-					<th scope="col" style="background-color: #0093b7">Total Usage(&#13221;)</th>
-					<th scope="col" style="background-color: #0093b7">Total Receivables</th>
-					<th scope="col" style="background-color: #0093b7">Total Collection</th>
-					<th scope="col" style="background-color: #0093b7">Collection Rate</th>
-				</tr>
-			</thead>
-			<tbody class="wb_tbody">
-				{% for br in br %}
-				<tr class='clickable-row' style="cursor: pointer;"
-					data-href="{% url 'view_barangay' br.barangayrec_id %}">
-					<td data-label="Barangay">
-						{{br.barangaycode}}
-					</td>
-					<td data-label="Total Usage(Cu. Meter)">
-						{{br.total_usage|floatformat:2}} &#13221;
-					</td>
-					<td data-label="Total Receivables" class="total_paid">
-						{{br.total_rec|floatformat:1}}
-					</td>
-					<td data-label="Total Collection" class="total_due">
-						{{br.total_paid|floatformat:1}}
-					</td>
-					<td data-label="Collection Rate" class="rate">
-					</td>
-				</tr>
-				{% endfor %}
-				<tr>
-					<td data-label="Barangay" style="background-color: #0093b7; color: white; font-weight: bold;">Total
-					</td>
-					<td data-label="Total Usage(Cu. Meter)" class="total_paid">
-						{{fr.tu|floatformat:1}}</td>
-					<td data-label="Total Receivables">{{fr.tr|floatformat:1}}</td>
-					<td data-label="Total Collection" class="total_due">
-						{{fr.tp|floatformat:1}}
-					</td>
-					<td data-label="Collection Rate" class="rate"></td>
-				</tr>
-				<script>
-					jQuery(document).ready(function ($) {
-						$(".clickable-row").click(function () {
-							window.location = $(this).data("href");
-						});
-					});
-				</script>
-			</tbody>
-		</table>
+{% block title %}
 Input Reading
 {% endblock title %}
 
@@ -99,7 +50,7 @@ Input Reading
 	<div class="table_responsive" style="max-height: 922px;">
 		<table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
-				<tr class="header">
+				<tr class="header">					
 					<th scope="col" style="min-width:110px">Account ID</th>
 					<th scope="col" style="min-width:120px">Name</th>
 					<th scope="col" style="min-width:100px">Meter Number</th>
@@ -113,19 +64,17 @@ Input Reading
 					</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="wb_tbody">
 				<tr>
 					<td>{{consumer.consumer_id}}</td>
 					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
 					<td style="text-align:center;">{{consumer.meternumber}}</td>
 					<td>{{consumer.homeaddress}}</td>
 					<td>
-						<form action="" method="post">
-							{% comment %} {% url 'stopmeter' consumer.consumer_id %} {% endcomment %}
+						<form action="{% if consumer.stopmeterflag %}{% else %}{% url 'stopmeter' consumer.consumer_id %}{% endif %}" method="post">
 							{% csrf_token %}
 							{% if consumer.stopmeterflag %}
-							<button class="btn btn-success btn-sm rounded-3" type="submit"
-								onclick="return confirm('Enable {{consumer.firstname}}\'s Meter?')" title="Enable">
+							<button class="btn btn-success btn-sm rounded-3"  type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal" title="Enable">
 								<i class="fa fa-play"></i> ENABLE
 							</button>
 							{% else %}
@@ -141,6 +90,48 @@ Input Reading
 		</table>
 	</div>
 </div>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'enablemeter' consumer.consumer_id %}" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Enable Meter</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<div class="form-check form-switch">
+							<input class="form-check-input" name="newmeter" type="checkbox" id="flexSwitchCheckDefault">
+							<label class="form-check-label" for="flexSwitchCheckDefault">Replaced with New Meter</label>
+						</div>
+						<label for="meternum" class="form-label">New Meter Number</label>
+						<input type="number" disabled name="meternum" class="form-control" required id="meternum">
+						<label for="initialreading" class="form-label">Initial Meter Reading</label>
+						<input type="number" disabled name="initialreading" class="form-control" required id="initialreading">
+					</div>
+				</div>
+				<script>
+					meternum = document.getElementById('meternum')
+					initialreading = document.getElementById('initialreading')
+					document.getElementById('flexSwitchCheckDefault').onchange = function() {
+						meternum.disabled = !this.checked;
+						initialreading.disabled = !this.checked;
+					};
+				</script>
+				<div class="modal-footer">
+					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+					<button type="submit" class="btn btn-primary">Enable</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <div class="row w-100 m-auto">
 	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
 		<button type="button" class="btn button2" style="float: left;" onclick="print()">
@@ -152,7 +143,7 @@ Input Reading
 <h1 class="mb-3 text-center">Input Reading</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">
-		<!-- <form id="yearselection" action="">
+		<form id="yearselection" action="">
 			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
 				{% for i in years reversed %}
@@ -167,14 +158,17 @@ Input Reading
 				yearselection.action = selector.value
 				yearselection.submit()
 			}
-		</script> -->
+		</script>
 		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
 			<thead class="wb_thead" >
 				<tr class="header ">
 					<th style="width: 25% !important;">Month</th>
 					<th style="width: 25% !important;">Consumption</th>
 					<th style="width: 25% !important;">Meter Reading</th>
+					{% if consumer.stopmeterflag %}
+					{% else %}
 					<th style="width: 25% !important;">Actions</th>
+					{% endif %}
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
@@ -188,9 +182,11 @@ Input Reading
 							{{t.usage}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
-								id="{{t.transid}}" onfocus="this.select()" disabled type="number" min={{t.prev}} 
-								{% if t.next %}max="{{t.next}}" {%endif%} value="{{t.reading}}">
+								id="{{t.transid}}" onfocus="this.select()" disabled type="number"{% if t.prev %} min={{t.prev}} {% endif %}
+								{% if t.next %}max="{{t.next}}" {%endif%} {% if t.reading %}value="{{t.reading}}"{% endif %}>
 						</td>
+							{% if consumer.stopmeterflag %}
+							{% else %}
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<button id="submit-{{t.transid}}" style="display: none;" class="btn btn-success" onclick="enableAll()" type="submit">
 								SAVE
@@ -199,6 +195,7 @@ Input Reading
 								<i class="fa fa-edit"></i> EDIT
 							</button>
 						</td>
+							{% endif %}
 					</tr>
 				</form>
 				{% endfor %}
@@ -292,12 +289,8 @@ Input Reading
 			})
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
-			integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
-			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script
 			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script type="text/javascript">
 			
 	function print() {

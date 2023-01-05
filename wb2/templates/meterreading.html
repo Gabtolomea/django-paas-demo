@@ -53,6 +53,27 @@ Meter Reading
 		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 		transition: all 0.1s;
 	}
+	.odd{
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%;
+		-webkit-tap-highlight-color: transparent;
+	
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+		}
+	
+	.dataTables_empty{
+		text-align: center;
+		}
 </style>
 {% endblock style %}
 {% block script %}
@@ -64,11 +85,6 @@ Meter Reading
 
 
 
-<button type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal">
-	<i class="fa fa-copy"></i>
-	Bulk Reading
-</button>
-
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
@@ -79,32 +95,42 @@ Meter Reading
 				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<form action="{% url 'bulkreading' %}" method="GET">
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="recipient-name" class="col-form-label">Select Year</label>
-						<select name="year" id="" class="form-select" required>
-							<option value=""></option>
-							{% for y in years reversed %}
-							<option value="{{y}}">{{y}}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="recipient-name" class="col-form-label">Select Month</label>
-						<select name="month" id="" class="form-select" required>
-							<option value=""></option>
-							{% for m in months %}
-							<option value="{{m.num}}">{{m.name}}</option>
-							{% endfor %}
-						</select>
-					</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="recipient-name" class="col-form-label">Select Year</label>
+					<select name="year" id="year" class="form-control" required>
+						<option value=""></option>
+						{% for y in years reversed %}
+						<option value="{{y}}">{{y}}</option>
+						{% endfor %}
+					</select>
 				</div>
-				<div class="modal-footer">
-					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
-					<button type="submit" class="btn btn-primary">Proceed</button>
+				<div class="form-group">
+					<label for="recipient-name" class="col-form-label">Select Month</label>
+					<select name="month" id="month" class="form-control" required>
+						<option value=""></option>
+						{% for m in months %}
+						<option value="{{m.num}}">{{m.name}}</option>
+						{% endfor %}
+					</select>
 				</div>
-			</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+				<button type="button" onclick=go() class="btn btn-primary">Proceed</button>
+				<a id="aydi" style="display: none;" href=""></a>
+			</div>
+			<script>
+				function go(){
+					year = document.getElementById("year")
+					aydi = document.getElementById("aydi")
+					month = document.getElementById("month")
+					if (year.value != "" && month.value != ""){
+						aydi.href = "/meterreading/bulkreading/"+year.value+"/"+month.value+"/10"
+						aydi.click()
+					}
+				}
+			</script>
 		</div>
 	</div>
 </div>
@@ -114,7 +140,14 @@ Meter Reading
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
+				
+
 				<div class="col-sm-12 col-md-6">
+					<button type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal">
+						<i class="fa fa-copy"></i>
+						Bulk Reading
+					</button>
+	
 					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
 						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
@@ -125,8 +158,7 @@ Meter Reading
 							<option value="100">100</option>
 							<option value="0">All</option>
 						</select> entries</label>
-					</form>
-					
+					</form>					
 					<script src="{% static 'jquery/jquery.js' %}"></script>
 					<script>
 						yearselection = document.getElementById("yearselection")
@@ -140,7 +172,25 @@ Meter Reading
 				<div class="col-sm-12 col-md-6">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<label>Search:
-							<input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+							<form class="input-group" action="" id ="form" method="GET" role="form">
+								<input type="search" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">
+							</form>
+							<script>
+							let myInput = document.getElementById('myInput');
+							form = document.getElementById('form')
+							//on keyup, start the countdown
+							myInput.addEventListener('oninput', () => {
+								var newURL = window.location.href
+								form.action = newURL + "?search="+myInput.value
+								form.submit()
+							});
+							window.onload = function() {
+								var input = document.getElementById("myInput");
+								const end = input.value.length;
+								input.setSelectionRange(end, end);
+								input.focus();
+							}
+							</script>							
 						</label>
 					</div>
 				</div>
@@ -157,22 +207,26 @@ Meter Reading
                             </tr>
                         </thead>
 						<tbody class="wb_tbody">
-                            {% for m in meterred %}
-                            <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'inputreading' m.consumer_id year %}">
-                                <td class="{{t.style}}">
-                                    {{m.consumer_id}}
-                                </td>
-                                <td class="{{t.style}}">
-                                    {{m.lastname}}, {{m.firstname}} {{m.middlename}}
-                                </td>
-                                <td class="{{t.style}}">
-                                    {{m.meternumber}}
-                                </td>
-                                <td class="{{t.style}}">
-                                    {{m.installation_address}}
-                                </td>
-                            </tr>
-                            {% endfor %}
+							{% if meterred %}
+								{% for m in meterred %}
+								<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'inputreading' m.consumer_id year %}">
+									<td class="{{t.style}}">
+										{{m.consumer_id}}
+									</td>
+									<td class="{{t.style}}">
+										{{m.lastname}}, {{m.firstname}} {{m.middlename}}
+									</td>
+									<td class="{{t.style}}">
+										{{m.meternumber}}
+									</td>
+									<td class="{{t.style}}">
+										{{m.installation_address}}
+									</td>
+								</tr>
+								{% endfor %}
+							{% else %}
+							<tr class="odd"><td valign="top" colspan="5" class="dataTables_empty">No matching records found</td></tr>
+							{% endif %}
 							<script>
 								jQuery(document).ready(function($) {
 									$(".clickable-row").click(function() {
@@ -362,13 +416,7 @@ Meter Reading
 				</div>
 			</div>
 		</div>
-
 	</div>
-</div>
-<div>
-	<span>
-
-	</span>
 </div>
 <script>
 	function myFunction() {
@@ -402,4 +450,43 @@ Meter Reading
 </script>
 
 {% endblock meterreading %}
+
+
+
+
+
+
+<table id="table" class="table table-bordered table-hover table-striped table-sm " width="100%">
+	<thead class="wb_thead">
+		<tr>
+			<th scope="col" style="background-color: #0093b7;">Barangay</th>
+			<th scope="col" style="background-color: #0093b7">Total Usage(㎥)</th>
+			<th scope="col" style="background-color: #0093b7">Total Receivables</th>
+			<th scope="col" style="background-color: #0093b7">Total Collection</th>
+			<th scope="col" style="background-color: #0093b7">Collection Rate</th>
+		</tr>
+	</thead>
+	<tbody class="wb_tbody">
+		
+		<tr>
+			<td data-label="Barangay" style="background-color: #0093b7; color: white; font-weight: bold;">Total
+			</td>
+			<td data-label="Total Usage(Cu. Meter)" class="total_paid">
+				</td>
+			<td data-label="Total Receivables"></td>
+			<td data-label="Total Collection" class="total_due">
+				
+			</td>
+			<td data-label="Collection Rate" class="rate"></td>
+		</tr>
+		<script>
+			jQuery(document).ready(function ($) {
+				$(".clickable-row").click(function () {
+					window.location = $(this).data("href");
+				});
+			});
+		</script>
+	</tbody>
+</table>
+Input Reading
 

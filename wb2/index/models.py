@@ -15,7 +15,6 @@ class LoginRec(models.Model):
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
-    password = models.BinaryField()
     username = models.CharField(max_length=20,primary_key = True)
     is_admin = models.BooleanField(default=False)
     is_teller = models.BooleanField(default=False)
@@ -133,7 +132,6 @@ class ConsumerInfo(models.Model):
     current_bal = models.FloatField(default=0)
     cummulative = models.FloatField(default=0)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
-    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
     
 class Transactions(models.Model):
     TRANS_TYPE = (

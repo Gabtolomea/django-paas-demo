@@ -1,0 +1,14 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}
+Account Settings
+{% endblock title %}
+
+{% block userprof %}
+<form method="post"> 
+	{% csrf_token %} 
+    {{user_info}}
+	<button class="btn btn-primary" type="submit">Submit</button> 
+</form>
+{% endblock userprof %}
