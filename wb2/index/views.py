@@ -1917,13 +1917,13 @@ def userprof(request):
             user_info.save()
             messages.success(
                     request, 'Your Profile Updated Successfully')
-            return redirect('userprof')
+            return redirect('viewprof')
     else:
         if user_info.is_valid():
             user_info.save()
             messages.success(
                     request, 'Your Profile Updated Successfully')
-            return redirect('userprof')
+            return redirect('viewprof')
 
     context= {
         'user':user,
