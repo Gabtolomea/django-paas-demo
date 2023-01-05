@@ -168,24 +168,24 @@ Account Settings
                 <img class="img-fluid"
                     src="https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces"
                     alt style="margin-left: 100px;">
-                <h4>Rena Catubig Lequin</h4>
+                <h4 style="text-align: center;">{{user}}</h4>
 
             </div>
 
         </div>
         <div class="col-lg-4 col-md-4" style="margin-top: 60px;">
             <div class="profile-user-settings">
-                <p4 class="profile-user-name">rena.lequin@ctu.edu.ph</p4><br>
+                <p4 class="profile-user-name">{{user.email}}</p4><br>
                 <h1>About</h1>
 
                 <p class="line"></p>
 
                 <div class="details">
                     <ul>
-                        <label for="">Name</label>
+                        <label for="">Name: <strong>{{user.first_name}} {{user.mid_name}} {{user.last_name}}</strong></label>
                     </ul>
                     <ul>
-                        <label for="">Role</label>
+                        <label for="">Role: <strong>{{role}}</strong></label>
                     </ul>
                 </div>
             </div>
