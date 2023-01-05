@@ -88,8 +88,12 @@ def meterreading(request):
 def bills_list_p(request, p):   
     search = request.GET.get("search", "")
     page = request.GET.get('page')
+    isnum = search.isnumeric()
     if search:
-        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        else:
+            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
@@ -220,7 +224,6 @@ def ledger(request, id):
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 pre = asc_trans[i].meterReading - usage
-                pen = asc_trans[i].penaltyCode
                 bill = asc_trans[i].bill
                 try:
                     connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
@@ -243,6 +246,7 @@ def ledger(request, id):
             elif asc_trans[i].transType == 'Penalty':
                 usage = ''
                 bill = asc_trans[i].bill
+                pen = asc_trans[i].penaltyCode
                 connectionType = ''
                 prev = ''
                 cur = ''
@@ -384,9 +388,12 @@ def meterreading_p(request, p):
 
     search = request.GET.get("search", "")
     page = request.GET.get('page')
+    isnum = search.isnumeric()
     if search:
-        meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            meterred = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        else:
+            meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
@@ -641,9 +648,12 @@ def consumer_list(request):
 def consumer_list_p(request, p):
     search = request.GET.get("search", "")
     page = request.GET.get('page')
+    isnum = search.isnumeric()
     if search:
-        cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            cons = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        else:
+            cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
@@ -1173,9 +1183,12 @@ def unsettled_bills_p(request, p):
     search = request.GET.get("search", "")
     page = request.GET.get('page')
     tb = ConsumerInfo.objects.filter(current_bal__gt=0).aggregate(tots = Sum('current_bal'))
+    isnum = search.isnumeric()
     if search:
-        ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search) | Q(consumer_id=search), current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            ubs = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
+        else:
+            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
     else:
         ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
