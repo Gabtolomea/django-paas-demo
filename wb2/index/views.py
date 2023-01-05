@@ -89,7 +89,7 @@ def bills_list_p(request, p):
     search = request.GET.get("search", "")
     page = request.GET.get('page')
     if search:
-        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
@@ -110,6 +110,7 @@ def bills_list_p(request, p):
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
+    print(bills_list.paginator.num_pages)
     context = {
         'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
@@ -385,7 +386,7 @@ def meterreading_p(request, p):
     page = request.GET.get('page')
     if search:
         meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+        | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
@@ -642,7 +643,7 @@ def consumer_list_p(request, p):
     page = request.GET.get('page')
     if search:
         cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+        | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
@@ -677,8 +678,6 @@ def consumer_list_p(request, p):
     return render(request, 'conlist.html', context)
 
 @login_required(login_url='login')
-
-
 def consumercreation(request):
     form = ConsumerForm()
     cons = ConsumerInfo.objects.all().order_by("-consumer_id")
@@ -848,7 +847,6 @@ def user_edit(request, id):
         is_supervisor = request.POST.get('is_supervisor','') == 'on'
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
-        print(is_admin)
         form = sysup(request.POST, instance=sys)
         if form.is_valid():
             sys.username = username
@@ -867,8 +865,6 @@ def user_edit(request, id):
             # fss.save(upload.name, upload)
             # sys.profilepic = pic
             sys.save()
-        else:
-            print("dili")
         return redirect('sysuser')
     context = {
         'sys': sys,
@@ -1079,7 +1075,10 @@ def usage_report_data(request, year):
         except ObjectDoesNotExist:
             brec = None
         for m in months:
-            mymonths.append(brec.__dict__[f"total_usage_{m}"])
+            try:
+                mymonths.append(brec.__dict__[f"total_usage_{m}"])
+            except AttributeError:
+                pass
         n = br(b.barangay, mymonths)
         mymonths = []
         mybars.append(n)
@@ -1092,7 +1091,6 @@ def usage_report_data(request, year):
         'years': years,
         'my': my,
         'user': request.user,
-
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1177,7 +1175,7 @@ def unsettled_bills_p(request, p):
     tb = ConsumerInfo.objects.filter(current_bal__gt=0).aggregate(tots = Sum('current_bal'))
     if search:
         ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber__icontains=search), current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
+        | Q(lastname__icontains=search) | Q(meternumber=search) | Q(consumer_id=search) | Q(consumer_id=search), current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     else:
         ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)

@@ -49,7 +49,7 @@ class Penalty(models.Model):
     penalty_after =  models.IntegerField(default = 0)#months
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
-    date_added = models.DateField(auto_now_add=True)
+    date_added = models.DateField(auto_now_add=True, null=True)
     daysappliedafter = models.IntegerField(default=0)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
     def __str__(self) -> str:

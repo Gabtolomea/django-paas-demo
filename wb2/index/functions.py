@@ -58,6 +58,8 @@ def len_years():
     return len(years)
 def last_reading(id, year, mo):
     ye = year
+    if datetime.today().month == 1:
+        ye-=1
     for i in range(0, len_years()):
         print(mo)
         print(ye)
