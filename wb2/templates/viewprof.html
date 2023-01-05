@@ -1,0 +1,203 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}
+Account Settings
+{% endblock title %}
+
+{% block viewprof %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+<style>
+    body {
+        margin-top: 50px;
+        margin-left: 50px;
+    }
+
+    .profile {
+        margin-top: 100px;
+    }
+
+    .profile-image img {
+        border-radius: 50%;
+        border: 1px solid #000000;
+    }
+
+    .profile-user-settings {
+        float: left;
+        width: calc(66.666% - 2rem);
+        margin-top: 1.1rem;
+    }
+
+    .img-fluid {
+        width: 342px;
+        height: 336px;
+        top: 178px;
+    }
+
+    h4 {
+        width: 262px;
+        height: 30px;
+        left: 484px;
+        margin-left: 150px;
+        margin-top: 15px;
+        font-family: 'Arial';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 30px;
+        letter-spacing: 0.135em;
+        color: #000000;
+    }
+
+    p4 {
+        width: 273px;
+        height: 27px;
+        left: 858px;
+        margin-left: 100px;
+        font-family: 'Arial';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 27px;
+        letter-spacing: 0.135em;
+        color: #000000;
+    }
+
+    h1 {
+        width: 68px;
+        height: 27px;
+        left: 858px;
+        margin-top: 65px;
+        margin-left: 100px;
+        font-family: 'Arial';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: 0.135em;
+        color: #0093B7;
+    }
+
+    .line {
+        width: 350px;
+        height: 0px;
+        top: 290px;
+        margin-left: 100px;
+        border: 1px solid #000000;
+        transform: rotate(-0.16deg);
+    }
+
+    .details {
+        margin-left: 67px;
+        font-family: Arial;
+        font-size: 18px;
+    }
+
+    .button2 {
+        background-color: #63CDD7;
+        color: black;
+        padding: 8px 30px;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+</style>
+
+
+<div class="row w-100 m-auto">
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-user"><span style="padding: 12px; font-family: Arial;">Profile</span></i></a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 50px; padding-right: 50px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial;">Consumer Types</span></i></a>
+    </div>
+    
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'penalty'  %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-gavel"><span style="padding: 12px; font-family: Arial;">Penalties</span></i></a>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'discount' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-percent"><span style="padding: 12px; font-family: Arial;">Discounts</span></i></a>
+    </div>
+</div>
+
+
+<div class="profile">
+    <div class="row w-100">
+        <div class="col-lg-4 col-md-4">
+            <div class="profile-image">
+
+                <img class="img-fluid"
+                    src="https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces"
+                    alt style="margin-left: 100px;">
+                <h4>Rena Catubig Lequin</h4>
+
+            </div>
+
+        </div>
+        <div class="col-lg-4 col-md-4" style="margin-top: 60px;">
+            <div class="profile-user-settings">
+                <p4 class="profile-user-name">rena.lequin@ctu.edu.ph</p4><br>
+                <h1>About</h1>
+
+                <p class="line"></p>
+
+                <div class="details">
+                    <ul>
+                        <label for="">Name</label>
+                    </ul>
+                    <ul>
+                        <label for="">Role</label>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-4 col-md-4" style="text-align:right;">
+            <button class="btn button2" style="width: 150px; white-space: nowrap; padding-left: 25px;"><i
+                    class="fa fa-check-square-o">
+                    <span style="padding: 5px; font-family: Arial;">Edit Profile</span></i></button>
+        </div>
+    </div>
+</div>
+
+
+</html>{% endblock viewprof %}

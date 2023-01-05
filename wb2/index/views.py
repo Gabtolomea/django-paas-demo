@@ -28,6 +28,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.core.files.storage import FileSystemStorage
 
 
 
@@ -930,7 +931,6 @@ def user_edit(request, id):
         is_supervisor = request.POST.get('is_supervisor','') == 'on'
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
-        print(is_admin)
         form = sysup(request.POST, instance=sys)
         if form.is_valid():
             sys.username = username
@@ -1883,10 +1883,50 @@ def bulkreading(request, year, month, p):
     }
     return render(request,'bulkreading.html', context)
 
+#view userprofile page
+@login_required(login_url='login')
+def viewprof(request):
+    user = SystemUsers.objects.get(username=str(request.user))
+    role = ""
+    if user.is_admin:
+        role = role + "Admin "
+    if user.is_teller:
+        role = role + "Teller "
+    if user.is_supervisor:
+        role = role + "Supervisor "
+    if user.is_manager:
+        role = role + "Manager "
+    if user.is_reader:
+        role = role + "Reader "
+    context= {
+        'user':user,
+        'role':role
+    }
+    return render(request, 'viewprof.html', context)
+
+
+
+#edit userprofile page
 @login_required(login_url='login')
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
+    user_info = ProfileForm(instance=user)
+    if request.method == 'POST':
+        user_info = ProfileForm(request.POST, instance=user)
+        if user_info.is_valid():
+            user_info.save()
+            messages.success(
+                    request, 'Your Profile Updated Successfully')
+            return redirect('userprof')
+    else:
+        if user_info.is_valid():
+            user_info.save()
+            messages.success(
+                    request, 'Your Profile Updated Successfully')
+            return redirect('userprof')
+
     context= {
-        'user':user
+        'user':user,
+        'user_info':user_info
     }
     return render(request, 'userprof.html', context)
