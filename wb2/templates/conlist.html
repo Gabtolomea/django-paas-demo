@@ -119,13 +119,14 @@ Consumer List
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+					<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
                         <thead class="wb_thead">
                             <tr>
                                 <th style="min-width: 100px;">Account ID</th>
                                 <th style="min-width: 100px;">Name</th>
                                 <th style="min-width: 100px;">Address</th>
                                 <th style="min-width: 100px;">Meter Number</th>
+								<th scope="col">Delete</th>
                             </tr>
                         </thead>
                         <tbody class="wb_tbody">
@@ -136,17 +137,21 @@ Consumer List
                                 <td>{{con.installation_address}}</td>
                                 <td class="{{t.style}}">
                                     {{con.meternumber}}
-                                    <a href="{% url 'consumerupdate' con.consumer_id %}">
-                                        <button class="hide btn btn-success btn-sm rounded-0" style="float: right;"
-                                            data-toggle="modal" type="button" data-placement="top" title="Edit">
+                                </td>
+								<td>
+									<a title="Update" href="{% url 'consumerupdate' con.consumer_id %}">
+                                        <button class="hide btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Update">
                                             <i class="fa fa-edit"></i>
                                         </button>
                                     </a>
-                                    <a href="{%url 'deleteconsumer' con.consumer_id %}"><button
-                                        class=" hide btn btn-danger btn-sm rounded-0" type="button"
-                                        onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
-                                        data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
-                                </td>
+								</td>
+								<td>
+									<a title="Delete" href="{%url 'deleteconsumer' con.consumer_id %}">
+										<button class=" hide btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')" data-placement="top" title="Delete">
+											<i class="fa fa-trash"></i>
+										</button>
+									</a>
+									</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -275,6 +280,32 @@ Consumer List
 											<li class="paginate_button page-item disabled next">Next</li>
 										{% endif %}
 									{% endif %}
+								{% endif %}
+								{% else %}
+								{% if consumer_list.has_previous %} 
+								<a href="?page={{ consumer_list.previous_page_number }}&search={{search}}">
+									<li class="paginate_button page-item previous">Previous</li>
+								</a>
+								{% else %}
+									<li class="paginate_button disabled page-item previous">Previous</li>
+								{% endif %}
+								{% for i in consumer_list.paginator.page_range %}
+									{% if i == consumer_list.number %}
+									<a href="?page={{i}}&search={{search}}">
+										<li class="paginate_button page-item active">{{i}}</li>
+									</a>
+									{% else %}
+									<a href="?page={{i}}&search={{search}}">
+										<li class="paginate_button page-item">{{i}}</li>
+									</a>
+									{% endif %}
+								{% endfor %}
+								{% if consumer_list.has_next %}
+								<a href="?page={{ consumer_list.next_page_number }}&search={{search}}">
+									<li class="paginate_button page-item next">Next</li>
+								</a>
+								{% else %}
+								<li class="paginate_button disabled page-item next">Next</li>
 								{% endif %}
 							{% endif %}
 						</ul>

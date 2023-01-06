@@ -99,9 +99,27 @@ Bulk Reading
 				</div>
 				<div class="col-sm-12 col-md-6">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<label>Search:
-							<input type="myInput" id="myInput" class="form-control form-control-sm" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-						</label>
+						<form action="" id ="form" method="GET" role="form">
+							<label style="float: right;">Search:
+								<input type="text" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">					
+							</label>
+						</form>
+						<script>
+							let myInput = document.getElementById('myInput');
+							form = document.getElementById('form')
+							//on keyup, start the countdown
+							myInput.addEventListener('input', () => {
+								var newURL = window.location.href
+								form.action = newURL + "?search="+myInput.value
+								form.submit()
+							});
+							window.onload = function() {
+								var input = document.getElementById("myInput");
+								const end = input.value.length;
+								input.setSelectionRange(end, end);
+								input.focus();
+							}
+						</script>	
 					</div>
 				</div>
 			</div>
@@ -121,12 +139,12 @@ Bulk Reading
 							</thead>
 							<tbody class="wb_tbody">
 								{% for c in consumers_list %}
-								<tr>
+								<tr style="cursor: pointer;" onclick="foc_this('con{{c.con.consumer_id}}_id')">
 									<td>{{c.con.meternumber}}</td>
 									<td>{{c.con.consumer_id}}</td>
 									<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
 									<td>{{c.prev}}</td>
-									<td class="balance"><input title="Current Reading" type="number" class="form-control" name="con{{c.con.consumer_id}}" id="" value="{{c.cur}}"></td>
+									<td class="balance"><input title="Current Reading" min="{{c.prev}}" type="number" {% if c.cur == 0 %}onfocus="foc_check('con{{c.con.consumer_id}}_id')" onblur="check('con{{c.con.consumer_id}}_id')"{% endif %} class="form-control" name="con{{c.con.consumer_id}}" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}"></td>
 								</tr>
 								{% endfor %}
 							</tbody>
@@ -141,6 +159,21 @@ Bulk Reading
 					</form>
 					
 					<script>
+						function foc_this(id){
+							document.getElementById(id).focus()
+						}
+						function foc_check(id){
+							p = document.getElementById(id)
+							if (p.value == 0){
+								p.value = ''
+							}
+						}
+						function check(id) {
+							p = document.getElementById(id)
+							if (p.value == ''){
+								p.value = 0
+							}
+						}
 						$(document).ready(function() {
 							$("input[type='number']").on('change', function() {
 								$(this).addClass('changed');
