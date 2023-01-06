@@ -1903,7 +1903,7 @@ def viewprof(request):
         role = role + "Reader "
     context= {
         'user':user,
-        'role':role
+        'role':role,
     }
     return render(request, 'viewprof.html', context)
 
