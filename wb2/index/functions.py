@@ -58,6 +58,8 @@ def len_years():
     return len(years)
 def last_reading(id, year, mo):
     ye = year
+    if datetime.today().month == 1:
+        ye-=1
     for i in range(0, len_years()):
         print(mo)
         print(ye)
@@ -71,6 +73,48 @@ def last_reading(id, year, mo):
             mo = 12
             ye-=1
 
+def create_brec(address_id, year):
+    con_b_rec = BarangayRecord()  
+    con_b_rec.barangayrec_id = f"{address_id}-{year}"
+    con_b_rec.barangaycode = Barangays.objects.get(id=address_id)
+    con_b_rec.year = year
+    con_b_rec.total_due_jan = 0
+    con_b_rec.total_due_feb = 0
+    con_b_rec.total_due_mar = 0
+    con_b_rec.total_due_apr = 0
+    con_b_rec.total_due_may = 0
+    con_b_rec.total_due_jun = 0
+    con_b_rec.total_due_jul = 0
+    con_b_rec.total_due_aug = 0
+    con_b_rec.total_due_sept = 0
+    con_b_rec.total_due_oct = 0
+    con_b_rec.total_due_nov = 0
+    con_b_rec.total_due_dec = 0
+    con_b_rec.total_paid_jan = 0
+    con_b_rec.total_paid_feb = 0
+    con_b_rec.total_paid_mar = 0
+    con_b_rec.total_paid_apr = 0
+    con_b_rec.total_paid_may = 0
+    con_b_rec.total_paid_jun = 0
+    con_b_rec.total_paid_jul = 0
+    con_b_rec.total_paid_aug = 0
+    con_b_rec.total_paid_sept = 0
+    con_b_rec.total_paid_oct = 0
+    con_b_rec.total_paid_nov = 0
+    con_b_rec.total_paid_dec = 0
+    con_b_rec.total_usage_jan = 0
+    con_b_rec.total_usage_feb = 0
+    con_b_rec.total_usage_mar = 0
+    con_b_rec.total_usage_apr = 0
+    con_b_rec.total_usage_may = 0
+    con_b_rec.total_usage_jun = 0
+    con_b_rec.total_usage_jul = 0
+    con_b_rec.total_usage_aug = 0
+    con_b_rec.total_usage_sept = 0
+    con_b_rec.total_usage_oct = 0
+    con_b_rec.total_usage_nov = 0
+    con_b_rec.total_usage_dec = 0
+    return con_b_rec
 def get_balance(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
     trans = Transactions.objects.filter(acctID = id)

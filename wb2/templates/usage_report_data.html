@@ -325,82 +325,15 @@
   <center>
     <div class="selectBox">
       <label>Select Barangay</label>
-      <select id="coffeesales">
-        <option
-          value="{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} "
-        >
+      <select class="form-select" id="coffeesales">
+        <option value="{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} ">
           Total Monlthy
         </option>
-        <option
-          value="{{anao.jan}}, {{anao.feb}}, {{anao.mar}}, {{anao.apr}}, {{anao.may}}, {{anao.jun}}, {{anao.jul}}, {{anao.aug}}, {{anao.sept}}, {{anao.oct}}, {{anao.nov}}, {{anao.dec}} "
-        >
-          Anao
+        {% for b in mybars %}
+        <option value="{% for m in b.months %}{{m}},{% endfor %}">
+          {{b.name}}
         </option>
-        <option
-          value="{{mangaco.jan}}, {{mangaco.feb}}, {{mangaco.mar}}, {{mangaco.apr}}, {{mangaco.may}}, {{mangaco.jun}}, {{mangaco.jul}}, {{mangaco.aug}}, {{mangaco.sept}}, {{mangaco.oct}}, {{mangaco.nov}}, {{mangaco.dec}} "
-        >
-          Mangaco
-        </option>
-        <option
-          value="{{palanas.jan}}, {{palanas.feb}}, {{palanas.mar}}, {{palanas.apr}}, {{palanas.may}}, {{palanas.jun}}, {{palanas.jul}}, {{palanas.aug}}, {{palanas.sept}}, {{palanas.oct}}, {{palanas.nov}}, {{palanas.dec}} "
-        >
-          Palanas
-        </option>
-        <option
-          value="{{poblacion.jan}}, {{poblacion.feb}}, {{poblacion.mar}}, {{poblacion.apr}}, {{poblacion.may}}, {{poblacion.jun}}, {{poblacion.jul}}, {{poblacion.aug}}, {{poblacion.sept}}, {{poblacion.oct}}, {{poblacion.nov}}, {{poblacion.dec}} "
-        >
-          Poblacion
-        </option>
-        <option
-          value="{{salamanca.jan}}, {{salamanca.feb}}, {{salamanca.mar}}, {{salamanca.apr}}, {{salamanca.may}}, {{salamanca.jun}}, {{salamanca.jul}}, {{salamanca.aug}}, {{salamanca.sept}}, {{salamanca.oct}}, {{salamanca.nov}}, {{salamanca.dec}} "
-        >
-          Salamanca
-        </option>
-        <option
-          value="{{sanroq.jan}}, {{sanroq.feb}}, {{sanroq.mar}}, {{sanroq.apr}}, {{sanroq.may}}, {{sanroq.jun}}, {{sanroq.jul}}, {{sanroq.aug}}, {{sanroq.sept}}, {{sanroq.oct}}, {{sanroq.nov}}, {{sanroq.dec}} "
-        >
-          San Roque
-        </option>
-        <option
-          value="{{cagsing.jan}}, {{cagsing.feb}}, {{cagsing.mar}}, {{cagsing.apr}}, {{cagsing.may}}, {{cagsing.jun}}, {{cagsing.jul}}, {{cagsing.aug}}, {{cagsing.sept}}, {{cagsing.oct}}, {{cagsing.nov}}, {{cagsing.dec}} "
-        >
-          Cagsing
-        </option>
-        <option
-          value="{{calabawan.jan}}, {{calabawan.feb}}, {{calabawan.mar}}, {{calabawan.apr}}, {{calabawan.may}}, {{calabawan.jun}}, {{calabawan.jul}}, {{calabawan.aug}}, {{calabawan.sept}}, {{calabawan.oct}}, {{calabawan.nov}}, {{calabawan.dec}} "
-        >
-          Calabawan
-        </option>
-        <option
-          value="{{cambagte.jan}}, {{cambagte.feb}}, {{cambagte.mar}}, {{cambagte.apr}}, {{cambagte.may}}, {{cambagte.jun}}, {{cambagte.jul}}, {{cambagte.aug}}, {{cambagte.sept}}, {{cambagte.oct}}, {{cambagte.nov}}, {{cambagte.dec}} "
-        >
-          Cambagte
-        </option>
-        <option
-          value="{{campisong.jan}}, {{campisong.feb}}, {{campisong.mar}}, {{campisong.apr}}, {{campisong.may}}, {{campisong.jun}}, {{campisong.jul}}, {{campisong.aug}}, {{campisong.sept}}, {{campisong.oct}}, {{campisong.nov}}, {{campisong.dec}} "
-        >
-          Campisong
-        </option>
-        <option
-          value="{{canorong.jan}}, {{canorong.feb}}, {{canorong.mar}}, {{canorong.apr}}, {{canorong.may}}, {{canorong.jun}}, {{canorong.jul}}, {{canorong.aug}}, {{canorong.sept}}, {{canorong.oct}}, {{canorong.nov}}, {{canorong.dec}} "
-        >
-          Cañorong
-        </option>
-        <option
-          value="{{guiwan.jan}}, {{guiwan.feb}}, {{guiwan.mar}}, {{guiwan.apr}}, {{guiwan.may}}, {{guiwan.jun}}, {{guiwan.jul}}, {{guiwan.aug}}, {{guiwan.sept}}, {{guiwan.oct}}, {{guiwan.nov}}, {{guiwan.dec}} "
-        >
-          Guiwanon
-        </option>
-        <option
-          value="{{looc.jan}}, {{looc.feb}}, {{looc.mar}}, {{looc.apr}}, {{looc.may}}, {{looc.jun}}, {{looc.jul}}, {{looc.aug}}, {{looc.sept}}, {{looc.oct}}, {{looc.nov}}, {{looc.dec}} "
-        >
-          Looc
-        </option>
-        <option
-          value="{{malat.jan}}, {{malat.feb}}, {{malat.mar}}, {{malat.apr}}, {{malat.may}}, {{malat.jun}}, {{malat.jul}}, {{malat.aug}}, {{malat.sept}}, {{malat.oct}}, {{malat.nov}}, {{malat.dec}} "
-        >
-          Malatbo
-        </option>
+        {% endfor %}
       </select>
     </div>
   </center>
@@ -443,11 +376,5 @@
     	myChart.update()
     }
   </script>
-
-  <br />
-
-
-
-
 
 	{% endblock usage_report_data %}

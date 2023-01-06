@@ -3,7 +3,6 @@
 import calendar
 import math
 import datetime
-
 from .dataporter import *
 from .DBdb import *
 from .decorators import *
@@ -84,6 +83,8 @@ def bills_list(request):
     return redirect('bills_list_p', p=10)
 
 @login_required(login_url='login')
+
+
 def meterreading(request):
     return redirect('meterreading_p', p=10)
 
@@ -105,13 +106,14 @@ def bills_list_p(request, p):
 
     search = request.GET.get("search", "")
     page = request.GET.get('page')
+    isnum = search.isnumeric()
     if search:
-        bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-                                            | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        else:
+            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
     else:
-        bills = ConsumerInfo.objects.all().order_by(
-            'lastname', 'firstname', 'middlename')
-
+        bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
     user = request.user
     count = bills.count()
@@ -130,6 +132,7 @@ def bills_list_p(request, p):
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
+    print(bills_list.paginator.num_pages)
     context = {
         'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
@@ -142,8 +145,11 @@ def bills_list_p(request, p):
 
 
 def signout(request):
-    lr = LoginRec.objects.get(username=request.user)
-    lr.delete()
+    try:
+        lr = LoginRec.objects.get(username=request.user)
+        lr.delete()
+    except ObjectDoesNotExist:
+        pass
     logout(request)
     messages.success(request, 'Logout successful')
     return redirect('login')
@@ -260,7 +266,6 @@ def ledger(request, id):
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 pre = asc_trans[i].meterReading - usage
-                pen = asc_trans[i].penaltyCode
                 bill = asc_trans[i].bill
                 try:
                     connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
@@ -283,6 +288,7 @@ def ledger(request, id):
             elif asc_trans[i].transType == 'Penalty':
                 usage = ''
                 bill = asc_trans[i].bill
+                pen = asc_trans[i].penaltyCode
                 connectionType = ''
                 prev = ''
                 cur = ''
@@ -312,8 +318,7 @@ def ledger(request, id):
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage,
-                                  bill, payment, pb, ornum, bal, connectionType, style)
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style)
             table.append(new_row)
             if i < len(asc_trans)-1:
                 if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
@@ -360,13 +365,6 @@ def forgetpassword(request):
                 'token': token
             }
             print(f"http://{current_site.domain}/reset/{uid}/{token}")
-            # email = EmailMessage(
-            #     email_subject,
-            #     message,
-            #     EMAIL_HOST_USER,
-            #     [user.email],
-            # )
-            # email.fail_silently = True
             
             text_content = plaintext.render(message)
             html_content = htmltemp.render(message)
@@ -391,18 +389,13 @@ def resetpassword(request, uidb64, token):
         form = PasswordChangeForm(user)
     except (TypeError,ValueError,OverflowError,SystemUsers.DoesNotExist):
         user = None
-    print(user)
     if request.method == 'POST':
         if user is not None and generate_token.check_token(user,token):
             pass1 = request.POST['password1']
             pass2 = request.POST['password2']
-            print(user.password)
-            print(pass1)
-            print(pass2)
             if pass1 == pass2:
                 user.first_name = pass1
                 user.set_password(pass1)
-                print(user.password)
                 user.save()
                 messages.success(request, 'Password reset successfully')
                 return redirect('login')
@@ -446,9 +439,12 @@ def meterreading_p(request, p):
 
     search = request.GET.get("search", "")
     page = request.GET.get('page')
+    isnum = search.isnumeric()
     if search:
-        meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            meterred = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        else:
+            meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
@@ -565,46 +561,8 @@ def inputreading(request, id, year):
         try:
             con_b_rec = BarangayRecord.objects.get(barangaycode_id=consumer.installation_address_id, year=year)
         except ObjectDoesNotExist:
-            con_b_rec = BarangayRecord()
-            con_b_rec.barangayrec_id = f"{consumer.installation_address_id}-{year}"
-            con_b_rec.barangaycode = Barangays.objects.get(id=consumer.installation_address_id)
-            con_b_rec.year = year
-            con_b_rec.total_due_jan = 0
-            con_b_rec.total_due_feb = 0
-            con_b_rec.total_due_mar = 0
-            con_b_rec.total_due_apr = 0
-            con_b_rec.total_due_may = 0
-            con_b_rec.total_due_jun = 0
-            con_b_rec.total_due_jul = 0
-            con_b_rec.total_due_aug = 0
-            con_b_rec.total_due_sept = 0
-            con_b_rec.total_due_oct = 0
-            con_b_rec.total_due_nov = 0
-            con_b_rec.total_due_dec = 0
-            con_b_rec.total_paid_jan = 0
-            con_b_rec.total_paid_feb = 0
-            con_b_rec.total_paid_mar = 0
-            con_b_rec.total_paid_apr = 0
-            con_b_rec.total_paid_may = 0
-            con_b_rec.total_paid_jun = 0
-            con_b_rec.total_paid_jul = 0
-            con_b_rec.total_paid_aug = 0
-            con_b_rec.total_paid_sept = 0
-            con_b_rec.total_paid_oct = 0
-            con_b_rec.total_paid_nov = 0
-            con_b_rec.total_paid_dec = 0
-            con_b_rec.total_usage_jan = 0
-            con_b_rec.total_usage_feb = 0
-            con_b_rec.total_usage_mar = 0
-            con_b_rec.total_usage_apr = 0
-            con_b_rec.total_usage_may = 0
-            con_b_rec.total_usage_jun = 0
-            con_b_rec.total_usage_jul = 0
-            con_b_rec.total_usage_aug = 0
-            con_b_rec.total_usage_sept = 0
-            con_b_rec.total_usage_oct = 0
-            con_b_rec.total_usage_nov = 0
-            con_b_rec.total_usage_dec = 0
+            con_b_rec = create_brec(consumer.installation_address_id, year)
+            
         for i in range(12):
             r = request.POST.get('reading-'+calendar.month_name[i+1], 0)
             readings.append(int(r))
@@ -652,19 +610,6 @@ def inputreading(request, id, year):
                         t.payment = 0
                         t.processedBy = request.user
                         t.save()
-                    if consumer.discountcode is not None:
-                        discount = consumer.discountcode
-                        t = Transactions()
-                        t.acctID = consumer
-                        t.transType = 'Discount'
-                        t.date = datetime.today()
-                        t.month = d
-                        t.year = year
-                        t.bill = 0
-                        t.payment = bill-(bill*(discount.discount_rate/100))
-                        bill -= bill*(discount.discount_rate/100)
-                        t.processedBy = request.user
-                        t.save()
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                     lastreading = last_reading(id, year, d-1)
@@ -700,19 +645,6 @@ def inputreading(request, id, year):
                         t.year = year
                         t.bill = interest
                         t.payment = 0
-                        t.processedBy = request.user
-                        t.save()
-                    if consumer.discountcode is not None:
-                        discount = consumer.discountcode
-                        t = Transactions()
-                        t.acctID = consumer
-                        t.transType = 'Discount'
-                        t.date = datetime.today()
-                        t.month = d
-                        t.year = year
-                        t.bill = 0
-                        t.payment = bill-(bill*(discount.discount_rate/100))
-                        bill -= bill*(discount.discount_rate/100)
                         t.processedBy = request.user
                         t.save()
                 get_balance(id)
@@ -786,9 +718,12 @@ def consumer_list_p(request, p):
 
     search = request.GET.get("search", "")
     page = request.GET.get('page')
+    isnum = search.isnumeric()
     if search:
-        cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            cons = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+        else:
+            cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
     else:
         cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
     
@@ -823,8 +758,6 @@ def consumer_list_p(request, p):
     return render(request, 'conlist.html', context)
 
 @login_required(login_url='login')
-
-
 def consumercreation(request):
     template = ""
     LoginSession = request.user
@@ -1026,6 +959,8 @@ def sysuser(request):
 
 
 @login_required(login_url='login')
+
+
 def user_edit(request, id):
 
     template = ""
@@ -1051,7 +986,6 @@ def user_edit(request, id):
         is_supervisor = request.POST.get('is_supervisor','') == 'on'
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
-        print(is_admin)
         form = sysup(request.POST, instance=sys)
         if form.is_valid():
             sys.username = username
@@ -1070,8 +1004,6 @@ def user_edit(request, id):
             # fss.save(upload.name, upload)
             # sys.profilepic = pic
             sys.save()
-        else:
-            print("dili")
         return redirect('sysuser')
     context = {
         'sys': sys,
@@ -1104,37 +1036,43 @@ def about(request):
 
 def payment(request, id):
     if request.method == 'POST':
-        amount = request.POST['amount']
+        amount = int(request.POST['amount'])
         or_num = request.POST['or_num']
-        dis_code = request.POST.get('dis_code', None)
+        dis_code = request.POST.get('dis_code')
         month = datetime.today().month
         consumer = ConsumerInfo.objects.get(consumer_id=id)
         con_bar = consumer.installation_address
+        year = datetime.today().year
         try:
             con_b_rec = BarangayRecord.objects.get(barangaycode_id=con_bar, year=year)
         except ObjectDoesNotExist:
-            con_b_rec = BarangayRecord()
+            con_b_rec = create_brec(consumer.installation_address_id, year)
         t = Transactions()
         t.acctID = consumer
         t.transType = "Payment"
         t.date = datetime.today()
-        t.year = datetime.today().year
+        t.year = year
         t.month = month
         t.payment = amount
         t.processedBy = request.user
         t.or_number = or_num
         t.save()
-        if dis_code is not None:
+        try:
+            discount = Discount.objects.get(discountcode=dis_code)
+        except ObjectDoesNotExist:
+            print("")
+        else:
             t = Transactions()
             t.acctID = consumer
             t.transType = "Discount"
             t.date = datetime.today()
-            t.year = datetime.today().year
+            t.year = year
             t.month = month
             t.processedBy = request.user
             t.or_number = or_num
             t.payment = 0
-            amount+=t.payment
+            t.payment = amount-(amount*(discount.discount_rate/100))
+            amount -= amount*(discount.discount_rate/100)
             t.save()
         get_balance(id)
         match month:
@@ -1261,6 +1199,23 @@ def usage_report_data(request, year):
 
 
     years = []
+    months = [
+        'jan',
+        'feb',
+        'mar',
+        'apr',
+        'may',
+        'jun',
+        'jul',
+        'aug',
+        'sept',
+        'oct',
+        'nov',
+        'dec'
+    ]
+    bars = Barangays.objects.all()
+    mybars = []
+    mymonths = []
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -1288,252 +1243,34 @@ def usage_report_data(request, year):
         sums=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'))).annotate(
         sum=Greatest(F('sums'), 0)
     )
-
+    class br():
+        def __init__(self, name, months):
+            self.name = name
+            self.months = months
     # bitch this is something long muhahaha
-    ana = BarangayRecord.objects.filter(year=year, barangaycode='1').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    anao = dict((i, j) for i, j in ana.items() if j >= 0)
-    manga = BarangayRecord.objects.filter(year=year, barangaycode='10').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    mangaco = dict((i, j) for i, j in manga.items() if j >= 0)
-
-    pala = BarangayRecord.objects.filter(year=year, barangaycode='11').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    palanas = dict((i, j) for i, j in pala.items() if j >= 0)
-
-    pob = BarangayRecord.objects.filter(year=year, barangaycode='12').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    poblacion = dict((i, j) for i, j in pob.items() if j >= 0)
-
-    salam = BarangayRecord.objects.filter(year=year, barangaycode='13').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    salamanca = dict((i, j) for i, j in salam.items() if j >= 0)
-
-    san = BarangayRecord.objects.filter(year=year, barangaycode='14').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    sanroq = dict((i, j) for i, j in san.items() if j >= 0)
-
-    cag = BarangayRecord.objects.filter(year=year, barangaycode='2').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    cagsing = dict((i, j) for i, j in cag.items() if j >= 0)
-
-    calabaw = BarangayRecord.objects.filter(year=year, barangaycode='3').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    calabawan = dict((i, j) for i, j in calabaw.items() if j >= 0)
-
-    cambagt = BarangayRecord.objects.filter(year=year, barangaycode='4').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    cambagte = dict((i, j) for i, j in cambagt.items() if j >= 0)
-
-    campison = BarangayRecord.objects.filter(year=year, barangaycode='5').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    campisong = dict((i, j) for i, j in campison.items() if j >= 0)
-
-    cano = BarangayRecord.objects.filter(year=year, barangaycode='6').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    canorong = dict((i, j) for i, j in cano.items() if j >= 0)
-
-    gui = BarangayRecord.objects.filter(year=year, barangaycode='7').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    guiwan = dict((i, j) for i, j in gui.items() if j >= 0)
-
-    lo = BarangayRecord.objects.filter(year=year, barangaycode='8').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    looc = dict((i, j) for i, j in lo.items() if j >= 0)
-
-    mala = BarangayRecord.objects.filter(year=year, barangaycode='9').aggregate(
-        jan=Sum('total_usage_jan'),
-        feb=Sum('total_usage_feb'),
-        mar=Sum('total_usage_mar'),
-        apr=Sum('total_usage_apr'),
-        may=Sum('total_usage_may'),
-        jun=Sum('total_usage_jun'),
-        jul=Sum('total_usage_jul'),
-        aug=Sum('total_usage_aug'),
-        sept=Sum('total_usage_sept'),
-        oct=Sum('total_usage_oct'),
-        nov=Sum('total_usage_nov'),
-        dec=Sum('total_usage_dec'),
-    )
-    malat = dict((i, j) for i, j in mala.items() if j >= 0)
+    # but now dis is samting short MUHAHAHAHAHA!!!!
+    for b in bars:
+        try:
+            brec = BarangayRecord.objects.get(barangayrec_id=f"{b.id}-{year}")
+        except ObjectDoesNotExist:
+            brec = None
+        for m in months:
+            try:
+                mymonths.append(brec.__dict__[f"total_usage_{m}"])
+            except AttributeError:
+                pass
+        n = br(b.barangay, mymonths)
+        mymonths = []
+        mybars.append(n)
+    
     context = {
+        'mybars':mybars,
         'tu_mon': tu_mon,
         'tu_bay': tu_bay,
         'cur_year': year,
         'years': years,
         'my': my,
-        'anao': anao,
-        'mangaco': mangaco,
-        'palanas': palanas,
-        'poblacion': poblacion,
-        'salamanca': salamanca,
-        'sanroq': sanroq,
-        'cagsing': cagsing,
-        'calabawan': calabawan,
-        'cambagte': cambagte,
-        'campisong': campisong,
-        'canorong': canorong,
-        'guiwan': guiwan,
-        'looc': looc,
-        'malat': malat,
         'user': request.user,
-
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1658,9 +1395,12 @@ def unsettled_bills_p(request, p):
     search = request.GET.get("search", "")
     page = request.GET.get('page')
     tb = ConsumerInfo.objects.filter(current_bal__gt=0).aggregate(tots = Sum('current_bal'))
+    isnum = search.isnumeric()
     if search:
-        ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search)
-        | Q(lastname__icontains=search) | Q(meternumber__icontains=search), current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
+        if isnum:
+            ubs = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
+        else:
+            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
     else:
         ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
@@ -1870,7 +1610,6 @@ def bulkreading(request, year, month, p):
             template = redirect('bills_list')
             return template
     if request.method == "POST":
-
         cons = ConsumerInfo.objects.filter(stopmeterflag__lt = 1)
         interest = 0
         for c in cons:
@@ -1878,46 +1617,7 @@ def bulkreading(request, year, month, p):
             try:
                 con_b_rec = BarangayRecord.objects.get(barangaycode_id=c.installation_address_id, year=year)
             except ObjectDoesNotExist:
-                con_b_rec = BarangayRecord()
-                con_b_rec.barangayrec_id = f"{c.installation_address_id}-{year}"
-                con_b_rec.barangaycode = Barangays.objects.get(id=c.installation_address_id)
-                con_b_rec.year = year
-                con_b_rec.total_due_jan = 0
-                con_b_rec.total_due_feb = 0
-                con_b_rec.total_due_mar = 0
-                con_b_rec.total_due_apr = 0
-                con_b_rec.total_due_may = 0
-                con_b_rec.total_due_jun = 0
-                con_b_rec.total_due_jul = 0
-                con_b_rec.total_due_aug = 0
-                con_b_rec.total_due_sept = 0
-                con_b_rec.total_due_oct = 0
-                con_b_rec.total_due_nov = 0
-                con_b_rec.total_due_dec = 0
-                con_b_rec.total_paid_jan = 0
-                con_b_rec.total_paid_feb = 0
-                con_b_rec.total_paid_mar = 0
-                con_b_rec.total_paid_apr = 0
-                con_b_rec.total_paid_may = 0
-                con_b_rec.total_paid_jun = 0
-                con_b_rec.total_paid_jul = 0
-                con_b_rec.total_paid_aug = 0
-                con_b_rec.total_paid_sept = 0
-                con_b_rec.total_paid_oct = 0
-                con_b_rec.total_paid_nov = 0
-                con_b_rec.total_paid_dec = 0
-                con_b_rec.total_usage_jan = 0
-                con_b_rec.total_usage_feb = 0
-                con_b_rec.total_usage_mar = 0
-                con_b_rec.total_usage_apr = 0
-                con_b_rec.total_usage_may = 0
-                con_b_rec.total_usage_jun = 0
-                con_b_rec.total_usage_jul = 0
-                con_b_rec.total_usage_aug = 0
-                con_b_rec.total_usage_sept = 0
-                con_b_rec.total_usage_oct = 0
-                con_b_rec.total_usage_nov = 0
-                con_b_rec.total_usage_dec = 0
+                con_b_rec = create_brec(consumer.installation_address_id, year)
             if a is not None:
                 bill = 0
                 usage = 0
@@ -2021,6 +1721,7 @@ def bulkreading(request, year, month, p):
                     case 12:
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
+            get_balance(c.consumer_id)
     months = []
     years = []
     class monthname():
