@@ -172,6 +172,9 @@ def user_creation(request):
             user.is_manager = is_manager
             user.is_reader = is_reader
             user.authorizedapprover = authorizedapprover
+            upload = request.FILES['profilepic']
+            fss = FileSystemStorage()
+            fss.save(upload.name, upload)
             user.profilepic = profilepic
             user.save()
         return redirect('sysuser')
@@ -926,6 +929,7 @@ def user_edit(request, id):
         lastname = request.POST['last_name']
         mobilenum = request.POST['mobilenum']
         email = request.POST['email']
+        profilepic = request.FILES['profilepic']
         is_teller = request.POST.get('is_teller','') == 'on'
         is_admin = request.POST.get('is_admin','') == 'on'
         is_supervisor = request.POST.get('is_supervisor','') == 'on'
@@ -944,10 +948,9 @@ def user_edit(request, id):
             sys.is_supervisor = is_supervisor
             sys.is_manager = is_manager
             sys.is_reader = is_reader
-            # upload = request.FILES['profilepic']
-            # fss = FileSystemStorage()
-            # fss.save(upload.name, upload)
-            # sys.profilepic = pic
+            fss = FileSystemStorage()
+            fss.save(profilepic.name, profilepic)
+            sys.profilepic = profilepic
             sys.save()
         else:
             print("dili")
@@ -1889,7 +1892,7 @@ def viewprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
     role = ""
     if user.is_admin:
-        role = role + "Admin | "
+        role = role + "Admin "
     if user.is_teller:
         role = role + "Teller | "
     if user.is_supervisor:
