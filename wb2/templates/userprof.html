@@ -6,9 +6,81 @@ Account Settings
 {% endblock title %}
 
 {% block userprof %}
-<form method="post"> 
-	{% csrf_token %} 
-    {{user_info}}
-	<button class="btn btn-primary" type="submit">Submit</button> 
+{% block style %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" 
+rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+<style>
+	 .button2 {
+        background-color: #63CDD7;
+        color: black;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+</style>
+{% endblock style %}
+<form method="post">
+	{% csrf_token %}
+
+	<div class="container">
+		<div class="shadow-wrapper">
+			<div class="form-header">
+				<center><h1>User Edit</h1></center>
+			</div>
+			<div class="row form-group w-100 m-auto">
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="firstname">First Name</label>
+					<input type="firstname" class="form-control" id="firstname" placeholder="Firstname">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="midname">Middle Name</label>
+					<input type="midname" class="form-control" id="midname" placeholder="Middlename">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="lastname">Last Name</label>
+					<input type="lastname" class="form-control" id="lastname" placeholder="Lastname">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="email">Email</label>
+					<input type="email" class="form-control" id="email" placeholder="Email">
+				</div>
+			</div>
+
+			<div class="row form-group w-100 m-auto">
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="formFile" class="form-label">Current Profile</label>
+					<p>Charlie url nis pic</p>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="formFile" class="form-label">Change Profile</label>
+					<input class="form-control" type="file" id="formFile">
+				</div>
+
+				<div class="row form-group m-auto" style="display: block; text-align: center;">
+                    <button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-check-square-o">
+                    <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
+				</div>
+			</div>
+		</div>
+	</div>
 </form>
 {% endblock userprof %}
