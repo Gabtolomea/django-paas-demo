@@ -1889,13 +1889,13 @@ def viewprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
     role = ""
     if user.is_admin:
-        role = role + "Admin | "
+        role = role + "Admin "
     if user.is_teller:
-        role = role + "Teller | "
+        role = role + "Teller "
     if user.is_supervisor:
-        role = role + "Supervisor | "
+        role = role + "Supervisor "
     if user.is_manager:
-        role = role + "Manager  | "
+        role = role + "Manager "
     if user.is_reader:
         role = role + "Reader "
     context= {

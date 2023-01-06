@@ -20,12 +20,11 @@ Account Settings
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
 </head>
 <style>
 
-    .profile {
-        margin-top: 100px;
-    }
 
     .profile-image img {
         border-radius: 50%;
@@ -39,67 +38,40 @@ Account Settings
     }
 
     .img-fluid {
-        width: 342px;
-        height: 336px;
-        top: 178px;
+        width: 80%;
+        margin-left: 25px;
     }
 
     h4 {
-        width: 262px;
-        height: 30px;
-        left: 484px;
-        margin-left: 150px;
-        margin-top: 15px;
         font-family: 'Arial';
         font-style: normal;
+        margin-top: 20px;
         font-weight: 700;
-        font-size: 20px;
+        font-size: 40px;
         line-height: 30px;
         letter-spacing: 0.135em;
         color: #000000;
     }
 
     p4 {
-        width: 273px;
-        height: 27px;
-        left: 858px;
-        margin-left: 100px;
         font-family: 'Arial';
         font-style: normal;
         font-weight: 600;
-        font-size: 18px;
+        font-size: 20px;
         line-height: 27px;
         letter-spacing: 0.135em;
         color: #000000;
     }
-
-    h1 {
-        width: 68px;
-        height: 27px;
-        left: 858px;
-        margin-top: 65px;
-        margin-left: 100px;
-        font-family: 'Arial';
-        font-style: normal;
-        font-weight: 600;
-        font-size: 18px;
-        letter-spacing: 0.135em;
-        color: #0093B7;
-    }
-
     .line {
-        width: 350px;
+        width: 550px;
         height: 0px;
-        top: 290px;
-        margin-left: 100px;
         border: 1px solid #000000;
         transform: rotate(-0.16deg);
     }
 
     .details {
-        margin-left: 67px;
         font-family: Arial;
-        font-size: 18px;
+        font-size: 30px;
     }
 
     .button2 {
@@ -136,9 +108,9 @@ Account Settings
             <i class="fa fa-user"><span style="padding: 12px; font-family: Arial;">Profile</span></i></a>
     </div>
     <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 50px; padding-right: 50px; 
+        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 40px; padding-right: 40px; 
 		margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial;">Consumer Types</span></i></a>
+            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial; white-space: nowrap;">Consumer Types</span></i></a>
     </div>
     
 
@@ -156,44 +128,41 @@ Account Settings
 </div>
 
 
-<div class="profile">
-    <div class="row w-100">
-        <div class="col-lg-4 col-md-4">
-            <div class="profile-image">
-
-                <img class="img-fluid"
-                    src="https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces"
-                    alt style="margin-left: 100px;">
-                <h4 style="text-align: center;">{{user}}</h4>
-
-            </div>
-
-        </div>
-        <div class="col-lg-4 col-md-4" style="margin-top: 60px;">
-            <div class="profile-user-settings">
-                <p4 class="profile-user-name">{{user.email}}</p4><br>
-                <h1>About</h1>
-
-                <p class="line"></p>
-
-                <div class="details">
-                    <ul>
-                        <label for="">Name: <strong>{{user.first_name}} {{user.mid_name}} {{user.last_name}}</strong></label>
-                    </ul>
-                    <ul>
-                        <label for="">Role: <strong>{{role}}</strong></label>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-        <div class="col-lg-4 col-md-4" style="text-align:right;">
-            <button class="btn button2" style="width: 150px; white-space: nowrap; padding-left: 25px;"><i
-                    class="fa fa-check-square-o">
-                    <span style="padding: 5px; font-family: Arial;">Edit Profile</span></i></button>
-        </div>
-    </div>
+<div class="edit_profile">
+    <button class="btn button2" style="float: right; margin-top: 60px;margin-right: 100px;">
+        <i class="fa fa-user-pen"><span style="font-family: Arial;">Edit Profile</span></i></button>
 </div>
 
+
+<div class="profile">
+    <div class="row w-100 m-auto">
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="profile-image">
+                <img class="img-fluid" src="https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces">
+                <h4 style="text-align: center;">{{user}}</h4>
+            </div>
+
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8" style="margin-top: 70px;">
+            <div class="profile-user-settings" style="margin-left: 30px;">
+                <p4 class="profile-user-name">{{user.email}}</p4>
+                <h1 style="margin-top: 30px; color:#0093B7;">About</h1>
+                <p class="line" style="margin-left: 2px;"></p>
+            </div>
+            <div class="row w-100">             
+                    <div class="col-lg-4 col-md-4 col-4 ">
+                        <p style="font-size: 30px; margin-left: 30px;">Name:</p>
+                        <p style="font-size: 30px; margin-left: 30px;">Role:</p>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-4 "> 
+                        <strong><p style="font-size: 25px;">{{user.first_name}} {{user.mid_name}} {{user.last_name}}</p></strong>
+                        <strong><p style="font-size: 25px;">{{role}}</p></strong>
+                    </div>
+            </div>
+            
+        </div>
+       
+    </div>
+</div>
 
 </html>{% endblock viewprof %}
