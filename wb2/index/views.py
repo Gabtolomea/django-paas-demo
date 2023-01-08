@@ -1,9 +1,6 @@
-
-
 import calendar
 import math
 import datetime
-
 from .dataporter import *
 from .DBdb import *
 from .decorators import *
@@ -26,10 +23,9 @@ from django.db.models import F, Sum, Q
 from django.db.models.functions import Greatest
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.core.files.storage import FileSystemStorage
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.files.storage import FileSystemStorage
-
 
 
 def porter(request):
@@ -140,6 +136,14 @@ def signout(request):
 
 @login_required(login_url='login')
 def user_creation(request):
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_admin:
+            template = "registration.html"
+        else:
+            template = redirect('bills_list')
+            return template
     form = SystemUserForm()
     if request.method == "POST":
         form = SystemUserForm(request.POST)
@@ -172,12 +176,11 @@ def user_creation(request):
             user.is_manager = is_manager
             user.is_reader = is_reader
             user.authorizedapprover = authorizedapprover
-            upload = request.FILES['profilepic']
-            fss = FileSystemStorage()
-            fss.save(upload.name, upload)
             user.profilepic = profilepic
             user.save()
         return redirect('sysuser')
+    else:
+        print("wa nasave atay")
     context = {
         'form': form,
         'errors': form.errors,
@@ -952,6 +955,7 @@ def user_edit(request, id):
             fss.save(profilepic.name, profilepic)
             sys.profilepic = profilepic
             sys.save()
+            print("save ang form")
         else:
             print("dili")
         return redirect('sysuser')
@@ -1894,11 +1898,11 @@ def viewprof(request):
     if user.is_admin:
         role = role + "Admin "
     if user.is_teller:
-        role = role + "Teller | "
+        role = role + "Teller "
     if user.is_supervisor:
-        role = role + "Supervisor | "
+        role = role + "Supervisor "
     if user.is_manager:
-        role = role + "Manager  | "
+        role = role + "Manager "
     if user.is_reader:
         role = role + "Reader "
     context= {

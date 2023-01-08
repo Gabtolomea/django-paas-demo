@@ -342,7 +342,7 @@ class usage_record(models.Model):
     postedby_nov = models.TextField(default=" ")
     txrefnum_nov = models.CharField(max_length=45,default = " ")
     ior_nov = models.CharField(max_length=50,default=" ")
-    amountpaid_str_nov = models.TextField(default="")
+    amountpaid_str_nov = models.TextField(default=" ")
     #december
     reading_dec = models.FloatField(default = 0)
     reading_date_dec = models.CharField(max_length=45)
