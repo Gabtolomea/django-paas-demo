@@ -162,22 +162,22 @@ def user_creation(request):
         authorizedapprover = request.POST['authorizedapprover']
         profilepic = request.POST['profilepic']
         if form.is_valid():
-            user = SystemUsers()
-            user.set_password(password2)
-            user.username = username
-            user.first_name = firstname
-            user.mid_name = midname
-            user.last_name = lastname
-            user.mobilenum = mobilenum
-            user.email = email
-            user.is_admin = is_admin
-            user.is_teller = is_teller
-            user.is_supervisor = is_supervisor
-            user.is_manager = is_manager
-            user.is_reader = is_reader
-            user.authorizedapprover = authorizedapprover
-            user.profilepic = profilepic
-            user.save()
+            form = SystemUsers()
+            form.set_password(password2)
+            form.username = username
+            form.first_name = firstname
+            form.mid_name = midname
+            form.last_name = lastname
+            form.mobilenum = mobilenum
+            form.email = email
+            form.is_admin = is_admin
+            form.is_teller = is_teller
+            form.is_supervisor = is_supervisor
+            form.is_manager = is_manager
+            form.is_reader = is_reader
+            form.authorizedapprover = authorizedapprover
+            form.profilepic = profilepic
+            form.save()
         return redirect('sysuser')
     else:
         print("wa nasave atay")
