@@ -1826,15 +1826,14 @@ def viewprof(request):
 @login_required(login_url='login')
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
-    form = sysup(instance=user)
+    form = ProfileForm(instance=user)
     if request.method == 'POST':
-        form = sysup(request.POST, instance=user)
+        form = ProfileForm(request.POST, instance=user)
         profilepic = request.FILES.get('profilepic', None)
-        print(profilepic)
         if form.is_valid():
-            form.save()
-            messages.success(
-                    request, 'Your Profile Updated Successfully')
+            user.profilepic = profilepic
+            user.save()
+            messages.success(request, 'Your Profile Updated Successfully')
             return redirect('viewprof')
     context= {
         'user':user,
