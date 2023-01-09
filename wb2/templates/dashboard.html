@@ -1,4 +1,5 @@
 {% load static %}
+{% static "images" as images %}
 {% load active_link_tags %}
 <!DOCTYPE html>
 <html lang="en">
@@ -18,6 +19,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
     {% block style %}
     {% endblock style %}
+    <style>
+        .img-fluid {
+            width: 80%;
+            margin-left: 25px;
+        }
+    </style>
 </head>
 
 <body>
@@ -143,7 +150,7 @@
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
         <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
             <p style="font-size: 30px;">{{user}}</p>
-
+            <img class="img-fluid" src="{{images}}/{{user.profilepic}}">
         </div>
 
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
@@ -262,15 +269,9 @@
         {% block bulkreading %}
         {% endblock bulkreading %}
         
-        {% block userprof %}
-        {% endblock userprof %}
-
         {% block viewprof %}
         {% endblock viewprof %}
-
-        {% block penalties %}
-        {% endblock penalties %}
-
+        
     </div>
     <script>
 

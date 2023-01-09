@@ -48,4 +48,5 @@ urlpatterns = [
     path('viewprof/userprof', views.userprof, name='userprof'),
     path('viewprof', views.viewprof, name='viewprof'),
     path("password_reset", views.forgetpassword, name="password_reset"),
+    path("viewprof", views.viewprof, name='viewprof')
 ]
