@@ -336,6 +336,32 @@ Meter Reading
 										{% endif %}
 									{% endif %}
 								{% endif %}
+								{% else %}
+								{% if meterred.has_previous %} 
+								<a href="?page={{ meterred.previous_page_number }}&search={{search}}">
+									<li class="paginate_button page-item previous">Previous</li>
+								</a>
+								{% else %}
+									<li class="paginate_button disabled page-item previous">Previous</li>
+								{% endif %}
+								{% for i in meterred.paginator.page_range %}
+									{% if i == meterred.number %}
+									<a href="?page={{i}}&search={{search}}">
+										<li class="paginate_button page-item active">{{i}}</li>
+									</a>
+									{% else %}
+									<a href="?page={{i}}&search={{search}}">
+										<li class="paginate_button page-item">{{i}}</li>
+									</a>
+									{% endif %}
+								{% endfor %}
+								{% if meterred.has_next %}
+								<a href="?page={{ meterred.next_page_number }}&search={{search}}">
+									<li class="paginate_button page-item next">Next</li>
+								</a>
+								{% else %}
+								<li class="paginate_button disabled page-item next">Next</li>
+								{% endif %}
 							{% endif %}
 						</ul>
 						<style>

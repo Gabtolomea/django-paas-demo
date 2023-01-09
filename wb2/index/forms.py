@@ -162,24 +162,3 @@ class ConscumertypecreationForm (ModelForm):
             'minReadingCharge',
             'rateAfterMin'
         )
-
-
-
-# class RatesForm(ModelForm):
-#     class Meta:
-#         model = Rates
-#         fields = (
-#             'minReading',
-#             'minReadingCharge',
-#             'rateAfterMin',
-#             'ratePenalty',
-#             'ratePenaltyFreq'
-#         )
-
-# class BarangayRecordForm(ModelForm):
-#     model = BarangayRecord
-#     field = (
-#         'B_RecordID',
-#         'barangaycode',
-#         'year',
-#     )

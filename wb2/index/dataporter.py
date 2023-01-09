@@ -103,28 +103,20 @@ def porter_out(tables):
     for i in tables[6]:
         sys_user_out(i)
     for i in range(len(tables[3])):
-        con_info.consumer_id = int(tables[3][i][0])
-        con_info.firstname = tables[3][i][1]
-        con_info.lastname = tables[3][i][2]
-        con_info.middlename = tables[3][i][3]
-        con_info.installation_address = Barangays.objects.get(id=tables[3][i][12])
-        con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
-        try:
-            con_info.meternumber = tables[0][i][5]
-            con_info.initialmeterreading = tables[0][i][6]
-            con_info.contypeid = ConsumerType.objects.get(contypeid="C00"+tables[0][i][7]) 
-            con_info.status = tables[0][i][8]
-            con_info.penaltycounter = tables[0][i][11]
-            con_info.stopmeterflag = tables[0][i][12]
-            con_info.deleteflag = tables[0][i][14]
-        except IndexError:
-            con_info.meternumber = ''
-            con_info.initialmeterreading = 0
-            con_info.contypeid = ConsumerType.objects.get(contypeid="C001")
-            con_info.status = 0
-            con_info.penaltycounter = 0
-            con_info.stopmeterflag = False
-            con_info.deleteflag = False
+        con_info.consumer_id = int(tables[0][i][0].split('-')[0])
+        con_info.firstname = tables[0][i][1]
+        con_info.lastname = tables[0][i][2]
+        con_info.middlename = tables[0][i][13]
+        con_info.installation_address = Barangays.objects.get(id=int(tables[3][i][4]))
+        con_info.homeaddress = con_info.installation_address.barangay
+        con_info.meternumber = tables[0][i][5]
+        con_info.initialmeterreading = tables[0][i][6]
+        con_info.contypeid = ConsumerType.objects.get(contypeid="C00"+tables[0][i][7]) 
+        con_info.status = tables[0][i][8]
+        con_info.penaltycounter = tables[0][i][11]
+        con_info.stopmeterflag = tables[0][i][12]
+        con_info.disconnectionflag = False
+        con_info.deleteflag = tables[0][i][14]
         con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.save()
     for i in range(len(tables[4])):

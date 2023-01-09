@@ -123,6 +123,7 @@ class ConsumerInfo(models.Model):
     penaltycounter = models.IntegerField(null=True)
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
+    disconnectionflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=100,null=True, blank=True)
     birthdate = models.DateField(null=True, blank=True)

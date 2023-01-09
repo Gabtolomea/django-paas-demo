@@ -454,7 +454,8 @@ def meterreading_p(request, p):
     for i in my:
         if i.year not in years:
             years.append(i.year)
-
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
@@ -612,7 +613,7 @@ def inputreading(request, id, year):
                         t.save()
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                    lastreading = last_reading(id, year, d-1)
+                    lastreading = last_reading(id, year, d)
                     print(lastreading)
                     try:
                         mo = d + 1
@@ -815,6 +816,7 @@ def consumercreation(request):
             c.initialmeterreading = initialmeterreading
             c.installation_address = Barangays.objects.get(id=installation_address) 
             c.contypeid = ConsumerType.objects.get(contypeid=contypeid) 
+            c.disconnectionflag = False
             c.save()
             return redirect('consumer_list')
     context = {
@@ -1347,7 +1349,20 @@ def revenue_report(request, year):
 
 
 def deleteconsumer(request, id):
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
+            template = "consumercreation.html"
+        else:
+            template = redirect('bills_list')
+            return template
 
+    con = ConsumerInfo.objects.get(consumer_id=id)
+    con.deleted_flag = True
+    con.save()
+    return redirect('consumer_list')
+def disconnectconsumer(request, id):
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1605,20 +1620,91 @@ def bulkreading(request, year, month, p):
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_teller or LoginSession.is_reader:
-            template = redirect('bulkreading')
+            pass
         else:
             template = redirect('bills_list')
             return template
+    months = []
+    years = []
+    class monthname():
+        def __init__(self, name, num):
+            self.name = name
+            self.num = num
+    for i in range(1, 13):
+        m = calendar.month_name[i]
+        months.append(monthname(m, i))
+    consumers_list = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
+    if years[0] < years[len(years)-1]:
+        years.reverse()
+    class new_con():
+        def __init__(self, con, prev, cur):
+            self.con = con
+            self.prev = prev
+            self.cur = cur
+    mname = calendar.month_name[month]
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    isnum = search.isnumeric()
+    if search:
+        if isnum:
+            consumers = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search),stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+        else:
+            consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+    else:
+        consumers = ConsumerInfo.objects.filter(stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+    
+    pages = int(p)
+    count = len(consumers)
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
+
+    paginator = Paginator (consumers,paginate_by)
+    try:
+        ub = paginator.page(page)
+    except PageNotAnInteger:
+        ub = paginator.page(1)
+    except EmptyPage:
+        ub = paginator.page(paginator.num_pages)
+
+    for i in ub:
+        try:
+            tran = Transactions.objects.get(
+                acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
+            cur = tran.meterReading
+        except ObjectDoesNotExist:
+            cur = 0
+        try:
+            if month == 1:
+                tran = Transactions.objects.get(
+                    acctID_id=i.consumer_id, month=12, year=year-1, transType="Billing")
+            else:
+                tran = Transactions.objects.get(
+                    acctID_id=i.consumer_id, month=month-1, year=year, transType="Billing")
+            prev = tran.meterReading
+        except ObjectDoesNotExist:
+            prev = 0
+        # prev = last_reading(i.consumer_id, year, month)
+        consumers_list.append(new_con(i, prev, cur))
+    
     if request.method == "POST":
-        cons = ConsumerInfo.objects.filter(stopmeterflag__lt = 1)
+        cons = ub
         interest = 0
         for c in cons:
             a = request.POST.get(f"con{c.consumer_id}", None)
-            try:
-                con_b_rec = BarangayRecord.objects.get(barangaycode_id=c.installation_address_id, year=year)
-            except ObjectDoesNotExist:
-                con_b_rec = create_brec(consumer.installation_address_id, year)
             if a is not None:
+                try:
+                    con_b_rec = BarangayRecord.objects.get(barangaycode_id=c.installation_address_id, year=year)
+                except ObjectDoesNotExist:
+                    con_b_rec = create_brec(c.installation_address_id, year)
                 bill = 0
                 usage = 0
                 a = int(a)
@@ -1722,73 +1808,10 @@ def bulkreading(request, year, month, p):
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
             get_balance(c.consumer_id)
-    months = []
-    years = []
-    class monthname():
-        def __init__(self, name, num):
-            self.name = name
-            self.num = num
-    for i in range(1, 13):
-        m = calendar.month_name[i]
-        months.append(monthname(m, i))
-    consumers_list = []
-    my = BarangayRecord.objects.all()
-    for i in my:
-        if i.year not in years:
-            years.append(i.year)
-    if years[0] < years[len(years)-1]:
-        years.reverse()
-
-    class new_con():
-        def __init__(self, con, prev, cur):
-            self.con = con
-            self.prev = prev
-            self.cur = cur
-    monthname = calendar.month_name[month]
-    consumers = ConsumerInfo.objects.filter(stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
-    
-    pages = int(p)
-    count = len(consumers)
-    if pages == 0:
-        paginate_by = request.GET.get('paginate_by', count)
-    else:
-        paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
-
-    paginator = Paginator (consumers,paginate_by)
-    try:
-        ub = paginator.page(page)
-    except PageNotAnInteger:
-        ub = paginator.page(1)
-    except EmptyPage:
-        ub = paginator.page(paginator.num_pages)
-
-    for i in years:
-        if i > year:
-            years.remove(i)
-    for i in ub:
-        try:
-            tran = Transactions.objects.get(
-                acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
-            cur = tran.meterReading
-        except ObjectDoesNotExist:
-            cur = 0
-        try:
-            if month == 1:
-                tran = Transactions.objects.get(
-                    acctID_id=i.consumer_id, month=12, year=year-1, transType="Billing")
-            else:
-                tran = Transactions.objects.get(
-                    acctID_id=i.consumer_id, month=month-1, year=year, transType="Billing")
-            prev = tran.meterReading
-        except ObjectDoesNotExist:
-            prev = 0
-        consumers_list.append(new_con(i, prev, cur))
-
-
     context = {
+        'search':search,
         'year':year,
-        'month':monthname,
+        'month':mname,
         'years':years,
         'months':months,
         'monthval':month,
