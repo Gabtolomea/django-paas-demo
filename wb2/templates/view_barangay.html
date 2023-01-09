@@ -7,8 +7,6 @@ Barangay {{bang.barangaycode}} Monthly Usage
 {% block style %}
 
 <html>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 <style>
 	html {
 		background-color: #F2F3F2;
@@ -22,12 +20,9 @@ Barangay {{bang.barangaycode}} Monthly Usage
 		width: 100%;
 	}
 
-	table {
-		border: 1px solid #ccc;
-		border-collapse: collapse;
-		margin: 0;
-		padding: 0;
-		width: 100%;
+	.form-select {
+		width: 10%;
+		margin-left: 30px;
 	}
 
 	table caption {
@@ -49,6 +44,7 @@ Barangay {{bang.barangaycode}} Monthly Usage
 
 	table th {
 		font-size: .85em;
+		letter-spacing: .1em;
 		text-transform: uppercase;
 	}
 
@@ -89,6 +85,74 @@ Barangay {{bang.barangaycode}} Monthly Usage
 			font-size: .85em;
 			letter-spacing: .1em;
 			text-transform: uppercase;
+		}
+	}
+
+	@media screen and (max-width: 600px) {
+		table {
+			border: 0;
+		}
+
+		table caption {
+			font-size: 1.3em;
+		}
+
+		table thead {
+			border: none;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px;
+
+		}
+
+		table tr {
+			border-bottom: 3px solid #ddd;
+			display: block;
+			margin-bottom: .625em;
+		}
+
+		table td {
+			border-bottom: 1px solid #ddd;
+			display: block;
+			font-size: .8em;
+			text-align: right;
+		}
+
+		table td::before {
+
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+
+		}
+
+		table td:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	body {
+		font-family: "Open Sans", sans-serif;
+		line-height: 1.25;
+
+		table td::before {
+			/*
+			* aria-label has no advantage, it won't be read inside a table
+			content: attr(aria-label);
+			*/
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		table td:last-child {
+			border-bottom: 0;
 		}
 	}
 
@@ -133,38 +197,29 @@ Barangay {{bang.barangaycode}} Monthly Usage
 	}
 
 	.button2 {
-        background-color: #006c85;
-        color: white;
-        padding: 10px 25px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-    }
-
-    .btn.button2:hover {
-        background: #006c85;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
-
-    .btn.button2:focus {
-        background: #006c85;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-        transition: all 0.1s;
-    }
-
-	select {
-		width: 70px;
-		border-radius: 25px;
+		background-color: var(--main-color); 
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+		margin-top: 30px;
+		margin-bottom: 30px;
 	}
-
-	a:hover {
-		cursor: pointer;
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
 	}
 </style>
 {% endblock style %}
@@ -173,19 +228,10 @@ Barangay {{bang.barangaycode}} Monthly Usage
 <h2 style="font-weight: bold; margin-bottom: 30px; margin-top: 30px; text-align: center;">Barangay {{bang.barangaycode}}
 	Monthly Records </h2>
 
-<button class="btn button2" onclick="history.back()"><i class="fa fa-caret-square-o-left">
-	<span style="padding: 10px; font-family: Arial;">BACK</span></i></button>
 
 <title>Barangay {{bang.barangaycode}}</title>
 
 <body onload="collection_rate()">
-	<table style="margin-bottom: 30px; margin-top: 30px;">
-		<thead>
-			<tr>
-				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Billing Cycle Cutoff Month</th>
-				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Total Usage (Cubic Meter)</th>
-				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Total Receivable</th>
-				<th scope="col" style="background-color: #006c85; font-size: 12px; color: white;">Total Collection</th>
 
 	<div class="col-sm-12 col-md-6">
 		<button type="button" class="btn button2" onclick="history.back()">
@@ -353,6 +399,10 @@ Barangay {{bang.barangaycode}} Monthly Usage
 			</tbody>
 		</table>
 	</div>
+
+
+
+
 
 	<!--<button type="button" onclick="alert('Hello world!')"><a
   href="{&'url barangayreport'%}/bang.year">BACK</a></button>-->

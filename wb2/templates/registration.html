@@ -184,31 +184,29 @@ Registration Form
 
                 <div class="row form-group w-100 m-auto">
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.password1.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
                         <label for="">Password*</label>
-                        <form>
-                            <div class="input-group" id="show_hide_password">
-                                <input class="form-control" type="password" placeholder="Password">
-                            <div class="input-group-addon" style="margin-top: 5px;">
-                                <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-                            </div>
-                            </div>
-                        </form>
+                        {{form.password1}}
                     </div>
-
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                        {% if form.errors %}
+                        {% for error in form.password2.errors %}
+                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
                         <label for="">Confirm Password*</label>
-                        <form>
-                            <div class="input-group" id="show_hide_confirm_pass">
-                                <input class="form-control" type="password" placeholder="Confirm Password">
-                            <div class="input-group-addon" style="margin-top: 5px;">
-                                <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-                            </div>
-                            </div>
-                        </form>
+                        {{form.password2}}
                     </div>
-                    
                 </div>
-                 
+
                 <div class="row m-auto w-100">
                     <div class="col-lg-6 col-md-6 col-sm-12 ">
                         <h3>Type of User</h3>
@@ -249,15 +247,12 @@ Registration Form
                         <label for="formFile" class="form-label">Profile Picture*</label>
                         {{form.profilepic}}
                     </div>
-                    <div class="row form-group m-auto" style="display: block; text-align: center;">
-                        <button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-check-square-o">
-                                <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
-                    </div>
+                    <center><button type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
                 </div>
             </div>
         </div>
     </form>
-
+</section>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
