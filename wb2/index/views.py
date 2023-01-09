@@ -983,9 +983,6 @@ def user_edit(request, id):
             else:
                 sys.profilepic = 'jazzy.jpg'
             sys.save()
-            print("save ang form")
-        else:
-            print("dili")
         return redirect('sysuser')
     context = {
         'sys': sys,
@@ -1000,16 +997,17 @@ def deleteUser(request, id):
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_admin:
-            template = "delete.html"
+            template = redirect('sysuser')
         else:
             template = redirect('bills_list')
             return template
-
-    sys = SystemUsers.objects.get(username=id)
-    if request.method == "POST":
+    try:
+        sys = SystemUsers.objects.get(username=id)
         sys.delete()
-        return redirect('sysuser')
-    return render(request, 'delete.html',)
+        messages.success(request, 'User has been deleted')
+    except SystemUsers.DoesNotExist:
+        messages.error(request, 'SystemUser does not exist')
+    return redirect('sysuser')
 
 
 def about(request):
