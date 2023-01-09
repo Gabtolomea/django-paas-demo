@@ -1826,23 +1826,20 @@ def viewprof(request):
 @login_required(login_url='login')
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
-    user_info = ProfileForm(instance=user)
+    form = ProfileForm(instance=user)
     if request.method == 'POST':
-        user_info = ProfileForm(request.POST, instance=user)
-        if user_info.is_valid():
-            user_info.save()
+        form = ProfileForm(request.POST, instance=user)
+        profilepic = request.FILES.get('profilepic', False)
+        print(profilepic)
+        if form.is_valid():
+            user.profilepic = profilepic
+            user.save()
             messages.success(
                     request, 'Your Profile Updated Successfully')
             return redirect('settings')
-    else:
-        if user_info.is_valid():
-            user_info.save()
-            messages.success(
-                    request, 'Your Profile Updated Successfully')
-            return redirect('settings')
-
+    print(user.username)
     context= {
         'user':user,
-        'user_info':user_info
+        'form':form
     }
     return render(request, 'userprof.html', context)
