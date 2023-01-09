@@ -117,6 +117,7 @@ Consumer List
 					</div>
 				</div>
 			</div>
+			<script src="{% static 'jquery/jquery.js' %}"></script>
 			<div class="row">
 				<div class="col-sm-12">
 					<table id="table" class="table table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
@@ -127,33 +128,49 @@ Consumer List
                                 <th style="min-width: 100px;">Address</th>
                                 <th style="min-width: 100px;">Meter Number</th>
 								<th scope="col">Delete</th>
+								<th scope="col">Connection</th>
                             </tr>
                         </thead>
                         <tbody class="wb_tbody">
                             {% for con in consumer_list %}
-                            <tr class="showOnHover ">
-                                <td>{{con.consumer_id}}</td>
-                                <td style="text-align: left; white-space: nowrap;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
-                                <td>{{con.installation_address}}</td>
-                                <td class="{{t.style}}">
+                            <tr style="cursor: pointer; user-select: none;">
+                                <td class='clickable-row' data-href="{% url 'consumerupdate' con.consumer_id %}">{{con.consumer_id}}</td>
+                                <td class='clickable-row' data-href="{% url 'consumerupdate' con.consumer_id %}" style="text-align: left; white-space: nowrap;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
+                                <td class='clickable-row' data-href="{% url 'consumerupdate' con.consumer_id %}">{{con.installation_address}}</td>
+                                <td class='clickable-row' data-href="{% url 'consumerupdate' con.consumer_id %}" class="{{t.style}}">
                                     {{con.meternumber}}
                                 </td>
-								<td>
-									<a title="Update" href="{% url 'consumerupdate' con.consumer_id %}">
-                                        <button class="hide btn btn-success btn-sm rounded-0" data-toggle="modal" type="button" data-placement="top" title="Update">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                    </a>
-								</td>
-								<td>
+								<td style="cursor: default;">
 									<a title="Delete" href="{%url 'deleteconsumer' con.consumer_id %}">
-										<button class=" hide btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')" data-placement="top" title="Delete">
+										<button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')" data-placement="top" title="Delete">
 											<i class="fa fa-trash"></i>
-										</button>
+										</button> 
 									</a>
-									</td>
+								</td>
+								<td style="cursor: default;">
+									{% if con.disconnectionflag %}
+										<a title="Disconnect" href="{%url 'reconnectconsumer' con.consumer_id %}">
+											<button class="btn btn-success btn-sm rounded-0" type="button" data-placement="top" title="Reconnect">
+												<i class="fa fa-trash"></i>
+											</button> 
+										</a>
+									{% else %}
+									<a title="Disconnect" href="{%url 'disconnectconsumer' con.consumer_id %}">
+										<button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to disconnect {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"  title="Disconnect">
+											<i class="fa fa-trash"></i>
+										</button> 
+									</a>
+									{% endif %}
+								</td>
                             </tr>
                             {% endfor %}
+							<script>
+								jQuery(document).ready(function ($) {
+									$(".clickable-row").click(function () {
+										window.location = $(this).data("href");
+									});
+								});
+							</script>
                         </tbody>
                     </table>
 				</div>
