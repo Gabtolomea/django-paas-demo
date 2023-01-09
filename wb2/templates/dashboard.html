@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
-    <!-- <script src="https://kit.fontawesome.com/9d6dcdab6b.js" crossorigin="anonymous"></script> -->
+    <script src="https://kit.fontawesome.com/9d6dcdab6b.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'jsPDF/cdnjs/jspdf.min.js' %}"></script>
     <script src="{% static 'chart.js' %}"> </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
@@ -21,7 +21,7 @@
     {% endblock style %}
     <style>
         .img-fluid {
-            width: 80%;
+            width: 50%;
             margin-left: 25px;
         }
     </style>
@@ -133,20 +133,15 @@
             <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
 
 
-                <a href="#" style="color:#006c85; text-decoration: none; padding: 0 5%;">
-                    <i class="fa-solid fa-bell"></i>
-                </a>
-                <a href="" style="color:#006c85; text-decoration: none; padding:0 5%">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i>
-                </a>
-                <a href="{% url 'signout' %}" style="color:#006c85; text-decoration: none ;padding:0 5%">
+             
+                <a href="{% url 'signout' %}" style="color:#63cdd7; text-decoration: none ;padding:0 5%">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
         </div>
     </header>
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
-        <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
+        <div class="user_info">
             <img class="img-fluid" style="border-radius: 60%; border: 1px solid #000000;" src="{{images}}/{{user.profilepic}}">
             <p style="font-size: 30px; margin-left: auto;">{{user}}</p>
         </div>
@@ -157,7 +152,6 @@
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
                     <i class="fa fa-money-bill-1-wave fa-2x"></i>
-                    </i>
                     <span style="    padding-left: 14px; font-size: 20px;">Billing</span>
                 </li>
             </a>
@@ -175,7 +169,7 @@
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
-                    <i class="fa-solid fa-user fa-2x"></i>
+                    <i class="fa-solid fa-users fa-2x"></i>
                     <span class="sidenav_text">Consumers</span>
                 </li>
             </a>
@@ -194,7 +188,7 @@
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
-                    <i class="fa fa-line-chart fa-2x"></i>
+                    <i class="fa-solid fa-receipt fa-2x"></i>
                     <span class="sidenav_text">Unsettled Bills</span>
                 </li>
             </a>
