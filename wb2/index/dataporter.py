@@ -30,13 +30,13 @@ alltables = [
 
 sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#    host="localhost",
-#    user="root",
-#    password="yjh434ctuG@-@",
-#    database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+   host="localhost",
+   user="root",
+   password="yjh434ctuG@-@",
+   database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 
 def porter_in():
     col = 0
@@ -102,12 +102,12 @@ def porter_out(tables):
         rt_out(i)
     for i in tables[6]:
         sys_user_out(i)
-    for i in range(len(tables[3])):
+    for i in range(len(tables[0])):
         con_info.consumer_id = int(tables[0][i][0].split('-')[0])
         con_info.firstname = tables[0][i][1]
         con_info.lastname = tables[0][i][2]
         con_info.middlename = tables[0][i][13]
-        con_info.installation_address = Barangays.objects.get(id=int(tables[3][i][4]))
+        con_info.installation_address = Barangays.objects.get(id=int(tables[0][i][4]))
         con_info.homeaddress = con_info.installation_address.barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
