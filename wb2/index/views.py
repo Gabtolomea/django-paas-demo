@@ -55,8 +55,6 @@ def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-        print(u)
-        print(password)
         auth = authenticate(username=u, password=password)
         if auth is not None:
             user = SystemUsers.objects.get(username=u)
@@ -125,14 +123,11 @@ def bills_list_p(request, p):
     paginator = Paginator(bills, paginate_by)
     try:
         bills_list = paginator.page(page)
-
     except PageNotAnInteger:
         bills_list = paginator.page(1)
-
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
-    print(bills_list.paginator.num_pages)
     context = {
         'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
@@ -1832,23 +1827,23 @@ def viewprof(request):
 @login_required(login_url='login')
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
-    user_info = ProfileForm(instance=user)
+    form = ProfileForm(instance=user)
     if request.method == 'POST':
-        user_info = ProfileForm(request.POST, instance=user)
-        if user_info.is_valid():
-            user_info.save()
+        form = ProfileForm(request.POST, instance=user)
+        profilepic = request.FILES.get('profilepic', False)
+        print(profilepic)
+        if form.is_valid():
+            if profilepic:
+                user.profilepic = profilepic
+            else:
+                user.profilepic = user.profilepic
+            user.save()
             messages.success(
                     request, 'Your Profile Updated Successfully')
             return redirect('settings')
-    else:
-        if user_info.is_valid():
-            user_info.save()
-            messages.success(
-                    request, 'Your Profile Updated Successfully')
-            return redirect('settings')
-
+    print(user.username)
     context= {
         'user':user,
-        'user_info':user_info
+        'form':form
     }
     return render(request, 'userprof.html', context)

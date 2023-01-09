@@ -1,5 +1,6 @@
 {% extends 'dashboard.html' %}
 {% load static %}
+{% static "images" as images %}
 
 {% block title %}
 Account Settings
@@ -61,7 +62,7 @@ rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6E
     }
 </style>
 {% endblock style %}
-<form method="post">
+<form action="{% url 'userprof' %}" enctype="multipart/form-data" method="post">
 	{% csrf_token %}
 	<div class="container">
 		<div class="shadow-wrapper">
@@ -71,30 +72,29 @@ rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6E
 			<div class="row form-group w-100 m-auto">
 				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 					<label for="firstname">First Name</label>
-					<input type="firstname" class="form-control" id="firstname" placeholder="Firstname">
+					{{form.first_name}}
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 					<label for="midname">Middle Name</label>
-					<input type="midname" class="form-control" id="midname" placeholder="Middlename">
+					{{form.mid_name}}
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 					<label for="lastname">Last Name</label>
-					<input type="lastname" class="form-control" id="lastname" placeholder="Lastname">
+					{{form.last_name}}
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 					<label for="email">Email</label>
-					<input type="email" class="form-control" id="email" placeholder="Email">
+					{{form.email}}
 				</div>
 			</div>
 
 			<div class="row form-group w-100 m-auto">
 				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-					<label for="formFile" class="form-label">Current Profile</label>
-					<p>Charlie url nis pic</p>
+					<img src="{{images}}/{{user.profilepic}}" alt="">
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 					<label for="formFile" class="form-label">Change Profile</label>
-					<input class="form-control" type="file" id="formFile">
+					{{form.profilepic}}
 				</div>
 
 				<div class="row form-group m-auto" style="display: block; text-align: center;">
