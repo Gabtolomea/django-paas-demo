@@ -95,7 +95,7 @@ Billing
 								input.setSelectionRange(end, end);
 								input.focus();
 							}
-						</script>	
+						</script>
 					</div>
 				</div>
 			</div>
@@ -115,8 +115,7 @@ Billing
 						<tbody class="wb_tbody">
 							{% if bills_list %}
 							{% for bill in bills_list %}
-							<tr class='clickable-row' onclick="click" style="cursor: pointer;"
-								data-href="{% url 'ledger' bill.consumer_id %}">
+							<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'ledger' bill.consumer_id %}">
 								<td>{{bill.consumer_id}}</td>
 								<td>{{bill.meternumber}}</td>
 								<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
