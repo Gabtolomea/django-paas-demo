@@ -1842,3 +1842,26 @@ def viewprof(request):
     }
     return render(request, 'viewprof.html', context)
 
+@login_required(login_url='login')
+def userprof(request):
+    user = SystemUsers.objects.get(username=str(request.user))
+    user_info = ProfileForm(instance=user)
+    if request.method == 'POST':
+        user_info = ProfileForm(request.POST, instance=user)
+        if user_info.is_valid():
+            user_info.save()
+            messages.success(
+                    request, 'Your Profile Updated Successfully')
+            return redirect('viewprof')
+    else:
+        if user_info.is_valid():
+            user_info.save()
+            messages.success(
+                    request, 'Your Profile Updated Successfully')
+            return redirect('viewprof')
+
+    context= {
+        'user':user,
+        'user_info':user_info
+    }
+    return render(request, 'userprof.html', context)

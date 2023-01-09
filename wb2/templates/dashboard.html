@@ -42,9 +42,8 @@
                     </button>
                 </div>
                 <div class="modal-body sidebar w-100">
-                    <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x">
-                            <img src="{% static 'svgs/payments.svg' %}" alt="">
-                        </i>
+                    <div class="user_info" style="margin-top: 0;">
+                        <img src="{% static 'svgs/payments.svg' %}" alt="">
                         <p style="font-size: 30px">{{user}}</p>
                     </div>
                     <ul class="list-unstyled" style="padding-left: 30px;">
@@ -149,8 +148,8 @@
     </header>
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
         <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
-            <p style="font-size: 30px;">{{user}}</p>
-            <img class="img-fluid" src="{{images}}/{{user.profilepic}}">
+            <img class="img-fluid" style="border-radius: 60%; border: 1px solid #000000;" src="{{images}}/{{user.profilepic}}">
+            <p style="font-size: 30px; margin-left: auto;">{{user}}</p>
         </div>
 
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
@@ -269,6 +268,9 @@
         {% block bulkreading %}
         {% endblock bulkreading %}
         
+        
+        {% block userprof %}
+        {% endblock userprof %}
         {% block viewprof %}
         {% endblock viewprof %}
         
