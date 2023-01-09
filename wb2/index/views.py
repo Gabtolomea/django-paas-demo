@@ -1448,9 +1448,6 @@ def unsettled_bills_p(request, p):
 
 
 def view_unsettled_bills(request, id, year):
-
-
-
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1642,11 +1639,11 @@ def bulkreading(request, year, month, p):
     isnum = search.isnumeric()
     if search:
         if isnum:
-            consumers = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search),stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+            consumers = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+            consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
-        consumers = ConsumerInfo.objects.filter(stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+        consumers = ConsumerInfo.objects.filter(stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     
     pages = int(p)
     count = len(consumers)
