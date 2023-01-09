@@ -1832,7 +1832,10 @@ def userprof(request):
         profilepic = request.FILES.get('profilepic', False)
         print(profilepic)
         if form.is_valid():
-            user.profilepic = profilepic
+            if profilepic is not None:
+                user.profilepic = profilepic
+            else:
+                user.profilepic = 'jazzy.jpg'
             user.save()
             messages.success(
                     request, 'Your Profile Updated Successfully')
