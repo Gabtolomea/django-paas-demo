@@ -92,7 +92,7 @@
                             </a>
                         </li>
                         <li class="modal_side_nav_li">
-                            <a class="modal_side_nav_li_text" href="{% url 'viewprof' %}" 
+                            <a class="modal_side_nav_li_text" href="{% url 'settings' %}" 
                                 style="color: white; text-decoration: none">
                                 <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
                                 <span class="sidenav_text">Settings</span>
@@ -123,7 +123,6 @@
                 <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
                     <i class="fa fa-bars"></i>
                 </button>
-                <!-- Button trigger modal -->
                 <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal"
                     data-target="#exampleModal">
                     <i class="fa fa-bars"></i>
@@ -159,7 +158,6 @@
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
                     <i class="fa fa-money-bill-1-wave fa-2x"></i>
-                        <div class="icon payment"></div>
                     </i>
                     <span style="    padding-left: 14px; font-size: 20px;">Billing</span>
                 </li>
@@ -171,7 +169,6 @@
                 <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span style=" padding-left: 17px; font-size: 20px;">Meter Reading</span>
-
                 </li>
             </a>
             {% endif %}
@@ -212,8 +209,8 @@
                 </li>
             </a>
             {% endif %}
-            <a href="{% url 'viewprof' %}" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link 'viewprof' 'active' %}">
+            <a href="{% url 'settings' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'settings' 'active' %}">
                     <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
                     <span style="font-size: 20px; padding-left: 15px;">Settings</span>
                 </li>
@@ -271,6 +268,9 @@
         
         {% block viewprof %}
         {% endblock viewprof %}
+        {% block penalties %}
+        {% endblock penalties %}
+
         
     </div>
     <script>
