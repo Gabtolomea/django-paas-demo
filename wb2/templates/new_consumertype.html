@@ -6,16 +6,75 @@
 Consumer Type
 {% endblock title %}
 {% load humanize %}
+{% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .table {
+        transition-delay: all 1s ease-in-out;
+    }
 
-{% block style %}
-<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    h1 {
+        text-align: center;
+    }
+
+    h3 {
+        text-align: center;
+    }
+
+    .button3 {
+        background-color: #006c85;
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        margin-top: 100px;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button3:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button3:focus {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+    .btn.btn-primary2{
+        background-color: #006c85;
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        margin-top: 100px;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+    .btn.btn-primary2:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+  
+
+    
+</style>
 {% endblock style %}
 {% block script %}
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
 
 <script>
     $(document).ready(function () {
@@ -31,12 +90,42 @@ Consumer Type
 </script>
 {% endblock script %}
 {% block new_contype %}
-    <h1>Consumer Type</h1>
+
+
+<div class="row w-100 m-auto">
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'viewprof' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-user"><span style="padding: 12px; font-family: Arial;">Profile</span></i></a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 50px; padding-right: 50px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial;">Consumer Types</span></i></a>
+    </div>
+    
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'penalty'  %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-gavel"><span style="padding: 12px; font-family: Arial;">Penalties</span></i></a>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'discount' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-percent"><span style="padding: 12px; font-family: Arial;">Discounts</span></i></a>
+    </div>
+</div>
+
+<button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#payment" >Add New Consumer Type</button>
+
+    <center><h1 style="margin-top: 30px;">Consumer Type</h1></center>
     <div class="container-fluid p-0"> 
         <div class="table-responsive">
             <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
                 <thead class="wb-thead">
-                    <tr style="background: #0093b7; color: white;">
+                    <tr style="background: #006c85; color: white;">
                         <th>Code</th>
                         <th>Consumer Type</th>
                         <th>Minimum Water Reading</th>
@@ -62,10 +151,8 @@ Consumer Type
         </table>
     </div>
 </div>
-<button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#payment" >Add</button>
 
-<script src="{% static 'bootstrap.min.js' %}"></script>
-<script src="{% static 'popper.min.js' %}"></script>
+
 <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -73,7 +160,7 @@ Consumer Type
                 {% csrf_token %}
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalCenterTitle">Add New Consumer Type</h5>
-					<button type="button" class="btn border close" data-bs-dismiss="modal" aria-label="Close">
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						<i class="fa fa-xmark"></i>
 					</button>
 				</div>
@@ -96,8 +183,7 @@ Consumer Type
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<button type="submit" class="btn btn-primary2">Submit</button>
 				</div>
             </form> 
 		</div>

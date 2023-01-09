@@ -48,6 +48,12 @@ class SystemUserForm(UserCreationForm):
             'authorizedapprover',
         )
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = SystemUsers
+        fields = ('first_name', 'mid_name',
+                  'last_name', 'email', 'profilepic')
+
 class sysup(ModelForm):
     CHOICES =(
         ("0", "Approver for Inbound Application"),

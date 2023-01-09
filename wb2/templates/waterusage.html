@@ -1,10 +1,11 @@
 {% extends 'dashboard.html' %}
-{% load static %}
+
 {% block title %}
 Water Usage
 {% endblock title %}
 {% block style %}
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <style>
 	html {
@@ -193,7 +194,6 @@ Water Usage
 {% endblock style %}
 {% block waterusage %}
 
-<script src="{% static 'jquery/jquery.js' %}"></script>
 <div class="row w-100 m-auto">
 	<div class="col-lg-4 col-md-4 col-sm-4">
 		<a href="{% url 'reports' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
@@ -213,33 +213,6 @@ Water Usage
 			<i class="fa fa-bar-chart"><span style="padding: 12px; font-family: Arial;">Revenue Reports</span></i></a>
 	</div>
 </div>
-
-<!-- <div class="row w-100 m-auto">
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color:white; white-space: nowrap; padding: 5px;">
-		<div class="active" style="text-align: center;">
-			<a style="color: black; text-decoration: none;  text-align: center;" href="{% url 'reports' %}"
-				style="margin-left: 2px;"><i class="fa fa-line-chart"></i>
-				<span>Barangay Report</span>
-			</a>
-		</div>
-	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
-		<div style="text-align: center;">
-			<a style="color: white; text-decoration: none;  text-align: center;"
-				href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
-				<span>Usage Report</span>
-			</a>
-		</div>
-	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color:#0093b7; white-space: nowrap; padding: 5px;">
-		<div style="text-align: center;">
-			<a style="color: white; text-decoration: none;  text-align: center;"
-				href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
-				<span>Revenue Report</span></a>
-		</div>
-	</div>
-
-</div> -->
 
 <body onload="collection_rate()">
 
@@ -293,10 +266,10 @@ Water Usage
 					<td data-label="Total Usage(Cu. Meter)">
 						{{br.total_usage|floatformat:2}} &#13221;
 					</td>
-					<td data-label="Total Receivables" class="total_due">
+					<td data-label="Total Receivables" class="total_paid">
 						{{br.total_rec|floatformat:1}}
 					</td>
-					<td data-label="Total Collection" class="total_paid">
+					<td data-label="Total Collection" class="total_due">
 						{{br.total_paid|floatformat:1}}
 					</td>
 					<td data-label="Collection Rate" class="rate">
@@ -306,10 +279,10 @@ Water Usage
 				<tr>
 					<td data-label="Barangay" style="background-color:#006c85; color: white; font-weight: bold;">Total
 					</td>
-					<td data-label="Total Usage(Cu. Meter)" class="total_due">
+					<td data-label="Total Usage(Cu. Meter)" class="total_paid">
 						{{fr.tu|floatformat:1}}</td>
 					<td data-label="Total Receivables">{{fr.tr|floatformat:1}}</td>
-					<td data-label="Total Collection" class="total_paid">
+					<td data-label="Total Collection" class="total_due">
 						{{fr.tp|floatformat:1}}
 					</td>
 					<td data-label="Collection Rate" class="rate"></td>
@@ -338,7 +311,7 @@ Water Usage
 				int_total_due = parseInt(total_due[index].innerHTML)
 				int_total_paid = parseInt(total_paid[index].innerHTML)
 				temporary_rate = (int_total_paid / int_total_due) * 100
-				if (temporary_rate != temporary_rate) {
+				if (temporary_rate !== temporary_rate) {
 					rate[index].innerHTML = "0.0%"
 				} else {
 					rate[index].innerHTML = temporary_rate.toFixed(2) + "%"

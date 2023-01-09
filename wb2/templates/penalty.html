@@ -1,75 +1,91 @@
+{% extends 'dashboard.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+Penalty Types
+{% endblock title %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penalty</title>
 </head>
+
+{% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
-    #addPen {
-    display:none;
-}
-h1{
-    text-align: center;
-}
-h3{
-    text-align: center;
-}
+    .table {
+        transition-delay: all 1s ease-in-out;
+    }
 
-.container {
-        font-family: Arial;
+    h1 {
+        text-align: center;
+    }
+
+    h3 {
+        text-align: center;
+    }
+
+    .button3 {
+        background-color: #006c85;
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        margin-top: 100px;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button3:hover {
+        background: #006c85;
         color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
     }
 
-.wrapper {
-        font-size: 20px;
-        font-family: Arial;
-        margin: 0px 0px 16px;
-        padding: 0px 12px;
-        background: #0093b7;
-        border-radius: 40px;
-        padding: 50px;
-    }
-    .button2{
-        background-color: #0093b7;
-        color: white;
-        font-weight: bold;
-        width: 15%;
-        text-decoration: none;
-        padding: 8px 32px;
-        margin: 4px 2px;
+    .btn.button3:focus {
+        background: #006c85;
+        color: #ffffff;
         border-radius: 30px;
-        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
     }
-    .btn:first-child:hover,
-    :not(.btn-check)+.btn:hover {
-        background-color: white !important;
-        color: black;
-    }
-.button3{
-        background-color: #0093b7;
+    .btn.btn-primary2{
+        background-color: #006c85;
         color: white;
-        font-weight: bold;
-        width: 15%;
-        text-decoration: none;
-        padding: 8px 32px;
-        margin: 4px 2px;
+        padding: 8px 30px;
+        border: none;
+        margin-top: 100px;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+    .btn.btn-primary2:hover {
+        background: #006c85;
+        color: #ffffff;
         border-radius: 30px;
-        box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
     }
-    .btn:first-child:hover,
-    :not(.btn-check)+.btn:hover {
-        background-color: white !important;
-        color: black;
-    }
+  
+
+    
 </style>
+{% endblock style %}
+
 {% block script %}
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
 
 <script>
     $(document).ready(function () {
@@ -85,13 +101,93 @@ h3{
 </script>
 {% endblock script %}
 
-<body>
-    <h1> Penalty </h1>
+
+{% block penalties %}
+<script>
+    jQuery(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+<div class="row w-100 m-auto">
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'viewprof' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-user"><span style="padding: 12px; font-family: Arial;">Profile</span></i></a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 50px; padding-right: 50px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial;">Consumer Types</span></i></a>
+    </div>
+
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'penalty'  %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-gavel"><span style="padding: 12px; font-family: Arial;">Penalties</span></i></a>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'discount' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-percent"><span style="padding: 12px; font-family: Arial;">Discounts</span></i></a>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#ksgj">
+    Add New Penalty Type
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="ksgj" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">New Penalty Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="row form-group w-100 m-auto">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label>Rate*</label>
+                            {{form.penalty_rate}}
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label>Penalty After*</label>
+                            {{form.penalty_after}}
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 ">
+                            <label>Days to Application*</label>
+                            {{form.daysappliedafter}}
+                        </div>
+                        <div class="row w-100 m-auto">
+                            <label>Details:</label><br>
+                            {{form.penalty_info}}
+                        </div>
+
+
+
+                        <div class="modal-footer">
+                            <input class="btn btn-primary2" type="submit" value="Submit">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<h1> Penalty </h1>
 <div class="container-fluid">
     <div class="table-responsive">
         <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
             <thead class="wb-thead">
-                <tr style="background: #0093b7; color: white;">
+                <tr style="background:#006c85; color: white; white-space: nowrap;">
                     <th>Code</th>
                     <th>Penalty After</th>
                     <th>Days before Applied</th>
@@ -116,52 +212,8 @@ h3{
     </div>
 </div>
 
-<br>
-<br>
-<br>
-<button onclick="myFunction('addPen')" class="btn button3">Add</button>
-<br>
-<div id="addPen">
-    <form method="POST" action="">
-        {% csrf_token %}
-        <div class="container">
-            <div class="shadow wrapper">
-                <h3> Add New Penalty</h3>
-                <br>
-                <div class="row form-group w-100 m-auto">
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                        <label>Rate</label>
-                        {{form.penalty_rate}}
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
-                        <label>Penalty After</label>
-                        {{form.penalty_after}}
-                    </div>
-                    <center>
-                    <div class="col-lg-6 col-md-12 col-sm-12 ">
-                        <label>Days before Application</label>
-                        {{form.daysappliedafter}}
-                    </div>
-                    </center>
-                    <label>Details:</label><br>
-                    {{form.penalty_info}}
-                </div>
-                <br>
-                <center><button type="submit" id="footer-subscription-button" class="btn button2">Submit</button></center>
-            </div>
-        </div>
-    </form>
-</div>
-<script>
-    function myFunction(addPen) {
-    var x = document.getElementById(addPen);
-    if (x.style.display == "block") { 
-        x.style.display = "none"; 
-    } else { 
-        x.style.display = "block"; 
-    }
-}
-    </script>
-</body>
+
+
 
 </html>
+{% endblock penalties %}
