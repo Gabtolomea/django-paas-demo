@@ -5,6 +5,9 @@ Water Usage
 {% endblock title %}
 {% block style %}
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <style>
 	html {
@@ -85,7 +88,7 @@ Water Usage
 			letter-spacing: .1em;
 			text-transform: uppercase;
 		}
-
+	}
 		@media screen and (max-width: 600px) {
 			table {
 				border: 0;
@@ -187,10 +190,12 @@ Water Usage
 			border-radius: 50px;
 
 		}
+		
 </style>
 
 {% endblock style %}
 {% block waterusage %}
+
 
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <div class="row w-100 m-auto">
@@ -326,7 +331,7 @@ Water Usage
 	</div>
 
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+	
 	<script>
 		function collection_rate() {
 			total_paid = document.getElementsByClassName("total_paid")

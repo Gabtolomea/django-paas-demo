@@ -13,7 +13,6 @@
 #     def username(self) -> str:
 #         self._username = ""
 
-
 class ReqParams():
     # cs = CustomSession("")
     sample = {}

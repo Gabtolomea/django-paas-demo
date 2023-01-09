@@ -5,6 +5,7 @@
 Consumer List
 {% endblock title %}
 {% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.css'%} ">
 <style>
     .hide {
@@ -51,6 +52,27 @@ Consumer List
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
     }
+	.odd{
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%;
+		-webkit-tap-highlight-color: transparent;
+	
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+		}
+	
+	.dataTables_empty{
+		text-align: center;
+		}
 </style>
 {% endblock style %}
 {% block script %}
@@ -101,7 +123,7 @@ Consumer List
 							let myInput = document.getElementById('myInput');
 							form = document.getElementById('form')
 							//on keyup, start the countdown
-							myInput.addEventListener('keyup', () => {
+							myInput.addEventListener('oninput', () => {
 								var newURL = window.location.href
 								form.action = newURL + "?search="+myInput.value
 								form.submit()
