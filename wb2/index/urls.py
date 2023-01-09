@@ -28,6 +28,8 @@ urlpatterns = [
     path('consumer_list/consumercreation', views.consumercreation,name='consumercreation'),
     path('consumer_list/<int:id>/', views.consumerupdate, name='consumerupdate'),
     path('deleteconsumer/<int:id>', views.deleteconsumer,name='deleteconsumer'),
+    path('disconnectconsumer/<int:id>', views.disconnectconsumer,name='disconnectconsumer'),
+    path('reconnectconsumer/<int:id>', views.reconnectconsumer,name='reconnectconsumer'),
     path('sysuser/', views.sysuser,name='sysuser'),
     path('sysuser/user_creation', views.user_creation,name='user_creation'),
     path('sysuser/<id>/', views.user_edit, name='user_edit'),
@@ -42,11 +44,11 @@ urlpatterns = [
     path('unsettled_bills/p/<int:p>', views.unsettled_bills_p, name='unsettled_bills_p'),
     path('unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
     path('payment/<id>/', views.payment, name='payment'),
-    path('new_consumertype', views.new_consumertype, name='new_consumertype'),
-    path('discount',views.discount, name='discount'),
-    path('penalty', views.penalty, name='penalty'),
-    path('userprof', views.userprof, name='userprof'),
-    path('viewprof', views.viewprof, name='viewprof'),
-    path("password_reset", views.forgetpassword, name="password_reset"),
-    path("viewprof", views.viewprof, name='viewprof')
+    path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
+    path('settings/discount',views.discount, name='discount'),
+    path('settings/penalty', views.penalty, name='penalty'),
+    path('settings/userprof', views.userprof, name='userprof'),
+    path('settings/viewprof', views.viewprof, name='viewprof'),
+    path('settings', views.viewprof, name='settings'),
+
 ]

@@ -11,7 +11,7 @@
     <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
     <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-5.15.4-web/css/all.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
     <!-- <script src="https://kit.fontawesome.com/9d6dcdab6b.js" crossorigin="anonymous"></script> -->
     <script type="text/javascript" src="{% static 'jsPDF/cdnjs/jspdf.min.js' %}"></script>
@@ -42,16 +42,15 @@
                     </button>
                 </div>
                 <div class="modal-body sidebar w-100">
-                    <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x">
-                            <img src="{% static 'svgs/payments.svg' %}" alt="">
-                        </i>
+                    <div class="user_info" style="margin-top: 0;">
+                        <img src="{% static 'svgs/payments.svg' %}" alt="">
                         <p style="font-size: 30px">{{user}}</p>
                     </div>
                     <ul class="list-unstyled" style="padding-left: 30px;">
                         <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="{% url 'bills_list' %}"
                                 style="color: white; text-decoration: none;">
-                                <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                                <i class="fa fa-money-bill-1-wave fa-2x"></i>
                                 <span class="sidenav_text">Billing</span>
                             </a>
                         </li>
@@ -92,9 +91,10 @@
                             </a>
                         </li>
                         <li class="modal_side_nav_li">
-                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                            <a class="modal_side_nav_li_text" href="{% url 'settings' %}" 
+                                style="color: white; text-decoration: none">
                                 <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
-                                <span class="sidenav_text">Account Settings</span>
+                                <span class="sidenav_text">Settings</span>
                             </a>
                         </li>
                     </ul>
@@ -122,7 +122,6 @@
                 <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
                     <i class="fa fa-bars"></i>
                 </button>
-                <!-- Button trigger modal -->
                 <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal"
                     data-target="#exampleModal">
                     <i class="fa fa-bars"></i>
@@ -148,8 +147,8 @@
     </header>
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
         <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
-            <p style="font-size: 30px;">{{user}}</p>
-            <img class="img-fluid" src="{{images}}/{{user.profilepic}}">
+            <img class="img-fluid" style="border-radius: 60%; border: 1px solid #000000;" src="{{images}}/{{user.profilepic}}">
+            <p style="font-size: 30px; margin-left: auto;">{{user}}</p>
         </div>
 
         <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
@@ -157,8 +156,7 @@
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
-                    <i class="fa-solid fa-money-bill-wave fa-2x">
-                        <div class="icon payment"></div>
+                    <i class="fa fa-money-bill-1-wave fa-2x"></i>
                     </i>
                     <span style="    padding-left: 14px; font-size: 20px;">Billing</span>
                 </li>
@@ -170,7 +168,6 @@
                 <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
                     <i class="fa fa-tachometer fa-2x"></i>
                     <span style=" padding-left: 17px; font-size: 20px;">Meter Reading</span>
-
                 </li>
             </a>
             {% endif %}
@@ -211,11 +208,10 @@
                 </li>
             </a>
             {% endif %}
-
-            <a href="/" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link '/' 'active' %}">
+            <a href="{% url 'settings' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'settings' 'active' %}">
                     <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
-                    <span style="font-size: 20px; padding-left: 15px;">Account Settings</span>
+                    <span style="font-size: 20px; padding-left: 15px;">Settings</span>
                 </li>
             </a>
 
@@ -263,12 +259,20 @@
         {% endblock bill %}
         {% block new_contype %}
         {% endblock new_contype %}
+        {% block view_barangay %}
+        {% endblock view_barangay %}
 
         {% block bulkreading %}
         {% endblock bulkreading %}
         
+        
+        {% block userprof %}
+        {% endblock userprof %}
         {% block viewprof %}
         {% endblock viewprof %}
+        {% block penalties %}
+        {% endblock penalties %}
+
         
     </div>
     <script>

@@ -1,3 +1,5 @@
+
+
 import calendar
 import math
 import datetime
@@ -23,10 +25,10 @@ from django.db.models import F, Sum, Q
 from django.db.models.functions import Greatest
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.core.files.storage import FileSystemStorage
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.core.files.storage import FileSystemStorage
+
 
 
 def porter(request):
@@ -53,8 +55,6 @@ def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-        print(u)
-        print(password)
         auth = authenticate(username=u, password=password)
         if auth is not None:
             user = SystemUsers.objects.get(username=u)
@@ -88,8 +88,7 @@ def meterreading(request):
     return redirect('meterreading_p', p=10)
 
 @login_required(login_url='login')
-def bills_list_p(request, p):   
- 
+def bills_list_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -108,11 +107,11 @@ def bills_list_p(request, p):
     isnum = search.isnumeric()
     if search:
         if isnum:
-            bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+            bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
-        bills = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')
+        bills = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
     user = request.user
     count = bills.count()
@@ -124,14 +123,11 @@ def bills_list_p(request, p):
     paginator = Paginator(bills, paginate_by)
     try:
         bills_list = paginator.page(page)
-
     except PageNotAnInteger:
         bills_list = paginator.page(1)
-
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
-    print(bills_list.paginator.num_pages)
     context = {
         'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
@@ -142,7 +138,7 @@ def bills_list_p(request, p):
     }
     return render(request, 'billslist.html', context)
 
-
+@login_required(login_url='login')
 def signout(request):
     try:
         lr = LoginRec.objects.get(username=request.user)
@@ -153,11 +149,8 @@ def signout(request):
     messages.success(request, 'Logout successful')
     return redirect('login')
 
-
 @login_required(login_url='login')
 def user_creation(request):
-
-    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -166,6 +159,7 @@ def user_creation(request):
         else:
             template = redirect('bills_list')
             return template
+
     form = SystemUserForm()
     if request.method == "POST":
         form = SystemUserForm(request.POST)
@@ -202,8 +196,6 @@ def user_creation(request):
         else:
             messages.error(request, 'User creation failed')
         return redirect('sysuser')
-    else:
-        print("wa nasave atay")
     context = {
         'form': form,
         'errors': form.errors,
@@ -211,12 +203,8 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
-
 @login_required(login_url='login')
 def ledger(request, id):
-
-
-    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -345,7 +333,7 @@ def ledger(request, id):
     }
     return render(request, 'ledger.html', context)
 
-# @unauthenticated_user
+@unauthenticated_user
 def forgetpassword(request):
     if request.method == "POST":
         u_email = request.POST['email']
@@ -380,8 +368,7 @@ def forgetpassword(request):
             messages.error(request, 'Are you sure that is your email?')
     return render(request, 'forgetpassword.html')
 
-
-
+@unauthenticated_user
 def resetpassword(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -411,6 +398,7 @@ def resetpassword(request, uidb64, token):
         'token':token,
     }
     return render(request, 'password_reset_form.html', context)
+
 @login_required(login_url='login')
 def meterreading_p(request, p):
     template = ""
@@ -421,8 +409,6 @@ def meterreading_p(request, p):
         else:
             template = redirect('bills_list')
             return template
- 
-    meterred = ConsumerInfo.objects.all()
     months = []
     years = []
 
@@ -442,11 +428,11 @@ def meterreading_p(request, p):
     isnum = search.isnumeric()
     if search:
         if isnum:
-            meterred = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+            meterred = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search), deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+            meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
-        meterred = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
+        meterred = ConsumerInfo.objects.filter(deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')   
     
     count = meterred.count()
 
@@ -707,7 +693,6 @@ def consumer_list(request):
 
 
 def consumer_list_p(request, p):
-
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -722,11 +707,11 @@ def consumer_list_p(request, p):
     isnum = search.isnumeric()
     if search:
         if isnum:
-            cons = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search)).order_by('lastname', 'firstname', 'middlename')
+            cons = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)).order_by('lastname', 'firstname', 'middlename')
+            cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
-        cons = ConsumerInfo.objects.all().order_by('lastname', 'firstname', 'middlename')   
+        cons = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')   
     
     
     pages = int(p)
@@ -911,8 +896,6 @@ def enablemeter(request, id):
 
 @login_required(login_url='login')
 def sysuser(request):
-
-    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -961,8 +944,6 @@ def sysuser(request):
 
 
 @login_required(login_url='login')
-
-
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     form = sysup(instance=sys)
@@ -997,9 +978,6 @@ def user_edit(request, id):
             else:
                 sys.profilepic = 'jazzy.jpg'
             sys.save()
-            print("save ang form")
-        else:
-            print("dili")
         return redirect('sysuser')
     context = {
         'sys': sys,
@@ -1010,21 +988,21 @@ def user_edit(request, id):
 
 
 def deleteUser(request, id):
-
     template = ""
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_admin:
-            template = "delete.html"
+            template = redirect('sysuser')
         else:
             template = redirect('bills_list')
             return template
-
-    sys = SystemUsers.objects.get(username=id)
-    if request.method == "POST":
+    try:
+        sys = SystemUsers.objects.get(username=id)
         sys.delete()
-        return redirect('sysuser')
-    return render(request, 'delete.html',)
+        messages.success(request, 'User has been deleted')
+    except SystemUsers.DoesNotExist:
+        messages.error(request, 'SystemUser does not exist')
+    return redirect('sysuser')
 
 
 def about(request):
@@ -1109,7 +1087,6 @@ def reports(request):
 
 @login_required(login_url='login')
 def barangayreport(request, year):
-
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1165,7 +1142,6 @@ def barangayreport(request, year):
 
 
 def view_barangay(request, id):
-
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1272,8 +1248,6 @@ def usage_report_data(request, year):
 
 
 def revenue_report(request, year):
-
-    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1371,6 +1345,21 @@ def disconnectconsumer(request, id):
     con.save()
     return redirect('consumer_list')
 
+def reconnectconsumer(request, id):
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
+            template = "consumercreation.html"
+        else:
+            template = redirect('bills_list')
+            return template
+
+    con = ConsumerInfo.objects.get(consumer_id=id)
+    con.disconnectionflag = False
+    con.save()
+    return redirect('consumer_list')
+
 
 def unsettled_bills(request):
 
@@ -1387,8 +1376,6 @@ def unsettled_bills(request):
 
 
 def unsettled_bills_p(request, p):
-
-
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1454,9 +1441,6 @@ def unsettled_bills_p(request, p):
 
 
 def view_unsettled_bills(request, id, year):
-
-
-
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1609,7 +1593,7 @@ def penalty(request):
 
     return render(request, 'penalty.html', context)
 
-#bulk reading
+
 def bulkreading(request, year, month, p):
     template = ""
     LoginSession = request.user
@@ -1648,11 +1632,11 @@ def bulkreading(request, year, month, p):
     isnum = search.isnumeric()
     if search:
         if isnum:
-            consumers = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search),stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+            consumers = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id=search),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+            consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
-        consumers = ConsumerInfo.objects.filter(stopmeterflag__lt = 1).order_by('lastname', 'firstname', 'middlename')
+        consumers = ConsumerInfo.objects.filter(stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     
     pages = int(p)
     count = len(consumers)
@@ -1818,9 +1802,7 @@ def bulkreading(request, year, month, p):
         'user':request.user
     }
     return render(request,'bulkreading.html', context)
-    
 
-#view userprofile page
 @login_required(login_url='login')
 def viewprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
@@ -1841,31 +1823,21 @@ def viewprof(request):
     }
     return render(request, 'viewprof.html', context)
 
-
-
-
-
-#edit userprofile page
 @login_required(login_url='login')
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
-    user_info = ProfileForm(instance=user)
+    form = sysup(instance=user)
     if request.method == 'POST':
-        user_info = ProfileForm(request.POST, instance=user)
-        if user_info.is_valid():
-            user_info.save()
+        form = sysup(request.POST, instance=user)
+        profilepic = request.FILES.get('profilepic', None)
+        print(profilepic)
+        if form.is_valid():
+            form.save()
             messages.success(
                     request, 'Your Profile Updated Successfully')
             return redirect('viewprof')
-    else:
-        if user_info.is_valid():
-            user_info.save()
-            messages.success(
-                    request, 'Your Profile Updated Successfully')
-            return redirect('viewprof')
-
     context= {
         'user':user,
-        'user_info':user_info
+        'form':form
     }
     return render(request, 'userprof.html', context)
