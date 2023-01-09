@@ -30,19 +30,21 @@ alltables = [
 
 sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#    host="localhost",
-#    user="root",
-#    password="yjh434ctuG@-@",
-#    database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+   host="localhost",
+   user="root",
+   password="yjh434ctuG@-@",
+   database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 
 def porter_in():
     col = 0
     for t in range(len(tablenames)):
         mycursor.execute("SELECT count(*) FROM information_schema.columns WHERE TABLE_NAME = '"+tablenames[t]+"';")
+        print(tablenames[t])
         for c in range(mycursor.fetchone()[0]):
+            print(f"    ---{columnnames[col]}")
             mycursor.execute("SELECT " + columnnames[col] + " FROM "+tablenames[t]+";")
             result=mycursor.fetchall()
             for x in result:
@@ -100,21 +102,22 @@ def porter_out(tables):
         rt_out(i)
     for i in tables[6]:
         sys_user_out(i)
-    for i in range(len(tables[3])):
-        con_info.consumer_id = int(tables[3][i][0])
-        con_info.firstname = tables[3][i][1]
-        con_info.lastname = tables[3][i][2]
-        con_info.middlename = tables[3][i][3]
-        con_info.installation_address = Barangays.objects.get(id=tables[3][i][12])
-        con_info.homeaddress = Barangays.objects.get(id=tables[3][i][12]).barangay
+    for i in range(len(tables[0])):
+        con_info.consumer_id = int(tables[0][i][0].split('-')[0])
+        con_info.firstname = tables[0][i][1]
+        con_info.lastname = tables[0][i][2]
+        con_info.middlename = tables[0][i][13]
+        con_info.installation_address = Barangays.objects.get(id=int(tables[0][i][4]))
+        con_info.homeaddress = con_info.installation_address.barangay
         con_info.meternumber = tables[0][i][5]
         con_info.initialmeterreading = tables[0][i][6]
         con_info.contypeid = ConsumerType.objects.get(contypeid="C00"+tables[0][i][7]) 
-        con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.status = tables[0][i][8]
         con_info.penaltycounter = tables[0][i][11]
         con_info.stopmeterflag = tables[0][i][12]
+        con_info.disconnectionflag = False
         con_info.deleteflag = tables[0][i][14]
+        con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.save()
     for i in range(len(tables[4])):
         trans.transactionid = tables[4][i][0]
@@ -326,8 +329,12 @@ def billing_out():
             jan.meterReading = u.reading_jan
             date_str = u.reading_date_jan
             if date_str!=" " and date_str!="":
-                jan.date = datetime.strptime(date_str, '%Y-%m-%d')
-                jan.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    jan.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    jan.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    jan.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    jan.year = datetime.strptime(date_str, '%m-%d-%Y').year
             jan.month = 1
             jan.payment = 0
             jan.bill = u.totalbill_jan
@@ -343,8 +350,12 @@ def billing_out():
             feb.meterReading = u.reading_feb
             date_str = u.reading_date_feb
             if date_str!=" " and date_str!="":
-                feb.date = datetime.strptime(date_str, '%Y-%m-%d')
-                feb.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    feb.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    feb.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    feb.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    feb.year = datetime.strptime(date_str, '%m-%d-%Y').year
             feb.month = 2
             feb.bill = u.totalbill_feb
             feb.payment = 0
@@ -359,8 +370,12 @@ def billing_out():
             mar.meterReading = u.reading_mar
             date_str = u.reading_date_mar
             if date_str!=" " and date_str!="":
-                mar.date = datetime.strptime(date_str, '%Y-%m-%d')
-                mar.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    mar.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    mar.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    mar.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    mar.year = datetime.strptime(date_str, '%m-%d-%Y').year
             mar.month = 3
             mar.bill = u.totalbill_mar
             mar.payment = 0
@@ -375,8 +390,12 @@ def billing_out():
             apr.meterReading = u.reading_apr
             date_str = u.reading_date_apr
             if date_str!=" " and date_str!="":
-                apr.date = datetime.strptime(date_str, '%Y-%m-%d')
-                apr.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    apr.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    apr.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    apr.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    apr.year = datetime.strptime(date_str, '%m-%d-%Y').year
             apr.month = 4
             apr.bill = u.totalbill_apr
             apr.payment = 0
@@ -391,8 +410,12 @@ def billing_out():
             may.meterReading = u.reading_may
             date_str = u.reading_date_may
             if date_str!=" " and date_str!="":
-                may.date = datetime.strptime(date_str, '%Y-%m-%d')
-                may.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    may.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    may.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    may.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    may.year = datetime.strptime(date_str, '%m-%d-%Y').year
             may.month = 5
             may.bill = u.totalbill_may
             may.payment = 0
@@ -407,8 +430,12 @@ def billing_out():
             jun.meterReading = u.reading_jun
             date_str = u.reading_date_jun
             if date_str!=" " and date_str!="":
-                jun.date = datetime.strptime(date_str, '%Y-%m-%d')
-                jun.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    jun.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    jun.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    jun.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    jun.year = datetime.strptime(date_str, '%m-%d-%Y').year
             jun.month = 6
             jun.bill = u.totalbill_jun
             jun.payment = 0
@@ -423,8 +450,12 @@ def billing_out():
             jul.meterReading = u.reading_jul
             date_str = u.reading_date_jul
             if date_str!=" " and date_str!="":
-                jul.date = datetime.strptime(date_str, '%Y-%m-%d')
-                jul.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    jul.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    jul.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    jul.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    jul.year = datetime.strptime(date_str, '%m-%d-%Y').year
             jul.month = 7
             jul.bill = u.totalbill_jul
             jul.payment = 0
@@ -439,8 +470,12 @@ def billing_out():
             aug.meterReading = u.reading_aug
             date_str = u.reading_date_aug
             if date_str!=" " and date_str!="":
-                aug.date = datetime.strptime(date_str, '%Y-%m-%d')
-                aug.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    aug.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    aug.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    aug.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    aug.year = datetime.strptime(date_str, '%m-%d-%Y').year
             aug.month = 8
             aug.bill = u.totalbill_aug
             aug.payment = 0
@@ -455,8 +490,12 @@ def billing_out():
             sept.meterReading = u.reading_sept
             date_str = u.reading_date_sept
             if date_str!=" " and date_str!="":
-                sept.date = datetime.strptime(date_str, '%Y-%m-%d')
-                sept.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    sept.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    sept.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    sept.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    sept.year = datetime.strptime(date_str, '%m-%d-%Y').year
             sept.month = 9
             sept.bill = u.totalbill_sept
             sept.payment = 0
@@ -471,8 +510,12 @@ def billing_out():
             oct.meterReading = u.reading_oct
             date_str = u.reading_date_oct
             if date_str!=" " and date_str!="":
-                oct.date = datetime.strptime(date_str, '%Y-%m-%d')
-                oct.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    oct.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    oct.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    oct.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    oct.year = datetime.strptime(date_str, '%m-%d-%Y').year
             oct.month = 10
             oct.bill = u.totalbill_oct
             oct.payment = 0
@@ -488,8 +531,12 @@ def billing_out():
             nov.meterReading = u.reading_nov
             date_str = u.reading_date_nov
             if date_str!=" " and date_str!="":
-                nov.date = datetime.strptime(date_str, '%Y-%m-%d')
-                nov.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                try:
+                    nov.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    nov.year = datetime.strptime(date_str, '%Y-%m-%d').year
+                except ValueError:
+                    nov.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    nov.year = datetime.strptime(date_str, '%m-%d-%Y').year
             nov.month = 11
             nov.bill = u.totalbill_nov
             nov.payment = 0
@@ -504,8 +551,12 @@ def billing_out():
             dec.meterReading = u.reading_dec
             date_str = u.reading_date_dec
             if date_str!=" " and date_str!="":
-                dec.date = datetime.strptime(date_str, '%Y-%m-%d')
-                dec.year = datetime.strptime(date_str, '%Y-%m-%d').year-1
+                try:
+                    dec.date = datetime.strptime(date_str, '%Y-%m-%d')
+                    dec.year = datetime.strptime(date_str, '%Y-%m-%d').year-1
+                except ValueError:
+                    dec.date = datetime.strptime(date_str, '%m-%d-%Y')
+                    dec.year = datetime.strptime(date_str, '%m-%d-%Y').year
             dec.month = 12
             dec.bill = u.totalbill_dec
             dec.payment = 0

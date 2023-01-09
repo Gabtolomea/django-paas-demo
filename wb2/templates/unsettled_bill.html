@@ -101,7 +101,7 @@ Unsettled Bills
 							let myInput = document.getElementById('myInput');
 							form = document.getElementById('form')
 							//on keyup, start the countdown
-							myInput.addEventListener('keyup', () => {
+							myInput.addEventListener('input', () => {
 								var newURL = window.location.href
 								form.action = newURL + "?search="+myInput.value
 								form.submit()

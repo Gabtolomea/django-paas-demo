@@ -108,7 +108,7 @@ Bulk Reading
 							let myInput = document.getElementById('myInput');
 							form = document.getElementById('form')
 							//on keyup, start the countdown
-							myInput.addEventListener('oninput', () => {
+							myInput.addEventListener('input', () => {
 								var newURL = window.location.href
 								form.action = newURL + "?search="+myInput.value
 								form.submit()
@@ -138,19 +138,15 @@ Bulk Reading
 								</tr>
 							</thead>
 							<tbody class="wb_tbody">
-								{% if consumers_list %}
-									{% for c in consumers_list %}
-									<tr>
-										<td>{{c.con.meternumber}}</td>
-										<td>{{c.con.consumer_id}}</td>
-										<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
-										<td>{{c.prev}}</td>
-										<td class="balance"><input title="Current Reading" type="number" class="form-control" name="con{{c.con.consumer_id}}" id="" value="{{c.cur}}"></td>
-									</tr>
-									{% endfor %}
-								{% else %}
-								<tr class="odd"><td valign="top" colspan="5" class="dataTables_empty">No matching records found</td></tr>
-								{% endif %}
+								{% for c in consumers_list %}
+								<tr style="cursor: pointer;" onclick="foc_this('con{{c.con.consumer_id}}_id')">
+									<td>{{c.con.meternumber}}</td>
+									<td>{{c.con.consumer_id}}</td>
+									<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
+									<td>{{c.prev}}</td>
+									<td class="balance"><input title="Current Reading" min="{{c.prev}}" type="number" {% if c.cur == 0 %}onfocus="foc_check('con{{c.con.consumer_id}}_id')" onblur="check('con{{c.con.consumer_id}}_id')"{% endif %} class="form-control" name="con{{c.con.consumer_id}}" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}"></td>
+								</tr>
+								{% endfor %}
 							</tbody>
 						</table>
 						<div class="row w-100 m-auto pt-2">
@@ -163,6 +159,21 @@ Bulk Reading
 					</form>
 					
 					<script>
+						function foc_this(id){
+							document.getElementById(id).focus()
+						}
+						function foc_check(id){
+							p = document.getElementById(id)
+							if (p.value == 0){
+								p.value = ''
+							}
+						}
+						function check(id) {
+							p = document.getElementById(id)
+							if (p.value == ''){
+								p.value = 0
+							}
+						}
 						$(document).ready(function() {
 							$("input[type='number']").on('change', function() {
 								$(this).addClass('changed');

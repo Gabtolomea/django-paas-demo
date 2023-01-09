@@ -1,5 +1,4 @@
 from . import views
-
 from django.urls import path
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
@@ -49,4 +48,5 @@ urlpatterns = [
     path('userprof', views.userprof, name='userprof'),
     path('viewprof', views.viewprof, name='viewprof'),
     path("password_reset", views.forgetpassword, name="password_reset"),
+    path("viewprof", views.viewprof, name='viewprof')
 ]

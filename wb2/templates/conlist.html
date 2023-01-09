@@ -1,393 +1,369 @@
-{% extends 'dashboard.html' %}
 {% load static %}
+{% static "images" as images %}
+{% load active_link_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css'%}">
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.15.4-web/css/all.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    <!-- <script src="https://kit.fontawesome.com/9d6dcdab6b.js" crossorigin="anonymous"></script> -->
+    <script type="text/javascript" src="{% static 'jsPDF/cdnjs/jspdf.min.js' %}"></script>
+    <script src="{% static 'chart.js' %}"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    {% block style %}
+    {% endblock style %}
+    <style>
+        .img-fluid {
+            width: 80%;
+            margin-left: 25px;
+        }
+    </style>
+</head>
 
-{% block title %}
-Consumer List
-{% endblock title %}
-{% block style %}
-<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.css'%} ">
-<style>
-    .hide {
-        opacity: 0;
-        transition: 0.3s all ease-in-out;
+<body>
+    <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark border-0">
+                    <span class="mobile_header_font" style="color:white;font-weight: 700;">
+                        WATER BILLING
+                        <span class="station" style="color: #63CDD7;">STATION</span>
+                    </span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body sidebar w-100">
+                    <div class="user_info" style="margin-top: 0;"><i class="fa-solid fa-circle-user fa-8x">
+                            <img src="{% static 'svgs/payments.svg' %}" alt="">
+                        </i>
+                        <p style="font-size: 30px">{{user}}</p>
+                    </div>
+                    <ul class="list-unstyled" style="padding-left: 30px;">
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'bills_list' %}"
+                                style="color: white; text-decoration: none;">
+                                <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                                <span class="sidenav_text">Billing</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'meterreading' %}"
+                                style="color: white; text-decoration: none ">
+                                <i class="fa fa-tachometer fa-2x"></i>
+                                <span class="sidenav_text">Meter Reading</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'consumer_list' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-user fa-2x"></i>
+                                <span class="sidenav_text">Consumers</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'reports' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa fa-line-chart fa-2x"></i>
+                                <span class="sidenav_text">Reports</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'unsettled_bills' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa fa-line-chart fa-2x"></i>
+                                <span class="sidenav_text">Unsettled Bills</span>
+                            </a>
+                        </li>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="{% url 'sysuser' %}"
+                                style="color: white; text-decoration: none">
+                                <i class="fa-solid fa-user-group fa-2x"></i>
+                                <span class="sidenav_text"> System Users</span>
+                            </a>
+                        </li>
+                        <li class="modal_side_nav_li">
+                            <a class="modal_side_nav_li_text" href="/" style="color: white; text-decoration: none">
+                                <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                                <span class="sidenav_text">Account Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <header>
+        {% for message in messages %}
+        <div id="login"
+            class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
+            style="margin-left: 750px; margin-right: 750px; padding-left: 55px; position: absolute; border-radius: 10px;">
+            <strong>{{message.tags|title}}!</strong> {{message}}
+            <a href="#" class="close" data-dismiss="alert"
+                style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
+                aria-label="close">&times;</a>
+        </div>
+        {% endfor %}
 
-    }
+        <div class="row w-100 m-auto " style="height: 100%; align-content: center; font-weight: 700;" id="myHeader">
+            <div class="col-sm-8 col-md-8 col-lg-8;" style="font-size: 20px; white-space: nowrap;">
+                <button class="header_toggle" onclick="first_toggle()" id="first_toggle">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button class="header_toggle" onclick="second_toggle()" id="second_toggle" style="display:none;">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <!-- Button trigger modal -->
+                <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal"
+                    data-target="#exampleModal">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <span class="mobile_header_font" style="padding-left:10px; color:white">WATER BILLING <span
+                        class="station" style="color: #63CDD7;">STATION</span></span>
+            </div>
 
-    .showOnHover:hover .hide {
-        opacity: 1;
-        transition: 0.3s all ease-in-out;
-    }
-
-    td,
-    th {
-        padding: 10px;
-        text-align: center;
-    }
-
-    .inputid {
-        text-align: center;
-    }
-
-    .button2 {
-        background-color: var(--main-color);
-        color: white;
-        padding: 8px 30px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-    }
-    .btn.button2:hover {
-        background: var(--main-color);
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
-    .btn.button2:focus {
-        background: var(--main-color);
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-        transition: all 0.1s;
-    }
-	.odd{
-		font-size: 1rem;
-		font-weight: 400;
-		line-height: 1.5;
-		-webkit-text-size-adjust: 100%;
-		-webkit-tap-highlight-color: transparent;
-	
-		caption-side: bottom;
-		font-family: Arial;
-		border-collapse: separate !important;
-		border-spacing: 0;
-		box-sizing: border-box;
-		border-color: inherit;
-		border-style: solid;
-		border-width: 1px 0;
-		color: #212529;
-		}
-	
-	.dataTables_empty{
-		text-align: center;
-		}
-</style>
-{% endblock style %}
-{% block script %}
-{% endblock script %}
-<script src="{% static 'DataTables/js/dataTables.bootstrap5.js'%}"></script>
-{% block consumer_list %}
-<h1 class="mb-3 text-center">Consumers List</h1>
-
-<form action="{% url 'consumercreation' %}">
-    <button class="btn button2" type="submit">
-		<i class="fa fa-user-plus"></i> New Consumer</button>
-</form>
+            <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
 
 
+                <a href="#" style="color:#006c85; text-decoration: none; padding: 0 5%;">
+                    <i class="fa-solid fa-bell"></i>
+                </a>
+                <a href="" style="color:#006c85; text-decoration: none; padding:0 5%">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </a>
+                <a href="{% url 'signout' %}" style="color:#006c85; text-decoration: none ;padding:0 5%">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
+        <div class="user_info"><i class="fa-solid fa-circle-user fa-8x"></i>
+            <p style="font-size: 30px;">{{user}}</p>
+            <img class="img-fluid" src="{{images}}/{{user.profilepic}}">
+        </div>
 
-<div class="container-fluid p-0">
-	<div class="table-responsive">
-		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			<div class="row">
-				<div class="col-sm-12 col-md-6">
-					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
-						<label style="display:flex;">Show
-						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
-							<option disabled selected value>--Select--</option>
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
-							<option value="0">All</option>
-						</select> entries</label>
-					</form>
-					<script>
-						yearselection = document.getElementById("yearselection")
-						selector = document.getElementById("selector")
-						function change() {
-							yearselection.action = selector.value
-							yearselection.submit('')
-						}
-					</script>
-				</div>
-				<div class="col-sm-12 col-md-6">
-					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<label>Search:
-							<form class="input-group" action="" id ="form" method="GET" role="form">
-								<input type="search" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{search}}">
-							</form>
-							<script>
-							let myInput = document.getElementById('myInput');
-							form = document.getElementById('form')
-							//on keyup, start the countdown
-							myInput.addEventListener('oninput', () => {
-								var newURL = window.location.href
-								form.action = newURL + "?search="+myInput.value
-								form.submit()
-							});
-							window.onload = function() {
-								var input = document.getElementById("myInput");
-								const end = input.value.length;
-								input.setSelectionRange(end, end);
-								input.focus();
-							}
-							</script>							
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
-                        <thead class="wb_thead">
-                            <tr>
-                                <th style="min-width: 100px;">Account ID</th>
-                                <th style="min-width: 100px;">Name</th>
-                                <th style="min-width: 100px;">Address</th>
-                                <th style="min-width: 100px;">Meter Number</th>
-                            </tr>
-                        </thead>
-                        <tbody class="wb_tbody">
-							{% if consumer_list %}
-								{% for con in consumer_list %}
-								<tr class="showOnHover ">
-									<td>{{con.consumer_id}}</td>
-									<td style="text-align: left; white-space: nowrap;">{{con.lastname}}, {{con.firstname}} {{con.middlename}}</td>
-									<td>{{con.installation_address}}</td>
-									<td class="{{t.style}}">
-										{{con.meternumber}}
-										<a href="{% url 'consumerupdate' con.consumer_id %}">
-											<button class="hide btn btn-success btn-sm rounded-0" style="float: right;"
-												data-toggle="modal" type="button" data-placement="top" title="Edit">
-												<i class="fa fa-edit"></i>
-											</button>
-										</a>
-										<a href="{%url 'deleteconsumer' con.consumer_id %}"><button
-											class=" hide btn btn-danger btn-sm rounded-0" type="button"
-											onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
-											data-placement="top" title="Delete"><i class="fa fa-trash"></i></button></a>
-									</td>
-								</tr>
-								{% endfor %}
-							{% else %}
-							<tr class="odd"><td valign="top" colspan="5" class="dataTables_empty">No matching records found</td></tr>
-							{% endif %}
-                        </tbody>
-                    </table>
-				</div>
-			</div>
-			<div class="row">
-				<div class="d-flex justify-content-center">
-					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
-						<ul style="display: flex; padding-left: 0; list-style: none;">
-							{% if consumer_list.paginator.num_pages > 5 %}
-								{% if consumer_list.number < 5 %}
-									{% if consumer_list.has_previous %}
-									<a href="?page={{ consumer_list.previous_page_number }}">
-										<li class="paginate_button page-item previous">Previous</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item previous">Previous</li>
-									{% endif %}
-									{% for i in five %}
-										{% if i == consumer_list.number %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item active">{{i}}</li>
-											</a>
-										{% else %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item">{{i}}</li>
-											</a>
-										{% endif %}
-									{% endfor %}
-									<li class="paginate_button disabled page-item">...</li>
-									<a href="?page={{ consumer_list.paginator.num_pages }}">
-										<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
-									</a>
-									{% if consumer_list.has_next %}
-									<a href="?page={{ consumer_list.next_page_number }}">
-										<li class="paginate_button page-item next">Next</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item next">Next</li>
-									{% endif %}
-								{% else %}
-									{% if consumer_list.number > consumer_list.paginator.num_pages|add:'-3'%}
-										{% if consumer_list.has_previous %}
-										<a href="?page={{ consumer_list.previous_page_number }}">
-											<li class="paginate_button page-item previous">Previous</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										<a href="?page=1">
-											<li class="paginate_button page-item">1</li>
-										</a>
-										<li class="paginate_button disabled page-item">...</li>
-										{% for i in last %}
-											{% if i == consumer_list.number %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item active">{{i}}</li>
-												</a>
-											{% else %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item">{{i}}</li>
-												</a>
-											{% endif %}
-										{% endfor %}
-										{% if consumer_list.number == consumer_list.paginator.num_pages %}
-										<a href="?page={{ consumer_list.paginator.num_pages }}">
-											<li class="paginate_button page-item active">{{ consumer_list.paginator.num_pages }}</li>
-										</a>
-										{% else %}
-										<a href="?page={{ consumer_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
-										</a>
-										{% endif %}
-										{% if consumer_list.has_next %}
-										<a href="?page={{ consumer_list.next_page_number }}">
-											<li class="paginate_button page-item next">Next</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item next">Next</li>
-										{% endif %}
-									{% else %}
-										{% if consumer_list.has_previous %}
-											<a href="?page={{ consumer_list.previous_page_number }}">
-												<li class="paginate_button page-item previous">Previous</li>
-											</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										{% if consumer_list.number > 2 %}
-											<a href="?page=1">
-												<li class="paginate_button page-item">1</li>
-											</a>
-											{% if consumer_list.number > 3 %}
-												<li class="paginate_button disabled page-item">...</li>
-											{% endif %}
-										{% endif %}
+        <ul class="list-unstyled" style="margin-top: 30px; margin-left: -72px;">
 
-										{% for num in consumer_list.paginator.page_range %}
-										{% if consumer_list.number == num %}<a href="?page={{ num }}">
-										<li class="paginate_button page-item active">
-											{{ num }}
-										</li></a>
-										{% elif num > consumer_list.number|add:'-2' and num < consumer_list.number|add:'2' %}
-											<a href="?page={{ num }}"> 
-												<li class="paginate_button page-item">{{ num }}</li>
-											</a>
-											{% endif %}
-											{% endfor %}
+            {% if request.user.is_teller or request.user.is_supervisor %}
+            <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
+                <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
+                    <i class="fa-solid fa-money-bill-wave fa-2x">
+                        <div class="icon payment"></div>
+                    </i>
+                    <span style="    padding-left: 14px; font-size: 20px;">Billing</span>
+                </li>
+            </a>
+            {% endif %}
 
-										{% if consumer_list.number < consumer_list.paginator.num_pages|add:'-2' %}
-											<li class="paginate_button disabled page-item">...</li>
-											<a href="?page={{ consumer_list.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
-											</a>
-										{% elif consumer_list.number < consumer_list.paginator.num_pages|add:'-1' %} 
-											<a href="?page={{ consumer_list.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
-											</a>
-										{% endif %}
-										{% if consumer_list.has_next %}
-											<a href="?page={{ consumer_list.next_page_number }}">
-												<li class="paginate_button page-item next">Next</li>
-											</a>
-										{% else %}
-											<li class="paginate_button page-item disabled next">Next</li>
-										{% endif %}
-									{% endif %}
-								{% endif %}
-							{% endif %}
-						</ul>
-						<style>
-						a{		
-							-webkit-touch-callout: none;
-							-webkit-user-select: none;
-							-khtml-user-select: none;
-							-moz-user-select: none;
-							-ms-user-select: none;
-							user-select: none;
-							cursor: default;
-							text-decoration: none;
-						}
-						.paginate_button {
-							cursor: pointer;
-							position: relative;
-							display: block;
-							padding: 0.375rem 0.75rem;
-							font-size: 1rem;
-							color: var(--main-color);
-							text-decoration: none;
-							background-color: white;
-							border: 1px solid #dee2e6;
-							transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-						}
-						.active>.paginate_button, .paginate_button.active {
-							z-index: 3;
-							color: white !important;
-							background-color: var(--main-color);
-							border-color: #dee2e6;
-						}
-						.previous {
-							border-top-left-radius: .375rem;
-							border-bottom-left-radius: .375rem;
-						}
-						.next {
-							border-top-right-radius: .375rem;
-							border-bottom-right-radius: .375rem;
-						}
-						.disabled {		
-							-webkit-touch-callout: none;
-							-webkit-user-select: none;
-							-khtml-user-select: none;
-							-moz-user-select: none;
-							-ms-user-select: none;
-							user-select: none;
-							cursor: default;
-							color: #6c757d;
-						}
-					
-						</style>
-					</div>
-				</div>
-			</div>
-		</div>
+            {% if request.user.is_teller or request.user.is_reader or request.user.is_supervisor %}
+            <a href="{% url 'meterreading' %}" style="color: white; text-decoration: none ">
+                <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
+                    <i class="fa fa-tachometer fa-2x"></i>
+                    <span style=" padding-left: 17px; font-size: 20px;">Meter Reading</span>
 
-	</div>
-</div>
-<script>
-	function myFunction() {
-		// Declare variables 
-		var input, filter, table, tr, i, j, column_length, count_td;
-		column_length = document.getElementById('myTable').rows[0].cells.length;
-		input = document.getElementById("myInput");
-		filter = input.value.toUpperCase();
-		table = document.getElementById("myTable");
-		tr = table.getElementsByTagName("tr");
-		for (i = 1; i < tr.length; i++) { // except first(heading) row
-			count_td = 0;
-			for (j = 1; j < column_length - 1; j++) { // except first column
-				td = tr[i].getElementsByTagName("td")[j];
-				/* ADD columns here that you want you to filter to be used on */
-				if (td) {
-					if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-						count_td++;
-					}
-				}
-			}
-			if (count_td > 0) {
-				tr[i].style.display = "";
-			} else {
-				tr[i].style.display = "none";
-			}
-		}
+                </li>
+            </a>
+            {% endif %}
 
-	}
+            {% if request.user.is_teller or request.user.is_supervisor %}
+            <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
+                    <i class="fa-solid fa-user fa-2x"></i>
+                    <span class="sidenav_text">Consumers</span>
+                </li>
+            </a>
+            {% endif %}
 
-</script>
+            {% if request.user.is_teller or request.user.is_supervisor %}
+            <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'reports' 'active' %}">
+                    <i class="fa fa-line-chart fa-2x"></i>
+                    <span style=" padding-left: 20px; font-size: 20px">Reports</span>
+                </li>
+            </a>
+            {% endif %}
 
-{% endblock consumer_list %}
+
+            {% if request.user.is_teller or request.user.is_supervisor %}
+            <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
+                    <i class="fa fa-line-chart fa-2x"></i>
+                    <span class="sidenav_text">Unsettled Bills</span>
+                </li>
+            </a>
+            {% endif %}
+
+            {% if request.user.is_admin %}
+            <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
+                    <i class="fa-solid fa-user-group fa-2x"></i>
+                    <span style=" padding-left: 14px; font-size: 20px;">System Users</span>
+                </li>
+            </a>
+            {% endif %}
+
+            <a href="/" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link '/' 'active' %}">
+                    <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                    <span style="font-size: 20px; padding-left: 15px;">Account Settings</span>
+                </li>
+            </a>
+
+
+        </ul>
+    </div>
+    <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
+        {% block billslist %}
+        {% endblock billslist %}
+        {% block discount %}
+        {% endblock discount %}
+        {% block reports %}
+        {% endblock reports %}
+        {% block ledger %}
+        {% endblock ledger%}
+        {% block meterreading %}
+        {% endblock meterreading%}
+        {% block bills_list %}
+        {% endblock bills_list %}
+        {% block consumer_list %}
+        {% endblock consumer_list %}
+        {% block sysuser %}
+        {% endblock sysuser %}
+        {% block consumercreation %}
+        {% endblock consumercreation %}
+        {% block deleteUser %}
+        {% endblock deleteUser %}
+        {% block registration %}
+        {% endblock registration %}
+        {% block waterusage %}
+        {% endblock waterusage %}
+        {% block unsettled_bills %}
+        {% endblock unsettled_bills %}
+        {% block view_unsettled_bills %}
+        {% endblock view_unsettled_bills %}
+        {% block sysuserupdate %}
+        {% endblock sysuserupdate %}
+        {% block settingspage %}
+        {% endblock settingspage %}
+        {% block revenue_report %}
+        {% endblock revenue_report %}
+        {% block usage_report_data %}
+        {% endblock usage_report_data %}
+        {% block bill %}
+        {% endblock bill %}
+        {% block new_contype %}
+        {% endblock new_contype %}
+
+        {% block bulkreading %}
+        {% endblock bulkreading %}
+        
+        {% block viewprof %}
+        {% endblock viewprof %}
+        
+    </div>
+    <script>
+
+        function media_query_720(screen_size) {
+            if (screen_size.matches) {
+                document.getElementById("first_toggle").style.display = "none";
+                document.getElementById("second_toggle").style.display = "none";
+                document.getElementById("third_toggle").style.display = "inline";
+                document.getElementById("mobile_header_nav").style.display = "none";
+                document.getElementById("side_nav").classList.remove("sidebar");
+                document.getElementById("side_nav").classList.add("remove_sidebar");
+                document.getElementById("main_content").classList.remove("main_content");
+                document.getElementById("main_content").classList.add("remove_main_content");
+            } else {
+                document.getElementById("first_toggle").style.display = "inline";
+                document.getElementById("second_toggle").style.display = "none";
+                document.getElementById("third_toggle").style.display = "none";
+                document.getElementById("mobile_header_nav").style.display = "inline";
+                document.getElementById("side_nav").classList.add("sidebar");
+                document.getElementById("side_nav").classList.remove("remove_sidebar");
+                document.getElementById("main_content").classList.add("main_content");
+                document.getElementById("main_content").classList.remove("remove_main_content");
+            }
+        }
+        var screen_size = window.matchMedia("(max-width: 720px)")
+        media_query_720(screen_size)
+        screen_size.addListener(media_query_720)
+
+
+        function first_toggle() {
+            document.getElementById("first_toggle").style.display = "none";
+            document.getElementById("second_toggle").style.display = "inline";
+
+            document.getElementById("side_nav").classList.remove("sidebar");
+            document.getElementById("side_nav").classList.add("remove_sidebar");
+            document.getElementById("main_content").classList.remove("main_content");
+            document.getElementById("main_content").classList.add("remove_main_content");
+        }
+        function second_toggle() {
+            document.getElementById("first_toggle").style.display = "inline";
+            document.getElementById("second_toggle").style.display = "none";
+            document.getElementById("side_nav").classList.add("sidebar");
+            document.getElementById("side_nav").classList.remove("remove_sidebar");
+            document.getElementById("main_content").classList.add("main_content");
+            document.getElementById("main_content").classList.remove("remove_main_content");
+        }
+        $(document).ready(function () {
+            let menuScrollTimer = null;
+            $(".nav a").click(function (e) {
+                e.preventDefault();
+                if (menuScrollTimer === null) {
+                    $('.nav a.active').removeClass('active');
+                    $(this).addClass('active');
+                    let target = $(this).attr('href');
+                    $('html, body').animate({ scrollTop: $(target).offset().top - 100 }, 1050);
+                    menuScrollTimer = setTimeout(function () {
+                        clearTimeout(menuScrollTimer);
+                        menuScrollTimer = null;
+                    }, 1050);
+                }
+            });
+
+            $(window).scroll(function (e) {
+                if (menuScrollTimer === null) {
+                    let windowTop = $(this).scrollTop();
+
+                    $('.nav a').each(function (event) {
+                        if (windowTop >= $($(this).attr('href')).offset().top - 100) {
+                            $('.nav .active').removeClass('active');
+                            $(this).addClass('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script> -->
+    <script src="{% static 'jquery/jquery.js' %}"></script>
+    <script src="{% static 'bootstrap.min.js' %}"></script>
+    <script src="{% static 'popper.min.js' %}"></script>
+
+    <script>
+        var login = document.getElementById('login');
+        setTimeout(function closeModal() {
+            login.classList.add("op-0")
+        }, 3000)
+        setTimeout(function dispnone() {
+            login.style.display = "none"
+        }, 4000)
+    </script>
+
+    {% block script %}
+    {% endblock script %}
+</body>
+
+</html>
