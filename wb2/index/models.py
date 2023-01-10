@@ -23,9 +23,9 @@ class SystemUsers(AbstractUser):
     is_reader = models.BooleanField(default=False)
     mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='jazzy.jpg')
     authorizedapprover = models.CharField(max_length=20)
     email = models.EmailField(max_length=100,null=True, blank=True)
+    profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='jazzy.jpg')
 
     def __str__(self) -> str:
         return self.username
