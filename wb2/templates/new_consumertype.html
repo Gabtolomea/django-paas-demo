@@ -78,7 +78,7 @@ Consumer Type
 
 <script>
     $(document).ready(function () {
-        $('#table').DataTable({
+        $('#table').DataTable({ 
             order: [[2, 'asc']],
             stateSave: true,
             lengthMenu: [
@@ -91,33 +91,7 @@ Consumer Type
 {% endblock script %}
 {% block new_contype %}
 
-
-<div class="row w-100 m-auto">
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'settings' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-user"><span style="padding: 12px; font-family: Arial;">Profile</span></i></a>
-    </div>
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 50px; padding-right: 50px; 
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial;">Consumer Types</span></i></a>
-    </div>
-    
-
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'penalty'  %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
-		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-gavel"><span style="padding: 12px; font-family: Arial;">Penalties</span></i></a>
-    </div>
-
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'discount' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-percent"><span style="padding: 12px; font-family: Arial;">Discounts</span></i></a>
-    </div>
-</div>
-
+{% include 'settingstabs.html'%}
 <button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#payment" >Add New Consumer Type</button>
 
     <center><h1 style="margin-top: 30px;">Consumer Type</h1></center>

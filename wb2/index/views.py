@@ -1136,7 +1136,8 @@ def barangayreport(request, year):
         'cur_year': year,
         'years': years,
         'fr': fr,
-        'user': request.user
+        'user': request.user,
+        'is_br':True
     }
     return render(request, 'waterusage.html', context)
 
@@ -1243,6 +1244,7 @@ def usage_report_data(request, year):
         'years': years,
         'my': my,
         'user': request.user,
+        'is_ur':True,
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1311,7 +1313,8 @@ def revenue_report(request, year):
         'cur_year': year,
         'years': years,
         'col': col,
-        'rec': rec
+        'rec': rec,
+        'is_rr':True,
     }
     return render(request, 'revenue_report.html',  context)
 
@@ -1529,7 +1532,8 @@ def discount(request):
         'd': d,
         'form': form,
         'errors': form.errors,
-        'user': user
+        'user': user,
+        'is_discount':True,
     }
     return render(request, 'discount.html', context)
 
@@ -1558,7 +1562,8 @@ def new_consumertype(request):
         'c': c,
         'form': form,
         'errors': form.errors,
-        'user': request.user
+        'user': request.user,
+        'is_contype':True,
     }
     return render(request, 'new_consumertype.html', context)
 
@@ -1589,7 +1594,8 @@ def penalty(request):
         'p': p,
         'form': form,
         'errors': form.errors,
-        'user': request.user
+        'user': request.user,
+        'is_penalty':True,
     }
 
     return render(request, 'penalty.html', context)
@@ -1821,6 +1827,7 @@ def viewprof(request):
     context= {
         'user':user,
         'role':role,
+        'is_profile':True
     }
     return render(request, 'viewprof.html', context)
 
