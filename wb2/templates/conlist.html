@@ -5,8 +5,10 @@
 Consumer List
 {% endblock title %}
 {% block style %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+<script src="{% static 'font-awesome.min.css'%}"> </script>
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.css'%} ">
+<script src="{% static 'DataTables/js/dataTables.bootstrap5.js'%}"></script>
 <style>
     .hide {
         opacity: 0;
@@ -77,7 +79,7 @@ Consumer List
 {% endblock style %}
 {% block script %}
 {% endblock script %}
-<script src="{% static 'DataTables/js/dataTables.bootstrap5.js'%}"></script>
+
 {% block consumer_list %}
 <h1 class="mb-3 text-center">Consumers List</h1>
 
