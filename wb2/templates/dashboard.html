@@ -129,7 +129,7 @@
                 </button>
                 <button type="button" class="header_toggle" id="third_toggle" data-toggle="modal"
                     data-target="#exampleModal">
-                    <i class="fa fa-bars"></i>
+                    <img style="width: 13%;"src="{% static '/images/menu_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                 </button>
                 <span class="mobile_header_font" style="padding-left:10px; color:white">WATER BILLING <span
                         class="station" style="color: #63CDD7;">STATION</span></span>
@@ -139,8 +139,8 @@
 
 
 
-                <a href="{% url 'signout' %}" style="color:#63cdd7; text-decoration: none ;padding:0 5%">
-                    <i class="fa-solid fa-right-from-bracket"></i>
+                <a href="{% url 'signout' %}">
+                    <img style="width: 4%; margin-right: 30px;"src="{% static '/images/login_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                 </a>
             </div>
         </div>
@@ -157,7 +157,7 @@
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'bills_list' %}" style="color: white; text-decoration: none;">
                 <li class="side_nav_li {% active_link 'bills_list' 'active' %}">
-                    <i class="fa fa-money-bill-1-wave fa-2x"></i>
+                    <img style="width: 13%;"src="{% static '/images/payments_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                     <span style="    padding-left: 14px; font-size: 20px;">Billing</span>
                 </li>
             </a>
@@ -166,7 +166,7 @@
             {% if request.user.is_teller or request.user.is_reader or request.user.is_supervisor %}
             <a href="{% url 'meterreading' %}" style="color: white; text-decoration: none ">
                 <li class="side_nav_li {% active_link 'meterreading' 'active' %}">
-                    <i class="fa fa-tachometer fa-2x"></i>
+                    <img style="width: 13%;"src="{% static '/images/water-meter-increase-01.svg' %}" />
                     <span style=" padding-left: 17px; font-size: 20px;">Meter Reading</span>
                 </li>
             </a>
@@ -175,7 +175,7 @@
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'consumer_list' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
-                    <i class="fa-solid fa-users fa-2x"></i>
+                    <img style="width: 15%;"src="{% static '/images/3289557-clan-group-partners-peers-people_107100.svg' %}" />
                     <span class="sidenav_text">Consumers</span>
                 </li>
             </a>
@@ -184,7 +184,7 @@
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'reports' 'active' %}">
-                    <i class="fa fa-line-chart fa-2x"></i>
+                    <img style="width: 13%;"src="{% static '/images/query_stats_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                     <span style=" padding-left: 20px; font-size: 20px">Reports</span>
                 </li>
             </a>
@@ -194,7 +194,7 @@
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'unsettled_bills' 'active' %}">
-                    <i class="fa-solid fa-receipt fa-2x"></i>
+                    <img style="width: 13%;"src="{% static '/images/receipt_long_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                     <span class="sidenav_text">Unsettled Bills</span>
                 </li>
             </a>
@@ -203,14 +203,14 @@
             {% if request.user.is_admin %}
             <a href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
-                    <i class="fa-solid fa-user-group fa-2x"></i>
+                    <img style="width: 13%;"src="{% static '/images/supervisor_account_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                     <span style=" padding-left: 14px; font-size: 20px;">System Users</span>
                 </li>
             </a>
             {% endif %}
             <a href="{% url 'settings' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'settings' 'active' %}">
-                    <i class="fa-sharp fa-solid fa-gears fa-2x"></i>
+                    <img style="width: 13%;"src="{% static '/images/manage_accounts_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                     <span style="font-size: 20px; padding-left: 15px;">Settings</span>
                 </li>
             </a>
