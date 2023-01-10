@@ -1,4 +1,5 @@
 {% extends 'dashboard.html' %} 
+{% load static %}
 {% block title %} 
 Usage Report 
 {% endblock title%} 
@@ -187,60 +188,13 @@ Usage Report
   }
 </style>
 
-{% endblock style %} {% block usage_report_data %}
+{% endblock style %}
+{% block usage_report_data %}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="{% static 'jquery/jquery.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% csrf_token %}
-
-<div class="row w-100 m-auto">
-	<div class="col-lg-4 col-md-4 col-sm-4">
-		<a href="{% url 'reports' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-			<i class="fa fa-address-book"><span style="padding: 12px; font-family: Arial;">Barangay Reports</span></i></a>
-	</div>
-
-	<div class="col-lg-4 col-md-4 col-sm-4">
-		<a href="{% url 'usage_report_data' cur_year %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
-		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;"> 
-			<i class="fa fa-line-chart"><span style="padding: 12px; font-family: Arial;">Usage Report Data</span></i></a>
-	</div>
-
-	<div class="col-lg-4 col-md-4 col-sm-4">
-		<a href="{% url 'revenue_report' cur_year %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-			<i class="fa fa-bar-chart"><span style="padding: 12px; font-family: Arial;">Revenue Reports</span></i></a>
-	</div>
-</div>
-
-<!-- <div class="row w-100 m-auto">
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
-		<div class="active" style="text-align: center;">
-			<a style="color: white; text-decoration: none;  text-align: center;" href="{% url 'reports' %}"
-				style="margin-left: 2px;"><i class="fa fa-line-chart"></i>
-				<span>Barangay Report</span>
-			</a>
-		</div>
-	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: white; white-space: nowrap; padding: 5px;">
-		<div style="text-align: center;">
-			<a style="color: black; text-decoration: none;  text-align: center;"
-				href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
-				<span>Usage Report</span>
-			</a>
-		</div>
-	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
-		<div style="text-align: center;">
-			<a style="color: white; text-decoration: none;  text-align: center;"
-				href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
-				<span>Revenue Report</span></a>
-		</div>
-	</div>
-
-</div> -->
-
+{% include 'reportstabs.html' %}
 <div>
 	<div>
 		<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Usage Report</h2>

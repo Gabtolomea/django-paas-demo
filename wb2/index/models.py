@@ -31,7 +31,6 @@ class SystemUsers(AbstractUser):
     email = models.EmailField(max_length=100,null=True, blank=True)
     profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='jazzy.jpg')
 
-
     def __str__(self) -> str:
         return self.username
     
