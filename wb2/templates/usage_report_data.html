@@ -4,7 +4,7 @@
 Usage Report 
 {% endblock title%} 
 {% block style %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="{% static 'font-awesome.min.css'%}"> </script>
 <style>
   canvas {
     border: 10px outset #63cdd7;
@@ -191,9 +191,9 @@ Usage Report
 {% endblock style %}
 {% block usage_report_data %}
 
-<script src="{% static 'jquery/jquery.min.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'jspdf.min.js' %}"></script>
+<script src="{% static 'chart.js' %}"></script>
+
 {% include 'reportstabs.html' %}
 <div>
 	<div>
