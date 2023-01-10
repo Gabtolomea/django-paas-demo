@@ -149,8 +149,8 @@ Consumer List
                                 <th style="min-width: 100px;">Name</th>
                                 <th style="min-width: 100px;">Address</th>
                                 <th style="min-width: 100px;">Meter Number</th>
-								<th scope="col">Delete</th>
 								<th scope="col">Connection</th>
+								<th scope="col">Delete</th>
                             </tr>
                         </thead>
                         <tbody class="wb_tbody">
@@ -163,27 +163,28 @@ Consumer List
                                     {{con.meternumber}}
                                 </td>
 								<td style="cursor: default;">
+									{% if con.disconnectionflag %}
+										<a title="Disconnect" href="{%url 'reconnectconsumer' con.consumer_id %}">
+											<button class="btn btn-danger btn-sm rounded-0" type="button" data-placement="top" title="Reconnect">
+												<i class="fa fa-plug-circle-xmark"></i>
+											</button> 
+										</a>
+									{% else %}
+									<a title="Disconnect" href="{%url 'disconnectconsumer' con.consumer_id %}">
+										<button class="btn btn-success btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to disconnect {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"  title="Disconnect">
+											<i class="fa fa-plug-circle-check"></i>
+										</button> 
+									</a>
+									{% endif %}
+								</td>
+								<td style="cursor: default;">
 									<a title="Delete" href="{%url 'deleteconsumer' con.consumer_id %}">
 										<button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')" data-placement="top" title="Delete">
 											<i class="fa fa-trash"></i>
 										</button> 
 									</a>
 								</td>
-								<td style="cursor: default;">
-									{% if con.disconnectionflag %}
-										<a title="Disconnect" href="{%url 'reconnectconsumer' con.consumer_id %}">
-											<button class="btn btn-success btn-sm rounded-0" type="button" data-placement="top" title="Reconnect">
-												<i class="fa fa-trash"></i>
-											</button> 
-										</a>
-									{% else %}
-									<a title="Disconnect" href="{%url 'disconnectconsumer' con.consumer_id %}">
-										<button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to disconnect {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"  title="Disconnect">
-											<i class="fa fa-trash"></i>
-										</button> 
-									</a>
-									{% endif %}
-								</td>
+								
                             </tr>
                             {% endfor %}
 							<script>
