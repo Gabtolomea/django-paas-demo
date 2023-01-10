@@ -1523,6 +1523,7 @@ def discount(request):
             addD = Discount()
             addD.discountcode = "D00"+str(discountidcount+1)
             addD.discount_rate = discount_rate
+            addD.added_by = user
             addD.save()
     context = {
         'd': d,
@@ -1551,7 +1552,7 @@ def new_consumertype(request):
             ct.minReading = minReading
             ct.minReadingCharge = minReadingCharge
             ct.rateAfterMin = rateAfterMin
-            ct.added_by = None
+            ct.added_by = request.user
             ct.save()
     context = {
         'c': c,
@@ -1580,7 +1581,7 @@ def penalty(request):
             pen.penalty_rate = penalty_rate
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
-            pen.added_by = None
+            pen.added_by = request.user
             pen.save()
         else:
             print("way ayo")
@@ -1829,12 +1830,18 @@ def userprof(request):
     form = ProfileForm(instance=user)
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=user)
-        profilepic = request.FILES.get('profilepic', None)
+        profilepic = request.FILES.get('profilepic', False)
+        print(profilepic)
         if form.is_valid():
-            user.profilepic = profilepic
+            if profilepic:
+                user.profilepic = profilepic
+            else:
+                user.profilepic = user.profilepic
             user.save()
-            messages.success(request, 'Your Profile Updated Successfully')
-            return redirect('viewprof')
+            messages.success(
+                    request, 'Your Profile Updated Successfully')
+            return redirect('settings')
+    print(user.username)
     context= {
         'user':user,
         'form':form

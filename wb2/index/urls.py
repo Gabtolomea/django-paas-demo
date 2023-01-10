@@ -48,7 +48,5 @@ urlpatterns = [
     path('settings/discount',views.discount, name='discount'),
     path('settings/penalty', views.penalty, name='penalty'),
     path('settings/userprof', views.userprof, name='userprof'),
-    path('settings/viewprof', views.viewprof, name='viewprof'),
     path('settings', views.viewprof, name='settings'),
-
 ]
