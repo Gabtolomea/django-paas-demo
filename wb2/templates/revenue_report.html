@@ -9,6 +9,8 @@ Revenue Report
 
 
 {% block style %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
   canvas {
     border: 10px outset #63CDD7;
@@ -51,6 +53,31 @@ Revenue Report
       font-size: 20px;
     }
   }
+	.button2 {
+		background-color: var(--main-color); 
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
 </style>
 {% endblock style %}
 
@@ -78,29 +105,6 @@ Revenue Report
 	</div>
 </div>
 
-<!-- <div class="row w-100 m-auto">
-	<div class="col-lg-4 col-md-4 col-sm-4" style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
-			<div class="active" style="text-align: center;">
-			  <a  style="color: white; text-decoration: none;  text-align: center;" href="{% url 'reports' %}" style="margin-left: 2px;"><i class="fa fa-line-chart"></i>
-				  <span>Barangay Report</span>
-			  </a>
-			</div>
-	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4"  style="background-color: #0093b7; white-space: nowrap; padding: 5px;">
-		<div style="text-align: center;">
-			<a  style="color: white; text-decoration: none;  text-align: center;" href="{% url 'usage_report_data' cur_year %}"><i class="fa fa-line-chart"></i>
-			  <span>Usage Report</span>
-      </a>
-		</div>
-</div>
-	<div class="col-lg-4 col-md-4 col-sm-4"  style="background-color: white; white-space: nowrap; padding: 5px;">
-		<div style="text-align: center;">
-			<a  style="color: black; text-decoration: none;  text-align: center;" href="{% url 'revenue_report' cur_year %}"><i class="fa fa-bar-chart"></i>
-			  <span>Revenue Report</span></a>
-		  </div>
-    </div>
-
-</div> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script src="/static/Chart.min.js"> </script>
 
@@ -144,7 +148,7 @@ Revenue Report
 
         <div class="row">
           <div class="col-lg-12">
-            <button type="button" id="postbtn" onclick="this_record() " class="btn btn-info  btn-block"
+            <button type="button" class="btn button2" onclick="this_record() " class="btn btn-info  btn-block"
               style="border-radius: 25px; float: right; margin-top: -52px;">Get a Copy</button>
           </div><!-- /col -->
         </div><!-- /row -->

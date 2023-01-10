@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1']
+ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.104']
 
 # Application definition
 
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'ajax_datatable',
-
+    'crispy_forms',
 ]
 
 

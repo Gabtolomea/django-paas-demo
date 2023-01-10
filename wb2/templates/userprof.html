@@ -1,0 +1,108 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% static "images" as images %}
+
+{% block title %}
+Account Settings
+{% endblock title %}
+
+{% block userprof %}
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" 
+rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+<style>
+	 label {
+        font-size: 25px;
+    }
+	 .form-header {
+        font-family: Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+        text-align: center;
+    }
+	 .container {
+        font-family: Arial;
+        color: #ffffff;
+    }
+	.shadow-wrapper {
+        font-size: 20px;
+        font-family: Arial;
+        margin-top: 80px;
+        padding: 0px 12px;
+        background: #006c85;
+        border-radius: 15px;
+        padding: 30px;
+    }
+	 .button2 {
+        background-color: #63CDD7;
+        color: black;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: #006c85;
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+</style>
+{% endblock style %}
+<form action="{% url 'userprof' %}" enctype="multipart/form-data" method="post">
+	{% csrf_token %}
+	<div class="container">
+		<div class="shadow-wrapper">
+			<div class="form-header">
+				<center><h1>User Edit</h1></center>
+			</div>
+			<div class="row form-group w-100 m-auto">
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+					<label for="firstname">First Name</label>
+					{{form.first_name}}
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+					<label for="midname">Middle Name</label>
+					{{form.mid_name}}
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+					<label for="lastname">Last Name</label>
+					{{form.last_name}}
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+					<label for="email">Email</label>
+					{{form.email}}
+				</div>
+			</div>
+
+			<div class="row form-group w-100 m-auto">
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+					<img src="{{images}}/{{user.profilepic}}" alt="">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+					<label for="formFile" class="form-label">Change Profile</label>
+					{{form.profilepic}}
+				</div>
+
+				<div class="row form-group m-auto" style="display: block; text-align: center;">
+                    <button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-user-pen">
+                    <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock userprof %}

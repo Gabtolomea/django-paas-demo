@@ -7,6 +7,7 @@
 System User
 {% endblock title %}
 {% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="/wb2/static/style.css" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
 	integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
@@ -176,7 +177,8 @@ System User
 				<div class="row w-100 m-auto mb-2">
 					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
 						<label for="">Profile Picture*</label>
-						<input type="file" name="profilepic" class="form-control" id="choose-file" size="80">
+						<!-- <input type="file" name="profilepic" class="form-control" id="choose-file" size="80"> -->
+						{{form.profilepic}}
 					</div>
 				</div>
 				<center><button type="submit" id="footer-subscription-button" class="btn">Submit</button></center>

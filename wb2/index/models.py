@@ -23,9 +23,9 @@ class SystemUsers(AbstractUser):
     is_reader = models.BooleanField(default=False)
     mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    profilepic = models.ImageField(blank=True, null=True)
     authorizedapprover = models.CharField(max_length=20)
     email = models.EmailField(max_length=100,null=True, blank=True)
+    profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='jazzy.jpg')
 
     def __str__(self) -> str:
         return self.username
@@ -49,7 +49,7 @@ class Penalty(models.Model):
     penalty_after =  models.IntegerField(default = 0)#months
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
-    date_added = models.DateField(auto_now_add=True)
+    date_added = models.DateField(auto_now_add=True, null=True)
     daysappliedafter = models.IntegerField(default=0)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
     def __str__(self) -> str:
@@ -123,6 +123,7 @@ class ConsumerInfo(models.Model):
     penaltycounter = models.IntegerField(null=True)
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
+    disconnectionflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=100,null=True, blank=True)
     birthdate = models.DateField(null=True, blank=True)
@@ -132,7 +133,6 @@ class ConsumerInfo(models.Model):
     current_bal = models.FloatField(default=0)
     cummulative = models.FloatField(default=0)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
-    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
     
 class Transactions(models.Model):
     TRANS_TYPE = (

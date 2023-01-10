@@ -1,5 +1,4 @@
 from . import views
-
 from django.urls import path
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
@@ -20,14 +19,19 @@ urlpatterns = [
     path('meterreading/p/<int:p>', views.meterreading_p,name='meterreading_p'),
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
+    path('resetpassword/<uidb64>/<token>', views.resetpassword,name='resetpassword'),
+    path('stopmeter/<int:id>', views.stopmeter,name='stopmeter'),
+    path('enablemeter/<int:id>', views.enablemeter,name='enablemeter'),
     path('consumercreation', views.consumercreation,name='consumercreation'),
     path('consumer_list/', views.consumer_list, name='consumer_list'),
     path('consumer_list/p/<int:p>', views.consumer_list_p, name='consumer_list_p'),
     path('consumer_list/consumercreation', views.consumercreation,name='consumercreation'),
     path('consumer_list/<int:id>/', views.consumerupdate, name='consumerupdate'),
     path('deleteconsumer/<int:id>', views.deleteconsumer,name='deleteconsumer'),
+    path('disconnectconsumer/<int:id>', views.disconnectconsumer,name='disconnectconsumer'),
+    path('reconnectconsumer/<int:id>', views.reconnectconsumer,name='reconnectconsumer'),
     path('sysuser/', views.sysuser,name='sysuser'),
-    path('user_creation', views.user_creation,name='user_creation'),
+    path('sysuser/user_creation', views.user_creation,name='user_creation'),
     path('sysuser/<id>/', views.user_edit, name='user_edit'),
     path('deleteUser/<id>/', views.deleteUser, name='deleteUser'),
     path('about', views.about, name='about'),
@@ -40,16 +44,9 @@ urlpatterns = [
     path('unsettled_bills/p/<int:p>', views.unsettled_bills_p, name='unsettled_bills_p'),
     path('unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
     path('payment/<id>/', views.payment, name='payment'),
-    path('new_consumertype', views.new_consumertype, name='new_consumertype'),
-    path('discount',views.discount, name='discount'),
-    path('penalty', views.penalty, name='penalty'),
-
-    path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),name="password_reset_confirm"),
-    path('reset_password/',auth_views.PasswordResetView.as_view(template_name="password_reset.html"),name="reset_password"),
-    path('reset_password_sent/',auth_views.PasswordResetDoneView.as_view(template_name="password_reset_sent.html"),name="password_reset_done"),
-    path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
-
-
-    # path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
-
+    path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
+    path('settings/discount',views.discount, name='discount'),
+    path('settings/penalty', views.penalty, name='penalty'),
+    path('settings/userprof', views.userprof, name='userprof'),
+    path('settings', views.viewprof, name='settings'),
 ]

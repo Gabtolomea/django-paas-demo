@@ -7,6 +7,7 @@ Meter Reading
 
 {% block style %}
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     .hide {
         opacity: 0;
@@ -53,6 +54,27 @@ Meter Reading
 		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 		transition: all 0.1s;
 	}
+	.odd{
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%;
+		-webkit-tap-highlight-color: transparent;
+	
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+		}
+	
+	.dataTables_empty{
+		text-align: center;
+		}
 </style>
 {% endblock style %}
 {% block script %}
@@ -155,10 +177,10 @@ Meter Reading
 								<input type="search" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">
 							</form>
 							<script>
-								let myInput = document.getElementById('myInput');
+							let myInput = document.getElementById('myInput');
 							form = document.getElementById('form')
 							//on keyup, start the countdown
-							myInput.addEventListener('keyup', () => {
+							myInput.addEventListener('input', () => {
 								var newURL = window.location.href
 								form.action = newURL + "?search="+myInput.value
 								form.submit()
@@ -186,22 +208,26 @@ Meter Reading
                             </tr>
                         </thead>
 						<tbody class="wb_tbody">
-                            {% for m in meterred %}
-                            <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'inputreading' m.consumer_id year %}">
-                                <td class="{{t.style}}">
-                                    {{m.consumer_id}}
-                                </td>
-                                <td class="{{t.style}}">
-                                    {{m.lastname}}, {{m.firstname}} {{m.middlename}}
-                                </td>
-                                <td class="{{t.style}}">
-                                    {{m.meternumber}}
-                                </td>
-                                <td class="{{t.style}}">
-                                    {{m.installation_address}}
-                                </td>
-                            </tr>
-                            {% endfor %}
+							{% if meterred %}
+								{% for m in meterred %}
+								<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'inputreading' m.consumer_id year %}">
+									<td class="{{t.style}}">
+										{{m.consumer_id}}
+									</td>
+									<td class="{{t.style}}">
+										{{m.lastname}}, {{m.firstname}} {{m.middlename}}
+									</td>
+									<td class="{{t.style}}">
+										{{m.meternumber}}
+									</td>
+									<td class="{{t.style}}">
+										{{m.installation_address}}
+									</td>
+								</tr>
+								{% endfor %}
+							{% else %}
+							<tr class="odd"><td valign="top" colspan="5" class="dataTables_empty">No matching records found</td></tr>
+							{% endif %}
 							<script>
 								jQuery(document).ready(function($) {
 									$(".clickable-row").click(function() {
@@ -336,6 +362,32 @@ Meter Reading
 										{% endif %}
 									{% endif %}
 								{% endif %}
+								{% else %}
+								{% if meterred.has_previous %} 
+								<a href="?page={{ meterred.previous_page_number }}&search={{search}}">
+									<li class="paginate_button page-item previous">Previous</li>
+								</a>
+								{% else %}
+									<li class="paginate_button disabled page-item previous">Previous</li>
+								{% endif %}
+								{% for i in meterred.paginator.page_range %}
+									{% if i == meterred.number %}
+									<a href="?page={{i}}&search={{search}}">
+										<li class="paginate_button page-item active">{{i}}</li>
+									</a>
+									{% else %}
+									<a href="?page={{i}}&search={{search}}">
+										<li class="paginate_button page-item">{{i}}</li>
+									</a>
+									{% endif %}
+								{% endfor %}
+								{% if meterred.has_next %}
+								<a href="?page={{ meterred.next_page_number }}&search={{search}}">
+									<li class="paginate_button page-item next">Next</li>
+								</a>
+								{% else %}
+								<li class="paginate_button disabled page-item next">Next</li>
+								{% endif %}
 							{% endif %}
 						</ul>
 						<style>
@@ -425,4 +477,43 @@ Meter Reading
 </script>
 
 {% endblock meterreading %}
+
+
+
+
+
+
+<table id="table" class="table table-bordered table-hover table-striped table-sm " width="100%">
+	<thead class="wb_thead">
+		<tr>
+			<th scope="col" style="background-color: #0093b7;">Barangay</th>
+			<th scope="col" style="background-color: #0093b7">Total Usage(㎥)</th>
+			<th scope="col" style="background-color: #0093b7">Total Receivables</th>
+			<th scope="col" style="background-color: #0093b7">Total Collection</th>
+			<th scope="col" style="background-color: #0093b7">Collection Rate</th>
+		</tr>
+	</thead>
+	<tbody class="wb_tbody">
+		
+		<tr>
+			<td data-label="Barangay" style="background-color: #0093b7; color: white; font-weight: bold;">Total
+			</td>
+			<td data-label="Total Usage(Cu. Meter)" class="total_paid">
+				</td>
+			<td data-label="Total Receivables"></td>
+			<td data-label="Total Collection" class="total_due">
+				
+			</td>
+			<td data-label="Collection Rate" class="rate"></td>
+		</tr>
+		<script>
+			jQuery(document).ready(function ($) {
+				$(".clickable-row").click(function () {
+					window.location = $(this).data("href");
+				});
+			});
+		</script>
+	</tbody>
+</table>
+Input Reading
 
