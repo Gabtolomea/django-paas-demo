@@ -181,15 +181,6 @@
             </a>
             {% endif %}
 
-            {% if request.user.is_teller or request.user.is_supervisor %}
-            <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
-                <li class="side_nav_li {% active_link 'reports' 'active' %}">
-                    <img style="width: 13%;"src="{% static '/images/query_stats_FILL1_wght700_GRAD0_opsz48.svg' %}" />
-                    <span style=" padding-left: 20px; font-size: 20px">Reports</span>
-                </li>
-            </a>
-            {% endif %}
-
 
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a href="{% url 'unsettled_bills' %}" style="color: white; text-decoration: none">
@@ -208,6 +199,15 @@
                 </li>
             </a>
             {% endif %}
+
+            {% if request.user.is_teller or request.user.is_supervisor %}
+            <a href="{% url 'reports' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'reports' 'active' %}">
+                    <i class="fa fa-line-chart fa-2x"></i>
+                    <span style=" padding-left: 20px; font-size: 20px">Reports</span>
+                </li>
+            </a>
+            {% endif %}
             <a href="{% url 'settings' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'settings' 'active' %}">
                     <img style="width: 13%;"src="{% static '/images/manage_accounts_FILL1_wght700_GRAD0_opsz48.svg' %}" />
@@ -218,7 +218,7 @@
 
         </ul>
     </div>
-    <div class="container-fluid main_content" style="padding-top:20px;" id="main_content">
+    <div class="container-fluid main_content" id="main_content">
         {% block billslist %}
         {% endblock billslist %}
         {% block discount %}
