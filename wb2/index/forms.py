@@ -45,7 +45,6 @@ class SystemUserForm(UserCreationForm):
             'mobilenum',
             'authorizedapprover',
         )
-
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
