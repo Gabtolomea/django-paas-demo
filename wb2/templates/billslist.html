@@ -5,7 +5,7 @@
 Billing
 {% endblock title %}
 {% block style %}
-<script src="{% static 'font-awesome.min.css'%}"> </script>
+
 <style>
 	.odd {
 		font-size: 1rem;
@@ -65,7 +65,8 @@ Billing
 				<div class="col-sm-12 col-md-6">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<form action="" id ="form" method="GET" role="form">
-							<label style="float: right;">Search:
+							<img style="width: 35px;"src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
+							<label style="float: right;">
 								<input type="text" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">					
 							</label>
 						</form>
