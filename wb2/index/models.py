@@ -123,7 +123,7 @@ class BarangayRecord(models.Model):
 
 #Consumer Creation
 class ConsumerInfo(models.Model):
-    consumer_id = models.IntegerField(primary_key=True)
+    consumer_id = models.CharField(primary_key=True, max_length=15)
     meternumber = models.CharField(max_length=20, blank=True, null=True)
     firstname = models.CharField(max_length=50, blank=True)
     lastname = models.CharField(max_length=50, blank=True)

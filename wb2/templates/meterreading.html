@@ -80,8 +80,17 @@ Meter Reading
 {% block script %}
 {% endblock script %}
 {% block meterreading %}
-
-<h1 class="mb-3 mt-3 text-center">Meter Reading</h1>
+<div class="pt-3 row">
+	<div class="col-5 align-middle">
+		<button type="button"  class="btn button2 m-0" data-bs-toggle="modal" data-bs-target="#myModal">
+			<i class="fa fa-list"></i>
+			Bulk Reading
+		</button>
+	</div>
+	<div class="col-7">
+		<h1 class="">Meter Reading</h1>
+	</div>
+</div>
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
@@ -131,21 +140,12 @@ Meter Reading
 		</div>
 	</div>
 </div>
-
-
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
-				
-
-				<div class="col-sm-12 col-md-6">
-					<button type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal">
-						<i class="fa fa-list"></i>
-						Bulk Reading
-					</button>
-	
-					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
+				<div class="col-sm-12 col-md-6 d-flex align-items-end">
+					<form id="yearselection" style="float:right; padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
 						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
 							<option disabled selected value>--Select--</option>

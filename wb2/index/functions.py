@@ -64,8 +64,6 @@ def last_reading(id, year, mo):
     else:
         mo -= 1
     for i in range(0, len_years()):
-        print(mo)
-        print(ye)
         try:
             lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=ye, month=mo)
             lastreading = lasttran.meterReading

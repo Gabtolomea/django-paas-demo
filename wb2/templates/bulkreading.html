@@ -151,7 +151,7 @@ Bulk Reading
 									<td>{{c.con.consumer_id}}</td>
 									<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
 									<td>{{c.prev}}</td>
-									<td class="balance p-0 align-middle"><input class="form-control"  title="Current Reading" min="{{c.prev}}" type="number" {% if c.cur == 0 %}onfocus="foc_check('con{{c.con.consumer_id}}_id')" onblur="check('con{{c.con.consumer_id}}_id')"{% endif %} name="con{{c.con.consumer_id}}" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}"></td>
+									<td class="balance p-0 align-middle"><input class="form-control rounded-0 border-0"  title="Current Reading" min="{{c.prev}}" type="number" {% if c.cur == 0 %}onfocus="foc_check('con{{c.con.consumer_id}}_id')" onblur="check('con{{c.con.consumer_id}}_id')"{% endif %} name="con{{c.con.consumer_id}}" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}"></td>
 								</tr>
 								{% endfor %}
 							</tbody>

@@ -755,7 +755,8 @@ def consumercreation(request):
 
     form = ConsumerForm()
     cons = ConsumerInfo.objects.all().order_by("-consumer_id")
-    last = cons[0].consumer_id
+    id = cons[0].consumer_id
+    last = int(cons[0].consumer_id.split('-')[0])
     if request.method == "POST":
         isUpdate = request.POST['isUpdate']
         conid = request.POST['conid']
@@ -779,12 +780,18 @@ def consumercreation(request):
             if isUpdate:
                 c = ConsumerInfo.objects.get(consumer_id=conid)
             else:
+                accstr = ""
                 c = ConsumerInfo()
                 c.status = 1
                 c.stopmeterflag = 0
                 c.deleteflag = 0
                 c.penaltycounter = 0
-                c.consumer_id = conid
+                lastid_len = len(str(last + 1))
+                len_zeros = 10 - lastid_len
+                for x in range(0, len_zeros):
+                    accstr += "0"
+                accstr += str(last + 1)
+                c.consumer_id = accstr + "-01"
             c.firstname = firstname
             c.middlename = middlename
             c.lastname = lastname
@@ -804,7 +811,7 @@ def consumercreation(request):
             c.save()
             return redirect('consumer_list')
     context = {
-        'conid':last,
+        'conid':id,
         'form': form,
         'errors': form.errors,
         'user': request.user
