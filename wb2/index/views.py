@@ -600,7 +600,6 @@ def inputreading(request, id, year):
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                     lastreading = last_reading(id, year, d)
-                    print(lastreading)
                     try:
                         mo = d + 1
                         ye = year
@@ -611,7 +610,7 @@ def inputreading(request, id, year):
                         next.usage = next.meterReading - i
                         next.save()
                     except ObjectDoesNotExist:
-                        print("asdf")
+                        pass
                     t.meterReading = i
                     t.date = datetime.today()
                     t.usage = i - lastreading
@@ -879,7 +878,6 @@ def enablemeter(request, id):
             tran.date = date.today()
             tran.acctID = consumer
             tran.transType = 'Reset Meter'
-            print(initialreading)
             tran.meterReading = initialreading
             tran.usage = 0
             tran.bill = 0
@@ -1034,7 +1032,7 @@ def payment(request, id):
         try:
             discount = Discount.objects.get(discountcode=dis_code)
         except ObjectDoesNotExist:
-            print("")
+            pass
         else:
             t = Transactions()
             t.acctID = consumer
@@ -1266,7 +1264,6 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(years)
     # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
@@ -1421,9 +1418,7 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(paginator.num_pages)
     for j in ub:
         alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
-        if not alltran:
-            print("")
-        else:
+        if alltran:
             if alltran[0].year is not None:
                 a = alltran[0].year
             else:
@@ -1588,8 +1583,6 @@ def penalty(request):
             pen.daysappliedafter = daysappliedafter
             pen.added_by = request.user
             pen.save()
-        else:
-            print("way ayo")
     context = {
         'p': p,
         'form': form,
@@ -1838,7 +1831,6 @@ def userprof(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=user)
         profilepic = request.FILES.get('profilepic', False)
-        print(profilepic)
         if form.is_valid():
             if profilepic:
                 user.profilepic = profilepic
@@ -1848,7 +1840,6 @@ def userprof(request):
             messages.success(
                     request, 'Your Profile Updated Successfully')
             return redirect('settings')
-    print(user.username)
     context= {
         'user':user,
         'form':form
