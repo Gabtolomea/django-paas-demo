@@ -1820,6 +1820,7 @@ def viewprof(request):
     context= {
         'user':user,
         'role':role,
+        'is_profile':True,
     }
     return render(request, 'viewprof.html', context)
 
@@ -1841,6 +1842,6 @@ def userprof(request):
             return redirect('settings')
     context= {
         'user':user,
-        'form':form
+        'form':form,
     }
     return render(request, 'userprof.html', context)
