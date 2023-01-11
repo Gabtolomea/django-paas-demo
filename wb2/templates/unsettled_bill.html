@@ -80,11 +80,11 @@ Unsettled Bills
                         }
                     </script>
                 </div>
-                <div class="col-sm-12 col-md-6">
+                <div class="col-sm-12 col-md-6" style=" display: flex; justify-content: flex-end; ">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<form action="" id ="form" method="GET" role="form">
 							<label style="float: right;">Search:
-								<input type="text" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">					
+								<input type="search" onsearch="myFunction()" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">					
 							</label>
 						</form>
 						<style>
@@ -98,15 +98,23 @@ Unsettled Bills
 								width: auto;
 							}
 						</style>
+						
 						<script>
 							let myInput = document.getElementById('myInput');
 							form = document.getElementById('form')
 							//on keyup, start the countdown
 							myInput.addEventListener('input', () => {
+								if(myInput.value == "") {
+									var newURL = window.location.href.split("?")[0]
+									form.action = newURL
+									form.submit()
+								};
+							});
+							function myFunction(){
 								var newURL = window.location.href
 								form.action = newURL + "?search="+myInput.value
 								form.submit()
-							});
+							}
 							window.onload = function() {
 								var input = document.getElementById("myInput");
 								const end = input.value.length;
@@ -119,7 +127,7 @@ Unsettled Bills
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="myTable" class="table table-bordered table-hover table-striped table-sm" cellspacing="0"
+                    <table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0"
                         width="100%">
                         <thead class="wb_thead">
                             <tr>
