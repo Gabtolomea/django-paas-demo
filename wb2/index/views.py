@@ -1820,7 +1820,6 @@ def viewprof(request):
     context= {
         'user':user,
         'role':role,
-        'is_profile':True
     }
     return render(request, 'viewprof.html', context)
 

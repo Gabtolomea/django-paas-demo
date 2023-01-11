@@ -1,6 +1,10 @@
 from datetime import date, datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import sys
 # Create your models here.
 
 class LoginRec(models.Model):
@@ -26,10 +30,19 @@ class SystemUsers(AbstractUser):
     authorizedapprover = models.CharField(max_length=20)
     email = models.EmailField(max_length=100,null=True, blank=True)
     profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='jazzy.jpg')
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        SIZE = 300, 300
+        if self.profilepic:
+            pic = Image.open(self.profilepic.path)
+            pic.thumbnail(SIZE, Image.LANCZOS)
+            pic.save(self.profilepic.path)
 
+    
     def __str__(self) -> str:
         return self.username
-
+    
 
 class ConsumerType(models.Model):
     contypeid = models.CharField(primary_key=True, max_length=20)
