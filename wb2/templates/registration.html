@@ -98,6 +98,10 @@ Registration Form
         border-radius: 0.25rem;
         padding-bottom: 8px;
     }
+
+    .con:hover path {
+        fill: white;
+    }
 </style>
 {% endblock style %}
 {% block registration %}
@@ -254,9 +258,15 @@ Registration Form
                         {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="row form-group m-auto" style="display: block; text-align: center;">
-                        <button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-check-square-o">
+                    <div class="con">
+                        <div class="row form-group m-auto" style="display: block; text-align: center;">
+                            <button class="btn button2" style="width: 150px; white-space: nowrap;"> <svg
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"  style="width:30%;">
+                                    <path
+                                        d="m32.25 41.9-7.45-7.5 2.5-2.45 4.95 4.95L42.9 26.25l2.55 2.45Zm-12.4-18.65q-3.85 0-6.3-2.45-2.45-2.45-2.45-6.3 0-3.85 2.45-6.3 2.45-2.45 6.3-2.45 3.85 0 6.325 2.45t2.475 6.3q0 3.85-2.475 6.3-2.475 2.45-6.325 2.45Zm7.55 4.1-7.35 7.55 6.95 7H2.6v-6.05q0-2 1.075-3.75T6.7 29.45q3.6-1.6 6.875-2.35t6.275-.75q1.45 0 3.65.275t3.9.725Z" />
+                                </svg>
                                 <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
+                        </div>
                     </div>
                 </div>
             </div>

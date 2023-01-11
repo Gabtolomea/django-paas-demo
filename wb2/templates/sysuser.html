@@ -65,7 +65,8 @@ System User
 <section id="main-content">
     <h1 class="mb-3 mt-3 text-center">System Users</h1>
     <a href="{% url 'user_creation' %}">
-        <button class="btn button2"><i class="fa fa-user-plus">
+        <button class="btn button2"><img style="width: 14%"
+			src="{% static '/images/person_add_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                 <span style="padding: 10px; font-family: Arial;">Add System User</span></i></button>
     </a>
     <br>
@@ -98,7 +99,8 @@ System User
                                 <a href="{%url 'user_edit' t.username%}">
                                     <button class=" hide btn btn-success btn-sm rounded-0" data-toggle="modal"
                                         type="button" data-placement="top" title="Edit">
-                                        <i class="fa fa-edit"></i>
+                                        <img style="width:20px;"
+                                        src="{% static '/images/edit_white_36dp.svg' %}" />
                                     </button>
                                 </a>
                             </td>
@@ -107,7 +109,8 @@ System User
                                     <button class=" hide btn btn-danger btn-sm rounded-0" type="button"
                                         onclick="return confirm('Are you sure you want to delete this System User( {{ t.username }} )?')"
                                         data-placement="top" title="Delete">
-                                        <i class="fa fa-trash"></i>
+                                        <img style="width:20px;"
+                                        src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                                     </button>
                                 </a>
                             </td>

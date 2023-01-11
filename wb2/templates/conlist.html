@@ -85,7 +85,8 @@ Consumer List
 
 <form action="{% url 'consumercreation' %}">
     <button class="btn button2" type="submit">
-		<i class="fa fa-user-plus"></i> New Consumer</button>
+		<img style="width: 14%"
+			src="{% static '/images/person_add_FILL1_wght700_GRAD0_opsz48.svg' %}" /></i> New Consumer</button>
 </form>
 
 
@@ -117,7 +118,8 @@ Consumer List
 				</div>
 				<div class="col-sm-12 col-md-6">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<label>Search:
+						<img style="width: 35px;"src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
+						<label>
 							<form class="input-group" action="" id ="form" method="GET" role="form">
 								<input type="search" name="search" id="myInput" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{search}}">
 							</form>
@@ -168,13 +170,15 @@ Consumer List
 									{% if con.disconnectionflag %}
 										<a title="Disconnect" href="{%url 'reconnectconsumer' con.consumer_id %}">
 											<button class="btn btn-danger btn-sm rounded-0" type="button" data-placement="top" title="Reconnect">
-												<i class="fa fa-plug-circle-xmark"></i>
+												<img style="width:20px;"
+			src="{% static '/images/power_off_FILL0_wght700_GRAD0_opsz48.svg' %}" />
 											</button> 
 										</a>
 									{% else %}
 									<a title="Disconnect" href="{%url 'disconnectconsumer' con.consumer_id %}">
 										<button class="btn btn-success btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to disconnect {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"  title="Disconnect">
-											<i class="fa fa-plug-circle-check"></i>
+											<img style="width:20px;"
+			src="{% static '/images/power_FILL0_wght700_GRAD0_opsz48.svg' %}" />
 										</button> 
 									</a>
 									{% endif %}
@@ -182,7 +186,8 @@ Consumer List
 								<td style="cursor: default;">
 									<a title="Delete" href="{%url 'deleteconsumer' con.consumer_id %}">
 										<button class="btn btn-danger btn-sm rounded-0" type="button" onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')" data-placement="top" title="Delete">
-											<i class="fa fa-trash"></i>
+											<img style="width:20px;"
+			src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
 										</button> 
 									</a>
 								</td>
