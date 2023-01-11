@@ -30,7 +30,16 @@ class SystemUsers(AbstractUser):
     authorizedapprover = models.CharField(max_length=20)
     email = models.EmailField(max_length=100,null=True, blank=True)
     profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='jazzy.jpg')
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        SIZE = 300, 300
+        if self.profilepic:
+            pic = Image.open(self.profilepic.path)
+            pic.thumbnail(SIZE, Image.LANCZOS)
+            pic.save(self.profilepic.path)
 
+    
     def __str__(self) -> str:
         return self.username
     
