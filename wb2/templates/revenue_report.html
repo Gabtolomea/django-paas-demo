@@ -19,42 +19,6 @@ Revenue Report
 
 	}
 
-	.header {
-		font-weight: bold;
-		margin-top: 40px;
-	}
-
-	h3 {
-		font-weight: bold;
-		margin-top: 30px;
-		margin-bottom: 30px;
-	}
-
-	@media (max-width: 450px) {
-		h3 {
-			font-size: 18px;
-		}
-	}
-
-	@media (min-width: 451px) {
-		h3 {
-			font-size: 35px;
-		}
-	}
-
-
-	@media (max-width: 450px) {
-		label {
-			font-size: 12px;
-		}
-	}
-
-	@media (min-width: 451px) {
-		label {
-			font-size: 20px;
-		}
-	}
-
 	.button2 {
 		background-color: var(--main-color);
 		color: white;
@@ -93,12 +57,10 @@ Revenue Report
 	<script src="{% static 'jquery/jquery.min.js' %}"></script>
 
 <div>
-	<center>
-		<h3>Revenue Reports</h3>
-	</center>
+	<h1 class="text-center pt-3">Revenue Reports</h1>
 	<div>
 		<div class="form-group">
-			<label class="header" for="exampleInputBarangay">Select Year: </label>
+			<label for="exampleInputBarangay">Select Year: </label>
 			<form id="yearselection" action="GET" style="margin-right: 1370px;">
 				<select class="form-select" id="selector" onchange="change()">
 					<option value="{{cur_year}}">{{cur_year}}</option>

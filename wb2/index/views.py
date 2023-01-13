@@ -600,7 +600,6 @@ def inputreading(request, id, year):
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                     lastreading = last_reading(id, year, d)
-                    print(lastreading)
                     try:
                         mo = d + 1
                         ye = year
@@ -611,7 +610,7 @@ def inputreading(request, id, year):
                         next.usage = next.meterReading - i
                         next.save()
                     except ObjectDoesNotExist:
-                        print("asdf")
+                        pass
                     t.meterReading = i
                     t.date = datetime.today()
                     t.usage = i - lastreading
@@ -756,7 +755,8 @@ def consumercreation(request):
 
     form = ConsumerForm()
     cons = ConsumerInfo.objects.all().order_by("-consumer_id")
-    last = cons[0].consumer_id
+    id = cons[0].consumer_id
+    last = int(cons[0].consumer_id.split('-')[0])
     if request.method == "POST":
         isUpdate = request.POST['isUpdate']
         conid = request.POST['conid']
@@ -780,12 +780,18 @@ def consumercreation(request):
             if isUpdate:
                 c = ConsumerInfo.objects.get(consumer_id=conid)
             else:
+                accstr = ""
                 c = ConsumerInfo()
                 c.status = 1
                 c.stopmeterflag = 0
                 c.deleteflag = 0
                 c.penaltycounter = 0
-                c.consumer_id = conid
+                lastid_len = len(str(last + 1))
+                len_zeros = 10 - lastid_len
+                for x in range(0, len_zeros):
+                    accstr += "0"
+                accstr += str(last + 1)
+                c.consumer_id = accstr + "-01"
             c.firstname = firstname
             c.middlename = middlename
             c.lastname = lastname
@@ -805,7 +811,7 @@ def consumercreation(request):
             c.save()
             return redirect('consumer_list')
     context = {
-        'conid':last,
+        'conid':id,
         'form': form,
         'errors': form.errors,
         'user': request.user
@@ -879,7 +885,6 @@ def enablemeter(request, id):
             tran.date = date.today()
             tran.acctID = consumer
             tran.transType = 'Reset Meter'
-            print(initialreading)
             tran.meterReading = initialreading
             tran.usage = 0
             tran.bill = 0
@@ -1034,7 +1039,7 @@ def payment(request, id):
         try:
             discount = Discount.objects.get(discountcode=dis_code)
         except ObjectDoesNotExist:
-            print("")
+            pass
         else:
             t = Transactions()
             t.acctID = consumer
@@ -1266,7 +1271,6 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-        print(years)
     # Total Collection
     rev_col = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_paid_jan'),
@@ -1421,9 +1425,7 @@ def unsettled_bills_p(request, p):
         ub = paginator.page(paginator.num_pages)
     for j in ub:
         alltran = Transactions.objects.filter(acctID_id=j.consumer_id, transType='Billing').order_by('-year')
-        if not alltran:
-            print("")
-        else:
+        if alltran:
             if alltran[0].year is not None:
                 a = alltran[0].year
             else:
@@ -1588,8 +1590,6 @@ def penalty(request):
             pen.daysappliedafter = daysappliedafter
             pen.added_by = request.user
             pen.save()
-        else:
-            print("way ayo")
     context = {
         'p': p,
         'form': form,
@@ -1827,7 +1827,7 @@ def viewprof(request):
     context= {
         'user':user,
         'role':role,
-        'is_profile':True
+        'is_profile':True,
     }
     return render(request, 'viewprof.html', context)
 
@@ -1838,7 +1838,6 @@ def userprof(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=user)
         profilepic = request.FILES.get('profilepic', False)
-        print(profilepic)
         if form.is_valid():
             if profilepic:
                 user.profilepic = profilepic
@@ -1848,9 +1847,8 @@ def userprof(request):
             messages.success(
                     request, 'Your Profile Updated Successfully')
             return redirect('settings')
-    print(user.username)
     context= {
         'user':user,
-        'form':form
+        'form':form,
     }
     return render(request, 'userprof.html', context)

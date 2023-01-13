@@ -387,12 +387,7 @@ Account Ledger
 		</table>
 	</div>
 </div>
-<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy"
-		style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
-	</button>
 </div>
-</div id="elementH">
 
 
 <script type="text/javascript">
@@ -449,6 +444,7 @@ Account Ledger
 		doc.setFontType("bold");
 		doc.setLineWidth(10);
 		doc.setFontSize(20);
+		doc.setTextColor(0,0,0)
 		doc.text(420, y = y + 30, "ACCOUNT LEDGER");
 
 		var table = [{% for t in table reversed %}

@@ -28,15 +28,15 @@ alltables = [
 ]
 
 
-sorted_tables = []
+# sorted_tables = []
 
-mydb = mysql.connector.connect(
-   host="localhost",
-   user="root",
-   password="yjh434ctuG@-@",
-   database="lgu_ginatilan_db"
-)
-mycursor = mydb.cursor()
+# mydb = mysql.connector.connect(
+#    host="localhost",
+#    user="root",
+#    password="yjh434ctuG@-@",
+#    database="lgu_ginatilan_db"
+# )
+# mycursor = mydb.cursor()
 
 def porter_in():
     col = 0
@@ -92,18 +92,23 @@ def porter_out(tables):
     penalty.daysappliedafter = 0
     penalty.penalty_info = ''
     penalty.save()
+    print("porter out...barangays")
     for i in bar:
         b = Barangays()
         b.barangay = i
         b.save()
+    print("porter out...barangay records")
     for i in tables[2]:
         b_rec_out(i)
+    print("porter out...rates")
     for i in tables[5]:
         rt_out(i)
+    print("porter out...system users")
     for i in tables[6]:
         sys_user_out(i)
+    print("porter out...consumers")
     for i in range(len(tables[0])):
-        con_info.consumer_id = int(tables[0][i][0].split('-')[0])
+        con_info.consumer_id = tables[0][i][0]
         con_info.firstname = tables[0][i][1]
         con_info.lastname = tables[0][i][2]
         con_info.middlename = tables[0][i][13]
@@ -119,11 +124,11 @@ def porter_out(tables):
         con_info.deleteflag = tables[0][i][14]
         con_info.penaltycode = Penalty.objects.get(penaltycode="P001")
         con_info.save()
+    print("porter out...transactions")
     for i in range(len(tables[4])):
         trans.transactionid = tables[4][i][0]
         trans.date = tables[4][i][2]
-        arr = tables[4][i][7].split("-")
-        trans.acctID = ConsumerInfo.objects.get(consumer_id=arr[0])
+        trans.acctID = ConsumerInfo.objects.get(consumer_id=tables[4][i][7])
         trans.transType = 'Payment'
         trans.payment = tables[4][i][1]
         trans.processedBy = tables[4][i][5]
@@ -135,6 +140,7 @@ def porter_out(tables):
             trans.month = tables[4][i][2].month-1
             trans.year = tables[4][i][2].year
         trans.save()
+    print("porter out...usagerecord")
     for i in tables[1]:
         usage_rec.accountid =	i[0]
         usage_rec.rateid = i[1]
@@ -298,8 +304,7 @@ def porter_out(tables):
         usage_rec.postedby_dec	=i[160-1]
         usage_rec.txrefnum_dec=	i[161-1]
         usage_rec.ior_dec	=i[162-1]
-        arr= i[175].split('-')
-        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=arr[0])
+        usage_rec.consumerid = ConsumerInfo.objects.get(consumer_id=i[175])
         usage_rec.amountpaid_str_apr =	i[163]
         usage_rec.amountpaid_str_aug = i[164]
         usage_rec.amountpaid_str_dec = i[165]
@@ -621,7 +626,6 @@ def sys_user_out(i):
         sys_user.is_manager = True
     if '5' in role:
         sys_user.is_reader = True
-    sys_user.profilepic = i[8]
     sys_user.authorizedapprover = i[9]
     sys_user.save()
 def rt_out(i):

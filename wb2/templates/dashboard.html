@@ -20,8 +20,9 @@
     {% endblock style %}
     <style>
         .img-fluid {
-            width: 50%;
-            margin-left: auto;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
         }
 
         .fa-2x {
@@ -161,7 +162,7 @@
     </header>
     <div class="sidebar" style=" height: auto !important; min-height: 100%;" id="side_nav">
         <div class="user_info">
-            <img class="img-fluid" style="border-radius: 60%;" src="{{images}}/{{user.profilepic}}">
+            <img class="img-fluid" src="{{images}}/{{user.profilepic}}">
             <p style="font-size: 30px; margin-left: auto;">{{user}}</p>
         </div>
 
