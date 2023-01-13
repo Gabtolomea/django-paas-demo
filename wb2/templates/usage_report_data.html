@@ -20,11 +20,12 @@ Usage Report
 
 {% include 'reportstabs.html' %}
 <div>
-	<div>
-		<h1 class="text-center pt-3">Usage Report</h1>
+	<div class="col-7">
+		<h1 class="" style="text-align: right;">Usage Report</h1>
 	</div>
+
 	<div>
-		<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year</label>
+		<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
 		<form id="yearselection" action="">
 			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
@@ -43,9 +44,10 @@ Usage Report
 		</script>
 	</div>
 
-  <center>
-    <label><strong>Barangay Total Usage: Year {{cur_year}}</strong></label>
-  </center>
+	<div class="col-8">
+		<h3 style="text-align: right;">Barangay Total Usage: Year {{cur_year}}
+		</h3>
+	</div>
 
   <div class="chartBox">
     <canvas id="barangay" width="500" height="150"></canvas>
@@ -97,14 +99,16 @@ Usage Report
     );
   </script>
 
-  <br />
 
-  <center>
-    <label><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></label>
-    <br />
-    <p2><i>click on select to view individual barangay monnhly usage</i></p2>
-  </center>
 
+  <div class="col-8">
+	<h3 style="text-align:right;padding-top: 25px;">Barangay Monthly Usage: Year {{cur_year}}
+	</h3>
+	
+</div>
+<center>
+ <p2 style="text-align:right;padding-top: 25px;"><i>click on select to view individual Barangay Monthly usage</i></p2>
+</center>
   <center>
     <div class="selectBox">
       <label>Select Barangay</label>
