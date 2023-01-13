@@ -56,11 +56,11 @@ Revenue Report
 <script src="{% static 'chart.js'%}"> </script>
 	<script src="{% static 'jquery/jquery.min.js' %}"></script>
 
-<div>
-	<h1 class="text-center pt-3">Revenue Reports</h1>
+	<div class="pt-3 row">
+	<h1 style="text-align: center;">Revenue Reports</h1>
 	<div>
 		<div class="form-group">
-			<label for="exampleInputBarangay">Select Year: </label>
+			<label for="exampleInputBarangay"style="margin-left: 30px;">Select Year: </label>
 			<form id="yearselection" action="GET" style="margin-right: 1370px;">
 				<select class="form-select" id="selector" onchange="change()">
 					<option value="{{cur_year}}">{{cur_year}}</option>
@@ -135,12 +135,11 @@ Revenue Report
 					</script>
 				</canvas>
 
-				<section>
 					<center><strong>Total Monthly Collictables for The Year of {{cur_year}}:</strong></center>
 					<center><strong>&#8369; {{rec|floatformat:2|intcomma}}</strong></center>
 					<canvas id="receivable" width="800" height="150">
 
-				</section>
+			
 				<script>
 					var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 					var y = ['{{rev_rec.jan}}', '{{rev_rec.feb}}', '{{rev_rec.mar}}', '{{rev_rec.apr}}', '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}', '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}'];

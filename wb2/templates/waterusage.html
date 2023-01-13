@@ -176,14 +176,13 @@ Water Usage
 
 <script src="{% static 'jquery/jquery.js' %}"></script>
 
-
-
-
-<div class="col-8">
-	<h1 class="" style="text-align: right;">Water Usage Per Barangay</h1>
+<div class="pt-3 row">
+	<div class="">
+		<h1 class="" style="text-align: center;">Water Usage Per Barangay</h1>
+	</div>
 </div>
 <div>
-	<label style="margin-left: 30px;"for="exampleInputBarangay">Select Year: </label>
+	<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
 	<form id="yearselection" action="">
 		<select class="form-select" id="selector" onchange="change()">
 			<option value="{{cur_year}}">{{cur_year}}</option>
@@ -202,8 +201,8 @@ Water Usage
 		}
 	</script>
 </div>
-<div class="col-7">
-	<h3 style="text-align: right;"> Barangay Record of {{cur_year}}
+<div class="">
+	<h3 style="text-align: center;"> Barangay Record of {{cur_year}}
 	</h3>
 </div>
 <div>
