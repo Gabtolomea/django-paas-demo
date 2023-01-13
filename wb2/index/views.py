@@ -159,7 +159,6 @@ def user_creation(request):
         else:
             template = redirect('bills_list')
             return template
-
     form = SystemUserForm()
     if request.method == "POST":
         form = SystemUserForm(request.POST)
@@ -195,6 +194,7 @@ def user_creation(request):
             messages.success(request, 'User created successfully')
         else:
             messages.error(request, 'User creation failed')
+            return redirect('user_creation')
         return redirect('sysuser')
     context = {
         'form': form,
@@ -981,7 +981,7 @@ def user_edit(request, id):
             if profilepic is not None:
                 sys.profilepic = profilepic
             else:
-                sys.profilepic = 'jazzy.jpg'
+                sys.profilepic = 'profile12.png'
             sys.save()
         return redirect('sysuser')
     context = {

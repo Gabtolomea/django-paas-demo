@@ -191,7 +191,7 @@ Registration Form
                         </div>
                         {% endfor %}
                         {% endif %}
-                        <label for="">Password*</label>
+                        <label for="">Password* (Minimum of 8 characters)</label>
                         <div class="input-group" id="show_hide_password">
                             {{form.password1}}
                             <div class="input-group-addon" style="margin-top: 5px;">
@@ -209,7 +209,7 @@ Registration Form
                         {% endfor %}
                         {% endif %}
                         <label for="">Confirm Password*</label>
-                        <div class="input-group" id="show_hide_confirm_pass">
+                        <div class="input-group" id="show_hide_confirm_pass" minlength="8">
                             {{form.password2}}
                             <div class="input-group-addon" style="margin-top: 5px;">
                                 <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
