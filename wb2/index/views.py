@@ -7,7 +7,7 @@ from .dataporter import *
 from .DBdb import *
 from .decorators import *
 from .forms import *
-from .functions import *
+from .functions import * 
 from .models import *
 from .tokens import generate_token
 from datetime import datetime, timedelta
@@ -176,6 +176,11 @@ def user_creation(request):
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
         authorizedapprover = request.POST['authorizedapprover']
+        for i in form.fields:
+            try:
+                form.fields[i].widget.attrs['class'] += ' is-valid'
+            except KeyError:
+                pass
         if form.is_valid():
             user = SystemUsers()
             user.set_password(password2)
@@ -196,7 +201,8 @@ def user_creation(request):
             return redirect('sysuser')
         else:
             for i in form.errors.as_data():
-                print(i)
+                item = form.fields[i]
+                item.widget.attrs['class'] += ' is-invalid'
             messages.error(request, 'User creation failed')
     context = {
         'form': form,
