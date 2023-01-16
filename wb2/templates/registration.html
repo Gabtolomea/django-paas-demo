@@ -111,7 +111,7 @@ Registration Form
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-                        <label for="">First Name*</label>
+                        <label for="">First Name<span class="text-danger">*</span></label>
                         {{form.first_name}}
                     </div>
 
@@ -131,7 +131,7 @@ Registration Form
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-                        <label for="">Last Name*</label>
+                        <label for="">Last Name<span class="text-danger">*</span></label>
                         {{form.last_name}}
                     </div>
 
@@ -141,7 +141,7 @@ Registration Form
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-                        <label for="">Mobile Number*</label>
+                        <label for="">Mobile Number<span class="text-danger">*</span></label>
                         {{form.mobilenum}}
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
@@ -150,7 +150,7 @@ Registration Form
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-                        <label for="">Email*</label>
+                        <label for="">Email<span class="text-danger">*</span></label>
                         {{form.email}}
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
@@ -159,7 +159,7 @@ Registration Form
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-                        <label for="">User ID*</label>
+                        <label for="">User ID<span class="text-danger">*</span></label>
                         {{form.username}}
                     </div>
                 </div>
@@ -171,7 +171,7 @@ Registration Form
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-                        <label for="">Password</label>
+                        <label for="">Password<span class="text-danger">*</span></label>
                         <div class="input-group" id="show_hide_password">
                             {{form.password1}}
                             <div class="input-group-addon" style="margin-top: 5px;">
@@ -185,7 +185,7 @@ Registration Form
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-                        <label for="">Confirm Password*</label>
+                        <label for="">Confirm Password<span class="text-danger">*</span></label>
                         <div class="input-group" id="show_hide_confirm_pass" minlength="8">
                             {{form.password2}}
                             <div class="input-group-addon" style="margin-top: 5px;">
@@ -212,7 +212,7 @@ Registration Form
                 </div>
                 <div class="row w-100 m-auto m-2">
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                        <label for="formFile" class="form-label">Authorized Approver*</label>
+                        <label for="formFile" class="form-label">Authorized Approver</label>
                         {{form.authorizedapprover}}
                     </div>
                     <div class="row form-group m-auto" style="display: block; text-align: center;">

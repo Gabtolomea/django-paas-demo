@@ -206,7 +206,6 @@ def user_creation(request):
             messages.error(request, 'User creation failed')
     context = {
         'form': form,
-        'errors': form.errors,
         'user': request.user
     }
     return render(request, 'registration.html', context)
@@ -974,6 +973,11 @@ def user_edit(request, id):
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
         form = sysup(request.POST, instance=sys)
+        for i in form.fields:
+            try:
+                form.fields[i].widget.attrs['class'] += ' is-valid'
+            except KeyError:
+                pass
         if form.is_valid():
             sys.username = username
             sys.first_name = firstname
@@ -991,6 +995,11 @@ def user_edit(request, id):
             else:
                 sys.profilepic = 'profile12.png'
             sys.save()
+        else:
+            for i in form.errors.as_data():
+                item = form.fields[i]
+                item.widget.attrs['class'] += ' is-invalid'
+            messages.error(request, 'User creation failed')
         return redirect('sysuser')
     context = {
         'sys': sys,
