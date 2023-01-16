@@ -21,11 +21,11 @@ class SystemUserForm(UserCreationForm):
     password1 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
     password2 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
     class Meta:
         model = SystemUsers

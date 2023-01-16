@@ -186,17 +186,18 @@ def user_creation(request):
             user.mobilenum = mobilenum
             user.email = email
             user.is_admin = is_admin
-            user.is_teller = is_teller
+            user.is_teller = is_teller 
             user.is_supervisor = is_supervisor
             user.is_manager = is_manager
             user.is_reader = is_reader
             user.authorizedapprover = authorizedapprover
             user.save()
             messages.success(request, 'User created successfully')
+            return redirect('sysuser')
         else:
+            for i in form.errors.as_data():
+                print(i)
             messages.error(request, 'User creation failed')
-            return redirect('user_creation')
-        return redirect('sysuser')
     context = {
         'form': form,
         'errors': form.errors,
