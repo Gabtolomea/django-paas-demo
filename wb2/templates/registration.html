@@ -1,10 +1,12 @@
 {% extends 'dashboard.html' %}
-{% load static %}
+
 {% block title %}
 Registration Form
 {% endblock title %} 
 {% block style %}
-<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 <style>
     .invalid-feedback{
         display: block!important;
@@ -77,10 +79,6 @@ Registration Form
         border: 1px solid rgba(0, 0, 0, .15);
         border-radius: 0.25rem;
         padding-bottom: 8px;
-    }
-
-    .con:hover path {
-        fill: white;
     }
 </style>
 {% endblock style %}
@@ -159,7 +157,7 @@ Registration Form
                         <div class="input-group" id="show_hide_password">
                             {{form.password1}}
                             <div class="input-group-addon" style="margin-top: 5px;">
-                                <a href=""><img style="width: 20px;"src="{% static '/images/fa-eye-slash.svg' %}" ria-hidden="true"></a>
+                                <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                             </div>
                         </div>
                         {% for error in form.password2.errors %}
@@ -215,33 +213,27 @@ Registration Form
                         <label for="formFile" class="form-label">Authorized Approver</label>
                         {{form.authorizedapprover}}
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                        {% if form.errors %}
-                        {% for error in form.profilepic.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="con">
-                        <div class="row form-group m-auto" style="display: block; text-align: center;">
-                            <button class="btn button2" style="width: 150px; white-space: nowrap;"> <svg
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"  style="width:30%;">
-                                    <path
-                                        d="m32.25 41.9-7.45-7.5 2.5-2.45 4.95 4.95L42.9 26.25l2.55 2.45Zm-12.4-18.65q-3.85 0-6.3-2.45-2.45-2.45-2.45-6.3 0-3.85 2.45-6.3 2.45-2.45 6.3-2.45 3.85 0 6.325 2.45t2.475 6.3q0 3.85-2.475 6.3-2.475 2.45-6.325 2.45Zm7.55 4.1-7.35 7.55 6.95 7H2.6v-6.05q0-2 1.075-3.75T6.7 29.45q3.6-1.6 6.875-2.35t6.275-.75q1.45 0 3.65.275t3.9.725Z" />
-                                </svg>
-                                <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
-                        </div>
+                    <div class="row form-group m-auto" style="display: block; text-align: center;">
+                        <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
+                            <i class="fa fa-check-square-o">
+                                <span style="padding: 10px; font-family: Arial;">Submit</span>
+                            </i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </section>
-<script src="{% static 'bootstrap.min.js' %}"></script>
-<script src="{% static 'jquery/jquery.js' %}"></script>
-<script src="{% static 'popper.min.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 
 </section>
 

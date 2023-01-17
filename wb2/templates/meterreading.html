@@ -6,7 +6,8 @@ Meter Reading
 {% endblock title %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     .hide {
         opacity: 0;
@@ -82,8 +83,7 @@ Meter Reading
 <div class="pt-3 row">
 	<div class="col-5 align-middle">
 		<button type="button"  class="btn button2 m-0" data-bs-toggle="modal" data-bs-target="#myModal">
-			<img style="width: 23px;"
-			src="{% static '/images/list_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+			<i class="fa fa-list"></i>
 			Bulk Reading
 		</button>
 	</div>
@@ -144,8 +144,8 @@ Meter Reading
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			<div class="row">
-				<div class="col-sm-12 col-md-6">
-					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
+				<div class="col-sm-12 col-md-6 d-flex align-items-end">
+					<form id="yearselection" style="float:right; padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
 						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
 							<option disabled selected value>--Select--</option>
@@ -168,8 +168,7 @@ Meter Reading
 				</div>
 				<div class="col-sm-12 col-md-6" style=" display: flex; justify-content: flex-end; align-items: flex-end;">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<img style="width: 35px;"src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
-						<label>
+						<label>Search:
 							<form class="input-group" action="" id ="form" method="GET" role="form">
 								<input type="search" name="search" id="myInput" onsearch="myFunction()" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">
 							</form>

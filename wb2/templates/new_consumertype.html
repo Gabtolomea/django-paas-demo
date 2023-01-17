@@ -1,3 +1,4 @@
+
 {% extends 'dashboard.html' %}
 {% load humanize %}
 {% load static %}
@@ -6,8 +7,9 @@ Consumer Type
 {% endblock title %}
 {% load humanize %}
 {% block style %}
-<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.css'%} ">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     .table {
         transition-delay: all 1s ease-in-out;
@@ -47,8 +49,7 @@ Consumer Type
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
     }
-
-    .btn.btn-primary2 {
+    .btn.btn-primary2{
         background-color: #006c85;
         color: white;
         padding: 8px 30px;
@@ -58,7 +59,6 @@ Consumer Type
         box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease 0.3s;
     }
-
     .btn.btn-primary2:hover {
         background: #006c85;
         color: #ffffff;
@@ -66,6 +66,9 @@ Consumer Type
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
+  
+
+    
 </style>
 {% endblock style %}
 {% block script %}
@@ -75,7 +78,7 @@ Consumer Type
 
 <script>
     $(document).ready(function () {
-        $('#table').DataTable({
+        $('#table').DataTable({ 
             order: [[2, 'asc']],
             stateSave: true,
             lengthMenu: [
@@ -89,86 +92,76 @@ Consumer Type
 {% block new_contype %}
 
 {% include 'settingstabs.html'%}
+<button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#payment" >Add New Consumer Type</button>
 
-<div class="pt-3 row">
-    <div class="col-5 align-middle">
-        <button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#payment">
-            <img style="width: 20px;" src="{% static '/images/playlist_add_FILL1_wght700_GRAD0_opsz48.svg' %}" /> Add
-            New Consumer Type
-        </button>
-    </div>
-    <div class="">
-        <h1 style="text-align:center;">Consumer Type</h1>
-    </div>
-</div>
-<div class="container-fluid p-0">
-    <div class="table-responsive">
-        <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
-            <thead class="wb-thead">
-                <tr style="background: #006c85; color: white;">
-                    <th>Code</th>
-                    <th>Consumer Type</th>
-                    <th>Minimum Water Reading</th>
-                    <th>Minimum Water Reading Charge</th>
-                    <th>Rate After Minimum Reading</th>
-                    <th>Added By</th>
-                    <th>Date Added</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in c %}
-                <tr>
-                    <td>{{c.contypeid}}</td>
-                    <td>{{c.contype}}</td>
-                    <td>{{c.minReading}}</td>
-                    <td>{{c.minReadingCharge}}</td>
-                    <td>{{c.rateAfterMin}}</td>
-                    <td>{{c.added_by_id}}</td>
-                    <td>{{c.date_added}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+    <center><h1 style="margin-top: 30px;">Consumer Type</h1></center>
+    <div class="container-fluid p-0"> 
+        <div class="table-responsive">
+            <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+                <thead class="wb-thead">
+                    <tr style="background: #006c85; color: white;">
+                        <th>Code</th>
+                        <th>Consumer Type</th>
+                        <th>Minimum Water Reading</th>
+                        <th>Minimum Water Reading Charge</th>
+                        <th>Rate After Minimum Reading</th>
+                        <th>Added By</th>
+                        <th>Date Added</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {% for c in c %}
+                    <tr>
+                        <td>{{c.contypeid}}</td>
+                        <td>{{c.contype}}</td>
+                        <td>{{c.minReading}}</td>
+                        <td>{{c.minReadingCharge}}</td>
+                        <td>{{c.rateAfterMin}}</td>
+                        <td>{{c.added_by_id}}</td>
+                        <td>{{c.date_added}}</td>
+                    </tr>
+                        {% endfor %}
+                </tbody>
         </table>
     </div>
 </div>
 
 
-<div class="modal fade" id="payment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"
-    aria-labelledby="payment" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+<div class="modal fade" id="payment" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
             <form action="{% url 'new_consumertype' %}" method="POST">
                 {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Add New Consumer Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <i class="fa fa-xmark"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Add New Consumer Type</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						<i class="fa fa-xmark"></i>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
                         <label>Consumer Type:</label>
                         {{form.contype}}
                     </div>
-                    <div class="form-group">
+                    <div class="form-group">    
                         <label>Minimum Water Reading:</label>
                         {{form.minReading}}
                     </div>
-                    <div class="form-group">
+					<div class="form-group">
                         <label>Minimum Water Reading Charge:</label>
                         {{form.minReadingCharge}}
-                    </div>
-                    <div class="form-group">
+					</div>
+					<div class="form-group">
                         <label>Rate After Minimum Reading:</label>
                         {{form.rateAfterMin}}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary2">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary2">Submit</button>
+				</div>
+            </form> 
+		</div>
+	</div>
 </div>
 
 {% endblock new_contype %}

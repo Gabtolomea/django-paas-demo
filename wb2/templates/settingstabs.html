@@ -21,29 +21,25 @@
     <ul class="nav nav-tabs" style="opacity: 1; height: 65px;" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_profile %}active{% endif %}" id="profile_button" data-href="{% url 'settings' %}" type="button" role="tab">
-                <img style="width: 20px"
-                        src="{% static '/images/person_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                <i class="fa fa-user"></i>
                 Profile
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_contype %}active{% endif %}" id="contypes_button" data-href="{% url 'new_consumertype' %}" type="button" role="tab">
-                <img style="width: 20px"
-                src="{% static '/images/group_FILL1_wght700_GRAD0_opsz48(1).svg' %}" />
+                <i class="fa fa-users"></i>
                 Consumer Types
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_penalty %}active{% endif %}" id="penalties_button" data-href="{% url 'penalty'  %}" type="button" role="tab">
-                <img style="width: 20px"
-                src="{% static '/images/gavel_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                <i class="fa fa-gavel"></i>
                 Penalties
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_discount %}active{% endif %}" id="discounts_button" data-href="{% url 'discount' %}" type="button" role="tab">
-                <img style="width: 20px"
-                src="{% static '/images/sell_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                <i class="fa fa-percent"></i>
                 Discounts
             </button>
         </li>
@@ -59,3 +55,31 @@
     
 </script>
 
+<!-- 
+
+<div class="row w-100 m-auto">
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'settings' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-user"><span style="padding: 12px; font-family: Arial;">Profile</span></i></a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 40px; padding-right: 40px; 
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial; white-space: nowrap;">Consumer
+                    Types</span></i></a>
+    </div>
+
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'penalty'  %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
+		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-gavel"><span style="padding: 12px; font-family: Arial;">Penalties</span></i></a>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <a href="{% url 'discount' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
+		margin-bottom: 10px; background-color:  #006c85; border: none;">
+            <i class="fa fa-percent"><span style="padding: 12px; font-family: Arial;">Discounts</span></i></a>
+    </div>
+</div> -->
