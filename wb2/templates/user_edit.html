@@ -12,16 +12,6 @@ System User
 
 </head>
 <style>
-	 html {
-        height: auto;
-        min-height: 100%;
-    }
-
-    body {
-        height: auto;
-        background-image: linear-gradient(white, #0093b7);
-    }
-
     h3 {
         font-size: 30px;
     }
@@ -38,7 +28,7 @@ System User
 
     .container {
         font-family: Arial;
-        color: #ffffff;
+        color: #212529;
     }
 
     .wrapper {
@@ -46,7 +36,7 @@ System User
         font-family: Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
-        background: #0093b7;
+        background: #fff;
         border-radius: 40px;
         padding: 30px;
     }
@@ -59,7 +49,7 @@ System User
 
     .btn {
         background-color: #0cb3c2;
-        color: #ffffff;
+        color: #212529;
         padding: 8px 32px;
         text-align: center;
         text-decoration: none;
@@ -89,71 +79,59 @@ System User
 				</div>
 				<div class="row form-group w-100 m-auto">
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.first_name.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">First Name*</label>
+                        {% for error in form.first_name.errors %}
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
+                        </div>
+                        {% endfor %}
+						<label for="">First Name<span class="text-danger">*</span></label>
 						{{form.first_name}}
 					</div>
 
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.mid_name.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Middle Name*</label>
+                        {% for error in form.first_name.errors %}
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
+                        </div>
+                        {% endfor %}
+						<label for="">Middle Name</label>
 						{{form.mid_name}}
 					</div>
 
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.last_name.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Last Name*</label>
+                        {% for error in form.first_name.errors %}
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
+                        </div>
+                        {% endfor %}
+						<label for="">Last Name<span class="text-danger">*</span></label>
 						{{form.last_name}}
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.mobilenum.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Mobile Number*</label>
+                        {% for error in form.first_name.errors %}
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
+                        </div>
+                        {% endfor %}
+						<label for="">Mobile Number</label>
 						{{form.mobilenum}}
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.email.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">Email*</label>
+                        {% for error in form.first_name.errors %}
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
+                        </div>
+                        {% endfor %}
+						<label for="">Email<span class="text-danger">*</span></label>
 						{{form.email}}
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-						{% if form.errors %}
-						{% for error in form.username.errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-						{% endfor %}
-						{% endif %}
-						<label for="">User ID*</label>
+                        {% for error in form.first_name.errors %}
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
+                        </div>
+                        {% endfor %}
+						<label for="">User ID<span class="text-danger">*</span></label>
 						{{form.username}}
 					</div>
 				</div>
@@ -174,8 +152,7 @@ System User
 				</div>
 				<div class="row w-100 m-auto mb-2">
 					<div class="col-lg-6 col-md-6 col-sm-12 mb-3" style="font-size: 20px;">
-						<label for="">Profile Picture*</label>
-						<!-- <input type="file" name="profilepic" class="form-control" id="choose-file" size="80"> -->
+						<label for="">Profile Picture</label>
 						{{form.profilepic}}
 					</div>
 				</div>

@@ -2,19 +2,13 @@
 {% load static %}
 {% block title %}
 Registration Form
-{% endblock title %}
+{% endblock title %} 
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <style>
-    html {
-        height: auto;
-        min-height: 100%;
+    .invalid-feedback{
+        display: block!important;
     }
-
-    body {
-        height: auto;
-    }
-
     h3 {
         font-size: 30px;
     }
@@ -32,7 +26,7 @@ Registration Form
 
     .container {
         font-family: Arial;
-        color: #ffffff;
+        color: #212529;
     }
 
     .wrapper {
@@ -40,7 +34,7 @@ Registration Form
         font-family: Arial;
         margin-top: 80px;
         padding: 0px 12px;
-        background: #006c85;
+        background: #fff;
         border-radius: 15px;
         padding: 30px;
     }
@@ -63,7 +57,7 @@ Registration Form
 
     .btn.button2:hover {
         background: #006c85;
-        color: #ffffff;
+        color: #212529;
         border-radius: 30px;
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
@@ -71,7 +65,7 @@ Registration Form
 
     .btn.button2:focus {
         background: #006c85;
-        color: #ffffff;
+        color: #212529;
         border-radius: 30px;
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
@@ -105,7 +99,7 @@ Registration Form
 {% endblock style %}
 {% block registration %}
 <section id="registration-page">
-    <form action="user_creation" method="POST" class="signup-form">
+    <form action="user_creation" method="POST" class="signup-form needs-validation" novalidate>
         {% csrf_token %}
         <div class="container">
             <div class=" shadow wrapper">
@@ -114,86 +108,72 @@ Registration Form
                 </div>
                 <div class="row form-group w-100 m-auto">
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.first_name.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">First Name*</label>
+                        <label for="">First Name<span class="text-danger">*</span></label>
                         {{form.first_name}}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.mid_name.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        <div id="id_mid_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Middle Name*</label>
+                        <label for="">Middle Name</label>
                         {{form.mid_name}}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.last_name.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        <div id="id_last_nameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Last Name*</label>
+                        <label for="">Last Name<span class="text-danger">*</span></label>
                         {{form.last_name}}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.mobilenum.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        <div id="id_mobilenumFeedback" class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Mobile Number*</label>
+                        <label for="">Mobile Number<span class="text-danger">*</span></label>
                         {{form.mobilenum}}
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.email.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        <div id="id_emailFeedback" class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Email*</label>
+                        <label for="">Email<span class="text-danger">*</span></label>
                         {{form.email}}
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.username.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        <div id="id_usernameFeedback" class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">User ID*</label>
+                        <label for="">User ID<span class="text-danger">*</span></label>
                         {{form.username}}
                     </div>
                 </div>
 
                 <div class="row form-group w-100 m-auto">
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.password1.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2 has-validation">
+                        {% for error in form.password2.errors %}
+                        <div id="id_password1Feedback" class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Password*</label>
+                        <label for="">Password<span class="text-danger">*</span></label>
                         <div class="input-group" id="show_hide_password">
                             {{form.password1}}
                             <div class="input-group-addon" style="margin-top: 5px;">
@@ -202,16 +182,13 @@ Registration Form
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.password2.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-
-                            <strong>{{ error|escape }}</strong>
+                        <div class="invalid-feedback">
+                            {{ error|escape }}
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Confirm Password*</label>
-                        <div class="input-group" id="show_hide_confirm_pass">
+                        <label for="">Confirm Password<span class="text-danger">*</span></label>
+                        <div class="input-group" id="show_hide_confirm_pass" minlength="8">
                             {{form.password2}}
                             <div class="input-group-addon" style="margin-top: 5px;">
                                 <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
@@ -237,15 +214,7 @@ Registration Form
                 </div>
                 <div class="row w-100 m-auto m-2">
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-
-                        {% if form.errors %}
-                        {% for error in form.authorizedapprover.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        <label for="formFile" class="form-label">Authorized Approver*</label>
+                        <label for="formFile" class="form-label">Authorized Approver</label>
                         {{form.authorizedapprover}}
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3">

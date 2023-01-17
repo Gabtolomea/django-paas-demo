@@ -29,7 +29,7 @@ class SystemUsers(AbstractUser):
     mobilenum = models.CharField(max_length=20, blank=True)
     authorizedapprover = models.CharField(max_length=20)
     email = models.EmailField(max_length=100,null=True, blank=True)
-    profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='jazzy.jpg')
+    profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='profile12.png')
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
