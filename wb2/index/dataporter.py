@@ -28,7 +28,7 @@ alltables = [
 ]
 
 
-# sorted_tables = []
+sorted_tables = []
 
 # mydb = mysql.connector.connect(
 #    host="localhost",
