@@ -4,204 +4,30 @@
 Usage Report 
 {% endblock title%} 
 {% block style %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
   canvas {
     border: 10px outset #63cdd7;
     padding: 20px;
   }
 
-  html {
-    background-color: #f2f3f2;
-  }
-
-  table {
-    border: 1px solid #ccc;
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    table-layout: fixed;
-  }
-
-  .form-select {
-    width: 10%;
-    margin-left: 30px;
-  }
-
-  table caption {
-    font-size: 1.5em;
-    margin: 0.5em 0 0.75em;
-  }
-
-  table tr {
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    padding: 0.35em;
-  }
-
-  table th,
-  table td {
-    padding: 0.625em;
-    text-align: center;
-  }
-
-  table th {
-    font-size: 0.85em;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  @media screen and (max-width: 600px) {
-    table {
-      border: 0;
-    }
-
-    table caption {
-      font-size: 1.3em;
-    }
-
-    table thead {
-      border: none;
-      clip: rect(0 0 0 0);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
-    }
-
-    table tr {
-      border-bottom: 3px solid #ddd;
-      display: block;
-      margin-bottom: 0.625em;
-    }
-
-    table td {
-      border-bottom: 1px solid #ddd;
-      display: block;
-      font-size: 0.8em;
-      text-align: right;
-    }
-
-    table th {
-      font-size: 0.85em;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    @media screen and (max-width: 600px) {
-      table {
-        border: 0;
-      }
-
-      table caption {
-        font-size: 1.3em;
-      }
-
-      table thead {
-        border: none;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-      }
-
-      table tr {
-        border-bottom: 3px solid #ddd;
-        display: block;
-        margin-bottom: 0.625em;
-      }
-
-      table td {
-        border-bottom: 1px solid #ddd;
-        display: block;
-        font-size: 0.8em;
-        text-align: right;
-      }
-
-      table td::before {
-        content: attr(data-label);
-        float: left;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
-
-      table td:last-child {
-        border-bottom: 0;
-      }
-    }
-
-    body {
-      font-family: "Open Sans", sans-serif;
-      line-height: 1.25;
-    }
-
-    table td::before {
-      /*
-        * aria-label has no advantage, it won't be read inside a table
-        content: attr(aria-label);
-        */
-      content: attr(data-label);
-      float: left;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    table td:last-child {
-      border-bottom: 0;
-    }
-
-    @media (max-width: 400px) {
-      h2 {
-        font-size: 20px;
-      }
-    }
-
-    @media (min-width: 401px) {
-      h2 {
-        font-size: 32px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      h3 {
-        font-size: 15px;
-      }
-    }
-
-    @media (min-width: 401px) {
-      h3 {
-        font-size: 20px;
-      }
-    }
-
-    #years {
-      width: 180px;
-      height: 23px;
-      border-radius: 50px;
-    }
-  }
 </style>
 
 {% endblock style %}
 {% block usage_report_data %}
 
+<script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
+<script src="{% static 'chart.js'%}"> </script>
 <script src="{% static 'jquery/jquery.min.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% include 'reportstabs.html' %}
 <div>
-	<div>
-		<h2 style="font-weight: bold; margin-bottom: 70px;  text-align: center; margin-top: 30px;">Usage Report</h2>
+	<div class="pt-3 row">
+		<h1 class="" style="text-align: center;">Usage Report</h1>
 	</div>
+
 	<div>
-		<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year</label>
-		<form id="yearselection" action="">
+		<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
+		<form id="yearselection" action="GET" style="margin-right: 1370px;">
 			<select class="form-select" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
 				{% for i in years reversed %}
@@ -219,9 +45,10 @@ Usage Report
 		</script>
 	</div>
 
-  <center>
-    <label><strong>Barangay Total Usage: Year {{cur_year}}</strong></label>
-  </center>
+	<div class="pt-3 row">
+		<h3 style="text-align: center;">Barangay Total Usage: Year {{cur_year}}
+		</h3>
+	</div>
 
   <div class="chartBox">
     <canvas id="barangay" width="500" height="150"></canvas>
@@ -273,18 +100,19 @@ Usage Report
     );
   </script>
 
-  <br />
 
-  <center>
-    <label><strong>Barangay Monthly Usage: Year {{cur_year}}</strong></label>
-    <br />
-    <p2><i>click on select to view individual barangay monnhly usage</i></p2>
-  </center>
 
-  <center>
+  <div class="col-8">
+	<h3 style="text-align:right;padding-top: 25px;">Barangay Monthly Usage: Year {{cur_year}}
+	</h3>
+	
+</div>
+<div style="text-align: center;">
+ <p2><i>click on select to view individual Barangay Monthly usage</i></p2>
+
     <div class="selectBox">
       <label>Select Barangay</label>
-      <select class="form-select" id="coffeesales">
+      <select class="form-select" id="coffeesales" style="margin:auto;margin-bottom: 15px;">
         <option value="{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} ">
           Total Monlthy
         </option>
@@ -295,9 +123,7 @@ Usage Report
         {% endfor %}
       </select>
     </div>
-  </center>
-  <br />
-
+</div>
   <div class="chartBox">
     <canvas id="myChart" width="500" height="150"></canvas>
   </div>

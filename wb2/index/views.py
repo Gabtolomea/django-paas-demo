@@ -7,7 +7,7 @@ from .dataporter import *
 from .DBdb import *
 from .decorators import *
 from .forms import *
-from .functions import *
+from .functions import * 
 from .models import *
 from .tokens import generate_token
 from datetime import datetime, timedelta
@@ -28,6 +28,7 @@ from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.core.files.storage import FileSystemStorage
+
 
 
 
@@ -159,7 +160,6 @@ def user_creation(request):
         else:
             template = redirect('bills_list')
             return template
-
     form = SystemUserForm()
     if request.method == "POST":
         form = SystemUserForm(request.POST)
@@ -176,6 +176,11 @@ def user_creation(request):
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
         authorizedapprover = request.POST['authorizedapprover']
+        for i in form.fields:
+            try:
+                form.fields[i].widget.attrs['class'] += ' is-valid'
+            except KeyError:
+                pass
         if form.is_valid():
             user = SystemUsers()
             user.set_password(password2)
@@ -186,19 +191,21 @@ def user_creation(request):
             user.mobilenum = mobilenum
             user.email = email
             user.is_admin = is_admin
-            user.is_teller = is_teller
+            user.is_teller = is_teller 
             user.is_supervisor = is_supervisor
             user.is_manager = is_manager
             user.is_reader = is_reader
             user.authorizedapprover = authorizedapprover
             user.save()
             messages.success(request, 'User created successfully')
+            return redirect('sysuser')
         else:
+            for i in form.errors.as_data():
+                item = form.fields[i]
+                item.widget.attrs['class'] += ' is-invalid'
             messages.error(request, 'User creation failed')
-        return redirect('sysuser')
     context = {
         'form': form,
-        'errors': form.errors,
         'user': request.user
     }
     return render(request, 'registration.html', context)
@@ -755,7 +762,8 @@ def consumercreation(request):
 
     form = ConsumerForm()
     cons = ConsumerInfo.objects.all().order_by("-consumer_id")
-    last = cons[0].consumer_id
+    id = cons[0].consumer_id
+    last = int(cons[0].consumer_id.split('-')[0])
     if request.method == "POST":
         isUpdate = request.POST['isUpdate']
         conid = request.POST['conid']
@@ -779,12 +787,18 @@ def consumercreation(request):
             if isUpdate:
                 c = ConsumerInfo.objects.get(consumer_id=conid)
             else:
+                accstr = ""
                 c = ConsumerInfo()
                 c.status = 1
                 c.stopmeterflag = 0
                 c.deleteflag = 0
                 c.penaltycounter = 0
-                c.consumer_id = conid
+                lastid_len = len(str(last + 1))
+                len_zeros = 10 - lastid_len
+                for x in range(0, len_zeros):
+                    accstr += "0"
+                accstr += str(last + 1)
+                c.consumer_id = accstr + "-01"
             c.firstname = firstname
             c.middlename = middlename
             c.lastname = lastname
@@ -804,7 +818,7 @@ def consumercreation(request):
             c.save()
             return redirect('consumer_list')
     context = {
-        'conid':last,
+        'conid':id,
         'form': form,
         'errors': form.errors,
         'user': request.user
@@ -905,6 +919,7 @@ def sysuser(request):
 
     table = []
 
+    
     class sysuserclass():
         def __init__(self, first_name, last_name, mid_name, username, email, role):
             self.email = email
@@ -959,6 +974,11 @@ def user_edit(request, id):
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
         form = sysup(request.POST, instance=sys)
+        for i in form.fields:
+            try:
+                form.fields[i].widget.attrs['class'] += ' is-valid'
+            except KeyError:
+                pass
         if form.is_valid():
             sys.username = username
             sys.first_name = firstname
@@ -974,8 +994,13 @@ def user_edit(request, id):
             if profilepic is not None:
                 sys.profilepic = profilepic
             else:
-                sys.profilepic = 'jazzy.jpg'
+                sys.profilepic = 'profile12.png'
             sys.save()
+        else:
+            for i in form.errors.as_data():
+                item = form.fields[i]
+                item.widget.attrs['class'] += ' is-invalid'
+            messages.error(request, 'User creation failed')
         return redirect('sysuser')
     context = {
         'sys': sys,

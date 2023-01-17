@@ -408,7 +408,7 @@ Barangay {{bang.barangaycode}} Monthly Usage
   href="{&'url barangayreport'%}/bang.year">BACK</a></button>-->
 </body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="{% static 'jquery.min.js' %}"></script>
 <script>
 	function collection_rate() {
 		total_paid = document.getElementsByClassName("total_paid")

@@ -1,54 +1,34 @@
 {% extends 'dashboard.html' %}
-
+{% load static %}
 {% block title %}
 Registration Form
-{% endblock title %}
+{% endblock title %} 
 {% block style %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <style>
-    html {
-        height: auto;
-        min-height: 100%;
+    .invalid-feedback{
+        display: block!important;
     }
-
-    body {
-        height: auto;
-    }
-
-    h3 {
-        font-size: 30px;
-    }
-
-    label {
-        font-size: 20px;
-    }
-
     .form-header {
-        font-family: Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
         text-align: center;
     }
 
     .container {
-        font-family: Arial;
-        color: #ffffff;
+        color: #212529;
     }
 
     .wrapper {
         font-size: 20px;
-        font-family: Arial;
         margin-top: 80px;
         padding: 0px 12px;
-        background: #006c85;
+        background: #fff;
         border-radius: 15px;
         padding: 30px;
     }
 
     .approver {
-        font: 16px Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
     }
@@ -65,7 +45,7 @@ Registration Form
 
     .btn.button2:hover {
         background: #006c85;
-        color: #ffffff;
+        color: #212529;
         border-radius: 30px;
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
@@ -73,7 +53,7 @@ Registration Form
 
     .btn.button2:focus {
         background: #006c85;
-        color: #ffffff;
+        color: #212529;
         border-radius: 30px;
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
@@ -85,7 +65,6 @@ Registration Form
         text-align: center;
         background-color: #e9ecef;
         border: 1px solid rgba(0, 0, 0, .15);
-        border-radius: 0.25rem;
         padding-bottom: 8px;
 
     }
@@ -99,11 +78,15 @@ Registration Form
         border-radius: 0.25rem;
         padding-bottom: 8px;
     }
+
+    .con:hover path {
+        fill: white;
+    }
 </style>
 {% endblock style %}
 {% block registration %}
 <section id="registration-page">
-    <form action="user_creation" method="POST" class="signup-form">
+    <form action="user_creation" method="POST" class="signup-form needs-validation" novalidate>
         {% csrf_token %}
         <div class="container">
             <div class=" shadow wrapper">
@@ -112,138 +95,124 @@ Registration Form
                 </div>
                 <div class="row form-group w-100 m-auto">
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.first_name.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        <label for="">First Name*</label>
+                        <label for="">First Name<span class="text-danger">*</span></label>
                         {{form.first_name}}
+                        {% for error in form.first_name.errors %}
+                        <div id="id_first_nameFeedback" class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
+                        </div>
+                        {% endfor %}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.mid_name.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        <label for="">Middle Name*</label>
+                        <label for="">Middle Name</label>
                         {{form.mid_name}}
+                        {% for error in form.mid_name.errors %}
+                        <div id="id_mid_nameFeedback" class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
+                        </div>
+                        {% endfor %}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.last_name.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        <label for="">Last Name*</label>
+                        <label for="">Last Name<span class="text-danger">*</span></label>
                         {{form.last_name}}
+                        {% for error in form.last_name.errors %}
+                        <div id="id_last_nameFeedback" class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
+                        </div>
+                        {% endfor %}
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.mobilenum.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        <label for="">Mobile Number*</label>
+                        <label for="">Mobile Number<span class="text-danger">*</span></label>
                         {{form.mobilenum}}
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.email.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        {% for error in form.mobilenum.errors %}
+                        <div id="id_mobilenumFeedback" class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Email*</label>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        <label for="">Email<span class="text-danger">*</span></label>
                         {{form.email}}
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.username.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        {% for error in form.email.errors %}
+                        <div id="id_emailFeedback" class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">User ID*</label>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                        <label for="">Username<span class="text-danger">*</span></label>
                         {{form.username}}
+                        {% for error in form.username.errors %}
+                        <div id="id_usernameFeedback" class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
                 <div class="row form-group w-100 m-auto">
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
-                        {% for error in form.password1.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        <label for="">Password*</label>
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2 has-validation">
+                        <label for="">Password<span class="text-danger">*</span></label>
                         <div class="input-group" id="show_hide_password">
                             {{form.password1}}
                             <div class="input-group-addon" style="margin-top: 5px;">
-                                <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                <a href=""><img style="width: 20px;"src="{% static '/images/fa-eye-slash.svg' %}" ria-hidden="true"></a>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-                        {% if form.errors %}
                         {% for error in form.password2.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-
-                            <strong>{{ error|escape }}</strong>
+                        <div id="id_password1Feedback" class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="">Confirm Password*</label>
-                        <div class="input-group" id="show_hide_confirm_pass">
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                        <label for="">Confirm Password<span class="text-danger">*</span></label>
+                        <div class="input-group" id="show_hide_confirm_pass" minlength="8">
                             {{form.password2}}
                             <div class="input-group-addon" style="margin-top: 5px;">
                                 <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="row m-auto w-100">
-                    <div class="col-lg-6 col-md-6 col-sm-12 ">
-                        <h3>Type of User</h3>
-                        {{form.is_admin}}
-                        <label for="id_is_admin">ADMIN</label><br>
-                        {{form.is_teller}}
-                        <label for="id_is_teller">TELLER</label><br>
-                        {{form.is_supervisor}}
-                        <label for="id_is_supervisor">SUPERVISOR</label><br>
-                        {{form.is_manager}}
-                        <label for="id_is_manager">MANAGER</label><br>
-                        {{form.is_reader}}
-                        <label for="id_is_reader">METER READER</label><br>
-                    </div>
-                </div>
-                <div class="row w-100 m-auto m-2">
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-
-                        {% if form.errors %}
-                        {% for error in form.authorizedapprover.errors %}
-                        <div class="alert alert-danger" style="position: absolute; font-size: 12px; padding: 10px;">
-                            <strong>{{ error|escape }}</strong>
+                        {% for error in form.password2.errors %}
+                        <div class="invalid-feedback">
+                            <small>{{ error|escape }}</small>
                         </div>
                         {% endfor %}
-                        {% endif %}
-                        <label for="formFile" class="form-label">Authorized Approver*</label>
+                    </div>
+                </div>
+                <fieldset class="form-group">
+                    <div class="row m-auto w-100">
+                        <div class="col-lg-6 col-md-6 col-sm-12 ">
+                            <label>Type of User</label>
+                            <div class="form-check">
+                                {{form.is_admin}}
+                                <label class="form-check-label" for="id_is_admin">Admin</label>
+                            </div>
+                            <div class="form-check">
+                                {{form.is_teller}}
+                                <label class="form-check-label" for="id_is_teller">Teller</label>
+                            </div>
+                            <div class="form-check">
+                                {{form.is_supervisor}}
+                                <label class="form-check-label" for="id_is_supervisor">Supervisor</label>
+                            </div>
+                            <div class="form-check">
+                                {{form.is_manager}}
+                                <label class="form-check-label" for="id_is_manager">Manager</label>
+                            </div>
+                            <div class="form-check">
+                                {{form.is_reader}}
+                                <label class="form-check-label" for="id_is_reader">Meter Reader</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="row w-100 m-auto m-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                        <label for="formFile" class="form-label">Authorized Approver</label>
                         {{form.authorizedapprover}}
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
@@ -255,24 +224,24 @@ Registration Form
                         {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="row form-group m-auto" style="display: block; text-align: center;">
-                        <button class="btn button2" style="width: 150px; white-space: nowrap;"><i class="fa fa-check-square-o">
+                    <div class="con">
+                        <div class="row form-group m-auto" style="display: block; text-align: center;">
+                            <button class="btn button2" style="width: 150px; white-space: nowrap;"> <svg
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"  style="width:30%;">
+                                    <path
+                                        d="m32.25 41.9-7.45-7.5 2.5-2.45 4.95 4.95L42.9 26.25l2.55 2.45Zm-12.4-18.65q-3.85 0-6.3-2.45-2.45-2.45-2.45-6.3 0-3.85 2.45-6.3 2.45-2.45 6.3-2.45 3.85 0 6.325 2.45t2.475 6.3q0 3.85-2.475 6.3-2.475 2.45-6.325 2.45Zm7.55 4.1-7.35 7.55 6.95 7H2.6v-6.05q0-2 1.075-3.75T6.7 29.45q3.6-1.6 6.875-2.35t6.275-.75q1.45 0 3.65.275t3.9.725Z" />
+                                </svg>
                                 <span style="padding: 10px; font-family: Arial;">Submit</span></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </section>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
 
 </section>
 

@@ -7,8 +7,8 @@ Water Usage
 
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
- 
+
+
 <style>
 	table {
 		border: 1px solid #ccc;
@@ -71,102 +71,102 @@ Water Usage
 			text-transform: uppercase;
 		}
 	}
-		@media screen and (max-width: 600px) {
-			table {
-				border: 0;
-			}
 
-			table caption {
-				font-size: 1.3em;
-			}
-
-			table thead {
-				border: none;
-				clip: rect(0 0 0 0);
-				height: 1px;
-				margin: -1px;
-				overflow: hidden;
-				padding: 0;
-				position: absolute;
-				width: 1px;
-			}
-
-			table tr {
-				border-bottom: 3px solid #ddd;
-				display: block;
-				margin-bottom: .625em;
-			}
-
-			table td {
-				border-bottom: 1px solid #ddd;
-				display: block;
-				font-size: .8em;
-				text-align: right;
-			}
-
-			table td::before {
-
-				content: attr(data-label);
-				float: left;
-				font-weight: bold;
-				text-transform: uppercase;
-			}
-
-			table td:last-child {
-				border-bottom: 0;
-			}
+	@media screen and (max-width: 600px) {
+		table {
+			border: 0;
 		}
 
-		body {
+		table caption {
+			font-size: 1.3em;
+		}
 
-			table td::before {
-				/*
+		table thead {
+			border: none;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px;
+		}
+
+		table tr {
+			border-bottom: 3px solid #ddd;
+			display: block;
+			margin-bottom: .625em;
+		}
+
+		table td {
+			border-bottom: 1px solid #ddd;
+			display: block;
+			font-size: .8em;
+			text-align: right;
+		}
+
+		table td::before {
+
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		table td:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	body {
+
+		table td::before {
+			/*
         * aria-label has no advantage, it won't be read inside a table
         content: attr(aria-label);
         */
-				content: attr(data-label);
-				float: left;
-				font-weight: bold;
-				text-transform: uppercase;
-			}
-
-			table td:last-child {
-				border-bottom: 0;
-			}
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
 		}
 
-
-		@media (max-width: 400px) {
-			h2 {
-				font-size: 20px;
-			}
+		table td:last-child {
+			border-bottom: 0;
 		}
+	}
 
-		@media (min-width: 401px) {
-			h2 {
-				font-size: 32px;
-			}
+
+	@media (max-width: 400px) {
+		h2 {
+			font-size: 20px;
 		}
+	}
 
-		@media (max-width: 400px) {
-			h3 {
-				font-size: 15px;
-			}
+	@media (min-width: 401px) {
+		h2 {
+			font-size: 32px;
 		}
+	}
 
-		@media (min-width: 401px) {
-			h3 {
-				font-size: 20px;
-			}
+	@media (max-width: 400px) {
+		h3 {
+			font-size: 15px;
 		}
+	}
 
-		#years {
-			width: 180px;
-			height: 23px;
-			border-radius: 50px;
-
+	@media (min-width: 401px) {
+		h3 {
+			font-size: 20px;
 		}
-		
+	}
+
+	#years {
+		width: 180px;
+		height: 23px;
+		border-radius: 50px;
+
+	}
 </style>
 
 {% endblock style %}
@@ -176,17 +176,14 @@ Water Usage
 
 <script src="{% static 'jquery/jquery.js' %}"></script>
 
-<div>
-
-
-	<div>
-		<h2 style="font-weight: bold; margin-bottom: 30px; margin-top: 30px; text-align: center;">Water Usage Per
-			Barangay</h2>
+<div class="pt-3 row">
+	<div class="">
+		<h1 class="" style="text-align: center;">Water Usage Per Barangay</h1>
 	</div>
-
-
+</div>
+<div>
+	<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
 	<form id="yearselection" action="">
-		<label style="margin-left: 30px;" class="header" for="exampleInputBarangay">Select Year: </label>
 		<select class="form-select" id="selector" onchange="change()">
 			<option value="{{cur_year}}">{{cur_year}}</option>
 			{% for i in years reversed %}
@@ -194,6 +191,7 @@ Water Usage
 			{% endfor %}
 		</select>
 	</form>
+
 	<script>
 		yearselection = document.getElementById("yearselection")
 		selector = document.getElementById("selector")
@@ -202,11 +200,12 @@ Water Usage
 			yearselection.submit('')
 		}
 	</script>
-
-	<div>
-		<h3 style=" margin-bottom: 50px; text-align: center; margin-top: 30px;"> Barangay Record of {{cur_year}}
-		</h3>
-	</div>
+</div>
+<div class="">
+	<h3 style="text-align: center;"> Barangay Record of {{cur_year}}
+	</h3>
+</div>
+<div>
 	<div class="row table-responsive">
 		<table id="dtBasicExample2" class="table table-bordered table-hover table-striped table-sm " width="100%">
 			<thead class="wb_thead">
@@ -262,7 +261,7 @@ Water Usage
 	</div>
 
 
-	
+
 	<script>
 		function collection_rate() {
 			total_paid = document.getElementsByClassName("total_paid")

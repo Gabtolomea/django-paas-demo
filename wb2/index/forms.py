@@ -18,13 +18,13 @@ class SystemUserForm(UserCreationForm):
         ("3", "Engineer's Office"),
         ("4", "Mayor's Office"),
     )
-    password1 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
-    password2 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password1 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
+    password2 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=True)
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
     class Meta:
@@ -36,6 +36,7 @@ class SystemUserForm(UserCreationForm):
             'email',
             'first_name',
             'last_name',
+            'mid_name',
             'is_admin',
             'is_teller',
             'is_supervisor',
@@ -64,12 +65,12 @@ class sysup(ModelForm):
         ("3", "Engineer's Office"),
         ("4", "Mayor's Office"),
     )
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=True)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
     class Meta:
@@ -87,7 +88,6 @@ class sysup(ModelForm):
         'mid_name',
         'mobilenum',
         'profilepic',)
-
 
 
 class ConsumerForm(ModelForm):
