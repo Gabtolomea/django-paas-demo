@@ -90,7 +90,6 @@ class sysup(ModelForm):
         'profilepic',)
 
 
-
 class ConsumerForm(ModelForm):
     CHOICES = (
         ("MALE", "MALE"),

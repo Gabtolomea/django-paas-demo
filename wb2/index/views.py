@@ -919,6 +919,7 @@ def sysuser(request):
 
     table = []
 
+    
     class sysuserclass():
         def __init__(self, first_name, last_name, mid_name, username, email, role):
             self.email = email
