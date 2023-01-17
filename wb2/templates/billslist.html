@@ -72,13 +72,14 @@ Billing
 							<img style="width: 35px;" src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
 							<label style="float: right;">
 								<input type="search" name="search" id="myInput" onsearch="myFunction()"
-									class="form-control form-control-sm" placeholder="Search for names.."
+									class="form-control form-control-sm" placeholder="Search.."
 									title="Type in a name" value="{{ search}}">
 							</label>
 						</form>
 						<style>
 							form {
 								text-align: right !important;
+								width: -moz-fit-content;
 								width: fit-content;
 							}
 

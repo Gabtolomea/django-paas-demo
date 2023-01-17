@@ -1,6 +1,5 @@
 {% extends 'dashboard.html' %}
 {% load static %}
-{% load static %}
 {% block title %}
 Registration Form
 {% endblock title %} 
@@ -143,7 +142,7 @@ Registration Form
                 </div>
 
                 <div class="row form-group w-100 m-auto">
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2 has-validation">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
                         <label for="">Password<span class="text-danger">*</span></label>
                         <div class="input-group">
                             {{form.password1}}
@@ -172,42 +171,38 @@ Registration Form
                         {% endfor %}
                     </div>
                 </div>
-                <fieldset class="form-group">
-                    <div class="row m-auto w-100">
-                        <div class="col-lg-6 col-md-6 col-sm-12 ">
-                            <label>Type of User</label>
-                            <div class="form-check">
-                                {{form.is_admin}}
-                                <label class="form-check-label" for="id_is_admin">Admin</label>
-                            </div>
-                            <div class="form-check">
-                                {{form.is_teller}}
-                                <label class="form-check-label" for="id_is_teller">Teller</label>
-                            </div>
-                            <div class="form-check">
-                                {{form.is_supervisor}}
-                                <label class="form-check-label" for="id_is_supervisor">Supervisor</label>
-                            </div>
-                            <div class="form-check">
-                                {{form.is_manager}}
-                                <label class="form-check-label" for="id_is_manager">Manager</label>
-                            </div>
-                            <div class="form-check">
-                                {{form.is_reader}}
-                                <label class="form-check-label" for="id_is_reader">Meter Reader</label>
-                            </div>
+                <div class="row form-group m-auto w-100">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                        <label>Type of User</label>
+                        <div class="form-check">
+                            {{form.is_admin}}
+                            <label class="form-check-label" for="id_is_admin">Admin</label>
+                        </div>
+                        <div class="form-check">
+                            {{form.is_teller}}
+                            <label class="form-check-label" for="id_is_teller">Teller</label>
+                        </div>
+                        <div class="form-check">
+                            {{form.is_supervisor}}
+                            <label class="form-check-label" for="id_is_supervisor">Supervisor</label>
+                        </div>
+                        <div class="form-check">
+                            {{form.is_manager}}
+                            <label class="form-check-label" for="id_is_manager">Manager</label>
+                        </div>
+                        <div class="form-check">
+                            {{form.is_reader}}
+                            <label class="form-check-label" for="id_is_reader">Meter Reader</label>
                         </div>
                     </div>
-                </fieldset>
-                <!-- TO BE IMPLEMENTED PUHON -->
-                <div class="row w-100 m-auto m-2">
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                        <label for="formFile" class="form-label">Authorized Approver</label>
+                    <!-- TO BE IMPLEMENTED PUHON -->
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                        <label >Authorized Approver</label>
                         {{form.authorizedapprover}}
                     </div>
+                    <!--  -->
                 </div>
-                <!--  -->
-                <div class="row form-group m-auto" style="display: block; text-align: center;">
+                <div class="row m-auto" style="display: block; text-align: center;">
                     <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
                         <i class="fa fa-check-square-o">
                             <span style="padding: 10px; font-family: Arial;">Submit</span>
@@ -217,12 +212,11 @@ Registration Form
             </div>
         </div>
     </form>
-
+</section>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
 <script>
-    
     window.onload = function() {
         input = document.getElementById("id_first_name");
         input.focus();
