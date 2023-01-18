@@ -101,6 +101,9 @@ def bills_list_p(request, p):
             else:
                 if LoginSession.is_reader:
                     template = redirect('meterreading_p', p=10)
+                else:
+                    if LoginSession.is_manager:
+                        template = redirect('settings')
             return template
 
     search = request.GET.get("search", "")
@@ -562,6 +565,7 @@ def inputreading(request, id, year):
             readings.append(int(r))
         d = 1
         bill = 0
+        #Calculation for Penalty    
         for i in readings:
             if i != 0:
                 if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
@@ -587,6 +591,7 @@ def inputreading(request, id, year):
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                     else:
+                        # Calculation for bill without penalty and discount
                         bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
                         t.bill = bill
                     t.payment = 0
