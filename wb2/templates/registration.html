@@ -31,8 +31,8 @@ Registration Form
     }
 
     .button2 {
-        background-color: #63CDD7;
-        color: black;
+        background-color: var(--main-color);
+        color: white;
         padding: 8px 30px;
         border: none;
         border-radius: 15px;
@@ -41,16 +41,16 @@ Registration Form
     }
 
     .btn.button2:hover {
-        background: #006c85;
-        color: #212529;
+        background: var(--main-color);
+        color: #ffffff;
         border-radius: 30px;
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
 
     .btn.button2:focus {
-        background: #006c85;
-        color: #212529;
+        background: var(--main-color);
+        color: #ffffff;
         border-radius: 30px;
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
@@ -205,9 +205,9 @@ Registration Form
                 </div>
                 <div class="row m-auto" style="display: block; text-align: center;">
                     <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
-                        <i class="fa fa-check-square-o">
+                        <img style="width: 23px;" src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                             <span style="padding: 10px; font-family: Arial;">Submit</span>
-                        </i>
+                        
                     </button>
                 </div>
             </div>
