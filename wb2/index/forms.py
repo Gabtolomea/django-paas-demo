@@ -26,7 +26,7 @@ class SystemUserForm(UserCreationForm):
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
+    authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select m-0', 'style': 'width: 300px;'}), choices=CHOICES)
     class Meta:
         model = SystemUsers
         fields = (
