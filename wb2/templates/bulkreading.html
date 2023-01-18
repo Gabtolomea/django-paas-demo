@@ -14,9 +14,20 @@ Bulk Reading
 {% endblock script %}
 
 {% block bulkreading %}
-<h1 class="mb-3 mt-3 text-center">BULK READING ENTRY</h1>
-<h1 class="mb-3 text-center">Bulk Input Reading for {{month}} {{year}}</h1>
-
+<div class="pt-3 row">
+	<div class="col-4 align-middle">
+		<button type="button"  class="btn button2 m-0" data-bs-toggle="modal" data-bs-target="#myModal">
+			<img style="width: 23px;"
+			src="{% static '/images/list_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+			Bulk Reading
+		</button>
+	</div>
+	<div class="col-4 text-center">
+		<h1 >BULK READING ENTRY</h1>
+	</div>
+	<div class="col-4">
+	</div>
+</div>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -68,14 +79,8 @@ Bulk Reading
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			<div class="row">
-				<div class="col-sm-12 col-md-6">
-					<button type="button"  class="btn button-main" data-bs-toggle="modal" data-bs-target="#myModal">
-						<img style="width: 23px"
-			src="{% static '/images/list_FILL1_wght700_GRAD0_opsz48.svg' %}" />
-						Bulk Reading
-					</button>
-
+			<div class="row" style="height: 55px;">
+				<div class="col-lg-4 col-md-4 col-sm-12">
 					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
 						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
@@ -98,11 +103,14 @@ Bulk Reading
 						}
 					</script>
 				</div>
-				<div class="col-sm-12 col-md-6" style=" display: flex; justify-content: flex-end; align-items: flex-end;">
+				<div class="col-lg-4 col-md-4 col-sm-12 text-center align-self-center">
+					<strong>Bulk Input Reading for {{month}} {{year}}</strong>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12" style=" display: flex; justify-content: flex-end; align-items: flex-end;">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
 						<form action="" id ="form" method="GET" role="form">
 							<label style="float: right;">Search:
-								<input type="search" name="search" id="myInput" onsearch="myFunction()" class="form-control form-control-sm" placeholder="Search for names.." title="Type in a name" value="{{ search}}">					
+								<input type="search" name="search" id="myInput" onsearch="myFunction()" class="form-control form-control-sm" placeholder="Search..." title="Type in a name" value="{{ search}}">					
 							</label>
 						</form>
 						<script>
@@ -401,15 +409,6 @@ Bulk Reading
 								transition: 0.3s all ease-in-out;
 							}
 							.button2 {
-								background-color: var(--highlight-color); 
-								color: white;
-								padding: 8px 30px;
-								border: none;
-								border-radius: 15px;
-								box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-								transition: all ease 0.3s;
-							}
-							.button-main {
 								background-color: var(--main-color); 
 								color: white;
 								padding: 8px 30px;
@@ -417,29 +416,17 @@ Bulk Reading
 								border-radius: 15px;
 								box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
 								transition: all ease 0.3s;
+								margin-top: 30px;
+								margin-bottom: 30px;
 							}
 							.btn.button2:hover {
-								background: var(--highlight-color);
-								color: #ffffff;
-								border-radius: 30px;
-								box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-								transition: all ease-in 0.5s;
-							}
-							.btn.button2:focus {
-								background: var(--highlight-color);
-								color: #ffffff;
-								border-radius: 30px;
-								box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-								transition: all 0.1s;
-							}
-							.btn.button-main:hover {
 								background: var(--main-color);
 								color: #ffffff;
 								border-radius: 30px;
 								box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
 								transition: all ease-in 0.5s;
 							}
-							.btn.button-main:focus {
+							.btn.button2:focus {
 								background: var(--main-color);
 								color: #ffffff;
 								border-radius: 30px;
