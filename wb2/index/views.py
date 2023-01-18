@@ -27,6 +27,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
 
 
@@ -715,7 +716,6 @@ def consumer_list_p(request, p):
     else:
         cons = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')   
     
-    
     pages = int(p)
     user = request.user
     count = cons.count()
@@ -1376,9 +1376,10 @@ def deleteconsumer(request, id):
             return template
 
     con = ConsumerInfo.objects.get(consumer_id=id)
-    con.deleted_flag = True
+    con.deleteflag = True
     con.save()
     return redirect('consumer_list')
+
 def disconnectconsumer(request, id):
     template = ""
     LoginSession = request.user
@@ -1693,7 +1694,6 @@ def bulkreading(request, year, month, p):
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
 
     paginator = Paginator (consumers,paginate_by)
     try:
@@ -1723,8 +1723,9 @@ def bulkreading(request, year, month, p):
         # prev = last_reading(i.consumer_id, year, month)
         consumers_list.append(new_con(i, prev, cur))
     
-        cons = ub
     if request.method == "POST":
+        pnum = request.POST.get('page_num')
+        cons = paginator.page(pnum)
         interest = 0
         for c in cons:
             print(f"con{c.consumer_id}")
@@ -1825,6 +1826,9 @@ def bulkreading(request, year, month, p):
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
             get_balance(c.consumer_id)
+        url = reverse('bulkreading', args=[year, month, p])+f"?page={pnum}"
+        print(url)
+        return redirect(url)
     context = {
         'search':search,
         'year':year,
