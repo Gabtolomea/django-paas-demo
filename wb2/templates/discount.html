@@ -145,6 +145,8 @@ Discount Type
                     <th>Discount Rate</th>
                     <th>Added By</th>
                     <th>Date Added</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -153,7 +155,18 @@ Discount Type
                     <td>{{d.discountcode}}</td>
                     <td>{{d.discount_rate}}</td>
                     <td>{{d.added_by_id}}</td>
-                    <td>{{d.date_added}}</td>
+                    <td>{{d.date_added}}</td> 
+                    <td>Edit  </td>
+                    <td>
+                        <a href="{%url 'deletediscount' d.discountcode %}">
+                            <button class="btn hide btn-danger btn-sm" type="button"
+                                onclick="return confirm('Are you sure you want to delete  {{ d.discountcode  }} ?')"
+                                data-placement="top" title="Delete">
+                                <img style="width:20px;"
+                                    src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            </button>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

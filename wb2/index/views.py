@@ -1581,6 +1581,17 @@ def discount(request):
     }
     return render(request, 'discount.html', context)
 
+def deletediscount(request,id):
+
+    try:
+        d = Discount.objects.get(discountcode=id)
+        d.delete()
+        messages.success(request, 'Code has been deleted')
+    except Discount.DoesNotExist:
+        messages.error(request, 'Code does not exist')
+    return redirect('discount')
+
+
 
 @login_required(login_url='login')
 def new_consumertype(request):
@@ -1611,10 +1622,20 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
+def deletcontype(request,id):
+
+    try:
+        c = ConsumerType.objects.get(contypeid=id)
+        c.delete()
+        messages.success(request, 'Code has been deleted')
+    except ConsumerType.DoesNotExist:
+        messages.error(request, 'Code does not exist')
+    return redirect('new_consumertype')
+
 
 @login_required(login_url='login')
 def penalty(request):
-    p = Penalty.objects.all()
+    penalty = Penalty.objects.all()
     form = addPenalty
     penaltycounter = len(Penalty.objects.all())
     if request.method == "POST":
@@ -1638,7 +1659,7 @@ def penalty(request):
             messages.error(request, 'Penalty has not been added')
             return redirect('penalty')
     context = {
-        'p': p,
+        'penalty': penalty,
         'form': form,
         'errors': form.errors,
         'user': request.user,
@@ -1649,18 +1670,20 @@ def penalty(request):
 
 def editpenalty(request,id):
     p = Penalty.objects.get(penaltycode=id)
-    form2 = addPenalty(instance=p)
+    penalty = Penalty.objects.all()
+    editform = editPenalty(instance=p)
     if request.method == 'POST':
-        form2 = addPenalty(request.POST, instance=p)
-        if form2.is_valid():
-            form2.save()
+        editform = editPenalty(request.POST, instance=p)
+        if editform.is_valid():
+            editform.save()
             messages.success(request, 'Penalty has been updated')
             return redirect('penalty')
 
     context = {
+        'penalty': penalty,
         'p': p,
-        'form2': form2,
-        'errors': form2.errors,
+        'editform': editform,
+        'errors': editform.errors,
         'user': request.user,
         'is_penalty':True,
          }

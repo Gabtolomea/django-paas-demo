@@ -159,6 +159,7 @@ Penalty Types
             <thead class="wb-thead">
                 <tr style="background:#006c85; color: white; white-space: nowrap;">
                     <th>Code</th>
+                    <th>Penalty Rate</th>
                     <th>Penalty After</th>
                     <th>Days before Applied</th>
                     <th>Details</th>
@@ -169,65 +170,20 @@ Penalty Types
                 </tr>
             </thead>
             <tbody>
-                {% for p in p %}
+                {% for p in penalty %}
                 <tr>
                     <td>{{p.penaltycode}}</td>
+                    <td>{{p.penalty_rate}}</td>
                     <td>{{p.penalty_after}}</td>
                     <td>{{p.daysappliedafter}}</td>
                     <td> {{p.penalty_info}}</td>
                     <td>{{p.added_by_id}}</td>
                     <td>{{p.date_added}}</td>
                     <td>
-                        <a href="{%url 'editpenalty'">
-                            <button class="btn hide btn-success btn-sm " data-bs-toggle="modal"
-                                data-bs-target="#editpenalty" type="button" data-placement="top" title="Edit">
-                                <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />
-                            </button>
-                            <div class="modal fade" id="editpenalty" data-bs-backdrop="static" data-bs-keyboard="false"
-                                tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Edit Penalty Entry</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form method="POST" action="">
-                                                {% csrf_token %}
-                                                <div class="row form-group w-100 m-auto">
-                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                                                        <label>Rate*</label>
-                                                        {{form2.penalty_rate}}
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                                                        <label>Penalty After*</label>
-                                                        {{form2.penalty_after}}
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-12 col-sm-12 ">
-                                                        <label>Days to Application*</label>
-                                                        {{form2.daysappliedafter}}
-                                                    </div>
-                                                    <div class="row w-100 m-auto">
-                                                        <label>Details:</label><br>
-                                                        {{form2.penalty_info}}
-                                                    </div>
-
-
-
-                                                    <div class="modal-footer">
-                                                        <input class="btn btn-primary2" type="submit" value="Submit">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                        <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#edit-{{forloop.counter}}">Edit</button>
                     </td>
                     <td>
-                        <a href="{%url 'deletepenalty' p.penaltycode%}">
+                        <a href="{%url 'deletepenalty' p.penaltycode %}">
                             <button class="btn hide btn-danger btn-sm" type="button"
                                 onclick="return confirm('Are you sure you want to delete  {{ p.penaltycode }} ?')"
                                 data-placement="top" title="Delete">
@@ -243,11 +199,51 @@ Penalty Types
     </div>
 </div>
 
-</td>
-<td>
+<!-- Edit Modal -->
+{% for i in penalty %}
+<div class="modal fade" id="edit-{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New Penalty Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="row form-group w-100 m-auto">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label>Rate*</label>
+                    
+                            <input value="{{i.penalty_rate}}" type="" class="form-control" required>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label>Penalty After*</label>
+                      
+                            <input value="{{i.penalty_after}}" type="" class="form-control" required>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 ">
+                            <label>Days to Application*</label>
+                            <input value="{{i.daysappliedafter}}" type="" class="form-control" required>
+                        </div>
+                        <div class="row w-100 m-auto">
+                            <label>Details:</label><br>
+                        
+                            <input value="{{i.penalty_info}}" type="" class="form-control" required>
+                        </div>
 
-</td>
 
 
+                        <div class="modal-footer">
+                            <input class="btn btn-primary2" type="submit" value="Update">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 </html>
 {% endblock penalties %}
