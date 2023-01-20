@@ -47,6 +47,7 @@ urlpatterns = [
     path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('settings/discount',views.discount, name='discount'),
     path('settings/penalty', views.penalty, name='penalty'),
+    path('settings/penalty/<id>', views.editpenalty, name='editpenalty'),
     path('settings/userprof', views.userprof, name='userprof'),
     path('settings', views.viewprof, name='settings'),
 ]

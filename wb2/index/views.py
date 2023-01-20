@@ -1632,6 +1632,11 @@ def penalty(request):
             pen.daysappliedafter = daysappliedafter
             pen.added_by = request.user
             pen.save()
+            messages.success(request, 'Penalty has been added')
+            return redirect('penalty')
+        else:
+            messages.error(request, 'Penalty has not been added')
+            return redirect('penalty')
     context = {
         'p': p,
         'form': form,
@@ -1642,6 +1647,34 @@ def penalty(request):
 
     return render(request, 'penalty.html', context)
 
+def editpenalty(request,id):
+    p = Penalty.objects.get(penaltycode=id)
+    form2 = addPenalty(instance=p)
+    if request.method == 'POST':
+        form2 = addPenalty(request.POST, instance=p)
+        if form2.is_valid():
+            form2.save()
+            messages.success(request, 'Penalty has been updated')
+            return redirect('penalty')
+
+    context = {
+        'p': p,
+        'form2': form2,
+        'errors': form2.errors,
+        'user': request.user,
+        'is_penalty':True,
+         }
+    return render(request, 'penalty.html', context)
+
+def deletepenalty(request,id):
+
+    try:
+        pen = Penalty.objects.get(penaltycode=id)
+        pen.delete()
+        messages.success(request, 'Code has been deleted')
+    except Penalty.DoesNotExist:
+        messages.error(request, 'Code does not exist')
+    return redirect('penalty')
 
 def bulkreading(request, year, month, p):
     template = ""
