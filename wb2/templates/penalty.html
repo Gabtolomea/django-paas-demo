@@ -158,33 +158,34 @@ Penalty Types
         <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
             <thead class="wb-thead">
                 <tr style="background:#006c85; color: white; white-space: nowrap;">
-                    <th>Code</th>
-                    <th>Penalty Rate</th>
-                    <th>Penalty After</th>
-                    <th>Days before Applied</th>
-                    <th>Details</th>
-                    <th>Added By</th>
-                    <th>Date Added</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th class="align-middle text-center p-0">Code</th>
+                    <th class="align-middle text-center p-0">Penalty Rate</th>
+                    <th class="align-middle text-center p-0">Penalty After</th>
+                    <th class="align-middle text-center p-0">Days before Applied</th>
+                    <th class="align-middle text-center p-0">Details</th>
+                    <th class="align-middle text-center p-0">Added By</th>
+                    <th class="align-middle text-center p-0">Date Added</th>
+                    <th class="align-middle text-center p-0">Edit</th>
+                    <th class="align-middle text-center p-0">Delete</th>
                 </tr>
             </thead>
             <tbody>
                 {% for p in penalty %}
                 <tr>
-                    <td>{{p.penaltycode}}</td>
+                    <td class="align-middle text-center p-0">{{p.penaltycode}}</td>
                     <td>{{p.penalty_rate}}</td>
                     <td>{{p.penalty_after}}</td>
                     <td>{{p.daysappliedafter}}</td>
                     <td> {{p.penalty_info}}</td>
                     <td>{{p.added_by_id}}</td>
-                    <td>{{p.date_added}}</td>
-                    <td>
-                        <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#edit-{{forloop.counter}}">Edit</button>
+                    <td class="align-middle text-center p-0">{{p.date_added}}</td>
+                    <td class="align-middle text-center p-0">
+                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#edit-{{forloop.counter}}"> <img style="width:20px;"
+                            src="{% static '/images/edit_white_36dp.svg' %}" /></button>
                     </td>
-                    <td>
+                    <td class="align-middle text-center p-0">
                         <a href="{%url 'deletepenalty' p.penaltycode %}">
-                            <button class="btn hide btn-danger btn-sm" type="button"
+                            <button class="btn button2 btn-danger btn-sm" type="button"
                                 onclick="return confirm('Are you sure you want to delete  {{ p.penaltycode }} ?')"
                                 data-placement="top" title="Delete">
                                 <img style="width:20px;"
