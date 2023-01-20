@@ -1668,26 +1668,24 @@ def penalty(request):
 
     return render(request, 'penalty.html', context)
 
-def editpenalty(request,id):
-    p = Penalty.objects.get(penaltycode=id)
-    penalty = Penalty.objects.all()
-    editform = editPenalty(instance=p)
-    if request.method == 'POST':
-        editform = editPenalty(request.POST, instance=p)
-        if editform.is_valid():
-            editform.save()
-            messages.success(request, 'Penalty has been updated')
-            return redirect('penalty')
 
-    context = {
-        'penalty': penalty,
-        'p': p,
-        'editform': editform,
-        'errors': editform.errors,
-        'user': request.user,
-        'is_penalty':True,
-         }
-    return render(request, 'penalty.html', context)
+def editpenalty(request):
+    if request.method == "POST":
+        penalty_info = request.POST['penalty_info']
+        penalty_rate = request.POST['penalty_rate']
+        penalty_after = request.POST['penalty_after']
+        daysappliedafter = request.POST['daysappliedafter']
+
+    pen = Penalty(
+        penalty_info = penalty_info,
+        penalty_rate = penalty_rate,
+        penalty_after = penalty_after,
+        daysappliedafter = daysappliedafter
+    )
+    pen.save()
+
+    return redirect('penalty')
+
 
 def deletepenalty(request,id):
 
