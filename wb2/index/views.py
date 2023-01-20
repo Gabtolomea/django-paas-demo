@@ -1649,18 +1649,18 @@ def penalty(request):
 
 def editpenalty(request,id):
     p = Penalty.objects.get(penaltycode=id)
-    form = addPenalty(instance=p)
+    form2 = addPenalty(instance=p)
     if request.method == 'POST':
-        form = addPenalty(request.POST, instance=p)
-        if form.is_valid():
-            form.save()
+        form2 = addPenalty(request.POST, instance=p)
+        if form2.is_valid():
+            form2.save()
             messages.success(request, 'Penalty has been updated')
             return redirect('penalty')
 
     context = {
         'p': p,
-        'form2': form,
-        'errors': form.errors,
+        'form2': form2,
+        'errors': form2.errors,
         'user': request.user,
         'is_penalty':True,
          }
