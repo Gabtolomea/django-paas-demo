@@ -58,21 +58,27 @@ def len_years():
     return len(years)
 def last_reading(id, year, mo):
     ye = year
+    for i in reversed(range(1,13)):
+        try:
+            lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=ye, month=i)
+            mo=i
+        except ObjectDoesNotExist:
+            pass
     if mo == 1:
         mo=12
         ye -= 1
-    else:
-        mo -= 1
-    for i in range(0, len_years()):
-        try:
-            lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=ye, month=mo)
-            lastreading = lasttran.meterReading
-            return lastreading
-        except ObjectDoesNotExist:
-            mo-=1
-        if mo <= 0:
-            mo = 12
-            ye-=1
+    for i in range(len_years()):
+        for j in range(mo):
+            try:
+                lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=ye, month=mo)
+                lastreading = lasttran.meterReading
+                return lastreading
+            except ObjectDoesNotExist:
+                mo-=1
+            if mo <= 0:
+                mo = 12
+                ye-=1
+    return 0
 
 def create_brec(address_id, year):
     con_b_rec = BarangayRecord()  

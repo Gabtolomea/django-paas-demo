@@ -26,7 +26,7 @@ class SystemUserForm(UserCreationForm):
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), choices=CHOICES)
+    authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select m-0', 'style': 'width: 300px;'}), choices=CHOICES)
     class Meta:
         model = SystemUsers
         fields = (
@@ -147,6 +147,21 @@ class addPenalty(ModelForm):
             'daysappliedafter'
          )
 
+
+class editPenalty(ModelForm):
+    penalty_info = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
+    penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    penalty_after = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    daysappliedafter = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    class Meta():
+        model = Penalty
+        fields = (
+            'penalty_info',
+            'penalty_rate',
+            'penalty_after',
+            'daysappliedafter'
+         )
+        
 class addDiscount(ModelForm):
     discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
 

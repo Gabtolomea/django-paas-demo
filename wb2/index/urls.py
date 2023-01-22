@@ -45,8 +45,12 @@ urlpatterns = [
     path('unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
     path('payment/<id>/', views.payment, name='payment'),
     path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
+    path('settings/deletcontype/<id>', views.deletcontype, name='deletcontype'),
     path('settings/discount',views.discount, name='discount'),
+    path('settings/deletediscount/<id>',views.deletediscount, name='deletediscount'),
     path('settings/penalty', views.penalty, name='penalty'),
+    path('settings/penalty/editpenalty/<str:id>', views.editpenalty, name='editpenalty'),
+    path('settings/deletepnenalty/<id>', views.deletepenalty, name='deletepenalty'),
     path('settings/userprof', views.userprof, name='userprof'),
     path('settings', views.viewprof, name='settings'),
 ]
