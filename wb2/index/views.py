@@ -1669,22 +1669,31 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def editpenalty(request):
-    if request.method == "POST":
+def editpenalty(request, id):
+    
+    pen = Penalty.objects.get(penaltycode = id)
+    form = editPenalty(instance = pen)
+    if request.method == 'POST':
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
         penalty_after = request.POST['penalty_after']
         daysappliedafter = request.POST['daysappliedafter']
-
-    pen = Penalty(
-        penalty_info = penalty_info,
-        penalty_rate = penalty_rate,
-        penalty_after = penalty_after,
-        daysappliedafter = daysappliedafter
-    )
-    pen.save()
-
-    return redirect('penalty')
+        if form.is_valid:
+            pen.penalty_info = penalty_info
+            pen.penalty_rate = penalty_rate
+            pen.penalty_after = penalty_after
+            pen.daysappliedafter = daysappliedafter
+            pen.added_by = request.user
+            form = editPenalty(request.POST, instance = pen)
+            pen.save()
+            return redirect('penalty')
+        else:
+            form = editPenalty(request.POST, instance = pen)
+    context = {
+        'pen':pen,
+        'form':form
+    }
+    return render(request, 'editpenalty.html', context)
 
 
 def deletepenalty(request,id):

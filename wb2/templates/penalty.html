@@ -180,8 +180,9 @@ Penalty Types
                     <td>{{p.added_by_id}}</td>
                     <td class="align-middle text-center p-0">{{p.date_added}}</td>
                     <td class="align-middle text-center p-0">
-                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#edit-{{forloop.counter}}"> <img style="width:20px;"
-                            src="{% static '/images/edit_white_36dp.svg' %}" /></button>
+                        <a href="{%url 'editpenalty' p.penaltycode %}"><button type="button" class="btn button2 btn-success btn-sm"> 
+                        <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />
+                        </button></a>
                     </td>
                     <td class="align-middle text-center p-0">
                         <a href="{%url 'deletepenalty' p.penaltycode %}">
