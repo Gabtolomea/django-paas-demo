@@ -106,25 +106,43 @@ Consumer Type
         <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
             <thead class="wb-thead">
                 <tr style="background: #006c85; color: white;">
-                    <th>Code</th>
-                    <th>Consumer Type</th>
-                    <th>Minimum Water Reading</th>
-                    <th>Minimum Water Reading Charge</th>
-                    <th>Rate After Minimum Reading</th>
-                    <th>Added By</th>
-                    <th>Date Added</th>
+                    <th class="align-middle text-center p-0">Code</th>
+                    <th class="align-middle text-center p-0">Consumer Type</th>
+                    <th class="align-middle text-center p-0">Minimum Water Reading</th>
+                    <th class="align-middle text-center p-0">Minimum Water Reading Charge</th>
+                    <th class="align-middle text-center p-0">Rate After Minimum Reading</th>
+                    <th class="align-middle text-center p-0">Added By</th>
+                    <th class="align-middle text-center p-0">Date Added</th>
+                    <td class="align-middle text-center p-0">Edit</td>
+                    <td class="align-middle text-center p-0">Delete</td>
                 </tr>
             </thead>
             <tbody>
                 {% for c in c %}
                 <tr>
-                    <td>{{c.contypeid}}</td>
+                    <td class="align-middle text-center p-0">{{c.contypeid}}</td>
                     <td>{{c.contype}}</td>
                     <td>{{c.minReading}}</td>
                     <td>{{c.minReadingCharge}}</td>
                     <td>{{c.rateAfterMin}}</td>
                     <td>{{c.added_by_id}}</td>
-                    <td>{{c.date_added}}</td>
+                    <td class="align-middle text-center p-0">{{c.date_added}}</td>
+                    <td class="align-middle text-center p-0">
+                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#edit-{{forloop.counter}}"> <img style="width:20px;"
+                                src="{% static '/images/edit_white_36dp.svg' %}" />
+                        </button>
+                    </td>
+                    <td class="align-middle text-center p-0">
+                        <a href="{%url 'deletcontype' c.contypeid %}">
+                            <button class="btn button2 btn-danger btn-sm" type="button"
+                                onclick="return confirm('Are you sure you want to delete  {{ c.contypeid  }} ?')"
+                                data-placement="top" title="Delete">
+                                <img style="width:20px;"
+                                    src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            </button>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -171,4 +189,4 @@ Consumer Type
     </div>
 </div>
 
-{% endblock new_contype %}
+{% endblock new_contype %}  
