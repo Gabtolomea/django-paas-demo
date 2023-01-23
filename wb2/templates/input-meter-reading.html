@@ -7,6 +7,11 @@ Input Reading
 
 {% block ledger %}
 <style>
+	canvas {
+		border: 10px outset #63CDD7;
+		padding: 20px;
+		background: rgb(255, 255, 255);
+	}
 	.hide{
        opacity: 0;
 	   transition: 0.3s all ease-in-out;
@@ -147,7 +152,7 @@ Input Reading
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">
 		<form id="yearselection" action="">
-			<select class="form-select" id="selector" onchange="change()">
+			<select class="form-select mb-3" id="selector" onchange="change()">
 				<option value="{{cur_year}}">{{cur_year}}</option>
 				{% for i in years reversed %}
 				<option value="{{i}}">{{i}}</option>
