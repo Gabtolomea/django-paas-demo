@@ -16,9 +16,7 @@ Penalty Types
 </head>
 
 {% block style %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.css'%} ">
 <style>
     .table {
         transition-delay: all 1s ease-in-out;
@@ -58,7 +56,8 @@ Penalty Types
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
     }
-    .btn.btn-primary2{
+
+    .btn.btn-primary2 {
         background-color: #006c85;
         color: white;
         padding: 8px 30px;
@@ -68,6 +67,7 @@ Penalty Types
         box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease 0.3s;
     }
+
     .btn.btn-primary2:hover {
         background: #006c85;
         color: #ffffff;
@@ -75,9 +75,6 @@ Penalty Types
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
-  
-
-    
 </style>
 {% endblock style %}
 
@@ -103,49 +100,23 @@ Penalty Types
 
 
 {% block penalties %}
-<script>
-    jQuery(document).ready(function ($) {
-        $(".clickable-row").click(function () {
-            window.location = $(this).data("href");
-        });
-    });
-</script>
-<div class="row w-100 m-auto">
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'settings' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-user"><span style="padding: 12px; font-family: Arial;">Profile</span></i></a>
-    </div>
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'new_consumertype' %}" class="btn btn-primary" style="padding-left: 50px; padding-right: 50px; 
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-users"><span style="padding: 12px; font-family: Arial;">Consumer Types</span></i></a>
-    </div>
 
-
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'penalty'  %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px; 
-		margin-bottom: 10px; margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-gavel"><span style="padding: 12px; font-family: Arial;">Penalties</span></i></a>
+{% include 'settingstabs.html'%}
+<div class="pt-3 row">
+    <div class="col-5 align-middle">
+        <button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#ksgj">
+            <img style="width: 20px;" src="{% static '/images/playlist_add_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+            Add New Penalty Type
+        </button>
     </div>
-
-    <div class="col-lg-3 col-md-4 col-sm-12">
-        <a href="{% url 'discount' %}" class="btn btn-primary" style="padding-left: 70px; padding-right: 70px;
-		margin-bottom: 10px; background-color:  #006c85; border: none;">
-            <i class="fa fa-percent"><span style="padding: 12px; font-family: Arial;">Discounts</span></i></a>
-    </div>
+    <h1 style="text-align:center;"> Penalty </h1>
 </div>
-<!-- Button trigger modal -->
-<button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#ksgj">
-    Add New Penalty Type
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="ksgj" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="ksgj" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLabel">New Penalty Entry</h5>
+                <h5 class="modal-title" id="exampleModalLabel">New Penalty Entry</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -182,7 +153,6 @@ Penalty Types
 </div>
 
 
-<h1> Penalty </h1>
 <div class="container-fluid">
     <div class="table-responsive">
         <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
