@@ -1582,6 +1582,27 @@ def discount(request):
     }
     return render(request, 'discount.html', context)
 
+def editdiscount(request, id):
+    disc = Discount.objects.get(discountcode = id)
+    form = editDiscount(instance=disc)
+    user = request.user
+    if request.method == 'POST':
+        discount_rate = request.POST['discount_rate']
+        if form.is_valid():
+            return redirect('discount')
+        else:
+            form = editDiscount(request.POST, instance = disc)
+            disc.discount_rate = discount_rate
+            disc.added_by = user
+            disc.save()
+            return redirect('discount')
+    context = {        
+        'errors': form.errors,
+        'form':form,
+        'disc':disc
+    }
+    return render(request, 'editdiscount.html', context)
+
 def deletediscount(request,id):
 
     try:
@@ -1692,7 +1713,8 @@ def editpenalty(request, id):
             form = editPenalty(request.POST, instance = pen)
     context = {
         'pen':pen,
-        'form':form
+        'form':form,
+        'errors': form.errors,
     }
     return render(request, 'editpenalty.html', context)
 

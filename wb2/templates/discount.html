@@ -157,9 +157,9 @@ Discount Type
                     <td>{{d.added_by_id}}</td>
                     <td class="align-middle text-center p-0">{{d.date_added}}</td>
                     <td class="align-middle text-center p-0">
-                    <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#edit-{{forloop.counter}}"> <img style="width:20px;"
+                    <a href="{% url 'editdiscount' d.discountcode %}"><button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#edit-{{forloop.counter}}"> <img style="width:20px;"
                         src="{% static '/images/edit_white_36dp.svg' %}" />
-                    </button>
+                    </button></a>
                     </td> 
                     <td class="align-middle text-center p-0">
                         <a href="{%url 'deletediscount' d.discountcode %}">

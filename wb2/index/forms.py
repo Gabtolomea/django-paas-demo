@@ -171,6 +171,15 @@ class addDiscount(ModelForm):
              'discount_rate',
         )
 
+class editDiscount(ModelForm):
+    discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    class Meta():
+        model = Discount
+        fields = (
+             'discount_rate',
+        )
+    
+
 class ConscumertypecreationForm (ModelForm):
     contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))

@@ -47,6 +47,7 @@ urlpatterns = [
     path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('settings/deletcontype/<id>', views.deletcontype, name='deletcontype'),
     path('settings/discount',views.discount, name='discount'),
+    path('settings/discount/editdiscount/<str:id>', views.editdiscount, name='editdiscount'),
     path('settings/deletediscount/<id>',views.deletediscount, name='deletediscount'),
     path('settings/penalty', views.penalty, name='penalty'),
     path('settings/penalty/editpenalty/<str:id>', views.editpenalty, name='editpenalty'),
