@@ -1595,16 +1595,6 @@ def editdiscount(request, id):
         
     return redirect('discount')
 
-def deletediscount(request,id):
-
-    try:
-        d = Discount.objects.get(discountcode=id)
-        d.delete()
-        messages.success(request, 'Code has been deleted')
-    except Discount.DoesNotExist:
-        messages.error(request, 'Code does not exist')
-    return redirect('discount')
-
 
 
 @login_required(login_url='login')
@@ -1653,15 +1643,6 @@ def editcontype(request, id):
         
     return redirect('new_consumertype')
 
-def deletcontype(request,id):
-
-    try:
-        c = ConsumerType.objects.get(contypeid=id)
-        c.delete()
-        messages.success(request, 'Code has been deleted')
-    except ConsumerType.DoesNotExist:
-        messages.error(request, 'Code does not exist')
-    return redirect('new_consumertype')
 
 
 @login_required(login_url='login')
@@ -1717,15 +1698,6 @@ def editpenalty(request, id):
         
     return redirect('penalty')
 
-def deletepenalty(request,id):
-
-    try:
-        pen = Penalty.objects.get(penaltycode=id)
-        pen.delete()
-        messages.success(request, 'Code has been deleted')
-    except Penalty.DoesNotExist:
-        messages.error(request, 'Code does not exist')
-    return redirect('penalty')
 
 def bulkreading(request, year, month, p):
     template = ""
