@@ -1595,7 +1595,7 @@ def deletediscount(request,id):
 
 @login_required(login_url='login')
 def new_consumertype(request):
-    c = ConsumerType.objects.all()
+    cont = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
     if request.method == "POST":
@@ -1614,13 +1614,30 @@ def new_consumertype(request):
             ct.added_by = request.user
             ct.save()
     context = {
-        'c': c,
+        'cont': cont,
         'form': form,
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
     }
     return render(request, 'new_consumertype.html', context)
+
+def editcontype(request, id):
+    con = ConsumerType.objects.get(contypeid=id)
+    if request.method == 'POST':
+        contype = request.POST['contype']
+        minReading = request.POST['minReading']
+        minReadingCharge = request.POST['minReadingCharge']
+        rateAfterMin = request.POST['rateAfterMin']
+        
+        con.contype = contype
+        con.minReading = minReading
+        con.minReadingCharge = minReadingCharge
+        con.rateAfterMin = rateAfterMin
+        con.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('new_consumertype')
 
 def deletcontype(request,id):
 

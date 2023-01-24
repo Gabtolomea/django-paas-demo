@@ -148,19 +148,7 @@ class addPenalty(ModelForm):
          )
 
 
-class editPenalty(ModelForm):
-    penalty_info = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
-    penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    penalty_after = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    daysappliedafter = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    class Meta():
-        model = Penalty
-        fields = (
-            'penalty_info',
-            'penalty_rate',
-            'penalty_after',
-            'daysappliedafter'
-         )
+
 class addDiscount(ModelForm):
     discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
 
