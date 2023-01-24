@@ -116,25 +116,25 @@ Penalty Types
                     <div class="row form-group w-100 m-auto">
                         <div class="col-lg-4 col-md-12 col-sm-12 col-12">
                             <label>Rate*</label>
-                            {{form.penalty_rate}}
+                            {{form1.penalty_rate}}
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 col-12">
                             <label>Penalty After*</label>
-                            {{form.penalty_after}}
+                            {{form1.penalty_after}}
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 ">
                             <label>Days to Application*</label>
-                            {{form.daysappliedafter}}
+                            {{form1.daysappliedafter}}
                         </div>
                         <div class="row w-100 m-auto">
                             <label>Details:</label><br>
-                            {{form.penalty_info}}
+                            {{form1.penalty_info}}
                         </div>
 
 
 
                         <div class="modal-footer">
-                            <input class="btn btn-primary2" type="submit" value="Submit">
+                            <input class="btn btn-primary2" name="btnform1" type="submit" value="Submit">
                         </div>
                     </div>
                 </form>
@@ -171,9 +171,8 @@ Penalty Types
                     <td>{{p.added_by_id}}</td>
                     <td class="align-middle text-center p-0">{{p.date_added}}</td>
                     <td class="align-middle text-center p-0">
-                        <a href="{%url 'editpenalty' p.penaltycode %}"><button type="button" class="btn button2 btn-success btn-sm"> 
-                        <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />
-                        </button></a>
+                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#edit-{{p.penaltycode}}"> <img style="width:20px;"
+                            src="{% static '/images/edit_white_36dp.svg' %}" /></button>
                     </td>
                     <td class="align-middle text-center p-0">
                         <a href="{%url 'deletepenalty' p.penaltycode %}">
@@ -194,7 +193,7 @@ Penalty Types
 
 <!-- Edit Modal -->
 {% for i in penalty %}
-<div class="modal fade " id="edit-{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade " id="edit-{{i.penaltycode}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -203,33 +202,32 @@ Penalty Types
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="settings/penalty/editpenalty">
+                  <form method="POST" action="{% url 'editpenalty' i.penaltycode %}">
                     {% csrf_token %}
                     <div class="row form-group w-100 m-auto">
                         <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                            <label>Rate*</label>
-                    
-                            <input value="{{i.penalty_rate}}" type="" class="form-control" required>
+                            <label >Rate*</label>
+                            <input value="{{i.penalty_rate}}" name="penalty_rate" type="" class="form-control" required>
+                           
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 col-12">
                             <label>Penalty After*</label>
-                      
-                            <input value="{{i.penalty_after}}" type="" class="form-control" required>
+                             <input value="{{i.penalty_after}}" name="penalty_after" type="" class="form-control" required>
+                            
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 ">
-                            <label>Days to Application*</label>
-                            <input value="{{i.daysappliedafter}}" type="" class="form-control" required>
+                            <label >Days to Application*</label>
+                             <input value="{{i.daysappliedafter}}" name="daysappliedafter" type="" class="form-control" required>
+                            
                         </div>
                         <div class="row w-100 m-auto">
-                            <label>Details:</label><br>
-                        
-                            <input value="{{i.penalty_info}}" type="" class="form-control" required>
+                            <label >Details:</label><br>
+                             <input value="{{i.penalty_info}}" name="penalty_info" type="" class="form-control" required>
+                            
                         </div>
 
-
-
                         <div class="modal-footer">
-                            <input class="btn btn-primary2" type="submit" value="Update">
+                            <input class="btn btn-primary2" name="btnform2" type="submit" value="Update">
                         </div>
                     </div>
                 </form>

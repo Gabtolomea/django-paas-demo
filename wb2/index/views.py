@@ -1646,7 +1646,7 @@ def penalty(request):
     penalty = Penalty.objects.all()
     form = addPenalty
     penaltycounter = len(Penalty.objects.all())
-    if request.method == "POST":
+    if request.method == "POST" and 'btnform1' in request.POST:
         form = addPenalty(request.POST)
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
@@ -1668,7 +1668,7 @@ def penalty(request):
             return redirect('penalty')
     context = {
         'penalty': penalty,
-        'form': form,
+        'form1': form,
         'errors': form.errors,
         'user': request.user,
         'is_penalty':True,
@@ -1678,30 +1678,24 @@ def penalty(request):
 
 
 def editpenalty(request, id):
-    
-    pen = Penalty.objects.get(penaltycode = id)
-    form = editPenalty(instance = pen)
+    pen = Penalty.objects.get(penaltycode=id)
     if request.method == 'POST':
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
         penalty_after = request.POST['penalty_after']
         daysappliedafter = request.POST['daysappliedafter']
-        if form.is_valid:
-            pen.penalty_info = penalty_info
-            pen.penalty_rate = penalty_rate
-            pen.penalty_after = penalty_after
-            pen.daysappliedafter = daysappliedafter
-            pen.added_by = request.user
-            form = editPenalty(request.POST, instance = pen)
-            pen.save()
-            return redirect('penalty')
-        else:
-            form = editPenalty(request.POST, instance = pen)
-    context = {
-        'pen':pen,
-        'form':form
-    }
-    return render(request, 'editpenalty.html', context)
+       
+        pen.penalty_info = penalty_info
+        pen.penalty_rate = penalty_rate
+        pen.penalty_after = penalty_after
+        pen.daysappliedafter = daysappliedafter
+        pen.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('penalty')
+
+   
+    
 
 
 def deletepenalty(request,id):
