@@ -124,7 +124,7 @@ Discount Type
                         </center>
 
                         <div class="modal-footer">
-                            <input class="btn btn-primary2" type="submit" value="Submit">
+                            <input class="btn btn-primary2" name="btnform1" type="submit" value="Submit">
                         </div>
                     </div>
                 </form>
@@ -150,14 +150,14 @@ Discount Type
                 </tr>
             </thead>
             <tbody>
-                {% for d in d %}
+                {% for d in dc %}
                 <tr>
                     <td class="align-middle text-center p-0">{{d.discountcode}}</td>
                     <td>{{d.discount_rate}}</td>
                     <td>{{d.added_by_id}}</td>
                     <td class="align-middle text-center p-0">{{d.date_added}}</td>
                     <td class="align-middle text-center p-0">
-                    <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#edit-{{forloop.counter}}"> <img style="width:20px;"
+                    <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"  data-bs-target="#edit-{{d.discountcode}}"> <img style="width:20px;"
                         src="{% static '/images/edit_white_36dp.svg' %}" />
                     </button>
                     </td> 
@@ -175,6 +175,37 @@ Discount Type
                 {% endfor %}
             </tbody>
         </table>
+
+<!-- Edit Modal -->
+</div>{% for i in dc %}
+<div class="modal fade " id="edit-{{i.discountcode}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Discount Rate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                  <form method="POST" action="{% url 'editdiscount' i.discountcode %}">
+                    {% csrf_token %}
+                    <div class="row form-group w-100 m-auto">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label >Rate*</label>
+                            <input value="{{i.discount_rate}}" name="discount_rate" type="" class="form-control" required>
+                           
+                        </div>
+
+                        <div class="modal-footer">
+                            <input class="btn btn-primary2" name="btnform2" type="submit" value="Update">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
 
 

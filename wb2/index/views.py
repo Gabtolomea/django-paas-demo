@@ -1559,7 +1559,7 @@ def view_unsettled_bills(request, id, year):
 
 
 def discount(request):
-    d = Discount.objects.all()
+    dc = Discount.objects.all()
     form = addDiscount()
     discountidcount = len(Discount.objects.all())
     user = request.user
@@ -1573,13 +1573,27 @@ def discount(request):
             addD.added_by = user
             addD.save()
     context = {
-        'd': d,
+        'dc': dc,
         'form': form,
         'errors': form.errors,
         'user': user,
         'is_discount':True,
     }
     return render(request, 'discount.html', context)
+
+def editdiscount(request, id):
+    dis = Discount.objects.get(discountcode=id)
+    if request.method == 'POST':
+        discount_rate = request.POST['discount_rate']
+   
+      
+        dis.discount_rate = discount_rate
+
+
+        dis.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('discount')
 
 def deletediscount(request,id):
 
@@ -1702,10 +1716,6 @@ def editpenalty(request, id):
         messages.success(request, 'Code has been updated')
         
     return redirect('penalty')
-
-   
-    
-
 
 def deletepenalty(request,id):
 
