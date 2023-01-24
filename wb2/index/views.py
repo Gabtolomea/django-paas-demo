@@ -1064,71 +1064,76 @@ def about(request):
 
 def payment(request, id):
     if request.method == 'POST':
-        amount = int(request.POST['amount'])
-        or_num = request.POST['or_num']
+        try:
+            amount = int(request.POST.get('amount'))
+            or_num = request.POST['or_num']
+        except ValueError:
+            amount = 0
+            or_num = 0
         dis_code = request.POST.get('dis_code')
-        month = datetime.today().month
-        consumer = ConsumerInfo.objects.get(consumer_id=id)
-        con_bar = consumer.installation_address
-        year = datetime.today().year
-        try:
-            con_b_rec = BarangayRecord.objects.get(barangaycode_id=con_bar, year=year)
-        except ObjectDoesNotExist:
-            con_b_rec = create_brec(consumer.installation_address_id, year)
-        t = Transactions()
-        t.acctID = consumer
-        t.transType = "Payment"
-        t.date = datetime.today()
-        t.year = year
-        t.month = month
-        t.payment = amount
-        t.processedBy = request.user
-        t.or_number = or_num
-        t.save()
-        try:
-            discount = Discount.objects.get(discountcode=dis_code)
-        except ObjectDoesNotExist:
-            pass
-        else:
+        if amount != 0:
+            month = datetime.today().month
+            consumer = ConsumerInfo.objects.get(consumer_id=id)
+            con_bar = consumer.installation_address
+            year = datetime.today().year
+            try:
+                con_b_rec = BarangayRecord.objects.get(barangaycode_id=con_bar, year=year)
+            except ObjectDoesNotExist:
+                con_b_rec = create_brec(consumer.installation_address_id, year)
             t = Transactions()
             t.acctID = consumer
-            t.transType = "Discount"
+            t.transType = "Payment"
             t.date = datetime.today()
             t.year = year
             t.month = month
+            t.payment = amount
             t.processedBy = request.user
             t.or_number = or_num
-            t.payment = 0
-            t.payment = amount-(amount*(discount.discount_rate/100))
-            amount -= amount*(discount.discount_rate/100)
             t.save()
-        get_balance(id)
-        match month:
-            case 1:
-                con_b_rec.total_paid_jan += amount
-            case 2:
-                con_b_rec.total_paid_feb += amount
-            case 3:
-                con_b_rec.total_paid_mar += amount
-            case 4:
-                con_b_rec.total_paid_apr += amount
-            case 5:
-                con_b_rec.total_paid_may += amount
-            case 6:
-                con_b_rec.total_paid_jun += amount
-            case 7:
-                con_b_rec.total_paid_jul += amount
-            case 8:
-                con_b_rec.total_paid_aug += amount
-            case 9:
-                con_b_rec.total_paid_sept += amount
-            case 10:
-                con_b_rec.total_paid_oct += amount
-            case 11:
-                con_b_rec.total_paid_nov += amount
-            case 12:
-                con_b_rec.total_paid_dec += amount
-        con_b_rec.save()
+            try:
+                discount = Discount.objects.get(discountcode=dis_code)
+            except ObjectDoesNotExist:
+                pass
+            else:
+                t = Transactions()
+                t.acctID = consumer
+                t.transType = "Discount"
+                t.date = datetime.today()
+                t.year = year
+                t.month = month
+                t.processedBy = request.user
+                t.or_number = or_num
+                t.payment = 0
+                t.payment = amount-(amount*(discount.discount_rate/100))
+                amount -= amount*(discount.discount_rate/100)
+                t.save()
+            get_balance(id)
+            match month:
+                case 1:
+                    con_b_rec.total_paid_jan += amount
+                case 2:
+                    con_b_rec.total_paid_feb += amount
+                case 3:
+                    con_b_rec.total_paid_mar += amount
+                case 4:
+                    con_b_rec.total_paid_apr += amount
+                case 5:
+                    con_b_rec.total_paid_may += amount
+                case 6:
+                    con_b_rec.total_paid_jun += amount
+                case 7:
+                    con_b_rec.total_paid_jul += amount
+                case 8:
+                    con_b_rec.total_paid_aug += amount
+                case 9:
+                    con_b_rec.total_paid_sept += amount
+                case 10:
+                    con_b_rec.total_paid_oct += amount
+                case 11:
+                    con_b_rec.total_paid_nov += amount
+                case 12:
+                    con_b_rec.total_paid_dec += amount
+            con_b_rec.save()
     return redirect('ledger', id=id)
 
 
