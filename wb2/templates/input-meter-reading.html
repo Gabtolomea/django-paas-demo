@@ -22,29 +22,31 @@ Input Reading
 	.inputid{
 		text-align: center;
 	}
-    .button2 {
-        background-color: #0093b7;
-        color: white;
-        padding: 8px 30px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-    }
-    .btn.button2:hover {
-        background: #0093b7;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
-    .btn.button2:focus {
-        background: #0093b7;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-        transition: all 0.1s;
-    }
+	.button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
 </style>
 <div class="container-fluid p-0">
 	<div class="table_responsive" style="max-height: 922px;">
@@ -135,7 +137,8 @@ Input Reading
 <div class="row w-100 m-auto">
 	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
 		<button type="button" class="btn button2" style="float: left;" onclick="print()">
-			<i class="fa fa-copy"></i>
+			<img style="width: 25px;"
+			src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
 			Get a Copy
 		</button>
 	</div>
@@ -182,7 +185,7 @@ Input Reading
 							{{t.usage}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
-								id="{{t.transid}}" onfocus="this.select()" disabled type="number"{% if t.prev %} min={{t.prev}} {% endif %}
+								id="{{t.transid}}" onfocus="this.select()" disabled type="number"{% if t.prev %} min={{t.prev}} onblur="this.value={{t.prev}}"  {% endif %}
 								{% if t.next %}max="{{t.next}}" {%endif%} {% if t.reading %}value="{{t.reading}}"{% endif %}>
 						</td>
 							{% if consumer.stopmeterflag %}
@@ -253,7 +256,8 @@ Input Reading
 		<!-- Chart -->
 	</div>
 	<div class="container align-items-center">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+		<script src="{% static 'Chart.min.js'%}"></script>
+		
 		<canvas id="myChart"  width="800" height="250"></canvas>
 		<br>
 		<br>
@@ -288,9 +292,10 @@ Input Reading
 				}
 			})
 		</script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+	
+
 		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
+			src="{% static 'jspdf.plugin.autotable.js'%}"></script>
 		<script type="text/javascript">
 			
 	function print() {

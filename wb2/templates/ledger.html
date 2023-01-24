@@ -5,7 +5,11 @@ Account Ledger
 {% endblock title %}
 {% load humanize %}
 {% block ledger %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="{% static 'jspdf.min.js'%}"> </script>
+<script src="{% static 'jquery.min.js'%}"> </script>
+<script src="{% static 'html2pdf.bundle.min.js'%}"> </script>
+<script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
+
 <style>
 	.hide {
 		opacity: 0;
@@ -186,8 +190,8 @@ Account Ledger
 					<td class="table-light">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light">{{u.meternumber}}</td>
 					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
-						<button type="button" class=" hide btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
-						<button type="button" class="hide btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
+						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
+						<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
@@ -224,11 +228,27 @@ Account Ledger
 	</div>
 </div>
 <div class="row w-100 m-auto pt-2">
-	<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
+	<div class="col-lg-4 col-md-4 col-sm-12" style="padding-top :10px;">
 		<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
-			<i class="fa fa-copy"></i>
+			<img style="width: 25px" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
 			Get a Copy
 		</button>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-12" style="padding-top :10px;">
+		<h1 class="text-center">Account Ledger</h1>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-12" style="padding-top :10px;">
+		<form id="displayselection" action="" method="GET">
+			<label class="d-flex" style="float: right; align-items: center;">Show
+				<select id="selector" name="show" style="width: 100px; margin: 0 5px;" class="form-select form-select" onchange="this.form.submit()">
+					<option value="" {% if disp == ""%}selected{% endif %}>All</option>
+					<option value="Billing" {% if disp == "Billing"%}selected{% endif %}>Billing</option>
+					<option value="Payment" {% if disp == "Payment"%}selected{% endif %}>Payment</option>
+					<option value="Penalty" {% if disp == "Penalty"%}selected{% endif %}>Penalty</option>
+					<option value="Discount" {% if disp == "Discount"%}selected{% endif %}>Discount</option>
+				</select>
+			</label>
+		</form>
 	</div>
 	<div class="billling" style="display:none;">
 		<div id="invoice">
@@ -341,60 +361,49 @@ Account Ledger
 
 	</script>
 </div>
-
-<h1 class="mb-3 text-center">Account Ledger</h1>
-<div class="container-fluid p-0">
-	<div class="table-responsive">
-		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
-			<thead class="wb_thead">
-				<tr>
-					<th style="min-width: 100px;">Transaction ID</th>
-					<th style="min-width: 100px;">Date</th>
-					<th style="min-width: 100px;">Previous</th>
-					<th style="min-width: 100px;">Current Reading</th>
-					<th style="min-width: 110px;">Cubic Meter Used</th>
-					<th style="min-width: 110px;">Connection Type</th>
-					<th style="min-width: 110px;">Amount Billed</th>
-					<th style="min-width: 100px;">Payment</th>
-					<th style="min-width: 100px;">Processed By</th>
-					<th style="min-width: 110px;">OR Number</th>
-					<th style="min-width: 100px;">Current Balance</th>
-				</tr>
-			</thead>
-			<tbody class="wb_tbody">
-				{% for t in table reversed %}
-				<tr>
-					<td class="{{t.style}}">{{t.transid}}</td>
-					<td class="{{t.style}}">{{t.date}}</td>
-					<td class="{{t.style}}">{{t.prev}}</td>
-					<td class="{{t.style}}">{{t.reading}}</td>
-					<td class="{{t.style}}">{{t.usage}}</td>
-					<td class="{{t.style}}">{{t.rateid}}</td>
-					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
-					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
-					</td>
-					<td class="{{t.style}}">{{t.pb}}</td>
-					<td class="{{t.style}}">{{t.ornum}}</td>
-					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+<div class="row">
+	<div class="container-fluid p-0">
+		<div class="table-responsive">
+			<table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+				<thead class="wb_thead">
+					<tr>
+						<th style="min-width: 100px;">Transaction ID</th>
+						<th style="min-width: 100px;">Date</th>
+						<th style="min-width: 100px;">Previous</th>
+						<th style="min-width: 100px;">Current Reading</th>
+						<th style="min-width: 110px;">Cubic Meter Used</th>
+						<th style="min-width: 110px;">Connection Type</th>
+						<th style="min-width: 110px;">Amount Billed</th>
+						<th style="min-width: 100px;">Payment</th>
+						<th style="min-width: 100px;">Processed By</th>
+						<th style="min-width: 110px;">OR Number</th>
+						<th style="min-width: 100px;">Current Balance</th>
+					</tr>
+				</thead>
+				<tbody class="wb_tbody">
+					{% for t in table reversed %}
+					<tr>
+						<td class="{{t.style}}">{{t.transid}}</td>
+						<td class="{{t.style}}">{{t.date}}</td>
+						<td class="{{t.style}}">{{t.prev}}</td>
+						<td class="{{t.style}}">{{t.reading}}</td>
+						<td class="{{t.style}}">{{t.usage}}</td>
+						<td class="{{t.style}}">{{t.rateid}}</td>
+						<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+						<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+						</td>
+						<td class="{{t.style}}">{{t.pb}}</td>
+						<td class="{{t.style}}">{{t.ornum}}</td>
+						<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
-<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top :10px;">
-	<button id="ignore1" type="button" onclick="getpdf()" class="btn btn-wb-copy"
-		style="float:right; font-size: 12px; border-radius: 15px;">Get a Copy
-	</button>
-</div>
-</div id="elementH">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
-	integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
 <script type="text/javascript">
 
 	function getpdf() {
@@ -449,6 +458,7 @@ Account Ledger
 		doc.setFontType("bold");
 		doc.setLineWidth(10);
 		doc.setFontSize(20);
+		doc.setTextColor(0,0,0)
 		doc.text(420, y = y + 30, "ACCOUNT LEDGER");
 
 		var table = [{% for t in table reversed %}
