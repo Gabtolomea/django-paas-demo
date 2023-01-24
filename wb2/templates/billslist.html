@@ -36,7 +36,7 @@ Billing
 {% block script %}
 {% endblock script %}
 {% block billslist %}
-<div class="pt-3 row">
+<div class="pt-3 row"> 
 	<div class="col-12">
 		<h1 class="text-center">Bills List</h1>
 	</div>
@@ -44,74 +44,7 @@ Billing
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			<div class="row">
-				<div class="col-sm-12 col-md-6">
-					<form id="yearselection" style="padding: 10px; " class="dataTables_length" action="" method="GET">
-						<label style="display:flex;">Show
-							<select id="selector" style="width: 100px; margin: 0 5px;"
-								class="form-select form-select-sm" onchange="change()">
-								<option disabled selected value>--Select--</option>
-								<option value="10">10</option>
-								<option value="25">25</option>
-								<option value="50">50</option>
-								<option value="100">100</option>
-								<option value="0">All</option>
-							</select> entries
-						</label>
-					</form>
-					<script src="{% static 'jquery/jquery.js' %}"></script>
-					<script>
-						yearselection = document.getElementById("yearselection")
-						selector = document.getElementById("selector")
-						function change() {
-							yearselection.action = selector.value
-							yearselection.submit('')
-						}
-					</script>
-				</div>
-				<div class="col-sm-12 col-md-6">
-					<div id="table_filter" style="float:right; padding: 10px;" class="dataTables_filter">
-						<label>
-							<form action="" class="input-group" id="form" method="GET" role="form">
-
-								<div class="input-group-text">
-									<img style="width: 23px;"
-										src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
-
-								</div>
-								<input type="search" name="search" id="myInput" onsearch="myFunction()"
-									class="form-control form-control-sm" placeholder="Search..." title="Type in a name"
-									value="{{ search}}">
-
-							</form>
-
-							<script>
-								let myInput = document.getElementById('myInput');
-								form = document.getElementById('form')
-								//on keyup, start the countdown
-								myInput.addEventListener('input', () => {
-									if (myInput.value == "") {
-										var newURL = window.location.href.split("?")[0]
-										form.action = newURL
-										form.submit()
-									};
-								});
-								function myFunction() {
-									var newURL = window.location.href
-									form.action = newURL + "?search=" + myInput.value
-									form.submit()
-								}
-								window.onload = function () {
-									var input = document.getElementById("myInput");
-									const end = input.value.length;
-									input.setSelectionRange(end, end);
-									input.focus();
-								}
-							</script>
-						</label>
-					</div>
-				</div>
-			</div>
+			{% include 'search.html'%}
 			<div class="row">
 				<div class="col-sm-12">
 					<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0"
