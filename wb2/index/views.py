@@ -924,7 +924,6 @@ def sysuser(request):
     p = int(request.GET.get('p', 10))
     page = request.GET.get('page')
     user = request.user
-    
     count = sys.count()
     if p == 0:
         paginate_by = request.GET.get('paginate_by', count)
@@ -1560,7 +1559,7 @@ def view_unsettled_bills(request, id, year):
 
 
 def discount(request):
-    d = Discount.objects.all()
+    dc = Discount.objects.all()
     form = addDiscount()
     discountidcount = len(Discount.objects.all())
     user = request.user
@@ -1574,7 +1573,7 @@ def discount(request):
             addD.added_by = user
             addD.save()
     context = {
-        'd': d,
+        'dc': dc,
         'form': form,
         'errors': form.errors,
         'user': user,
@@ -1583,25 +1582,18 @@ def discount(request):
     return render(request, 'discount.html', context)
 
 def editdiscount(request, id):
-    disc = Discount.objects.get(discountcode = id)
-    form = addDiscount(instance=disc)
-    user = request.user
+    dis = Discount.objects.get(discountcode=id)
     if request.method == 'POST':
         discount_rate = request.POST['discount_rate']
-        if form.is_valid():
-            return redirect('discount')
-        else:
-            form = addDiscount(request.POST, instance = disc)
-            disc.discount_rate = discount_rate
-            disc.added_by = user
-            disc.save()
-            return redirect('discount')
-    context = {        
-        'errors': form.errors,
-        'form':form,
-        'disc':disc
-    }
-    return render(request, 'editdiscount.html', context)
+   
+      
+        dis.discount_rate = discount_rate
+
+
+        dis.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('discount')
 
 def deletediscount(request,id):
 
@@ -1617,7 +1609,7 @@ def deletediscount(request,id):
 
 @login_required(login_url='login')
 def new_consumertype(request):
-    c = ConsumerType.objects.all()
+    cont = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
     if request.method == "POST":
@@ -1636,7 +1628,7 @@ def new_consumertype(request):
             ct.added_by = request.user
             ct.save()
     context = {
-        'c': c,
+        'cont': cont,
         'form': form,
         'errors': form.errors,
         'user': request.user,
@@ -1644,30 +1636,22 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
-def editconsumertype(request, id):
-    con = ConsumerType.objects.get(contype = id)
-    form = ConscumertypecreationForm(instance = con)
+def editcontype(request, id):
+    con = ConsumerType.objects.get(contypeid=id)
     if request.method == 'POST':
-        form = ConscumertypecreationForm(request.POST, instance = con)
         contype = request.POST['contype']
         minReading = request.POST['minReading']
         minReadingCharge = request.POST['minReadingCharge']
-        rateAfterMin = request.POST['rateAfterMin'] 
-        if form.is_valid():
-            con.contype = contype
-            con.minReading = minReading
-            con.minReadingCharge = minReadingCharge
-            con.rateAfterMin = rateAfterMin
-            con.added_by = request.user
-            con.save()
-            return redirect('new_consumertype')
-    context = {
-        'con':con,
-        'form': form,
-        'errors': form.errors,
-        'is_contype':True,
-    }
-    return render(request, 'editconsumertype.html', context)
+        rateAfterMin = request.POST['rateAfterMin']
+        
+        con.contype = contype
+        con.minReading = minReading
+        con.minReadingCharge = minReadingCharge
+        con.rateAfterMin = rateAfterMin
+        con.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('new_consumertype')
 
 def deletcontype(request,id):
 
@@ -1685,7 +1669,7 @@ def penalty(request):
     penalty = Penalty.objects.all()
     form = addPenalty
     penaltycounter = len(Penalty.objects.all())
-    if request.method == "POST":
+    if request.method == "POST" and 'btnform1' in request.POST:
         form = addPenalty(request.POST)
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
@@ -1707,7 +1691,7 @@ def penalty(request):
             return redirect('penalty')
     context = {
         'penalty': penalty,
-        'form': form,
+        'form1': form,
         'errors': form.errors,
         'user': request.user,
         'is_penalty':True,
@@ -1717,32 +1701,21 @@ def penalty(request):
 
 
 def editpenalty(request, id):
-    
-    pen = Penalty.objects.get(penaltycode = id)
-    form = addPenalty(instance = pen)
+    pen = Penalty.objects.get(penaltycode=id)
     if request.method == 'POST':
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
         penalty_after = request.POST['penalty_after']
         daysappliedafter = request.POST['daysappliedafter']
-        if form.is_valid:
-            pen.penalty_info = penalty_info
-            pen.penalty_rate = penalty_rate
-            pen.penalty_after = penalty_after
-            pen.daysappliedafter = daysappliedafter
-            pen.added_by = request.user
-            form = addPenalty(request.POST, instance = pen)
-            pen.save()
-            return redirect('penalty')
-        else:
-            form = addPenalty(request.POST, instance = pen)
-    context = {
-        'pen':pen,
-        'form':form,
-        'errors': form.errors,
-    }
-    return render(request, 'editpenalty.html', context)
-
+       
+        pen.penalty_info = penalty_info
+        pen.penalty_rate = penalty_rate
+        pen.penalty_after = penalty_after
+        pen.daysappliedafter = daysappliedafter
+        pen.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('penalty')
 
 def deletepenalty(request,id):
 

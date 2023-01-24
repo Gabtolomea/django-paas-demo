@@ -147,7 +147,8 @@ class addPenalty(ModelForm):
             'daysappliedafter'
          )
 
-        
+
+
 class addDiscount(ModelForm):
     discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
 

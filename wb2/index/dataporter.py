@@ -28,10 +28,9 @@ alltables = [
 ]
 
 
-# sorted_tables = []
+sorted_tables = []
 
-# mydb = mysql.co
-# nnector.connect(
+# mydb = mysql.connector.connect(
 #    host="localhost",
 #    user="root",
 #    password="yjh434ctuG@-@",
