@@ -973,8 +973,6 @@ def sysuser(request):
         'table': table,
         'user': request.user
     }
-    print(context['last'])
-    print(context['five'])
     return render(request, 'sysuser.html', context)
 
 
