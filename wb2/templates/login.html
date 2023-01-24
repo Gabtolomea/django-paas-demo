@@ -10,11 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login </title>
     <link rel="stylesheet" type="text/css" href="{% static 'login.css'%}" />
-    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}"/>
-
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
     
 
-</head>
 <style> 
     html {
         height: auto;
@@ -99,6 +97,7 @@
     }
 </style>
 
+</head>
 <body>
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}

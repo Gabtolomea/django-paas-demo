@@ -89,10 +89,13 @@ System User
     </div>
     <div class="col-sm-12 col-md-6">
         <div id="table_filter" style="float:right; padding: 10px;" class="dataTables_filter">
-            <form action="" id="form" method="GET" role="form">
-                <img style="width: 35px;" src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
-                <label style="float: right;">
-                    <input type="search" name="search" id="myInput" onsearch="myFunction()"
+            <label>
+                <form class="input-group" action="" id="form" method="GET" role="form">
+                    <div class="input-group-text">
+                    <img  style="width: 23px;"
+                        src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
+                    </div>
+                    <input  type="search" name="search" id="myInput" onsearch="myFunction()"
                         class="form-control form-control-sm" placeholder="Search..."
                         value="{{ search}}">
                 </label>
@@ -133,6 +136,7 @@ System User
                     input.focus();
                 }
             </script>
+        </label>
         </div>
     </div>
 </div>

@@ -5,15 +5,6 @@
 Penalty Types
 {% endblock title %}
 {% load humanize %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penalty</title>
-</head>
 
 {% block style %}
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.css'%} ">
@@ -155,26 +146,45 @@ Penalty Types
 
 <div class="container-fluid">
     <div class="table-responsive">
-        <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+        <table id="table" class="table table-bordered table-striped" cellspacing="0" width="100%">
             <thead class="wb-thead">
                 <tr style="background:#006c85; color: white; white-space: nowrap;">
-                    <th>Code</th>
-                    <th>Penalty After</th>
-                    <th>Days before Applied</th>
-                    <th>Details</th>
-                    <th>Added By</th>
-                    <th>Date Added</th>
+                    <th class="align-middle text-center p-0">Code</th>
+                    <th class="align-middle text-center p-0">Penalty Rate</th>
+                    <th class="align-middle text-center p-0">Penalty After</th>
+                    <th class="align-middle text-center p-0">Days before Applied</th>
+                    <th class="align-middle text-center p-0">Details</th>
+                    <th class="align-middle text-center p-0">Added By</th>
+                    <th class="align-middle text-center p-0">Date Added</th>
+                    <th class="align-middle text-center p-0">Edit</th>
+                    <th class="align-middle text-center p-0">Delete</th>
                 </tr>
             </thead>
             <tbody>
-                {% for p in p %}
+                {% for p in penalty %}
                 <tr>
-                    <td>{{p.penaltycode}}</td>
+                    <td class="align-middle text-center p-0">{{p.penaltycode}}</td>
+                    <td>{{p.penalty_rate}}</td>
                     <td>{{p.penalty_after}}</td>
                     <td>{{p.daysappliedafter}}</td>
                     <td> {{p.penalty_info}}</td>
                     <td>{{p.added_by_id}}</td>
-                    <td>{{p.date_added}}</td>
+                    <td class="align-middle text-center p-0">{{p.date_added}}</td>
+                    <td class="align-middle text-center p-0">
+                        <a href="{%url 'editpenalty' p.penaltycode %}"><button type="button" class="btn button2 btn-success btn-sm"> 
+                        <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />
+                        </button></a>
+                    </td>
+                    <td class="align-middle text-center p-0">
+                        <a href="{%url 'deletepenalty' p.penaltycode %}">
+                            <button class="btn button2 btn-danger btn-sm" type="button"
+                                onclick="return confirm('Are you sure you want to delete  {{ p.penaltycode }} ?')"
+                                data-placement="top" title="Delete">
+                                <img style="width:20px;"
+                                    src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            </button>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -182,8 +192,51 @@ Penalty Types
     </div>
 </div>
 
+<!-- Edit Modal -->
+{% for i in penalty %}
+<div class="modal fade " id="edit-{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Penalty</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="settings/penalty/editpenalty">
+                    {% csrf_token %}
+                    <div class="row form-group w-100 m-auto">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label>Rate*</label>
+                    
+                            <input value="{{i.penalty_rate}}" type="" class="form-control" required>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label>Penalty After*</label>
+                      
+                            <input value="{{i.penalty_after}}" type="" class="form-control" required>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 ">
+                            <label>Days to Application*</label>
+                            <input value="{{i.daysappliedafter}}" type="" class="form-control" required>
+                        </div>
+                        <div class="row w-100 m-auto">
+                            <label>Details:</label><br>
+                        
+                            <input value="{{i.penalty_info}}" type="" class="form-control" required>
+                        </div>
 
 
 
+                        <div class="modal-footer">
+                            <input class="btn btn-primary2" type="submit" value="Update">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 </html>
 {% endblock penalties %}

@@ -5,9 +5,9 @@
 
 {% block view_unsettled_bills %}
 <div class="table-responsive">
-	<table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
+	<table id="dtBasicExample" class="table table-bordered mt-3" cellspacing="0" width="100%">
 		<thead class="header">
-			<tr style="background-color: #006c85; color: white;">
+			<tr style="background-color: #006c85; color: white; text-align: center;">
 				<th scope="col" style="min-width: 25px">Account ID</th>
 				<th scope="col" style="min-width: 25px">Meter Number</th>
 				<th scope="col" style="min-width: 25px">Name</th>
@@ -15,7 +15,7 @@
 			</tr>
 		</thead>
 		<tbody class="wb_tbody">
-			<tr>
+			<tr class="text-center">
 				<td>{{uv.consumer_id}}</td>
 				<td>{{uv.meternumber}}</td>
 				<td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
@@ -23,10 +23,9 @@
 			</tr>
 		</tbody>
 	</table>
-	<label for="years"
-		style="font-size: 18px; font-weight: normal; margin-left: 50px;  font-weight: bold;">SelectYear:</label>
+	<label for="years"	style="font-size: 18px; font-weight: normal;">SelectYear:</label>
 	<form id="yearselection" action="">
-		<select style="width: 100px;" class="form-select" id="selector" onchange="change()">
+		<select style="width: 100px;" class="form-select mb-3" id="selector" onchange="change()">
 			<option value="{{current}}">{{current}}</option>
 			{% for i in years reversed %}
 			<option value="{{i}}">{{i}}</option>

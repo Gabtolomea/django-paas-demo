@@ -28,6 +28,9 @@ Billing
 	.dataTables_empty {
 		text-align: center;
 	}
+
+
+
 </style>
 {% endblock style %}
 {% block script %}
@@ -133,10 +136,10 @@ Billing
 							{% for bill in bills_list %}
 							<tr class='clickable-row' style="cursor: pointer;"
 								data-href="{% url 'ledger' bill.consumer_id %}">
-								<td>{{bill.consumer_id}}</td>
-								<td>{{bill.meternumber}}</td>
+								<td style="text-align:center;">{{bill.consumer_id}}</td>
+								<td style="text-align:center;">{{bill.meternumber}}</td>
 								<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
-								<td>{{bill.installation_address}}</td>
+								<td style="text-align:center;">{{bill.installation_address}}</td>
 								<td class="balance"> &#8369; {{bill.current_bal|floatformat:2|intcomma}}</td>
 							</tr>
 							{% endfor %}
@@ -363,6 +366,7 @@ Billing
 								cursor: default;
 								color: #6c757d;
 							}
+
 						</style>
 					</div>
 				</div>

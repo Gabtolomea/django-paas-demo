@@ -44,6 +44,7 @@ Unsettled Bills
     .dataTables_empty {
         text-align: center;
     }
+
 </style>
 {% endblock style %}
 {% block unsettled_bills %}
@@ -108,29 +109,30 @@ Unsettled Bills
                             }
                         </style>
 
-                        <script>
-                            let myInput = document.getElementById('myInput');
-                            form = document.getElementById('form')
-                            //on keyup, start the countdown
-                            myInput.addEventListener('input', () => {
-                                if (myInput.value == "") {
-                                    var newURL = window.location.href.split("?")[0]
-                                    form.action = newURL
+                            <script>
+                                let myInput = document.getElementById('myInput');
+                                form = document.getElementById('form')
+                                //on keyup, start the countdown
+                                myInput.addEventListener('input', () => {
+                                    if (myInput.value == "") {
+                                        var newURL = window.location.href.split("?")[0]
+                                        form.action = newURL
+                                        form.submit()
+                                    };
+                                });
+                                function myFunction() {
+                                    var newURL = window.location.href
+                                    form.action = newURL + "?search=" + myInput.value
                                     form.submit()
-                                };
-                            });
-                            function myFunction() {
-                                var newURL = window.location.href
-                                form.action = newURL + "?search=" + myInput.value
-                                form.submit()
-                            }
-                            window.onload = function () {
-                                var input = document.getElementById("myInput");
-                                const end = input.value.length;
-                                input.setSelectionRange(end, end);
-                                input.focus();
-                            }
-                        </script>
+                                }
+                                window.onload = function () {
+                                    var input = document.getElementById("myInput");
+                                    const end = input.value.length;
+                                    input.setSelectionRange(end, end);
+                                    input.focus();
+                                }
+                            </script>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -152,10 +154,10 @@ Unsettled Bills
                             {% for ub in table %}
                             <tr class='clickable-row' onclick="click" style="cursor: pointer;"
                                 data-href="{% url 'view_unsettled_bills' ub.u.consumer_id ub.y %}">
-                                <td>{{ub.u.consumer_id}}</td>
+                                <td class="text-center">{{ub.u.consumer_id}}</td>
                                 <td>{{ub.u.lastname}}, {{ub.u.firstname}} {{ub.u.middlename}}</td>
-                                <td>{{ub.u.meternumber}}</td>
-                                <td>{{ub.u.installation_address}}</td>
+                                <td class="text-center">{{ub.u.meternumber}}</td>
+                                <td class="text-center">{{ub.u.installation_address}}</td>
                                 <td>&#8369; {{ub.u.current_bal|floatformat:2|intcomma}}</td>
                             </tr>
                             {% endfor %}
@@ -354,6 +356,7 @@ Unsettled Bills
                                 cursor: default;
                                 color: #6c757d;
                             }
+
                         </style>
                     </div>
                 </div>

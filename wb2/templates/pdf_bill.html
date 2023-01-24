@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill</title>
+    <link rel="stylesheet" type="text/css" href="">
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/9658ee38ca.js" crossorigin="anonymous"></script>
+</head>
+<style>
+    .consumer_info{
+        background-color: #f8f9fa;
+        padding-left: 10px
+    }
+    .bills_info{
+        background-color: #f8f9fa;
+        padding-left: 10px;
+        padding-bottom: 97px;
+    }
+
+</style>
+
+<body>
+    <div class="header" style="text-align:center; margin-top: 30px;">
+        <h1>Municipality of Ginatilan</h1>
+        <p> Ginatilan Water Station</p>
+    </div>
+    <div class="row w-100 m-auto pb-3">
+        <div class=" col-lg-4 col-md-4 col-sm-4 col-4">
+            <label for="brgy">Barangay:</label>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+            <label for="zip">Zip Code:</label>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+            <label for="country">Country:</label>
+        </div>
+    </div>
+    <hr style="margin: 0;">
+    <div class="row w-100 m-auto">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0" style="border-right: black solid 1px !important;">
+            <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Consumer Info</p>
+            <div class="consumer_info">
+                <label for="name">Name:</label><br>
+                <label for="accnt">Account ID:</label><br>
+                <label for="meter">Meter Number:</label><br>
+                <label for="addr">Address:</label>
+                <label for="zip">Zip Code:</label><br>
+                <label for="country">Country:</label><br>
+                <label for="connect-type">Connection Type:</label><br>
+                <label for="contact-info">Contact Info:</label>
+            </div>
+
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6 p-0">
+            <p style="padding-left: 10px; text-align: center; margin-bottom: 0; background-color: aliceblue;">Bills Info</p>
+            <div class="bills_info">
+                <label for="current-reading">Current Reading:</label><br>
+                <label for="prev-reading">Previous Reading:</label><br>
+                <label for="usage">Usage:</label><br>
+            </div>
+           
+        </div>
+    </div>
+    <hr style="margin: 0;">
+    <div class="bill row w-100 m-auto pt-3">
+        <label for="penalty">Penalty:</label><br>
+        <label for="total-bill">Total Bill:</label><br>
+        <label for="prev-due">Previous Due:</label><br>
+        <label for="total-balance">Total Balance:</label><br>
+    </div>
+
+</body>
+</html>

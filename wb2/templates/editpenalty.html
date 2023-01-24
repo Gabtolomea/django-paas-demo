@@ -1,7 +1,7 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 {% static "images" as images %}
- 
+
 
 {% block title %}
 System User
@@ -12,6 +12,14 @@ System User
 
 </head>
 <style>
+    h3 {
+        font-size: 30px;
+    }
+
+    label {
+        font-size: 20px;
+    }
+
     .form-header {
         margin: 0px 0px 16px;
         padding: 0px 12px;
@@ -31,6 +39,11 @@ System User
         padding: 30px;
     }
 
+    .approver {
+        font: 16px Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+    }
 
     .button2 {
         background-color: var(--main-color);
@@ -59,14 +72,14 @@ System User
     }
 </style>
 {% endblock style %}
-{% block sysuserupdate %}
+{% block editpenalty %}
 <section id="registration-page">
-	<form action="{%url 'user_edit' sys.username%}" enctype="multipart/form-data" method="POST" class="signup-form">
+	<form action="{% url 'editpenalty' pen.penaltycode %}" enctype="multipart/form-data" method="POST" class="signup-form">
 		{% csrf_token %}
 		<div class="container">
-			<div class="shadow wrapper">
+			<div class=" shadow wrapper">
 				<div class="form-header">
-					<center><h1>System User</h1></center>
+					<center><h1>Edit Penalty</h1></center>
 				</div>
 				<div class="row form-group w-100 m-auto">
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
@@ -75,8 +88,8 @@ System User
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-						<label for="">First Name<span class="text-danger">*</span></label>
-						{{form.first_name}}
+						<label for="">Rate<span class="text-danger">*</span></label>
+						{{form.penalty_rate}}
 					</div>
 
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
@@ -85,8 +98,8 @@ System User
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-						<label for="">Middle Name</label>
-						{{form.mid_name}}
+						<label for="">Penalty After<span class="text-danger">*</span></label>
+						{{form.penalty_after}}
 					</div>
 
 					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
@@ -95,58 +108,18 @@ System User
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-						<label for="">Last Name<span class="text-danger">*</span></label>
-						{{form.last_name}}
+						<label for="">Days to Application<span class="text-danger">*</span></label>
+						{{form.daysappliedafter}}
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-2" style="margin-left:32%;">
                         {% for error in form.first_name.errors %}
                         <div id="id_first_nameFeedback" class="invalid-feedback">
                             {{ error|escape }}
                         </div>
                         {% endfor %}
-						<label for="">Mobile Number</label>
-						{{form.mobilenum}}
+						<label for="">Info<span class="text-danger">*</span></label>
+						{{form.penalty_info}}
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% for error in form.first_name.errors %}
-                        <div id="id_first_nameFeedback" class="invalid-feedback">
-                            {{ error|escape }}
-                        </div>
-                        {% endfor %}
-						<label for="">Email<span class="text-danger">*</span></label>
-						{{form.email}}
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-                        {% for error in form.first_name.errors %}
-                        <div id="id_first_nameFeedback" class="invalid-feedback">
-                            {{ error|escape }}
-                        </div>
-                        {% endfor %}
-						<label for="">User ID<span class="text-danger">*</span></label>
-						{{form.username}}
-					</div>
-				</div>
-				<div class="row m-auto w-100">
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-						<h3>Type of User</h3>
-						{{form.is_admin}}
-						<label for="id_is_admin">Admin</label><br>
-						{{form.is_teller}}
-						<label for="id_is_teller">Teller</label><br>
-						{{form.is_supervisor}}
-						<label for="id_is_supervisor">Superior</label><br>
-						{{form.is_manager}}
-						<label for="id_is_manager">Manager</label><br>
-						{{form.is_reader}}
-						<label for="id_is_reader">Meter Reading</label><br>
-					</div>
-				</div>
-				<div class="row w-100 m-auto mb-2">
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-3" style="font-size: 20px;">
-						<label for="">Profile Picture</label>
-						{{form.profilepic}}
-					</div>
-				</div>
 				<div class="row m-auto" style="display: block; text-align: center;">
                     <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
                         <img style="width: 23px;" src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
@@ -158,7 +131,7 @@ System User
 		</div>
 	</form>
 </section>
-{% endblock sysuserupdate %}
+{% endblock editpenalty %}
 {% block script %}
 
 {% endblock script %}

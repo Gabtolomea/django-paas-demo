@@ -8,16 +8,16 @@ Meter Reading
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <style>
-    .hide {
-        opacity: 0;
-        transition: 0.3s all ease-in-out;
-    }
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
 
-    .showOnHover:hover .hide {
-        opacity: 1;
-        transition: 0.3s all ease-in-out;
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
 
-    }
+	}
 
 	.hide {
 		opacity: 0;
@@ -28,8 +28,10 @@ Meter Reading
 		opacity: 1;
 		transition: 0.3s all ease-in-out;
 	}
+	
+
 	.button2 {
-		background-color: var(--main-color); 
+		background-color: var(--main-color);
 		color: white;
 		padding: 8px 30px;
 		border: none;
@@ -39,6 +41,7 @@ Meter Reading
 		margin-top: 30px;
 		margin-bottom: 30px;
 	}
+
 	.btn.button2:hover {
 		background: var(--main-color);
 		color: #ffffff;
@@ -46,6 +49,7 @@ Meter Reading
 		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
 		transition: all ease-in 0.5s;
 	}
+
 	.btn.button2:focus {
 		background: var(--main-color);
 		color: #ffffff;
@@ -53,13 +57,14 @@ Meter Reading
 		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 		transition: all 0.1s;
 	}
-	.odd{
+
+	.odd {
 		font-size: 1rem;
 		font-weight: 400;
 		line-height: 1.5;
 		-webkit-text-size-adjust: 100%;
 		-webkit-tap-highlight-color: transparent;
-	
+
 		caption-side: bottom;
 		font-family: Arial;
 		border-collapse: separate !important;
@@ -69,9 +74,9 @@ Meter Reading
 		border-style: solid;
 		border-width: 1px 0;
 		color: #212529;
-		}
-	
-	.dataTables_empty{
+	}
+
+	.dataTables_empty {
 		text-align: center;
 	}
 </style>
@@ -81,9 +86,8 @@ Meter Reading
 {% block meterreading %}
 <div class="pt-3 row">
 	<div class="col-5 align-middle">
-		<button type="button"  class="btn button2 m-0" data-bs-toggle="modal" data-bs-target="#myModal">
-			<img style="width: 23px;"
-			src="{% static '/images/list_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+		<button type="button" class="btn button2 m-0" data-bs-toggle="modal" data-bs-target="#myModal">
+			<img style="width: 23px;" src="{% static '/images/list_FILL1_wght700_GRAD0_opsz48.svg' %}" />
 			Bulk Reading
 		</button>
 	</div>
@@ -122,17 +126,18 @@ Meter Reading
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+				<button type="button" data-bs-dismiss="modal" aria-label="Close"
+					class="btn btn-secondary close">Close</button>
 				<button type="button" onclick=go() class="btn btn-primary">Proceed</button>
 				<a id="aydi" style="display: none;" href=""></a>
 			</div>
 			<script>
-				function go(){
+				function go() {
 					year = document.getElementById("year")
 					aydi = document.getElementById("aydi")
 					month = document.getElementById("month")
-					if (year.value != "" && month.value != ""){
-						aydi.href = "/meterreading/bulkreading/"+year.value+"/"+month.value+"/10"
+					if (year.value != "" && month.value != "") {
+						aydi.href = "/meterreading/bulkreading/" + year.value + "/" + month.value + "/10"
 						aydi.click()
 					}
 				}
@@ -147,15 +152,16 @@ Meter Reading
 				<div class="col-sm-12 col-md-6">
 					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
 						<label style="display:flex;">Show
-						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
-							<option disabled selected value>--Select--</option>
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
-							<option value="0">All</option>
-						</select> entries</label>
-					</form>					
+							<select id="selector" style="width: 100px; margin: 0 5px;"
+								class="form-select form-select-sm" onchange="change()">
+								<option disabled selected value>--Select--</option>
+								<option value="10">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<option value="0">All</option>
+							</select> entries</label>
+					</form>
 					<script src="{% static 'jquery/jquery.js' %}"></script>
 					<script>
 						yearselection = document.getElementById("yearselection")
@@ -166,80 +172,84 @@ Meter Reading
 						}
 					</script>
 				</div>
-				<div class="col-sm-12 col-md-6" style=" display: flex; justify-content: flex-end; align-items: flex-end;">
+				<div class="col-sm-12 col-md-6"
+					style=" display: flex; justify-content: flex-end; align-items: flex-end;">
 					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<img style="width: 35px;"src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
 						<label>
 							<form class="input-group" action="" id ="form" method="GET" role="form">
 								<input type="search" name="search" id="myInput" onsearch="myFunction()" class="form-control form-control-sm" placeholder="Search..." value="{{ search}}">
 							</form>
 							
-						<script>
-							let myInput = document.getElementById('myInput');
-							form = document.getElementById('form')
-							//on keyup, start the countdown
-							myInput.addEventListener('input', () => {
-								if(myInput.value == "") {
-									var newURL = window.location.href.split("?")[0]
-									form.action = newURL
+							<script>
+								let myInput = document.getElementById('myInput');
+								form = document.getElementById('form')
+								//on keyup, start the countdown
+								myInput.addEventListener('input', () => {
+									if (myInput.value == "") {
+										var newURL = window.location.href.split("?")[0]
+										form.action = newURL
+										form.submit()
+									};
+								});
+								function myFunction() {
+									var newURL = window.location.href
+									form.action = newURL + "?search=" + myInput.value
 									form.submit()
-								};
-							});
-							function myFunction(){
-								var newURL = window.location.href
-								form.action = newURL + "?search="+myInput.value
-								form.submit()
-							}
-							window.onload = function() {
-								var input = document.getElementById("myInput");
-								const end = input.value.length;
-								input.setSelectionRange(end, end);
-								input.focus();
-							}
-						</script>				
+								}
+								window.onload = function () {
+									var input = document.getElementById("myInput");
+									const end = input.value.length;
+									input.setSelectionRange(end, end);
+									input.focus();
+								}
+							</script>
 						</label>
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0" width="100%">
-                        <thead class="wb_thead">
-                            <tr>
-                                <th style="min-width: 100px;">Account ID</th>
-                                <th style="min-width: 100px;">Name</th>
-                                <th style="min-width: 100px;">Meter Number</th>
-                                <th style="min-width: 100px;">Address</th>
-                            </tr>
-                        </thead>
+					<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0"
+						width="100%">
+						<thead class="wb_thead">
+							<tr>
+								<th style="min-width: 100px;">Account ID</th>
+								<th style="min-width: 100px;">Name</th>
+								<th style="min-width: 100px;">Meter Number</th>
+								<th style="min-width: 100px;">Address</th>
+							</tr>
+						</thead>
 						<tbody class="wb_tbody">
 							{% if meterred %}
-								{% for m in meterred %}
-								<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'inputreading' m.consumer_id year %}">
-									<td class="{{t.style}}">
-										{{m.consumer_id}}
-									</td>
-									<td class="{{t.style}}">
-										{{m.lastname}}, {{m.firstname}} {{m.middlename}}
-									</td>
-									<td class="{{t.style}}">
-										{{m.meternumber}}
-									</td>
-									<td class="{{t.style}}">
-										{{m.installation_address}}
-									</td>
-								</tr>
-								{% endfor %}
+							{% for m in meterred %}
+							<tr class='clickable-row' style="cursor: pointer;"
+								data-href="{% url 'inputreading' m.consumer_id year %}" style="text-align:center;">
+								<td class="{{t.style}}" style="text-align:center;">
+									{{m.consumer_id}}
+								</td>
+								<td class="{{t.style}}">
+									{{m.lastname}}, {{m.firstname}} {{m.middlename}}
+								</td>
+								<td class="{{t.style}}" style="text-align:center;">
+									{{m.meternumber}}
+								</td>
+								<td class="{{t.style}}" style="text-align:center;">
+									{{m.installation_address}}
+								</td>
+							</tr>
+							{% endfor %}
 							{% else %}
-							<tr class="odd"><td valign="top" colspan="5" class="dataTables_empty">No matching records found</td></tr>
+							<tr class="odd">
+								<td valign="top" colspan="5" class="dataTables_empty">No matching records found</td>
+							</tr>
 							{% endif %}
 							<script>
-								jQuery(document).ready(function($) {
-									$(".clickable-row").click(function() {
+								jQuery(document).ready(function ($) {
+									$(".clickable-row").click(function () {
 										window.location = $(this).data("href");
 									});
 								});
-							</script> 
+							</script>
 						</tbody>
 					</table>
 				</div>
@@ -249,200 +259,208 @@ Meter Reading
 					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
 						<ul style="display: flex; padding-left: 0; list-style: none;">
 							{% if meterred.paginator.num_pages > 5 %}
-								{% if meterred.number < 5 %}
-									{% if meterred.has_previous %}
-									<a href="?page={{ meterred.previous_page_number }}">
-										<li class="paginate_button page-item previous">Previous</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item previous">Previous</li>
-									{% endif %}
-									{% for i in five %}
-										{% if i == meterred.number %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item active">{{i}}</li>
-											</a>
-										{% else %}
-											<a href="?page={{i}}">
-												<li class="paginate_button page-item">{{i}}</li>
-											</a>
-										{% endif %}
-									{% endfor %}
-									<li class="paginate_button disabled page-item">...</li>
-									<a href="?page={{ meterred.paginator.num_pages }}">
-										<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
-									</a>
-									{% if meterred.has_next %}
-									<a href="?page={{ meterred.next_page_number }}">
-										<li class="paginate_button page-item next">Next</li>
-									</a>
-									{% else %}
-										<li class="paginate_button disabled page-item next">Next</li>
-									{% endif %}
-								{% else %}
-									{% if meterred.number > meterred.paginator.num_pages|add:'-3'%}
-										{% if meterred.has_previous %}
-										<a href="?page={{ meterred.previous_page_number }}">
-											<li class="paginate_button page-item previous">Previous</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										<a href="?page=1">
-											<li class="paginate_button page-item">1</li>
-										</a>
-										<li class="paginate_button disabled page-item">...</li>
-										{% for i in last %}
-											{% if i == meterred.number %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item active">{{i}}</li>
-												</a>
-											{% else %}
-												<a href="?page={{i}}">
-													<li class="paginate_button page-item">{{i}}</li>
-												</a>
-											{% endif %}
-										{% endfor %}
-										{% if meterred.number == meterred.paginator.num_pages %}
-										<a href="?page={{ meterred.paginator.num_pages }}">
-											<li class="paginate_button page-item active">{{ meterred.paginator.num_pages }}</li>
-										</a>
-										{% else %}
-										<a href="?page={{ meterred.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
-										</a>
-										{% endif %}
-										{% if meterred.has_next %}
-										<a href="?page={{ meterred.next_page_number }}">
-											<li class="paginate_button page-item next">Next</li>
-										</a>
-										{% else %}
-											<li class="paginate_button disabled page-item next">Next</li>
-										{% endif %}
-									{% else %}
-										{% if meterred.has_previous %}
-											<a href="?page={{ meterred.previous_page_number }}">
-												<li class="paginate_button page-item previous">Previous</li>
-											</a>
-										{% else %}
-											<li class="paginate_button disabled page-item previous">Previous</li>
-										{% endif %}
-										{% if meterred.number > 2 %}
-											<a href="?page=1">
-												<li class="paginate_button page-item">1</li>
-											</a>
-											{% if meterred.number > 3 %}
-												<li class="paginate_button disabled page-item">...</li>
-											{% endif %}
-										{% endif %}
-
-										{% for num in meterred.paginator.page_range %}
-										{% if meterred.number == num %}<a href="?page={{ num }}">
-										<li class="paginate_button page-item active">
-											{{ num }}
-										</li></a>
-										{% elif num > meterred.number|add:'-2' and num < meterred.number|add:'2' %}
-											<a href="?page={{ num }}"> 
-												<li class="paginate_button page-item">{{ num }}</li>
-											</a>
-											{% endif %}
-											{% endfor %}
-
-										{% if meterred.number < meterred.paginator.num_pages|add:'-2' %}
-											<li class="paginate_button disabled page-item">...</li>
-											<a href="?page={{ meterred.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
-											</a>
-										{% elif meterred.number < meterred.paginator.num_pages|add:'-1' %} 
-											<a href="?page={{ meterred.paginator.num_pages }}">
-												<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
-											</a>
-										{% endif %}
-										{% if meterred.has_next %}
-											<a href="?page={{ meterred.next_page_number }}">
-												<li class="paginate_button page-item next">Next</li>
-											</a>
-										{% else %}
-											<li class="paginate_button page-item disabled next">Next</li>
-										{% endif %}
-									{% endif %}
-								{% endif %}
-								{% else %}
-								{% if meterred.has_previous %} 
-								<a href="?page={{ meterred.previous_page_number }}&search={{search}}">
-									<li class="paginate_button page-item previous">Previous</li>
+							{% if meterred.number < 5 %} {% if meterred.has_previous %} <a
+								href="?page={{ meterred.previous_page_number }}">
+								<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
-									<li class="paginate_button disabled page-item previous">Previous</li>
+								<li class="paginate_button disabled page-item previous">Previous</li>
 								{% endif %}
-								{% for i in meterred.paginator.page_range %}
-									{% if i == meterred.number %}
-									<a href="?page={{i}}&search={{search}}">
-										<li class="paginate_button page-item active">{{i}}</li>
-									</a>
-									{% else %}
-									<a href="?page={{i}}&search={{search}}">
-										<li class="paginate_button page-item">{{i}}</li>
-									</a>
-									{% endif %}
+								{% for i in five %}
+								{% if i == meterred.number %}
+								<a href="?page={{i}}">
+									<li class="paginate_button page-item active">{{i}}</li>
+								</a>
+								{% else %}
+								<a href="?page={{i}}">
+									<li class="paginate_button page-item">{{i}}</li>
+								</a>
+								{% endif %}
 								{% endfor %}
+								<li class="paginate_button disabled page-item">...</li>
+								<a href="?page={{ meterred.paginator.num_pages }}">
+									<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
+								</a>
 								{% if meterred.has_next %}
-								<a href="?page={{ meterred.next_page_number }}&search={{search}}">
+								<a href="?page={{ meterred.next_page_number }}">
 									<li class="paginate_button page-item next">Next</li>
 								</a>
 								{% else %}
 								<li class="paginate_button disabled page-item next">Next</li>
 								{% endif %}
-							{% endif %}
+								{% else %}
+								{% if meterred.number > meterred.paginator.num_pages|add:'-3'%}
+								{% if meterred.has_previous %}
+								<a href="?page={{ meterred.previous_page_number }}">
+									<li class="paginate_button page-item previous">Previous</li>
+								</a>
+								{% else %}
+								<li class="paginate_button disabled page-item previous">Previous</li>
+								{% endif %}
+								<a href="?page=1">
+									<li class="paginate_button page-item">1</li>
+								</a>
+								<li class="paginate_button disabled page-item">...</li>
+								{% for i in last %}
+								{% if i == meterred.number %}
+								<a href="?page={{i}}">
+									<li class="paginate_button page-item active">{{i}}</li>
+								</a>
+								{% else %}
+								<a href="?page={{i}}">
+									<li class="paginate_button page-item">{{i}}</li>
+								</a>
+								{% endif %}
+								{% endfor %}
+								{% if meterred.number == meterred.paginator.num_pages %}
+								<a href="?page={{ meterred.paginator.num_pages }}">
+									<li class="paginate_button page-item active">{{ meterred.paginator.num_pages }}</li>
+								</a>
+								{% else %}
+								<a href="?page={{ meterred.paginator.num_pages }}">
+									<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
+								</a>
+								{% endif %}
+								{% if meterred.has_next %}
+								<a href="?page={{ meterred.next_page_number }}">
+									<li class="paginate_button page-item next">Next</li>
+								</a>
+								{% else %}
+								<li class="paginate_button disabled page-item next">Next</li>
+								{% endif %}
+								{% else %}
+								{% if meterred.has_previous %}
+								<a href="?page={{ meterred.previous_page_number }}">
+									<li class="paginate_button page-item previous">Previous</li>
+								</a>
+								{% else %}
+								<li class="paginate_button disabled page-item previous">Previous</li>
+								{% endif %}
+								{% if meterred.number > 2 %}
+								<a href="?page=1">
+									<li class="paginate_button page-item">1</li>
+								</a>
+								{% if meterred.number > 3 %}
+								<li class="paginate_button disabled page-item">...</li>
+								{% endif %}
+								{% endif %}
+
+								{% for num in meterred.paginator.page_range %}
+								{% if meterred.number == num %}<a href="?page={{ num }}">
+									<li class="paginate_button page-item active">
+										{{ num }}
+									</li>
+								</a>
+								{% elif num > meterred.number|add:'-2' and num < meterred.number|add:'2' %} <a
+									href="?page={{ num }}">
+									<li class="paginate_button page-item">{{ num }}</li>
+									</a>
+									{% endif %}
+									{% endfor %}
+
+									{% if meterred.number < meterred.paginator.num_pages|add:'-2' %} <li
+										class="paginate_button disabled page-item">...</li>
+										<a href="?page={{ meterred.paginator.num_pages }}">
+											<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}
+											</li>
+										</a>
+										{% elif meterred.number < meterred.paginator.num_pages|add:'-1' %} <a
+											href="?page={{ meterred.paginator.num_pages }}">
+											<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}
+											</li>
+											</a>
+											{% endif %}
+											{% if meterred.has_next %}
+											<a href="?page={{ meterred.next_page_number }}">
+												<li class="paginate_button page-item next">Next</li>
+											</a>
+											{% else %}
+											<li class="paginate_button page-item disabled next">Next</li>
+											{% endif %}
+											{% endif %}
+											{% endif %}
+											{% else %}
+											{% if meterred.has_previous %}
+											<a href="?page={{ meterred.previous_page_number }}&search={{search}}">
+												<li class="paginate_button page-item previous">Previous</li>
+											</a>
+											{% else %}
+											<li class="paginate_button disabled page-item previous">Previous</li>
+											{% endif %}
+											{% for i in meterred.paginator.page_range %}
+											{% if i == meterred.number %}
+											<a href="?page={{i}}&search={{search}}">
+												<li class="paginate_button page-item active">{{i}}</li>
+											</a>
+											{% else %}
+											<a href="?page={{i}}&search={{search}}">
+												<li class="paginate_button page-item">{{i}}</li>
+											</a>
+											{% endif %}
+											{% endfor %}
+											{% if meterred.has_next %}
+											<a href="?page={{ meterred.next_page_number }}&search={{search}}">
+												<li class="paginate_button page-item next">Next</li>
+											</a>
+											{% else %}
+											<li class="paginate_button disabled page-item next">Next</li>
+											{% endif %}
+											{% endif %}
 						</ul>
 						<style>
-						a{		
-							-webkit-touch-callout: none;
-							-webkit-user-select: none;
-							-khtml-user-select: none;
-							-moz-user-select: none;
-							-ms-user-select: none;
-							user-select: none;
-							cursor: default;
-							text-decoration: none;
-						}
-						.paginate_button {
-							cursor: pointer;
-							position: relative;
-							display: block;
-							padding: 0.375rem 0.75rem;
-							font-size: 1rem;
-							color: var(--main-color);
-							text-decoration: none;
-							background-color: white;
-							border: 1px solid #dee2e6;
-							transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-						}
-						.active>.paginate_button, .paginate_button.active {
-							z-index: 3;
-							color: white !important;
-							background-color: var(--main-color);
-							border-color: #dee2e6;
-						}
-						.previous {
-							border-top-left-radius: .375rem;
-							border-bottom-left-radius: .375rem;
-						}
-						.next {
-							border-top-right-radius: .375rem;
-							border-bottom-right-radius: .375rem;
-						}
-						.disabled {		
-							-webkit-touch-callout: none;
-							-webkit-user-select: none;
-							-khtml-user-select: none;
-							-moz-user-select: none;
-							-ms-user-select: none;
-							user-select: none;
-							cursor: default;
-							color: #6c757d;
-						}
-					
+							a {
+								-webkit-touch-callout: none;
+								-webkit-user-select: none;
+								-khtml-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+								cursor: default;
+								text-decoration: none;
+							}
+
+							.paginate_button {
+								cursor: pointer;
+								position: relative;
+								display: block;
+								padding: 0.375rem 0.75rem;
+								font-size: 1rem;
+								color: var(--main-color);
+								text-decoration: none;
+								background-color: white;
+								border: 1px solid #dee2e6;
+								transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+							}
+
+							.active>.paginate_button,
+							.paginate_button.active {
+								z-index: 3;
+								color: white !important;
+								background-color: var(--main-color);
+								border-color: #dee2e6;
+							}
+
+							.previous {
+								border-top-left-radius: .375rem;
+								border-bottom-left-radius: .375rem;
+							}
+
+							.next {
+								border-top-right-radius: .375rem;
+								border-bottom-right-radius: .375rem;
+							}
+
+							.disabled {
+								-webkit-touch-callout: none;
+								-webkit-user-select: none;
+								-khtml-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+								cursor: default;
+								color: #6c757d;
+							}
+
 						</style>
 					</div>
 				</div>
