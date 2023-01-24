@@ -1584,14 +1584,14 @@ def discount(request):
 
 def editdiscount(request, id):
     disc = Discount.objects.get(discountcode = id)
-    form = editDiscount(instance=disc)
+    form = addDiscount(instance=disc)
     user = request.user
     if request.method == 'POST':
         discount_rate = request.POST['discount_rate']
         if form.is_valid():
             return redirect('discount')
         else:
-            form = editDiscount(request.POST, instance = disc)
+            form = addDiscount(request.POST, instance = disc)
             disc.discount_rate = discount_rate
             disc.added_by = user
             disc.save()
@@ -1644,6 +1644,31 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
+def editconsumertype(request, id):
+    con = ConsumerType.objects.get(contype = id)
+    form = ConscumertypecreationForm(instance = con)
+    if request.method == 'POST':
+        form = ConscumertypecreationForm(request.POST, instance = con)
+        contype = request.POST['contype']
+        minReading = request.POST['minReading']
+        minReadingCharge = request.POST['minReadingCharge']
+        rateAfterMin = request.POST['rateAfterMin'] 
+        if form.is_valid():
+            con.contype = contype
+            con.minReading = minReading
+            con.minReadingCharge = minReadingCharge
+            con.rateAfterMin = rateAfterMin
+            con.added_by = request.user
+            con.save()
+            return redirect('new_consumertype')
+    context = {
+        'con':con,
+        'form': form,
+        'errors': form.errors,
+        'is_contype':True,
+    }
+    return render(request, 'editconsumertype.html', context)
+
 def deletcontype(request,id):
 
     try:
@@ -1694,7 +1719,7 @@ def penalty(request):
 def editpenalty(request, id):
     
     pen = Penalty.objects.get(penaltycode = id)
-    form = editPenalty(instance = pen)
+    form = addPenalty(instance = pen)
     if request.method == 'POST':
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
@@ -1706,11 +1731,11 @@ def editpenalty(request, id):
             pen.penalty_after = penalty_after
             pen.daysappliedafter = daysappliedafter
             pen.added_by = request.user
-            form = editPenalty(request.POST, instance = pen)
+            form = addPenalty(request.POST, instance = pen)
             pen.save()
             return redirect('penalty')
         else:
-            form = editPenalty(request.POST, instance = pen)
+            form = addPenalty(request.POST, instance = pen)
     context = {
         'pen':pen,
         'form':form,

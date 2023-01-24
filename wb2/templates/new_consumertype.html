@@ -128,10 +128,10 @@ Consumer Type
                     <td>{{c.added_by_id}}</td>
                     <td class="align-middle text-center p-0">{{c.date_added}}</td>
                     <td class="align-middle text-center p-0">
-                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"
+                        <a href="{% url 'editconsumertype' c.contype %}"><button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"
                             data-bs-target="#edit-{{forloop.counter}}"> <img style="width:20px;"
                                 src="{% static '/images/edit_white_36dp.svg' %}" />
-                        </button>
+                        </button></a>
                     </td>
                     <td class="align-middle text-center p-0">
                         <a href="{%url 'deletcontype' c.contypeid %}">
