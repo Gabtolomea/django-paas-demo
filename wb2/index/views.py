@@ -1638,7 +1638,7 @@ def penalty(request):
     penalty = Penalty.objects.all()
     form = addPenalty
     penaltycounter = len(Penalty.objects.all())
-    if request.method == "POST":
+    if request.method == "POST" and 'btnform1' in request.POST:
         form = addPenalty(request.POST)
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
@@ -1660,7 +1660,7 @@ def penalty(request):
             return redirect('penalty')
     context = {
         'penalty': penalty,
-        'form': form,
+        'form1': form,
         'errors': form.errors,
         'user': request.user,
         'is_penalty':True,
@@ -1669,22 +1669,25 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
-def editpenalty(request):
-    if request.method == "POST":
+def editpenalty(request, id):
+    pen = Penalty.objects.get(penaltycode=id)
+    if request.method == 'POST':
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
         penalty_after = request.POST['penalty_after']
         daysappliedafter = request.POST['daysappliedafter']
-
-    pen = Penalty(
-        penalty_info = penalty_info,
-        penalty_rate = penalty_rate,
-        penalty_after = penalty_after,
-        daysappliedafter = daysappliedafter
-    )
-    pen.save()
-
+       
+        pen.penalty_info = penalty_info
+        pen.penalty_rate = penalty_rate
+        pen.penalty_after = penalty_after
+        pen.daysappliedafter = daysappliedafter
+        pen.save()
+        messages.success(request, 'Code has been updated')
+        
     return redirect('penalty')
+
+   
+    
 
 
 def deletepenalty(request,id):
