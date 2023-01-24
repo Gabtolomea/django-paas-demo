@@ -2,6 +2,9 @@ from datetime import date, datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import sys
 # Create your models here.
 
 class LoginRec(models.Model):
@@ -32,12 +35,9 @@ class SystemUsers(AbstractUser):
         super().save(*args, **kwargs)
         SIZE = 300, 300
         if self.profilepic:
-            try:
-                pic = Image.open(self.profilepic.path)
-                pic.thumbnail(SIZE, Image.LANCZOS)
-                pic.save(self.profilepic.path)
-            except FileNotFoundError:
-                pass
+            pic = Image.open(self.profilepic.path)
+            pic.thumbnail(SIZE, Image.LANCZOS)
+            pic.save(self.profilepic.path)
 
     
     def __str__(self) -> str:

@@ -10,9 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login </title>
     <link rel="stylesheet" type="text/css" href="{% static 'login.css'%}" />
-    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}"/>
+
     
 
+</head>
 <style> 
     html {
         height: auto;
@@ -97,7 +99,6 @@
     }
 </style>
 
-</head>
 <body>
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
@@ -135,7 +136,7 @@
                         class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
                         style="margin-left: 70px; padding-left: 50px; position: absolute; border-radius: 10px; bottom: 400px;">
                         <strong>{{message.tags|title}}!</strong> {{message}}
-                        <a href="#" class="close" data-bs-dismiss="alert"
+                        <a href="#" class="close" data-dismiss="alert"
                         style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
                         aria-label="close">&times;</a>
                     </div>
