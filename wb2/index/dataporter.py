@@ -6,6 +6,7 @@ import math
 import mysql.connector
 import base64
 
+sorted_tables = []
 tablenames = [
     "accountinfo",     #0
     "accountrecord",   #1
@@ -28,7 +29,6 @@ alltables = [
 ]
 
 
-# sorted_tables = []
 
 # mydb = mysql.connector.connect(
 #    host="localhost",

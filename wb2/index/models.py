@@ -35,9 +35,12 @@ class SystemUsers(AbstractUser):
         super().save(*args, **kwargs)
         SIZE = 300, 300
         if self.profilepic:
-            pic = Image.open(self.profilepic.path)
-            pic.thumbnail(SIZE, Image.LANCZOS)
-            pic.save(self.profilepic.path)
+            try:
+                pic = Image.open(self.profilepic.path)
+                pic.thumbnail(SIZE, Image.LANCZOS)
+                pic.save(self.profilepic.path)
+            except FileNotFoundError:
+                pass
 
     
     def __str__(self) -> str:

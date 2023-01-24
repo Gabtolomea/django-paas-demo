@@ -124,7 +124,7 @@
             class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
             style="margin-left: 750px; margin-right: 750px; padding-left: 55px; position: absolute; border-radius: 10px;">
             <strong>{{message.tags|title}}!</strong> {{message}}
-            <a href="#" class="close" data-dismiss="alert"
+            <a href="#" class="close" data-bs-dismiss="alert"
                 style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
                 aria-label="close">&times;</a>
         </div>

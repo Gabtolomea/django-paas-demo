@@ -343,13 +343,11 @@ Consumer List
 									{% if consumer_list.number < consumer_list.paginator.num_pages|add:'-2' %} <li
 										class="paginate_button disabled page-item">...</li>
 										<a href="?page={{ consumer_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages
-												}}</li>
+											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
 										</a>
 										{% elif consumer_list.number < consumer_list.paginator.num_pages|add:'-1' %} <a
 											href="?page={{ consumer_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages
-												}}</li>
+											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
 											</a>
 											{% endif %}
 											{% if consumer_list.has_next %}

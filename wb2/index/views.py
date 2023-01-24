@@ -32,7 +32,14 @@ from django.core.files.storage import FileSystemStorage
 
 
 
+@login_required(login_url='login')
 def porter(request):
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_admin:
+            pass
+        else:
+            return redirect('bills_list')
     porter_in()
     porter_out(sorted_tables)
     billing_out()
@@ -41,15 +48,14 @@ def porter(request):
     for i in cons:
         i.cummulative = get_cummulative(i.consumer_id)
         i.save()
-    return render(request, "landing.html")
+    return redirect("sysuser")
 
 
 @unauthenticated_user
 def lp(request):
     enye(ConsumerInfo.objects.all())
     camelize()
-    # capitalize()
-    return render(request, "landing.html")
+    return redirect('bills_list')
 
 @unauthenticated_user
 def signin(request):
@@ -814,6 +820,7 @@ def consumercreation(request):
             c.save()
             return redirect('consumer_list')
     context = {
+        'create':True,
         'conid':id,
         'form': form,
         'errors': form.errors,
