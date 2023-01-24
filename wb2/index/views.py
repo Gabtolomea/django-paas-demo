@@ -56,9 +56,9 @@ def signin(request):
     if request.method == "POST":
         u = request.POST['username']
         password = request.POST['password']
-        auth = authenticate(username__iexact=u, password=password)
+        auth = authenticate(username=u, password=password)
         if auth is not None:
-            user = SystemUsers.objects.get(username__iexact=u)
+            user = SystemUsers.objects.get(username=u)
             login_rec = LoginRec()
             request.user = user.username
             request.session[ReqParams.auth] = True
