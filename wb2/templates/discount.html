@@ -116,13 +116,10 @@ Discount Type
                 <form method="POST" action="">
                     {% csrf_token %}
                     <div class="row form-group w-100 m-auto">
-                        <center>
-                            <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-12 text-center">
                                 <label>Rate*</label>
                                 {{form.discount_rate}}
                             </div>
-                        </center>
-
                         <div class="modal-footer">
                             <input class="btn btn-primary2" name="btnform1" type="submit" value="Submit">
                         </div>
