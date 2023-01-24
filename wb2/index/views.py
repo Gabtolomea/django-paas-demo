@@ -78,29 +78,20 @@ def signin(request):
     }
     return render(request, 'login.html', context)
 
+
 @login_required(login_url='login')
 def bills_list(request):
-    return redirect('bills_list_p', p=10)
-
-@login_required(login_url='login')
-
-
-def meterreading(request):
-    return redirect('meterreading_p', p=10)
-
-@login_required(login_url='login')
-def bills_list_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = redirect('bills_list_p', p=10)
+            template = redirect('bills_list')
         else:
             if LoginSession.is_admin:
                 template = redirect('sysuser')
             else:
                 if LoginSession.is_reader:
-                    template = redirect('meterreading_p', p=10)
+                    template = redirect('meterreading')
             return template
 
     search = request.GET.get("search", "")
@@ -113,7 +104,7 @@ def bills_list_p(request, p):
             bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
         bills = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')
-    pages = int(p)
+    pages = int(request.GET.get('p', 10))
     user = request.user
     count = bills.count()
     if pages == 0:
@@ -129,11 +120,13 @@ def bills_list_p(request, p):
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
+    print(paginate_by)
     context = {
         'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
         'five': range(1, 6),
         'paginate_by': paginate_by,
+        'count':count,
         'bills_list': bills_list,
         'user': user,
     }
@@ -412,12 +405,12 @@ def resetpassword(request, uidb64, token):
     return render(request, 'password_reset_form.html', context)
 
 @login_required(login_url='login')
-def meterreading_p(request, p):
+def meterreading(request):
     template = ""
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
-            template = redirect('meterreading_p', p=10)
+            template = redirect('meterreading')
         else:
             template = redirect('bills_list')
             return template
@@ -432,7 +425,8 @@ def meterreading_p(request, p):
         month = calendar.month_name[i]
         months.append(monthname(month, i))
 
-    pages = int(p)
+    pages = int(request.GET.get('p', 10))
+
     user = request.user
 
     search = request.GET.get("search", "")
@@ -477,6 +471,7 @@ def meterreading_p(request, p):
         'paginate_by': paginate_by,
         'meterred': m,
         'user': user,
+        'count':count,
         'year': datetime.today().year,
         'months': months,
         'years': years
@@ -505,6 +500,8 @@ def inputreading(request, id, year):
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
     if int(year) in years:
         years.remove(int(year))
     if not trans:
@@ -542,8 +539,10 @@ def inputreading(request, id, year):
                     j += 1
             m = meterreaderclass(transid, month, usage, prev, reading, next, style)
             table.append(m)
-
-    con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
+    if consumer.penaltycode is None:
+        con_penalty = Penalty.objects.get(penaltycode='P001')
+    else:
+        con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
     cummulative = get_cummulative(id)
     interest = 0
     usage = 0
@@ -689,12 +688,10 @@ def inputreading(request, id, year):
         'user': request.user
     }
     return render(request, 'input-meter-reading.html', context)
+
+
 @login_required(login_url='login')
 def consumer_list(request):
-    return redirect('consumer_list_p', p=10)
-
-
-def consumer_list_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -716,7 +713,7 @@ def consumer_list_p(request, p):
         cons = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')   
     
     
-    pages = int(p)
+    pages = int(request.GET.get('p', 10))
     user = request.user
     count = cons.count()
     if pages == 0:
@@ -740,6 +737,7 @@ def consumer_list_p(request, p):
         'last':range(paginator.num_pages - 3, paginator.num_pages),
         'five':range(1,6),
         'paginate_by': paginate_by,
+        'count':count,
         'consumer_list': cons_list,
         'user': user,
     }
@@ -922,7 +920,6 @@ def sysuser(request):
     else:
         sys = SystemUsers.objects.all().order_by('username')
     p = int(request.GET.get('p', 10))
-    page = request.GET.get('page')
     user = request.user
     count = sys.count()
     if p == 0:
@@ -972,6 +969,7 @@ def sysuser(request):
         'last': range(paginator.num_pages - 3, paginator.num_pages),
         'five': range(1, 6),
         'paginate_by': paginate_by,
+        'count': count,
         'table': table,
         'user': request.user
     }
@@ -1384,6 +1382,9 @@ def deleteconsumer(request, id):
     con.deleted_flag = True
     con.save()
     return redirect('consumer_list')
+
+
+
 def disconnectconsumer(request, id):
     template = ""
     LoginSession = request.user
@@ -1415,21 +1416,9 @@ def reconnectconsumer(request, id):
     return redirect('consumer_list')
 
 
+
+
 def unsettled_bills(request):
-
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = redirect('unsettled_bills_p', p=10)
-        else:
-            template = redirect('bills_list')
-            return template
-
-    return redirect('unsettled_bills_p', p=10)
-
-
-def unsettled_bills_p(request, p):
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1454,7 +1443,7 @@ def unsettled_bills_p(request, p):
             ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
     else:
         ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
-    pages = int(p)
+    pages = int(request.GET.get('p', 10))
     table = []
     count = len(ubs)
     if pages == 0:
@@ -1487,6 +1476,7 @@ def unsettled_bills_p(request, p):
         'last': range(paginator.num_pages-3, paginator.num_pages),
         'five': range(1, 6),
         'tb': tb,
+        'count':count,
         'user': request.user,
     }
     return render(request, 'unsettled_bill.html', context)
@@ -1732,7 +1722,7 @@ def deletepenalty(request,id):
         messages.error(request, 'Code does not exist')
     return redirect('penalty')
 
-def bulkreading(request, year, month, p):
+def bulkreading(request, year, month):
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1776,7 +1766,8 @@ def bulkreading(request, year, month, p):
     else:
         consumers = ConsumerInfo.objects.filter(stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     
-    pages = int(p)
+    pages = int(request.GET.get('p', 10))
+
     count = len(consumers)
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
@@ -1923,6 +1914,7 @@ def bulkreading(request, year, month, p):
         'monthval':month,
         'consumers_list':consumers_list,
         'ub':ub,
+        'count':count,
         'paginate_by': paginate_by,
         'last' : range(paginator.num_pages-3, paginator.num_pages),
         'five' : range(1,6),

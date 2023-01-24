@@ -5,23 +5,15 @@
     <div class="col-sm-12 col-md-6 col-lg-6">
         <form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
             <label style="display:flex;">Show
-                <select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
+                <select id="selector" name="p" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="this.form.submit()">
                     <option disabled selected value>--Select--</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="0">All</option>
+                    <option value="10" {% if paginate_by == 10 %}selected{% endif %}>10</option>
+                    <option value="25" {% if paginate_by == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if paginate_by == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if paginate_by == 100 %}selected{% endif %}>100</option>
+                    <option value="0" {% if paginate_by == count %}selected{% endif %}>All</option>
                 </select> entries</label>
         </form>
-        <script>
-            yearselection = document.getElementById("yearselection")
-            selector = document.getElementById("selector")
-            function change() {
-                yearselection.action = selector.value
-                yearselection.submit('')
-            }
-        </script>
     </div>
     <div class="col-sm-12 col-md-6 col-lg-6">
         <div id="table_filter" style="padding: 10px; float: right;" class="dataTables_filter">
@@ -35,22 +27,22 @@
                 </form>
             
                 <script>
+                    const queryString = window.location.search;
+                    var newURL = window.location.href
                     let myInput = document.getElementById('myInput');
                     form = document.getElementById('form')
-                    //on keyup, start the countdown
-                    myInput.addEventListener('input', () => {
-                        if (myInput.value == "") {
-                            var newURL = window.location.href.split("?")[0]
-                            form.action = newURL
-                            form.submit()
-                        };
-                    });
                     function myFunction() {
-                        var newURL = window.location.href
-                        form.action = newURL + "?search=" + myInput.value
+                        form.action = newURL + queryString + "&search=" + myInput.value
                         form.submit()
                     }
+                    document.querySelector('#myInput').addEventListener('keypress', function (e) {
+                        if (e.key === 'Enter') {
+                        // code for enter
+                        }
+                    });
                     window.onload = function () {
+                        console.log(newURL);
+                        console.log(queryString);
                         var input = document.getElementById("myInput");
                         const end = input.value.length;
                         input.setSelectionRange(end, end);
