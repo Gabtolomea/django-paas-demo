@@ -27,20 +27,12 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
 
 
 
 
-@login_required(login_url='login')
 def porter(request):
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_admin:
-            pass
-        else:
-            return redirect('bills_list')
     porter_in()
     porter_out(sorted_tables)
     billing_out()
@@ -49,14 +41,15 @@ def porter(request):
     for i in cons:
         i.cummulative = get_cummulative(i.consumer_id)
         i.save()
-    return redirect("sysuser")
+    return render(request, "landing.html")
 
 
 @unauthenticated_user
 def lp(request):
     enye(ConsumerInfo.objects.all())
     camelize()
-    return redirect('bills_list')
+    # capitalize()
+    return render(request, "landing.html")
 
 @unauthenticated_user
 def signin(request):
@@ -117,7 +110,7 @@ def bills_list_p(request, p):
         if isnum:
             bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search) | Q(homeaddress__icontains=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
+            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
         bills = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
@@ -449,7 +442,7 @@ def meterreading_p(request, p):
         if isnum:
             meterred = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search), deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+            meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
         meterred = ConsumerInfo.objects.filter(deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')   
     
@@ -718,9 +711,10 @@ def consumer_list_p(request, p):
         if isnum:
             cons = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
+            cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
         cons = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')   
+    
     
     pages = int(p)
     user = request.user
@@ -820,7 +814,6 @@ def consumercreation(request):
             c.save()
             return redirect('consumer_list')
     context = {
-        'create':True,
         'conid':id,
         'form': form,
         'errors': form.errors,
@@ -1388,10 +1381,9 @@ def deleteconsumer(request, id):
             return template
 
     con = ConsumerInfo.objects.get(consumer_id=id)
-    con.deleteflag = True
+    con.deleted_flag = True
     con.save()
     return redirect('consumer_list')
-
 def disconnectconsumer(request, id):
     template = ""
     LoginSession = request.user
@@ -1459,7 +1451,7 @@ def unsettled_bills_p(request, p):
         if isnum:
             ubs = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
         else:
-            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search) | Q(homeaddress__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
+            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
     else:
         ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
     pages = int(p)
@@ -1572,7 +1564,7 @@ def view_unsettled_bills(request, id, year):
 
 
 def discount(request):
-    d = Discount.objects.all()
+    dc = Discount.objects.all()
     form = addDiscount()
     discountidcount = len(Discount.objects.all())
     user = request.user
@@ -1586,13 +1578,27 @@ def discount(request):
             addD.added_by = user
             addD.save()
     context = {
-        'd': d,
+        'dc': dc,
         'form': form,
         'errors': form.errors,
         'user': user,
         'is_discount':True,
     }
     return render(request, 'discount.html', context)
+
+def editdiscount(request, id):
+    dis = Discount.objects.get(discountcode=id)
+    if request.method == 'POST':
+        discount_rate = request.POST['discount_rate']
+   
+      
+        dis.discount_rate = discount_rate
+
+
+        dis.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('discount')
 
 def deletediscount(request,id):
 
@@ -1608,7 +1614,7 @@ def deletediscount(request,id):
 
 @login_required(login_url='login')
 def new_consumertype(request):
-    c = ConsumerType.objects.all()
+    cont = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
     contypecount = len(ConsumerType.objects.all())
     if request.method == "POST":
@@ -1627,13 +1633,30 @@ def new_consumertype(request):
             ct.added_by = request.user
             ct.save()
     context = {
-        'c': c,
+        'cont': cont,
         'form': form,
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
     }
     return render(request, 'new_consumertype.html', context)
+
+def editcontype(request, id):
+    con = ConsumerType.objects.get(contypeid=id)
+    if request.method == 'POST':
+        contype = request.POST['contype']
+        minReading = request.POST['minReading']
+        minReadingCharge = request.POST['minReadingCharge']
+        rateAfterMin = request.POST['rateAfterMin']
+        
+        con.contype = contype
+        con.minReading = minReading
+        con.minReadingCharge = minReadingCharge
+        con.rateAfterMin = rateAfterMin
+        con.save()
+        messages.success(request, 'Code has been updated')
+        
+    return redirect('new_consumertype')
 
 def deletcontype(request,id):
 
@@ -1699,10 +1722,6 @@ def editpenalty(request, id):
         
     return redirect('penalty')
 
-   
-    
-
-
 def deletepenalty(request,id):
 
     try:
@@ -1753,7 +1772,7 @@ def bulkreading(request, year, month, p):
         if isnum:
             consumers = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
         else:
-            consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search) | Q(homeaddress__icontains=search),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+            consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
         consumers = ConsumerInfo.objects.filter(stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
     
@@ -1763,6 +1782,7 @@ def bulkreading(request, year, month, p):
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
+    page = request.GET.get('page')
 
     paginator = Paginator (consumers,paginate_by)
     try:
@@ -1792,9 +1812,8 @@ def bulkreading(request, year, month, p):
         # prev = last_reading(i.consumer_id, year, month)
         consumers_list.append(new_con(i, prev, cur))
     
+        cons = ub
     if request.method == "POST":
-        pnum = request.POST.get('page_num')
-        cons = paginator.page(pnum)
         interest = 0
         for c in cons:
             print(f"con{c.consumer_id}")
@@ -1895,9 +1914,6 @@ def bulkreading(request, year, month, p):
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
             get_balance(c.consumer_id)
-        url = reverse('bulkreading', args=[year, month, p])+f"?page={pnum}"
-        print(url)
-        return redirect(url)
     context = {
         'search':search,
         'year':year,

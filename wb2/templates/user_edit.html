@@ -1,7 +1,7 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 {% static "images" as images %}
- 
+
 
 {% block title %}
 System User
@@ -12,6 +12,14 @@ System User
 
 </head>
 <style>
+    h3 {
+        font-size: 30px;
+    }
+
+    label {
+        font-size: 20px;
+    }
+
     .form-header {
         margin: 0px 0px 16px;
         padding: 0px 12px;
@@ -31,6 +39,11 @@ System User
         padding: 30px;
     }
 
+    .approver {
+        font: 16px Arial;
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+    }
 
     .button2 {
         background-color: var(--main-color);
@@ -64,7 +77,7 @@ System User
 	<form action="{%url 'user_edit' sys.username%}" enctype="multipart/form-data" method="POST" class="signup-form">
 		{% csrf_token %}
 		<div class="container">
-			<div class="shadow wrapper">
+			<div class=" shadow wrapper">
 				<div class="form-header">
 					<center><h1>System User</h1></center>
 				</div>

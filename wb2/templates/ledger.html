@@ -228,16 +228,13 @@ Account Ledger
 	</div>
 </div>
 <div class="row w-100 m-auto pt-2">
-	<div class="col-lg-4 col-md-4 col-sm-12" style="padding-top :10px;">
+	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 		<button type="button" onclick="getpdf()" class="btn button2" style="float:left;">
 			<img style="width: 25px" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
 			Get a Copy
 		</button>
 	</div>
-	<div class="col-lg-4 col-md-4 col-sm-12" style="padding-top :10px;">
-		<h1 class="text-center">Account Ledger</h1>
-	</div>
-	<div class="col-lg-4 col-md-4 col-sm-12" style="padding-top :10px;">
+	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 		<form id="displayselection" action="" method="GET">
 			<label class="d-flex" style="float: right; align-items: center;">Show
 				<select id="selector" name="show" style="width: 100px; margin: 0 5px;" class="form-select form-select" onchange="this.form.submit()">
@@ -361,46 +358,47 @@ Account Ledger
 
 	</script>
 </div>
-<div class="row">
-	<div class="container-fluid p-0">
-		<div class="table-responsive">
-			<table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
-				<thead class="wb_thead">
-					<tr>
-						<th style="min-width: 100px;">Transaction ID</th>
-						<th style="min-width: 100px;">Date</th>
-						<th style="min-width: 100px;">Previous</th>
-						<th style="min-width: 100px;">Current Reading</th>
-						<th style="min-width: 110px;">Cubic Meter Used</th>
-						<th style="min-width: 110px;">Connection Type</th>
-						<th style="min-width: 110px;">Amount Billed</th>
-						<th style="min-width: 100px;">Payment</th>
-						<th style="min-width: 100px;">Processed By</th>
-						<th style="min-width: 110px;">OR Number</th>
-						<th style="min-width: 100px;">Current Balance</th>
-					</tr>
-				</thead>
-				<tbody class="wb_tbody">
-					{% for t in table reversed %}
-					<tr>
-						<td class="{{t.style}}">{{t.transid}}</td>
-						<td class="{{t.style}}">{{t.date}}</td>
-						<td class="{{t.style}}">{{t.prev}}</td>
-						<td class="{{t.style}}">{{t.reading}}</td>
-						<td class="{{t.style}}">{{t.usage}}</td>
-						<td class="{{t.style}}">{{t.rateid}}</td>
-						<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
-						<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
-						</td>
-						<td class="{{t.style}}">{{t.pb}}</td>
-						<td class="{{t.style}}">{{t.ornum}}</td>
-						<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
+
+<h1 class="mb-3 text-center">Account Ledger</h1>
+<div class="container-fluid p-0">
+	<div class="table-responsive">
+		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
+			<thead class="wb_thead">
+				<tr>
+					<th style="min-width: 100px;">Transaction ID</th>
+					<th style="min-width: 100px;">Date</th>
+					<th style="min-width: 100px;">Previous</th>
+					<th style="min-width: 100px;">Current Reading</th>
+					<th style="min-width: 110px;">Cubic Meter Used</th>
+					<th style="min-width: 110px;">Connection Type</th>
+					<th style="min-width: 110px;">Amount Billed</th>
+					<th style="min-width: 100px;">Payment</th>
+					<th style="min-width: 100px;">Processed By</th>
+					<th style="min-width: 110px;">OR Number</th>
+					<th style="min-width: 100px;">Current Balance</th>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				{% for t in table reversed %}
+				<tr>
+					<td class="{{t.style}}">{{t.transid}}</td>
+					<td class="{{t.style}}">{{t.date}}</td>
+					<td class="{{t.style}}">{{t.prev}}</td>
+					<td class="{{t.style}}">{{t.reading}}</td>
+					<td class="{{t.style}}">{{t.usage}}</td>
+					<td class="{{t.style}}">{{t.rateid}}</td>
+					<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+					<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+					</td>
+					<td class="{{t.style}}">{{t.pb}}</td>
+					<td class="{{t.style}}">{{t.ornum}}</td>
+					<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
+</div>
 </div>
 
 

@@ -559,20 +559,6 @@ li.active {
     opacity: 1;
     transition: 0.3s all ease-in-out;
 }
-
-::-webkit-scrollbar {
-    width: 10px;
-}
- 
-::-webkit-scrollbar-track {
-    /* background-color: var(--gray-text); */
-}
- 
-::-webkit-scrollbar-thumb {
-    height: 100px;
-    border-radius: 20px;
-    background-color:  #a8a8a8;
-}
 /* @media(max-width: 720px) {
     .toggle_desktop{
         display: none;

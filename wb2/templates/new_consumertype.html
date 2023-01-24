@@ -97,99 +97,8 @@ Consumer Type
             New Consumer Type
         </button>
     </div>
-    <div class="">
-        <h1 style="text-align:center;">Consumer Type</h1>
-    </div>
-</div>
-<div class="container-fluid p-0">
-    <div class="table-responsive">
-        <table id="table" class="table table-bordered table-striped" cellspacing="0" width="100%">
-            <thead class="wb-thead">
-                <tr style="background: #006c85; color: white;">
-                    <th class="align-middle text-center p-0">Code</th>
-                    <th class="align-middle text-center p-0">Consumer Type</th>
-                    <th class="align-middle text-center p-0">Minimum Water Reading</th>
-                    <th class="align-middle text-center p-0">Minimum Water Reading Charge</th>
-                    <th class="align-middle text-center p-0">Rate After Minimum Reading</th>
-                    <th class="align-middle text-center p-0">Added By</th>
-                    <th class="align-middle text-center p-0">Date Added</th>
-                    <td class="align-middle text-center p-0">Edit</td>
-                    <td class="align-middle text-center p-0">Delete</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in c %}
-                <tr>
-                    <td class="align-middle text-center p-0">{{c.contypeid}}</td>
-                    <td>{{c.contype}}</td>
-                    <td>{{c.minReading}}</td>
-                    <td>{{c.minReadingCharge}}</td>
-                    <td>{{c.rateAfterMin}}</td>
-                    <td>{{c.added_by_id}}</td>
-                    <td class="align-middle text-center p-0">{{c.date_added}}</td>
-                    <td class="align-middle text-center p-0">
-                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#edit-{{c.contypeid}}"> <img style="width:20px;"
-                                src="{% static '/images/edit_white_36dp.svg' %}" />
-                        </button>
-                    </td>
-                    <td class="align-middle text-center p-0"> 
-                        <a href="{%url 'deletcontype' c.contypeid %}">
-                            <button class="btn button2 btn-danger btn-sm" type="button"
-                                onclick="return confirm('Are you sure you want to delete  {{ c.contypeid  }} ?')"
-                                data-placement="top" title="Delete">
-                                <img style="width:20px;"
-                                    src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
-                            </button>
-                        </a>
-                    </td>
-                    <div class="modal fade" id="#edit-{{c.contypeid}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <form action="{% url 'new_consumertype' %}" method="POST">
-                                    {% csrf_token %}
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalCenterTitle">Edit Consumer Type</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        <i class="fa fa-xmark"></i>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <label>Consumer Type:</label>
-                                            <input type="text" name="" id="" value="c.contype">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Minimum Water Reading:</label>
-                                            {{form.minReading}}
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Minimum Water Reading Charge:</label>
-                                            {{form.minReadingCharge}}
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Rate After Minimum Reading:</label>
-                                            {{form.rateAfterMin}}
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary2">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </tr>
-                
 
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
-<div class="modal fade" id="payment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"
+    <div class="modal fade" id="payment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"
     aria-labelledby="payment" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -220,11 +129,110 @@ Consumer Type
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary2">Submit</button>
+                    <button type="submit"  name="btnform1" class="btn btn-primary2">Submit</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+    <div class="">
+        <h1 style="text-align:center;">Consumer Type</h1>
+    </div>
+</div>
+<div class="container-fluid p-0">
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-striped table-sm" cellspacing="0" width="100%">
+            <thead class="wb-thead">
+                <tr style="background: #006c85; color: white;">
+                    <th class="align-middle text-center p-0">Code</th>
+                    <th class="align-middle text-center p-0">Consumer Type</th>
+                    <th class="align-middle text-center p-0">Minimum Water Reading</th>
+                    <th class="align-middle text-center p-0">Minimum Water Reading Charge</th>
+                    <th class="align-middle text-center p-0">Rate After Minimum Reading</th>
+                    <th class="align-middle text-center p-0">Added By</th>
+                    <th class="align-middle text-center p-0">Date Added</th>
+                    <td class="align-middle text-center p-0">Edit</td>
+                    <td class="align-middle text-center p-0">Delete</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in cont %}
+                <tr>
+                    <td class="align-middle text-center p-0">{{c.contypeid}}</td>
+                    <td>{{c.contype}}</td>
+                    <td>{{c.minReading}}</td>
+                    <td>{{c.minReadingCharge}}</td>
+                    <td>{{c.rateAfterMin}}</td>
+                    <td>{{c.added_by_id}}</td>
+                    <td class="align-middle text-center p-0">{{c.date_added}}</td>
+                    <td class="align-middle text-center p-0">
+                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#edit-{{c.contypeid}}"> <img style="width:20px;"
+                                src="{% static '/images/edit_white_36dp.svg' %}" />
+                        </button>
+                    </td>
+                    <td class="align-middle text-center p-0">
+                        <a href="{%url 'deletcontype' c.contypeid %}">
+                            <button class="btn button2 btn-danger btn-sm" type="button"
+                                onclick="return confirm('Are you sure you want to delete  {{ c.contypeid  }} ?')"
+                                data-placement="top" title="Delete">
+                                <img style="width:20px;"
+                                    src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+<!-- Edit Modal -->
+</div>{% for i in cont %}
+<div class="modal fade " id="edit-{{i.contypeid}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Consumer Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                  <form method="POST" action="{% url 'editcontype' i.contypeid %}">
+                    {% csrf_token %}
+                    <div class="row form-group w-100 m-auto">
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label >Consumer Type*</label>
+                            <input value="{{i.contype}}" name="contype" type="" class="form-control" required>
+                           
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                            <label>Minimum Water Reading*</label>
+                             <input value="{{i.minReading}}" name="minReading" type="" class="form-control" required>
+                            
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 ">
+                            <label >Minimum Water Reading Charge*</label>
+                             <input value="{{i.minReadingCharge}}" name="minReadingCharge" type="" class="form-control" required>
+                            
+                        </div>
+                        <div class="row w-100 m-auto">
+                            <label >Rate After Minimum Reading:</label><br>
+                             <input value="{{i.rateAfterMin}}" name="rateAfterMin" type="" class="form-control" required>
+                            
+                        </div>
+
+                        <div class="modal-footer">
+                            <input class="btn btn-primary2" name="btnform2" type="submit" value="Update">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
 
 {% endblock new_contype %}

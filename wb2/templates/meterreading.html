@@ -79,6 +79,7 @@ Meter Reading
 	.dataTables_empty {
 		text-align: center;
 	}
+
 </style>
 {% endblock style %}
 {% block script %}
@@ -123,7 +124,7 @@ Meter Reading
 						<option value="{{m.num}}">{{m.name}}</option>
 						{% endfor %}
 					</select>
-				</div> 
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" data-bs-dismiss="modal" aria-label="Close"
@@ -148,7 +149,72 @@ Meter Reading
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			{% include 'search.html'%}
+			<div class="row">
+				<div class="col-sm-12 col-md-6">
+					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
+						<label style="display:flex;">Show
+							<select id="selector" style="width: 100px; margin: 0 5px;"
+								class="form-select form-select-sm" onchange="change()">
+								<option disabled selected value>--Select--</option>
+								<option value="10">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<option value="0">All</option>
+							</select> entries</label>
+					</form>
+					<script src="{% static 'jquery/jquery.js' %}"></script>
+					<script>
+						yearselection = document.getElementById("yearselection")
+						selector = document.getElementById("selector")
+						function change() {
+							yearselection.action = selector.value
+							yearselection.submit()
+						}
+					</script>
+				</div>
+				<div class="col-sm-12 col-md-6"
+					style=" display: flex; justify-content: flex-end; align-items: flex-end;">
+					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
+						<label>
+								<form class="input-group" action="" id="form" method="GET" role="form">
+									<div class="input-group-text">
+									<img  style="width: 23px;"
+										src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
+									</div>
+									<input  type="search" name="search" id="myInput" onsearch="myFunction()"
+										class="form-control form-control-sm" placeholder="Search..."
+										title="Type in a name" value="{{ search}}">
+									
+								</form>
+							
+							<script>
+								let myInput = document.getElementById('myInput');
+								form = document.getElementById('form')
+								//on keyup, start the countdown
+								myInput.addEventListener('input', () => {
+									if (myInput.value == "") {
+										var newURL = window.location.href.split("?")[0]
+										form.action = newURL
+										form.submit()
+									};
+								});
+								function myFunction() {
+									var newURL = window.location.href
+									form.action = newURL + "?search=" + myInput.value
+									form.submit()
+								}
+								window.onload = function () {
+									var input = document.getElementById("myInput");
+									const end = input.value.length;
+									input.setSelectionRange(end, end);
+									input.focus();
+								}
+							</script>
+						</label>
+					</div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-sm-12">
 					<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0"
@@ -436,8 +502,48 @@ Meter Reading
 				tr[i].style.display = "none";
 			}
 		}
+
 	}
+
 </script>
+
 {% endblock meterreading %}
 
 
+
+
+
+
+<table id="table" class="table table-bordered table-hover table-striped table-sm " width="100%">
+	<thead class="wb_thead">
+		<tr>
+			<th scope="col" style="background-color: #0093b7;">Barangay</th>
+			<th scope="col" style="background-color: #0093b7">Total Usage(㎥)</th>
+			<th scope="col" style="background-color: #0093b7">Total Receivables</th>
+			<th scope="col" style="background-color: #0093b7">Total Collection</th>
+			<th scope="col" style="background-color: #0093b7">Collection Rate</th>
+		</tr>
+	</thead>
+	<tbody class="wb_tbody">
+
+		<tr>
+			<td data-label="Barangay" style="background-color: #0093b7; color: white; font-weight: bold;">Total
+			</td>
+			<td data-label="Total Usage(Cu. Meter)" class="total_paid">
+			</td>
+			<td data-label="Total Receivables"></td>
+			<td data-label="Total Collection" class="total_due">
+
+			</td>
+			<td data-label="Collection Rate" class="rate"></td>
+		</tr>
+		<script>
+			jQuery(document).ready(function ($) {
+				$(".clickable-row").click(function () {
+					window.location = $(this).data("href");
+				});
+			});
+		</script>
+	</tbody>
+</table>
+Input Reading
