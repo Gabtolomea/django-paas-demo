@@ -163,50 +163,52 @@ Consumer Type
         </table>
     </div>
 
-    <!-- Edit Modal -->{% for i in cont %}
+    
 </div>
-<div class="modal fade " id="edit-{{i.contypeid}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    ole="dialog" aria-labelledby="payment" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+<!-- Edit Modal -->
+
+{% for i in cont %}
+<div class="modal fade" id="edit-{{i.contypeid}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"
+aria-labelledby="payment" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <form action="{% url 'editcontype' i.contypeid %}" method="POST">
+            {% csrf_token %}
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Consumer Type</h5>
+                <h5 class="modal-title" id="exampleModalCenterTitle">Edit Consumer Type</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <i class="fa fa-xmark"></i>
+                </button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'editcontype' i.contypeid %}">
-                    {% csrf_token %}
-                    <div class="row form-group w-100 m-auto">
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                            <label>Consumer Type*</label>
-                            <input value="{{i.contype}}" name="contype" type="" class="form-control" required>
+                <div class="form-group">
+                    <label>Consumer Type*</label>
+                    <input value="{{i.contype}}" name="contype" type="" class="form-control" required>
 
-                        </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                            <label>Minimum Water Reading*</label>
+                </div>
+                <div class="form-group">
+                    <label>Minimum Water Reading*</label>
                             <input value="{{i.minReading}}" name="minReading" type="" class="form-control" required>
 
-                        </div>
-                        <div class="col-lg-4 col-md-12 col-sm-12 ">
-                            <label>Minimum Water Reading Charge*</label>
-                            <input value="{{i.minReadingCharge}}" name="minReadingCharge" type="" class="form-control"
-                                required>
+                </div>
+                <div class="form-group">
+                    <label>Minimum Water Reading Charge*</label>
+                    <input value="{{i.minReadingCharge}}" name="minReadingCharge" type="" class="form-control"
+                        required>
 
-                        </div>
-                        <div class="row w-100 m-auto">
-                            <label>Rate After Minimum Reading:</label><br>
+                </div>
+                <div class="form-group">
+                    <label>Rate After Minimum Reading:</label><br>
                             <input value="{{i.rateAfterMin}}" name="rateAfterMin" type="" class="form-control" required>
 
-                        </div>
-
-                        <div class="modal-footer">
-                            <input class="btn btn-primary2" name="btnform2" type="submit" value="Update">
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+            <div class="modal-footer">
+                <button type="submit" name="btnform2" class="btn btn-primary2">Update</button>
+            </div>
+        </form>
     </div>
+</div>
 </div>
 {% endfor %}
 

@@ -55,7 +55,7 @@ class ConsumerType(models.Model):
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
     def __str__(self) -> str:
-        return self.contypeid
+        return self.contype
 
 class Penalty(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)

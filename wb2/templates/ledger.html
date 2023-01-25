@@ -83,7 +83,7 @@ Account Ledger
 	.invoice-box table tr.top table td.title {
 		font-size: 45px;
 		line-height: 45px;
-		color: #333;
+		color: rgb(0, 0, 0);
 	}
 
 	.invoice-box table tr.information table td {
@@ -280,7 +280,7 @@ Account Ledger
 								<h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
 								<h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
 								<h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
-								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid}}</h6><br>
+								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid.contype}}</h6><br>
 								<h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
 							</td>
 						</tr>
