@@ -297,6 +297,7 @@ Bulk Reading
 						<script>
 							post = document.getElementById('post')
 							$(document).ready(function() { 
+								console.log(post.action);
 								$('.add-product-save-link').click(function() {
 									$("input[type='number']:not(.changed)").prop('disabled', true);
 									post.action = post.action + $(this).data("href");
