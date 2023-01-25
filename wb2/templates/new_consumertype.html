@@ -99,42 +99,42 @@ Consumer Type
     </div>
 
     <div class="modal fade" id="payment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"
-    aria-labelledby="payment" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <form action="{% url 'new_consumertype' %}" method="POST">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Add New Consumer Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <i class="fa fa-xmark"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Consumer Type:</label>
-                        {{form.contype}}
+        aria-labelledby="payment" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="{% url 'new_consumertype' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Add New Consumer Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <i class="fa fa-xmark"></i>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <label>Minimum Water Reading:</label>
-                        {{form.minReading}}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Consumer Type:</label>
+                            {{form.contype}}
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Water Reading:</label>
+                            {{form.minReading}}
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Water Reading Charge:</label>
+                            {{form.minReadingCharge}}
+                        </div>
+                        <div class="form-group">
+                            <label>Rate After Minimum Reading:</label>
+                            {{form.rateAfterMin}}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Minimum Water Reading Charge:</label>
-                        {{form.minReadingCharge}}
+                    <div class="modal-footer">
+                        <button type="submit" name="btnform1" class="btn btn-primary2">Submit</button>
                     </div>
-                    <div class="form-group">
-                        <label>Rate After Minimum Reading:</label>
-                        {{form.rateAfterMin}}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit"  name="btnform1" class="btn btn-primary2">Submit</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
     <div class="">
         <h1 style="text-align:center;">Consumer Type</h1>
     </div>
@@ -167,7 +167,7 @@ Consumer Type
                     <td class="align-middle text-center p-0">{{c.date_added}}</td>
                     <td class="align-middle text-center p-0">
                         <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#edit-{{c.contypeid}}"> <img style="width:20px;"
+                            data-bs-target="#edit-{{c.contypeid}}"> <img style="width:20px;"
                                 src="{% static '/images/edit_white_36dp.svg' %}" />
                         </button>
                     </td>
@@ -187,39 +187,40 @@ Consumer Type
         </table>
     </div>
 
-<!-- Edit Modal -->
-</div>{% for i in cont %}
+    <!-- Edit Modal -->{% for i in cont %}
+</div>
 <div class="modal fade " id="edit-{{i.contypeid}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    ole="dialog" aria-labelledby="payment" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Consumer Type</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                  <form method="POST" action="{% url 'editcontype' i.contypeid %}">
+                <form method="POST" action="{% url 'editcontype' i.contypeid %}">
                     {% csrf_token %}
                     <div class="row form-group w-100 m-auto">
                         <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                            <label >Consumer Type*</label>
+                            <label>Consumer Type*</label>
                             <input value="{{i.contype}}" name="contype" type="" class="form-control" required>
-                           
+
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 col-12">
                             <label>Minimum Water Reading*</label>
-                             <input value="{{i.minReading}}" name="minReading" type="" class="form-control" required>
-                            
+                            <input value="{{i.minReading}}" name="minReading" type="" class="form-control" required>
+
                         </div>
                         <div class="col-lg-4 col-md-12 col-sm-12 ">
-                            <label >Minimum Water Reading Charge*</label>
-                             <input value="{{i.minReadingCharge}}" name="minReadingCharge" type="" class="form-control" required>
-                            
+                            <label>Minimum Water Reading Charge*</label>
+                            <input value="{{i.minReadingCharge}}" name="minReadingCharge" type="" class="form-control"
+                                required>
+
                         </div>
                         <div class="row w-100 m-auto">
-                            <label >Rate After Minimum Reading:</label><br>
-                             <input value="{{i.rateAfterMin}}" name="rateAfterMin" type="" class="form-control" required>
-                            
+                            <label>Rate After Minimum Reading:</label><br>
+                            <input value="{{i.rateAfterMin}}" name="rateAfterMin" type="" class="form-control" required>
+
                         </div>
 
                         <div class="modal-footer">
