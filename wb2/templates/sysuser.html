@@ -122,7 +122,7 @@ System User
             <ul style="display: flex; padding-left: 0; list-style: none;">
                 {% if sys_list.paginator.num_pages > 5 %}
                 {% if sys_list.number < 5 %} {% if sys_list.has_previous %} <a
-                    href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                    href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                     <li class="paginate_button page-item previous">Previous</li>
                     </a>
                     {% else %}
@@ -130,21 +130,21 @@ System User
                     {% endif %}
                     {% for i in five %}
                     {% if i == sys_list.number %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">{{i}}</li>
                     </a>
                     {% else %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{i}}</li>
                     </a>
                     {% endif %}
                     {% endfor %}
                     <li class="paginate_button disabled page-item">...</li>
-                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}</li>
                     </a>
                     {% if sys_list.has_next %}
-                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item next">Next</li>
                     </a>
                     {% else %}
@@ -153,39 +153,39 @@ System User
                     {% else %}
                     {% if sys_list.number > sys_list.paginator.num_pages|add:'-3'%}
                     {% if sys_list.has_previous %}
-                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item previous">Previous</li>
                     </a>
                     {% else %}
                     <li class="paginate_button disabled page-item previous">Previous</li>
                     {% endif %}
-                    <a href="?page=1&search={{search}}">
+                    <a href="?page=1&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">1</li>
                     </a>
                     <li class="paginate_button disabled page-item">...</li>
                     {% for i in last %}
                     {% if i == sys_list.number %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">{{i}}</li>
                     </a>
                     {% else %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{i}}</li>
                     </a>
                     {% endif %}
                     {% endfor %}
                     {% if sys_list.number == sys_list.paginator.num_pages %}
-                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">{{ sys_list.paginator.num_pages }}
                         </li>
                     </a>
                     {% else %}
-                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}</li>
                     </a>
                     {% endif %}
                     {% if sys_list.has_next %}
-                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item next">Next</li>
                     </a>
                     {% else %}
@@ -193,14 +193,14 @@ System User
                     {% endif %}
                     {% else %}
                     {% if sys_list.has_previous %}
-                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item previous">Previous</li>
                     </a>
                     {% else %}
                     <li class="paginate_button disabled page-item previous">Previous</li>
                     {% endif %}
                     {% if sys_list.number > 2 %}
-                    <a href="?page=1&search={{search}}">
+                    <a href="?page=1&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">1</li>
                     </a>
                     {% if sys_list.number > 3 %}
@@ -209,13 +209,13 @@ System User
                     {% endif %}
 
                     {% for num in sys_list.paginator.page_range %}
-                    {% if sys_list.number == num %}<a href="?page={{ num }}&search={{search}}">
+                    {% if sys_list.number == num %}<a href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">
                             {{ num }}
                         </li>
                     </a>
                     {% elif num > sys_list.number|add:'-2' and num < sys_list.number|add:'2' %} <a
-                        href="?page={{ num }}&search={{search}}">
+                        href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{ num }}</li>
                         </a>
                         {% endif %}
@@ -223,18 +223,18 @@ System User
 
                         {% if sys_list.number < sys_list.paginator.num_pages|add:'-2' %} <li
                             class="paginate_button disabled page-item">...</li>
-                            <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                            <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                                 <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}
                                 </li>
                             </a>
                             {% elif sys_list.number < sys_list.paginator.num_pages|add:'-1' %} <a
-                                href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                                href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                                 <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}
                                 </li>
                                 </a>
                                 {% endif %}
                                 {% if sys_list.has_next %}
-                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item next">Next</li>
                                 </a>
                                 {% else %}
@@ -244,7 +244,7 @@ System User
                                 {% endif %}
                                 {% else %}
                                 {% if sys_list.has_previous %}
-                                <a href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                                <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item previous">Previous</li>
                                 </a>
                                 {% else %}
@@ -252,17 +252,17 @@ System User
                                 {% endif %}
                                 {% for i in sys_list.paginator.page_range %}
                                 {% if i == sys_list.number %}
-                                <a href="?page={{i}}&search={{search}}">
+                                <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item active">{{i}}</li>
                                 </a>
                                 {% else %}
-                                <a href="?page={{i}}&search={{search}}">
+                                <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item">{{i}}</li>
                                 </a>
                                 {% endif %}
                                 {% endfor %}
                                 {% if sys_list.has_next %}
-                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item next">Next</li>
                                 </a>
                                 {% else %}

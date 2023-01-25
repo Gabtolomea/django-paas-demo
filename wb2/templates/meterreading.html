@@ -203,7 +203,7 @@ Meter Reading
 						<ul style="display: flex; padding-left: 0; list-style: none;">
 							{% if meterred.paginator.num_pages > 5 %}
 							{% if meterred.number < 5 %} {% if meterred.has_previous %} <a
-								href="?page={{ meterred.previous_page_number }}">
+								href="?page={{ meterred.previous_page_number }}&p={{paginate_by}}">
 								<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
@@ -211,21 +211,21 @@ Meter Reading
 								{% endif %}
 								{% for i in five %}
 								{% if i == meterred.number %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&p={{paginate_by}}">
 									<li class="paginate_button page-item active">{{i}}</li>
 								</a>
 								{% else %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{i}}</li>
 								</a>
 								{% endif %}
 								{% endfor %}
 								<li class="paginate_button disabled page-item">...</li>
-								<a href="?page={{ meterred.paginator.num_pages }}">
+								<a href="?page={{ meterred.paginator.num_pages }}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
 								</a>
 								{% if meterred.has_next %}
-								<a href="?page={{ meterred.next_page_number }}">
+								<a href="?page={{ meterred.next_page_number }}&p={{paginate_by}}">
 									<li class="paginate_button page-item next">Next</li>
 								</a>
 								{% else %}
@@ -234,38 +234,38 @@ Meter Reading
 								{% else %}
 								{% if meterred.number > meterred.paginator.num_pages|add:'-3'%}
 								{% if meterred.has_previous %}
-								<a href="?page={{ meterred.previous_page_number }}">
+								<a href="?page={{ meterred.previous_page_number }}&p={{paginate_by}}">
 									<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
 								<li class="paginate_button disabled page-item previous">Previous</li>
 								{% endif %}
-								<a href="?page=1">
+								<a href="?page=1&p={{paginate_by}}">
 									<li class="paginate_button page-item">1</li>
 								</a>
 								<li class="paginate_button disabled page-item">...</li>
 								{% for i in last %}
 								{% if i == meterred.number %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&p={{paginate_by}}">
 									<li class="paginate_button page-item active">{{i}}</li>
 								</a>
 								{% else %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{i}}</li>
 								</a>
 								{% endif %}
 								{% endfor %}
 								{% if meterred.number == meterred.paginator.num_pages %}
-								<a href="?page={{ meterred.paginator.num_pages }}">
+								<a href="?page={{ meterred.paginator.num_pages }}&p={{paginate_by}}">
 									<li class="paginate_button page-item active">{{ meterred.paginator.num_pages }}</li>
 								</a>
 								{% else %}
-								<a href="?page={{ meterred.paginator.num_pages }}">
+								<a href="?page={{ meterred.paginator.num_pages }}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}</li>
 								</a>
 								{% endif %}
 								{% if meterred.has_next %}
-								<a href="?page={{ meterred.next_page_number }}">
+								<a href="?page={{ meterred.next_page_number }}&p={{paginate_by}}">
 									<li class="paginate_button page-item next">Next</li>
 								</a>
 								{% else %}
@@ -273,14 +273,14 @@ Meter Reading
 								{% endif %}
 								{% else %}
 								{% if meterred.has_previous %}
-								<a href="?page={{ meterred.previous_page_number }}">
+								<a href="?page={{ meterred.previous_page_number }}&p={{paginate_by}}">
 									<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
 								<li class="paginate_button disabled page-item previous">Previous</li>
 								{% endif %}
 								{% if meterred.number > 2 %}
-								<a href="?page=1">
+								<a href="?page=1&p={{paginate_by}}">
 									<li class="paginate_button page-item">1</li>
 								</a>
 								{% if meterred.number > 3 %}
@@ -289,13 +289,13 @@ Meter Reading
 								{% endif %}
 
 								{% for num in meterred.paginator.page_range %}
-								{% if meterred.number == num %}<a href="?page={{ num }}">
+								{% if meterred.number == num %}<a href="?page={{ num }}&p={{paginate_by}}">
 									<li class="paginate_button page-item active">
 										{{ num }}
 									</li>
 								</a>
 								{% elif num > meterred.number|add:'-2' and num < meterred.number|add:'2' %} <a
-									href="?page={{ num }}">
+									href="?page={{ num }}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{ num }}</li>
 									</a>
 									{% endif %}
@@ -303,18 +303,18 @@ Meter Reading
 
 									{% if meterred.number < meterred.paginator.num_pages|add:'-2' %} <li
 										class="paginate_button disabled page-item">...</li>
-										<a href="?page={{ meterred.paginator.num_pages }}">
+										<a href="?page={{ meterred.paginator.num_pages }}&p={{paginate_by}}">
 											<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}
 											</li>
 										</a>
 										{% elif meterred.number < meterred.paginator.num_pages|add:'-1' %} <a
-											href="?page={{ meterred.paginator.num_pages }}">
+											href="?page={{ meterred.paginator.num_pages }}&p={{paginate_by}}">
 											<li class="paginate_button page-item">{{ meterred.paginator.num_pages }}
 											</li>
 											</a>
 											{% endif %}
 											{% if meterred.has_next %}
-											<a href="?page={{ meterred.next_page_number }}">
+											<a href="?page={{ meterred.next_page_number }}&p={{paginate_by}}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 											{% else %}
@@ -324,7 +324,7 @@ Meter Reading
 											{% endif %}
 											{% else %}
 											{% if meterred.has_previous %}
-											<a href="?page={{ meterred.previous_page_number }}&search={{search}}">
+											<a href="?page={{ meterred.previous_page_number }}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item previous">Previous</li>
 											</a>
 											{% else %}
@@ -332,17 +332,17 @@ Meter Reading
 											{% endif %}
 											{% for i in meterred.paginator.page_range %}
 											{% if i == meterred.number %}
-											<a href="?page={{i}}&search={{search}}">
+											<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item active">{{i}}</li>
 											</a>
 											{% else %}
-											<a href="?page={{i}}&search={{search}}">
+											<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item">{{i}}</li>
 											</a>
 											{% endif %}
 											{% endfor %}
 											{% if meterred.has_next %}
-											<a href="?page={{ meterred.next_page_number }}&search={{search}}">
+											<a href="?page={{ meterred.next_page_number }}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 											{% else %}
