@@ -564,44 +564,46 @@ def inputreading(request, id, year):
                     xy = con_penalty.penalty_rate * cummulative
                     interest = xy/100
                 try:
-                    t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
+                    bt = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                 except ObjectDoesNotExist:
                     bill = 0
-                    t = Transactions()
-                    t.acctID = consumer
-                    t.transType = 'Billing'
-                    t.date = datetime.today()
-                    t.month = d
-                    if t.month == 0:
-                        t.month = 12
-                    t.year = year
-                    t.meterReading = i
-                    t.usage = i - lastreading
-                    usage = t.usage
-                    t.contypeid = consumer.contypeid_id
+                    bt = Transactions()
+                    bt.acctID = consumer
+                    bt.transType = 'Billing'
+                    bt.date = datetime.today()
+                    bt.month = d
+                    if bt.month == 0:
+                        bt.month = 12
+                    bt.year = year
+                    bt.meterReading = i
+                    bt.usage = i - lastreading
+                    usage = bt.usage
+                    bt.contypeid = consumer.contypeid_id
                     rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
-                    if t.usage <= rate.minReading:
-                        t.bill = rate.minReadingCharge
+                    if bt.usage <= rate.minReading:
+                        bt.bill = rate.minReadingCharge
                     else:
-                        bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                        t.bill = bill
-                    t.payment = 0
-                    t.processedBy = request.user
-                    t.save()
+                        bill = ((bt.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                        bt.bill = bill
+                    bt.payment = 0
+                    bt.processedBy = request.user
+                    bt.save()
                     if interest:
-                        t = Transactions()
-                        t.acctID = consumer
-                        t.transType = 'Penalty'
-                        t.date = datetime.today()
-                        t.month = d
-                        t.year = year
-                        t.bill = interest
+                        pt = Transactions()
+                        pt.acctID = consumer
+                        pt.transType = 'Penalty'
+                        pt.date = datetime.today()
+                        pt.month = d
+                        pt.year = year
+                        pt.bill = interest
                         bill += interest
-                        t.payment = 0
-                        t.processedBy = request.user
-                        t.save()
+                        pt.payment = 0
+                        pt.processedBy = request.user
+                        pt.save()
+                        bt.penaltyCode = con_penalty
+                        bt.save()
                 else:
-                    t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
+                    bt = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                     lastreading = last_reading(id, year, d-1)
                     print(lastreading)
                     try:
@@ -615,28 +617,30 @@ def inputreading(request, id, year):
                         next.save()
                     except ObjectDoesNotExist:
                         print("asdf")
-                    t.meterReading = i
-                    t.date = datetime.today()
-                    t.usage = i - lastreading
-                    usage = t.usage
+                    bt.meterReading = i
+                    bt.date = datetime.today()
+                    bt.usage = i - lastreading
+                    usage = bt.usage
                     rate = ConsumerType.objects.get(contypeid=t.contypeid)
-                    if t.usage <= rate.minReading:
-                        t.bill = rate.minReadingCharge
+                    if bt.usage <= rate.minReading:
+                        bt.bill = rate.minReadingCharge
                     else:
-                        t.bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                    t.processedBy = str(request.user)
-                    t.save()
+                        bt.bill = ((bt.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                    bt.processedBy = str(request.user)
+                    bt.save()
                     if interest:
-                        t = Transactions()
-                        t.acctID = consumer
-                        t.transType = 'Penalty'
-                        t.date = datetime.today()
-                        t.month = d
-                        t.year = year
-                        t.bill = interest
-                        t.payment = 0
-                        t.processedBy = request.user
-                        t.save()
+                        pt = Transactions()
+                        pt.acctID = consumer
+                        pt.transType = 'Penalty'
+                        pt.date = datetime.today()
+                        pt.month = d
+                        pt.year = year
+                        pt.bill = interest
+                        pt.payment = 0
+                        pt.processedBy = request.user
+                        pt.save()
+                        bt.penaltyCode = con_penalty
+                        bt.save()
                 get_balance(id)
             match d:
                 case 1:
@@ -1052,6 +1056,7 @@ def about(request):
 
 def payment(request, id):
     if request.method == 'POST':
+        t_id = 0
         try:
             amount = int(request.POST.get('amount'))
             or_num = request.POST['or_num']
@@ -1078,11 +1083,13 @@ def payment(request, id):
             t.processedBy = request.user
             t.or_number = or_num
             t.save()
+            t_id = t.transactionid
             try:
                 discount = Discount.objects.get(discountcode=dis_code)
             except ObjectDoesNotExist:
                 pass
             else:
+                pay = Transactions.objects.get(transactionid=t_id)
                 t = Transactions()
                 t.acctID = consumer
                 t.transType = "Discount"
@@ -1094,7 +1101,10 @@ def payment(request, id):
                 t.payment = 0
                 t.payment = amount-(amount*(discount.discount_rate/100))
                 amount -= amount*(discount.discount_rate/100)
+                t.discountcode = discount
                 t.save()
+                pay.discountcode = discount
+                pay.save()
             get_balance(id)
             match month:
                 case 1:
