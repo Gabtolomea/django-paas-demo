@@ -1552,22 +1552,20 @@ def view_unsettled_bills(request, id, year):
 
 def discount(request):
     dc = Discount.objects.all()
-    form = addDiscount()
-    discountidcount = len(Discount.objects.all())
+    lastdisc_id = int(Discount.objects.all().order_by('-discountcode')[0].discountcode.split('D')[::-1][0])
     user = request.user
     if request.method == "POST":
-        form = addDiscount(request.POST)
         discount_rate = request.POST['discount_rate']
-        if form.is_valid():
-            addD = Discount()
-            addD.discountcode = "D00"+str(discountidcount+1)
-            addD.discount_rate = discount_rate
-            addD.added_by = user
-            addD.save()
+        addD = Discount()
+        addD.discountcode = "D00"+str(lastdisc_id+1)
+        addD.discount_rate = discount_rate
+        addD.added_by = user
+        addD.date_added = datetime.today()
+        addD.save()
+        messages.success(request, 'Discount has been added')
+        return redirect('discount')
     context = {
         'dc': dc,
-        'form': form,
-        'errors': form.errors,
         'user': user,
         'is_discount':True,
     }
@@ -1588,22 +1586,22 @@ def editdiscount(request, id):
 def new_consumertype(request):
     cont = ConsumerType.objects.all()
     form = ConscumertypecreationForm()
-    contypecount = len(ConsumerType.objects.all())
+    contypecount = int(ConsumerType.objects.all().order_by('-contypeid')[0].contypeid.split('C')[::-1][0])
     if request.method == "POST":
-        form = ConscumertypecreationForm(request.POST)
         contype = request.POST['contype']
         minReading = request.POST['minReading']
         minReadingCharge = request.POST['minReadingCharge']
         rateAfterMin = request.POST['rateAfterMin']
-        if form.is_valid():
-            ct = ConsumerType()
-            ct.contypeid = "C00"+str(contypecount+1)
-            ct.contype = contype
-            ct.minReading = minReading
-            ct.minReadingCharge = minReadingCharge
-            ct.rateAfterMin = rateAfterMin
-            ct.added_by = request.user
-            ct.save()
+        ct = ConsumerType()
+        ct.contypeid = "C00"+str(contypecount+1)
+        ct.contype = contype
+        ct.minReading = minReading
+        ct.minReadingCharge = minReadingCharge
+        ct.rateAfterMin = rateAfterMin
+        ct.added_by = request.user
+        ct.save()
+        messages.success(request, 'Consumer Type has been added')
+        return redirect('new_consumertype')
     context = {
         'cont': cont,
         'form': form,
@@ -1635,27 +1633,22 @@ def editcontype(request, id):
 def penalty(request):
     penalty = Penalty.objects.all()
     form = addPenalty
-    penaltycounter = len(Penalty.objects.all())
+    penaltycounter = int(Penalty.objects.all().order_by('-penaltycode')[0].penaltycode.split('P')[::-1][0])
     if request.method == "POST" and 'btnform1' in request.POST:
-        form = addPenalty(request.POST)
         penalty_info = request.POST['penalty_info']
         penalty_rate = request.POST['penalty_rate']
         penalty_after = request.POST['penalty_after']
         daysappliedafter = request.POST['daysappliedafter']
-        if form.is_valid():
-            pen = Penalty()
-            pen.penaltycode = "P00"+str(penaltycounter+1)
-            pen.penalty_info = penalty_info
-            pen.penalty_rate = penalty_rate
-            pen.penalty_after = penalty_after
-            pen.daysappliedafter = daysappliedafter
-            pen.added_by = request.user
-            pen.save()
-            messages.success(request, 'Penalty has been added')
-            return redirect('penalty')
-        else:
-            messages.error(request, 'Penalty has not been added')
-            return redirect('penalty')
+        pen = Penalty()
+        pen.penaltycode = "P00"+str(penaltycounter+1)
+        pen.penalty_info = penalty_info
+        pen.penalty_rate = penalty_rate
+        pen.penalty_after = penalty_after
+        pen.daysappliedafter = daysappliedafter
+        pen.added_by = request.user
+        pen.save()
+        messages.success(request, 'Penalty has been added')
+        return redirect('penalty')
     context = {
         'penalty': penalty,
         'form1': form,
