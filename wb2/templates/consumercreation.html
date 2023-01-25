@@ -97,7 +97,7 @@ Consumer Creation
         <input type="hidden" name="isUpdate" value="{{isUpdate}}">
         <input type="hidden" name="conid" value="{{conid}}">
         <div class="form-header">
-            <h1>Consumer Creation</h1>
+            <h1>Consumer {% if create %}Creation{% else %}Update{% endif %}</h1>
         </div>
         <div class="row form-group w-100 m-auto">
             <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
@@ -161,12 +161,10 @@ Consumer Creation
                 {{form.mobilenum}}
             </div>
             <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
-                <label for="" class=""style="font-size: 20px;">Picture<span class="text-danger">*</span></label>
-                {{form.picture}}
-            </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
                 <label for="" class=""style="font-size: 20px;">Penalty Code</label>
                 {{form.penaltycode}}
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
             </div>
         </div>
         <div class="row m-auto" style="display: block; text-align: center;">

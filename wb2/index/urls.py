@@ -42,13 +42,10 @@ urlpatterns = [
     path('payment/<id>/', views.payment, name='payment'),
     path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('settings/new_consumertype/editcontype/<id>', views.editcontype, name='editcontype'),
-    path('settings/deletcontype/<id>', views.deletcontype, name='deletcontype'),
     path('settings/discount',views.discount, name='discount'),
     path('settings/discount/editdiscount/<id>', views.editdiscount, name='editdiscount'),
-    path('settings/deletediscount/<id>',views.deletediscount, name='deletediscount'),
     path('settings/penalty', views.penalty, name='penalty'),
     path('settings/penalty/editpenalty/<id>', views.editpenalty, name='editpenalty'),
-    path('settings/deletepnenalty/<id>', views.deletepenalty, name='deletepenalty'),
     path('settings/userprof', views.userprof, name='userprof'),
     path('settings', views.viewprof, name='settings'),
 ]

@@ -152,7 +152,6 @@ Consumer Type
                     <th class="align-middle text-center p-0">Added By</th>
                     <th class="align-middle text-center p-0">Date Added</th>
                     <td class="align-middle text-center p-0">Edit</td>
-                    <td class="align-middle text-center p-0">Delete</td>
                 </tr>
             </thead>
             <tbody>
@@ -170,16 +169,6 @@ Consumer Type
                             data-bs-target="#edit-{{c.contypeid}}"> <img style="width:20px;"
                                 src="{% static '/images/edit_white_36dp.svg' %}" />
                         </button>
-                    </td>
-                    <td class="align-middle text-center p-0">
-                        <a href="{%url 'deletcontype' c.contypeid %}">
-                            <button class="btn button2 btn-danger btn-sm" type="button"
-                                onclick="return confirm('Are you sure you want to delete  {{ c.contypeid  }} ?')"
-                                data-placement="top" title="Delete">
-                                <img style="width:20px;"
-                                    src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
-                            </button>
-                        </a>
                     </td>
                 </tr>
                 {% endfor %}
