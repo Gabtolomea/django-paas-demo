@@ -1,6 +1,6 @@
 
 {% load static %}
-
+ 
 <div class="row">
     <div class="col-sm-12 col-md-6 col-lg-6">
         <form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
@@ -32,7 +32,7 @@
                     let myInput = document.getElementById('myInput');
                     form = document.getElementById('form')
                     function myFunction() {
-                        form.action = newURL + queryString + "&search=" + myInput.value
+                        form.action = newURL + "?search=" + myInput.value
                         form.submit()
                     }
                     document.querySelector('#myInput').addEventListener('keypress', function (e) {
