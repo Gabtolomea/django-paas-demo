@@ -13,7 +13,6 @@ System User
         opacity: 0;
         transition: 0.3s all ease-in-out;
     }
-
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
@@ -50,84 +49,23 @@ System User
 <script src="{% static 'jquery.js' %}"></script>
 <script src="{% static 'jspdf.min.js' %}"></script>
 <script src="{% static 'bootstrap.min.js' %}"></script>
-<script>
-    $(document).ready(function () {
-        $('#table').DataTable({
-            order: [[1, 'asc']],
-        });
-    });
-</script>
 {% endblock script %}
 {% block sysuser %}
 <div class="pt-3 row">
-    <div class="col-5 align-middle">
+    <div class="col-4 align-middle">
         <a href="{% url 'user_creation' %}">
             <button class="btn button2"><img style="width: 23px;" src="{% static '/images/person_add_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                 <span style="padding: 10px; font-family: Arial;">Add System User</span>
             </button>
         </a>
     </div>
-    <div class="col-7">
-        <h1 class="">System Users</h1>
+    <div class="col-4">
+        <h1 class="text-center">System Users</h1>
+    </div>
+    <div class="col-4">
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-12 col-md-6">
-        <form id="yearselection" style="padding: 10px; " class="dataTables_length" action="" method="GET">
-            <label style="display:flex;">Show
-                <select id="selector" name="p" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option disabled selected value>--Select--</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="0">All</option>
-                </select> entries
-            </label>
-        </form>
-        <script src="{% static 'jquery/jquery.js' %}"></script>
-    </div>
-    <div class="col-sm-12 col-md-6">
-        <div id="table_filter" style="float:right; padding: 10px;" class="dataTables_filter">
-            <label>
-                <form class="input-group" action="" id="form" method="GET" role="form">
-                    <div class="input-group-text">
-                    <img  style="width: 23px;"
-                        src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
-                    </div>
-                    <input  type="search" name="search" id="myInput" onsearch="myFunction()"
-                        class="form-control form-control-sm" placeholder="Search..."
-                        title="Type in a name" value="{{ search}}">
-                    
-                </form>
-            
-            <script>
-                let myInput = document.getElementById('myInput');
-                form = document.getElementById('form')
-                //on keyup, start the countdown
-                myInput.addEventListener('input', () => {
-                    if (myInput.value == "") {
-                        var newURL = window.location.href.split("?")[0]
-                        form.action = newURL
-                        form.submit()
-                    };
-                });
-                function myFunction() {
-                    var newURL = window.location.href
-                    form.action = newURL + "?search=" + myInput.value
-                    form.submit()
-                }
-                window.onload = function () {
-                    var input = document.getElementById("myInput");
-                    const end = input.value.length;
-                    input.setSelectionRange(end, end);
-                    input.focus();
-                }
-            </script>
-        </label>
-        </div>
-    </div>
-</div>
+{% include 'search.html' %}
 <section id="main-content">
     <section class="wrapper">
         <div class="table-responsive ">
