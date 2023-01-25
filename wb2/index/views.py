@@ -1738,7 +1738,7 @@ def bulkreading(request, year, month):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
-
+    print(ub.paginator.num_pages)
     for i in ub:
         try:
             tran = Transactions.objects.get(
