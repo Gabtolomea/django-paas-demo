@@ -1261,7 +1261,7 @@ def usage_report_data(request, year):
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(
         sums=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'))).annotate(
-        sum=Greatest(F('sums'), 0)
+        sum=(F('sums'))
     )
     class br():
         def __init__(self, name, months):
