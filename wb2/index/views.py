@@ -771,7 +771,6 @@ def consumercreation(request):
         sex = request.POST['sex']
         sitio = request.POST['sitio']
         homeaddress = request.POST['homeaddress']
-        picture = request.POST['picture']
         meternumber = request.POST['meternumber']
         initialmeterreading = request.POST['initialmeterreading']
         installation_address = request.POST['installation_address']
@@ -803,7 +802,6 @@ def consumercreation(request):
             c.penaltycode = Penalty.objects.get(penaltycode=penaltycode) 
             c.sitio = sitio
             c.homeaddress = homeaddress
-            c.picture = picture
             c.meternumber = meternumber
             c.initialmeterreading = initialmeterreading
             c.installation_address = Barangays.objects.get(id=installation_address) 
@@ -815,7 +813,8 @@ def consumercreation(request):
         'conid':id,
         'form': form,
         'errors': form.errors,
-        'user': request.user
+        'user': request.user,
+        'create':True,
     }
     return render(request, 'consumercreation.html', context)
 
@@ -828,7 +827,7 @@ def consumerupdate(request, id):
             template = "consumercreation.html"
         else:
             template = redirect('bills_list')
-            return template
+            return template 
 
     con = ConsumerInfo.objects.get(consumer_id=id)
     form = ConsumerForm(instance=con)
@@ -1578,16 +1577,11 @@ def editdiscount(request, id):
     dis = Discount.objects.get(discountcode=id)
     if request.method == 'POST':
         discount_rate = request.POST['discount_rate']
-   
-      
         dis.discount_rate = discount_rate
-
-
         dis.save()
         messages.success(request, 'Code has been updated')
         
     return redirect('discount')
-
 
 
 @login_required(login_url='login')
@@ -1635,7 +1629,6 @@ def editcontype(request, id):
         messages.success(request, 'Code has been updated')
         
     return redirect('new_consumertype')
-
 
 
 @login_required(login_url='login')
