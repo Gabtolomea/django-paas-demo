@@ -69,7 +69,7 @@ class sysup(ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=True)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
-    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
