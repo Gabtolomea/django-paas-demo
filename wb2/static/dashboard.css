@@ -30,9 +30,6 @@ header {
     height: 70px;
 }
 
-.table-responsive {
-    overflow-x: hidden!important;
-}
 
 .header_toggle {
     background: transparent;

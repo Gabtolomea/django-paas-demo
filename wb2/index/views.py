@@ -120,7 +120,6 @@ def bills_list(request):
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
-    print(paginate_by)
     context = {
         'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
@@ -508,7 +507,6 @@ def inputreading(request, id, year):
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
     trans = alltrans.filter(year=year)
     lastreading = last_reading(id, year, 12)
-    print(lastreading)
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
@@ -614,8 +612,7 @@ def inputreading(request, id, year):
                         t.save()
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                    lastreading = last_reading(id, year, d-1)
-                    print(lastreading)
+                    lastreading = last_reading(id, year, d)
                     try:
                         mo = d + 1
                         ye = year
@@ -626,7 +623,7 @@ def inputreading(request, id, year):
                         next.usage = next.meterReading - i
                         next.save()
                     except ObjectDoesNotExist:
-                        print("asdf")
+                        pass
                     t.meterReading = i
                     t.date = datetime.today()
                     t.usage = i - lastreading
@@ -1749,8 +1746,6 @@ def editpenalty(request, id):
         pen.save()
         messages.success(request, 'Code has been updated')
         return redirect('penalty')
-    else:
-        print("yawa")
 
 def bulkreading(request, year, month):
     template = ""
@@ -1812,7 +1807,6 @@ def bulkreading(request, year, month):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
-    print(ub.paginator.num_pages)
     for i in ub:
         try:
             tran = Transactions.objects.get(
@@ -1837,9 +1831,7 @@ def bulkreading(request, year, month):
     if request.method == "POST":
         interest = 0
         for c in cons:
-            print(f"con{c.consumer_id}")
             a = request.POST.get(f"con{c.consumer_id}", None)
-            print(a)
             if a is not None:
                 try:
                     con_b_rec = BarangayRecord.objects.get(barangaycode_id=c.installation_address_id, year=year)
