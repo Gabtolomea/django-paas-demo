@@ -1141,8 +1141,8 @@ def payment(request, id):
 
 def editpayment(request, id):
     ted = Transactions.objects.get(transactionid=id)
-
     if request.method =='POST':
+        show = request.POST['fshow']
         amount = float(request.POST['amount'])
         or_num = request.POST['or_num']
         dis_code = request.POST.get('dis_code')
@@ -1154,7 +1154,8 @@ def editpayment(request, id):
         except ObjectDoesNotExist:
             dt = None
         if dis_code == '':
-            dt.delete()
+            if dt:
+                dt.delete()
         else:
             if dt:
                 try:
