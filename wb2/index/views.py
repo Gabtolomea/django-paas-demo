@@ -84,7 +84,6 @@ def bills_list(request):
     template = ""
     LoginSession = request.user
     if LoginSession:
-
         if LoginSession.is_teller or LoginSession.is_supervisor:
             template = redirect('bills_list')
         else:
@@ -575,44 +574,42 @@ def inputreading(request, id, year):
                     xy = con_penalty.penalty_rate * cummulative
                     interest = xy/100
                 try:
-                    bt = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
+                    t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                 except ObjectDoesNotExist:
                     bill = 0
-                    bt = Transactions()
-                    bt.acctID = consumer
-                    bt.transType = 'Billing'
-                    bt.date = datetime.today()
-                    bt.month = d
-                    if bt.month == 0:
-                        bt.month = 12
-                    bt.year = year
-                    bt.meterReading = i
-                    bt.usage = i - lastreading
-                    usage = bt.usage
-                    bt.contypeid = consumer.contypeid_id
+                    t = Transactions()
+                    t.acctID = consumer
+                    t.transType = 'Billing'
+                    t.date = datetime.today()
+                    t.month = d
+                    if t.month == 0:
+                        t.month = 12
+                    t.year = year
+                    t.meterReading = i
+                    t.usage = i - lastreading
+                    usage = t.usage
+                    t.contypeid = consumer.contypeid_id
                     rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
-                    if bt.usage <= rate.minReading:
-                        bt.bill = rate.minReadingCharge
+                    if t.usage <= rate.minReading:
+                        t.bill = rate.minReadingCharge
                     else:
-                        bill = ((bt.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                        bt.bill = bill
-                    bt.payment = 0
-                    bt.processedBy = request.user
-                    bt.save()
+                        bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                        t.bill = bill
+                    t.payment = 0
+                    t.processedBy = request.user
+                    t.save()
                     if interest:
-                        pt = Transactions()
-                        pt.acctID = consumer
-                        pt.transType = 'Penalty'
-                        pt.date = datetime.today()
-                        pt.month = d
-                        pt.year = year
-                        pt.bill = interest
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Penalty'
+                        t.date = datetime.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = interest
                         bill += interest
-                        pt.payment = 0
-                        pt.processedBy = request.user
-                        pt.save()
-                        bt.penaltyCode = con_penalty
-                        bt.save()
+                        t.payment = 0
+                        t.processedBy = request.user
+                        t.save()
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                     lastreading = last_reading(id, year, d)
@@ -635,22 +632,20 @@ def inputreading(request, id, year):
                     if t.usage <= rate.minReading:
                         t.bill = rate.minReadingCharge
                     else:
-                        bt.bill = ((bt.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                    bt.processedBy = str(request.user)
-                    bt.save()
+                        t.bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                    t.processedBy = str(request.user)
+                    t.save()
                     if interest:
-                        pt = Transactions()
-                        pt.acctID = consumer
-                        pt.transType = 'Penalty'
-                        pt.date = datetime.today()
-                        pt.month = d
-                        pt.year = year
-                        pt.bill = interest
-                        pt.payment = 0
-                        pt.processedBy = request.user
-                        pt.save()
-                        bt.penaltyCode = con_penalty
-                        bt.save()
+                        t = Transactions()
+                        t.acctID = consumer
+                        t.transType = 'Penalty'
+                        t.date = datetime.today()
+                        t.month = d
+                        t.year = year
+                        t.bill = interest
+                        t.payment = 0
+                        t.processedBy = request.user
+                        t.save()
                 get_balance(id)
             match d:
                 case 1:
@@ -1066,7 +1061,6 @@ def about(request):
 
 def payment(request, id):
     if request.method == 'POST':
-        t_id = 0
         try:
             amount = int(request.POST.get('amount'))
             or_num = request.POST['or_num']
@@ -1815,7 +1809,8 @@ def bulkreading(request, year, month):
         ub = paginator.page(paginator.num_pages)
     for i in ub:
         try:
-            tran = Transactions.objects.get(acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
+            tran = Transactions.objects.get(
+                acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
             cur = tran.meterReading
         except ObjectDoesNotExist:
             cur = 0
