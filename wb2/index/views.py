@@ -84,6 +84,7 @@ def bills_list(request):
     template = ""
     LoginSession = request.user
     if LoginSession:
+
         if LoginSession.is_teller or LoginSession.is_supervisor:
             template = redirect('bills_list')
         else:
@@ -621,7 +622,7 @@ def inputreading(request, id, year):
                     bt.date = datetime.today()
                     bt.usage = i - lastreading
                     usage = bt.usage
-                    rate = ConsumerType.objects.get(contypeid=t.contypeid)
+                    rate = ConsumerType.objects.get(contypeid=bt.contypeid)
                     if bt.usage <= rate.minReading:
                         bt.bill = rate.minReadingCharge
                     else:
@@ -1751,8 +1752,7 @@ def bulkreading(request, year, month):
     print(ub.paginator.num_pages)
     for i in ub:
         try:
-            tran = Transactions.objects.get(
-                acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
+            tran = Transactions.objects.get(acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
             cur = tran.meterReading
         except ObjectDoesNotExist:
             cur = 0
