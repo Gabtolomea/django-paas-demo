@@ -226,7 +226,7 @@ def ledger(request, id):
     bill = 0
 
     class ledgerclass():
-        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style):
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype):
             self.transid = transid
             self.date = date
             self.prev = prev
@@ -239,6 +239,8 @@ def ledger(request, id):
             self.bal = bal
             self.rateid = rateid
             self.style = style
+            self.disc_code = disc_code
+            self.transtype = transtype
 
         def id(self):
             return self.transid
@@ -268,6 +270,7 @@ def ledger(request, id):
                 style = ''
                 pb = ''
                 bal += bill
+                dcode = ''
             elif asc_trans[i].transType == 'Payment':
                 usage = ''
                 bill = ''
@@ -277,6 +280,11 @@ def ledger(request, id):
                 style = 'table-success'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
+                try:
+                    discount = Transactions.objects.get(transactionid=asc_trans[i].discountcode)
+                    dcode = discount.discountcode
+                except ObjectDoesNotExist:
+                    dcode = ''
             elif asc_trans[i].transType == 'Penalty':
                 usage = ''
                 bill = asc_trans[i].bill
@@ -287,6 +295,7 @@ def ledger(request, id):
                 style = 'table-danger'
                 pb = asc_trans[i].processedBy
                 bal += bill
+                dcode = ''
             elif asc_trans[i].transType == 'Discount':
                 usage = ''
                 bill = ''
@@ -296,6 +305,7 @@ def ledger(request, id):
                 style = 'table-primary'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
+                dcode = ''
             elif asc_trans[i].transType == 'Reset Meter':
                 usage = ''
                 bill = 0
@@ -305,12 +315,14 @@ def ledger(request, id):
                 style = 'table-warning'
                 pb = asc_trans[i].processedBy
                 bal += bill
+                dcode = ''
             date = asc_trans[i].date
             payment = asc_trans[i].payment
             ornum = asc_trans[i].or_number
             transid = asc_trans[i].transactionid
             bal = math.ceil(bal*100)/100
-            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style)
+            ttype = asc_trans[i].transType
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style, dcode, ttype)
             table.append(new_row)
             if i < len(asc_trans)-1:
                 if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
@@ -1068,33 +1080,36 @@ def payment(request, id):
                 con_b_rec = BarangayRecord.objects.get(barangaycode_id=con_bar, year=year)
             except ObjectDoesNotExist:
                 con_b_rec = create_brec(consumer.installation_address_id, year)
-            t = Transactions()
-            t.acctID = consumer
-            t.transType = "Payment"
-            t.date = datetime.today()
-            t.year = year
-            t.month = month
-            t.payment = amount
-            t.processedBy = request.user
-            t.or_number = or_num
-            t.save()
+            payt = Transactions()
+            payt.acctID = consumer
+            payt.transType = "Payment"
+            payt.date = datetime.today()
+            payt.year = year
+            payt.month = month
+            payt.payment = amount
+            payt.processedBy = request.user
+            payt.or_number = or_num
+            payt.save()
             try:
                 discount = Discount.objects.get(discountcode=dis_code)
             except ObjectDoesNotExist:
                 pass
             else:
-                t = Transactions()
-                t.acctID = consumer
-                t.transType = "Discount"
-                t.date = datetime.today()
-                t.year = year
-                t.month = month
-                t.processedBy = request.user
-                t.or_number = or_num
-                t.payment = 0
-                t.payment = amount-(amount*(discount.discount_rate/100))
+                dt = Transactions()
+                dt.acctID = consumer
+                dt.transType = "Discount"
+                dt.date = datetime.today()
+                dt.year = year
+                dt.month = month
+                dt.processedBy = request.user
+                dt.or_number = or_num
+                dt.discountcode = discount.discountcode
+                dt.payment = amount*(discount.discount_rate/100)
                 amount -= amount*(discount.discount_rate/100)
-                t.save()
+                dt.save()
+                payt.discountcode = dt.transactionid
+                payt.processedBy = request.user.username
+                payt.save()
             get_balance(id)
             match month:
                 case 1:
@@ -1124,6 +1139,64 @@ def payment(request, id):
             con_b_rec.save()
     return redirect('ledger', id=id)
 
+def editpayment(request, id):
+    ted = Transactions.objects.get(transactionid=id)
+
+    if request.method =='POST':
+        amount = float(request.POST['amount'])
+        or_num = request.POST['or_num']
+        dis_code = request.POST.get('dis_code')
+        ted.payment = amount
+        ted.or_number = or_num
+        ted.save()
+        try:
+            dt = Transactions.objects.get(transactionid=ted.discountcode)
+        except ObjectDoesNotExist:
+            dt = None
+        if dis_code == '':
+            dt.delete()
+        else:
+            if dt:
+                try:
+                    dcode = Discount.objects.get(discountcode=dis_code)
+                except ObjectDoesNotExist:
+                    dcode = None
+                if dcode:
+                    dt.acctID = ted.acctID
+                    dt.transType = "Discount"
+                    dt.date = datetime.today()
+                    dt.year = ted.year
+                    dt.month = ted.month
+                    dt.processedBy = request.user.username
+                    dt.or_number = or_num
+                    dt.discountcode = dcode.discountcode
+                    dt.payment = amount*(dcode.discount_rate/100)
+                    amount -= amount*(dcode.discount_rate/100)
+                    dt.save()
+                    ted.discountcode = dt.transactionid
+                    ted.save()
+            else:
+                try:
+                    dcode = Discount.objects.get(discountcode=dis_code)
+                except ObjectDoesNotExist:
+                    dcode = None
+                if dcode:
+                    dt = Transactions()
+                    dt.acctID = ted.acctID
+                    dt.transType = "Discount"
+                    dt.date = datetime.today()
+                    dt.year = ted.year
+                    dt.month = ted.month
+                    dt.processedBy = request.user.username
+                    dt.or_number = or_num
+                    dt.discountcode = dcode.discountcode
+                    dt.payment = amount*(dcode.discount_rate/100)
+                    amount -= amount*(dcode.discount_rate/100)
+                    dt.save()
+                    ted.discountcode = dt.transactionid
+                    ted.save()
+        get_balance(ted.acctID.consumer_id)
+        return redirect('ledger', id=ted.acctID.consumer_id)
 
 def reports(request):
     cur_year =  datetime.today().year
@@ -1674,9 +1747,9 @@ def editpenalty(request, id):
         pen.daysappliedafter = daysappliedafter
         pen.save()
         messages.success(request, 'Code has been updated')
-        
-    return redirect('penalty')
-
+        return redirect('penalty')
+    else:
+        print("yawa")
 
 def bulkreading(request, year, month):
     template = ""

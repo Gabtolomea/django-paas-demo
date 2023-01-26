@@ -49,7 +49,7 @@ class SystemUserForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     profilepic = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
     class Meta:
