@@ -99,53 +99,9 @@ Meter Reading
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label for="recipient-name" class="col-form-label">Select Year</label>
-					<select name="year" id="year" class="form-control" required>
-						<option value=""></option>
-						{% for y in years reversed %}
-						<option value="{{y}}">{{y}}</option>
-						{% endfor %}
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="recipient-name" class="col-form-label">Select Month</label>
-					<select name="month" id="month" class="form-control" required>
-						<option value=""></option>
-						{% for m in months %}
-						<option value="{{m.num}}">{{m.name}}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" data-bs-dismiss="modal" aria-label="Close"
-					class="btn btn-secondary close">Close</button>
-				<button type="button" onclick=go() class="btn btn-primary">Proceed</button>
-				<a id="aydi" style="display: none;" href=""></a>
-			</div>
-			<script>
-				function go() {
-					year = document.getElementById("year")
-					aydi = document.getElementById("aydi")
-					month = document.getElementById("month")
-					if (year.value != "" && month.value != "") {
-						aydi.href = "/meterreading/bulkreading/" + year.value + "/" + month.value
-						aydi.click()
-					}
-				}
-			</script>
-		</div>
-	</div>
-</div>
+
+
+{% include 'bulkreadingmodal.html'%}
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">

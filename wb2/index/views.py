@@ -768,9 +768,9 @@ def consumercreation(request):
     id = cons[0].consumer_id
     last = int(cons[0].consumer_id.split('-')[0])
     if request.method == "POST":
+        form = ConsumerForm(request.POST)
         isUpdate = request.POST['isUpdate']
         conid = request.POST['conid']
-        form = ConsumerForm(request.POST)
         firstname = request.POST['firstname']
         middlename = request.POST['middlename']
         lastname = request.POST['lastname']
@@ -1447,7 +1447,7 @@ def deleteconsumer(request, id):
             return template
 
     con = ConsumerInfo.objects.get(consumer_id=id)
-    con.deleted_flag = True
+    con.deleteflag = True
     con.save()
     return redirect('consumer_list')
 
@@ -1747,8 +1747,10 @@ def editpenalty(request, id):
         messages.success(request, 'Code has been updated')
         return redirect('penalty')
 
-def bulkreading(request, year, month):
+def bulkreading(request):
     template = ""
+    year = int(request.GET.get('fyear', datetime.today().year))
+    month = int(request.GET.get('fmonth', datetime.today().month))
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_teller or LoginSession.is_reader:
@@ -1855,10 +1857,13 @@ def bulkreading(request, year, month):
                     except ObjectDoesNotExist:
                         prev = 0
                     cummulative = get_cummulative(c.consumer_id)
-                    con_penalty = Penalty.objects.get(penaltycode=c.penaltycode)
-                    if c.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
-                        xy = con_penalty.penalty_rate * cummulative
-                        interest = xy/100
+                    try:
+                        con_penalty = Penalty.objects.get(penaltycode=c.penaltycode)
+                        if c.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
+                            xy = con_penalty.penalty_rate * cummulative
+                            interest = xy/100
+                    except ObjectDoesNotExist:
+                        interest = 0
                     t.acctID = c
                     t.transType = 'Billing'
                     t.date = datetime.today()
@@ -1927,6 +1932,7 @@ def bulkreading(request, year, month):
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
             get_balance(c.consumer_id)
+        return redirect(f'/meterreading/bulkreading?fyear={year}&fmonth={month}')
     context = {
         'search':search,
         'year':year,
