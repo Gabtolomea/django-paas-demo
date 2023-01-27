@@ -118,8 +118,13 @@
                     </div>
 
                     <div class="form-group m-2 w-75">
-                        <input type="password" name="password" style="border-radius: 20px;" class="form-control"
-                            placeholder="Password">
+                        <div class="input-group" id="show_hide_password" onclick="showhide('id_password2')">
+                            <input class="form-control" type="password" name="password" >
+                            <div class="input-group-text" style="cursor: pointer;" >
+                                <img style="width: 20px;" id="id_password2_eye"
+                                src="{% static '/images/eye-off.svg' %}">
+                        
+                            </div>
                     </div>
 
                     <div class="button-container">
@@ -157,6 +162,22 @@
     setTimeout(function dispnone() {
         logout.style.display = "none"
     }, 4000)
+</script>
+<script>
+    function showhide(id) {
+        pass = document.getElementById(id)
+        eye = document.getElementById(id + "_eye")
+        console.log(pass);
+        if (pass.type === "text") {
+            pass.type = 'password'
+            eye.src = "{% static '/images/eye-off.svg' %}"
+
+        } else {
+            pass.type = 'text'
+            eye.src = "{% static '/images/eye-on.svg' %}"
+
+        }
+    }
 </script>
 
 </html>
