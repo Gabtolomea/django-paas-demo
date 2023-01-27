@@ -10,12 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login </title>
     <link rel="stylesheet" type="text/css" href="{% static 'login.css'%}" />
-    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
 
-    
+
 
 </head>
-<style> 
+<style>
     html {
         height: auto;
         min-height: 100%;
@@ -34,7 +34,9 @@
         border-radius: 15px;
         box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease 0.3s;
+        
     }
+
     .btn.button2:hover {
         background: #006c85;
         color: #ffffff;
@@ -42,6 +44,7 @@
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
+
     .btn.button2:focus {
         background: #006c85;
         color: #ffffff;
@@ -114,21 +117,29 @@
                 </div>
                 <center>
                     <div class="form-group m-2 w-75">
-                        <input type="username" name="username" style="border-radius: 20px;" class="form-control" placeholder="User ID">
+                        <input type="username" name="username"  class="form-control"
+                            placeholder="User ID">
                     </div>
 
                     <div class="form-group m-2 w-75">
-                        <input type="password" name="password" style="border-radius: 20px;" class="form-control"
-                            placeholder="Password">
-                    </div>
+                        <div class="input-group">
+                            <input class="form-control" type="password" id="id_password" name="password" >
+                            <div class="input-group-text" style="cursor: pointer;user-select: none;" onclick="showhide('id_password')"> 
+                                <img style="width: 20px;" id="id_password_eye" src="{% static '/images/eye-off.svg' %}">
 
-                    <div class="button-container">
-                        <button class="btn button2"><i class="fa fa-user-plus">
-                            <span style="padding: 10px; font-family: Arial;">Sign In</span></i></button>
-                    </div>
-                    <br>
+                            </div>
+                        </div>
+
+                        <div class="button-container" style="margin-top: inherit;"">
+                            <button class="btn button2">
+                                <img style="width: 15%;"
+                                src="{% static '/images/login_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                                    <span style="padding: 10px; font-family: Arial;">Sign In</span></i></button>
+                        </div>
+                    </div>            
                     <div class="FP ">
-                        <a href="{% url 'forgetpassword' %}" style="color: #0093B7; font-size: 15px;">Forgot Password?</a>
+                        <a href="{% url 'forgetpassword' %}" style="color: #0093B7; font-size: 15px;">Forgot
+                            Password?</a>
                     </div>
 
                     {% for message in messages %}
@@ -137,8 +148,8 @@
                         style="margin-left: 70px; padding-left: 50px; position: absolute; border-radius: 10px; bottom: 400px;">
                         <strong>{{message.tags|title}}!</strong> {{message}}
                         <a href="#" class="close" data-dismiss="alert"
-                        style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
-                        aria-label="close">&times;</a>
+                            style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
+                            aria-label="close">&times;</a>
                     </div>
                     {% endfor %}
                 </center>
@@ -157,6 +168,23 @@
     setTimeout(function dispnone() {
         logout.style.display = "none"
     }, 4000)
+</script>
+<script>
+    function showhide(id) {
+        pass = document.getElementById(id)
+        eye = document.getElementById(id + "_eye")
+        console.log(pass);
+        if (pass.type === "text") {
+            pass.type = 'password'
+            eye.src = "{% static '/images/eye-off.svg' %}"
+
+        } else {
+            pass.type = 'text'
+            eye.src = "{% static '/images/eye-on.svg' %}"
+
+        }
+        cons
+    }
 </script>
 
 </html>
