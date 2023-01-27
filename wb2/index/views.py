@@ -1755,6 +1755,8 @@ def bulkreading(request):
     template = ""
     year = int(request.GET.get('fyear', datetime.today().year))
     month = int(request.GET.get('fmonth', datetime.today().month))
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_teller or LoginSession.is_reader:
@@ -1786,8 +1788,6 @@ def bulkreading(request):
             self.prev = prev
             self.cur = cur
     mname = calendar.month_name[month]
-    search = request.GET.get("search", "")
-    page = request.GET.get('page')
     isnum = search.isnumeric()
     if search:
         if isnum:
@@ -1804,8 +1804,7 @@ def bulkreading(request):
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
-    page = request.GET.get('page')
-
+    page = int(request.GET.get('page'))
     paginator = Paginator (consumers,paginate_by)
     try:
         ub = paginator.page(page)
@@ -1813,6 +1812,7 @@ def bulkreading(request):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
+    cons = []
     for i in ub:
         try:
             tran = Transactions.objects.get(
@@ -1832,11 +1832,16 @@ def bulkreading(request):
             prev = 0
         # prev = last_reading(i.consumer_id, year, month)
         consumers_list.append(new_con(i, prev, cur))
-    
-        cons = ub
+        cons.append(i.consumer_id)
     if request.method == "POST":
         interest = 0
-        for c in cons:
+        pmonth = request.POST.get('pmonth')
+        pyear = request.POST.get('pyear')
+        pp = request.POST.get('pp')
+        ppage = request.POST.get('pmonth')
+        psearch = request.POST.get('psearch')
+        for j in cons:
+            c = ConsumerInfo.objects.get(consumer_id=j)
             a = request.POST.get(f"con{c.consumer_id}", None)
             if a is not None:
                 try:
@@ -1936,25 +1941,25 @@ def bulkreading(request):
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
             get_balance(c.consumer_id)
-        return redirect(f'/meterreading/bulkreading?page={ub.number}&fyear={year}&fmonth={month}&search={search}&p={paginate_by}')
-    context = {
-        'bulky':True,
-        'search':search,
-        'year':year,
-        'month':mname,
-        'years':years,
-        'months':months,
-        'monthval':month,
-        'consumers_list':consumers_list,
-        'ub':ub,
-        'count':count,
-        'paginate_by': paginate_by,
-        'last' : range(paginator.num_pages-3, paginator.num_pages),
-        'five' : range(1,6),
-        'user':request.user
-    }
-    return render(request,'bulkreading.html', context)
-
+        return redirect(f'/meterreading/bulkreading?page={page}&fyear={pyear}&fmonth={pmonth}&search={psearch}&p={pp}')
+    else:
+        context = {
+            'bulky':True,
+            'search':search,
+            'year':year,
+            'month':mname,
+            'years':years,
+            'months':months,
+            'monthval':month,
+            'consumers_list':consumers_list,
+            'ub':ub,
+            'count':count,
+            'paginate_by': paginate_by,
+            'last' : range(paginator.num_pages-3, paginator.num_pages),
+            'five' : range(1,6),
+            'user':request.user
+        }
+        return render(request,'bulkreading.html', context)
 @login_required(login_url='login')
 def viewprof(request):
     user = SystemUsers.objects.get(username=str(request.user))

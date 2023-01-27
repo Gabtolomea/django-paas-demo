@@ -30,13 +30,14 @@ Bulk Reading
 </div>
 
 {% include 'bulkreadingmodal.html'%}
+
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
 			{% include 'search.html' %}
 			<div class="row">
 				<div class="col-sm-12">
-					<form id="post" action="{% url 'bulkreading' %}" method="post">
+					<form id="post" action="{% url 'bulkreading' %}?page={{ub.number}}" method="post">
 						{% csrf_token %}
 						<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0" width="100%">
 							<thead class="wb_thead">
@@ -60,6 +61,11 @@ Bulk Reading
 								{% endfor %}
 							</tbody>
 						</table>
+						<input type="hidden" name="pyear" value="{{year}}">
+						<input type="hidden" name="pmonth" value="{{monthval}}">
+						<input type="hidden" name="psearch" id="fsearch_id" value="{{search}}">
+						<input type="hidden" name="pp" value="{{paginate_by}}">
+						<input type="hidden" name="ppage" value="{{ub.number}}">
 						<div class="row w-100 m-auto pt-2">
 							<div class="col-lg-12 col-md-12 col-sm-12">
 								<button type="submit" class="btn button2">
@@ -67,8 +73,6 @@ Bulk Reading
 								</button>
 							</div>
 						</div>
-						<input type="hidden" name="fyear" id="fp" value="{{year}}">
-						<input type="hidden" name="fmonth" id="fp" value="{{monthval}}">
 					</form>
 					
 					<script>
@@ -105,7 +109,7 @@ Bulk Reading
 							{% if ub.paginator.num_pages > 5 %}
 								{% if ub.number < 5 %}
 									{% if ub.has_previous %}
-										<a class="add-product-save-link" data-href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+										<a class="add-product-save-link" href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 											<li class="paginate_button page-item previous">Previous</li>
 										</a>
 									{% else %}
@@ -113,21 +117,21 @@ Bulk Reading
 									{% endif %}
 									{% for i in five %}
 										{% if i == ub.number %}
-											<a class="add-product-save-link" data-href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item active">{{i}}</li>
 											</a>
 										{% else %}
-											<a class="add-product-save-link" data-href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item">{{i}}</li>
 											</a>
 										{% endif %}
 									{% endfor %}
 									<li class="paginate_button disabled page-item">...</li>
-									<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+									<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 										<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 									</a>
 									{% if ub.has_next %}
-										<a class="add-product-save-link" data-href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+										<a class="add-product-save-link" href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 											<li class="paginate_button page-item next">Next</li>
 										</a>
 									{% else %}
@@ -136,38 +140,38 @@ Bulk Reading
 								{% else %}
 									{% if ub.number > ub.paginator.num_pages|add:'-3'%}
 										{% if ub.has_previous %}
-											<a class="add-product-save-link" data-href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item previous">Previous</li>
 											</a>
 										{% else %}
 											<li class="paginate_button disabled page-item previous">Previous</li>
 										{% endif %}
-										<a class="add-product-save-link" data-href="?page=1&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+										<a class="add-product-save-link" href="?page=1&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 											<li class="paginate_button page-item">1</li>
 										</a>
 										<li class="paginate_button disabled page-item">...</li>
 										{% for i in last %}
 											{% if i == ub.number %}
-												<a class="add-product-save-link" data-href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 													<li class="paginate_button page-item active">{{i}}</li>
 												</a>
 											{% else %}
-												<a class="add-product-save-link" data-href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 													<li class="paginate_button page-item">{{i}}</li>
 												</a>
 											{% endif %}
 										{% endfor %}
 										{% if ub.number == ub.paginator.num_pages %}
-											<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item active">{{ ub.paginator.num_pages }}</li>
 											</a>
 										{% else %}
-											<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 											</a>
 										{% endif %}
 										{% if ub.has_next %}
-											<a class="add-product-save-link" data-href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 										{% else %}
@@ -175,14 +179,14 @@ Bulk Reading
 										{% endif %}
 									{% else %}
 										{% if ub.has_previous %}
-											<a class="add-product-save-link" data-href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item previous">Previous</li>
 											</a>
 										{% else %}
 											<li class="paginate_button disabled page-item previous">Previous</li>
 										{% endif %}
 										{% if ub.number > 2 %}
-											<a class="add-product-save-link" data-href="?page=1&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page=1&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item">1</li>
 											</a>
 											{% if ub.number > 3 %}
@@ -192,11 +196,11 @@ Bulk Reading
 
 										{% for num in ub.paginator.page_range %}
 											{% if ub.number == num %}
-												<a class="add-product-save-link" data-href="?page={{ num }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<a class="add-product-save-link" href="?page={{ num }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 													<li class="paginate_button page-item active">{{ num }}</li>
 												</a>
 											{% elif num > ub.number|add:'-2' and num < ub.number|add:'2' %}
-												<a class="add-product-save-link" data-href="?page={{ num }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}"> 
+												<a class="add-product-save-link" href="?page={{ num }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}"> 
 													<li class="paginate_button page-item">{{ num }}</li>
 												</a>
 											{% endif %}
@@ -204,16 +208,16 @@ Bulk Reading
 
 										{% if ub.number < ub.paginator.num_pages|add:'-2' %}
 											<li class="paginate_button disabled page-item">...</li>
-											<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 											</a>
 										{% elif ub.number < ub.paginator.num_pages|add:'-1' %} 
-											<a class="add-product-save-link" data-href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
 											</a>
 										{% endif %}
 										{% if ub.has_next %}
-											<a class="add-product-save-link" data-href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<a class="add-product-save-link" href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 										{% else %}
@@ -250,17 +254,6 @@ Bulk Reading
 							{% endif %}
 						</ul>
     					<script src="{% static 'jquery/jquery.js' %}"></script>
-						<script>
-							post = document.getElementById('post')
-							$(document).ready(function() { 
-								console.log(post.action);
-								$('.add-product-save-link').click(function() {
-									$("input[type='number']:not(.changed)").prop('disabled', true);
-									post.action = post.action + $(this).data("href");
-									post.submit();
-								});
-							});
-						</script>
 						<style>
 							a{		
 								-webkit-touch-callout: none;
