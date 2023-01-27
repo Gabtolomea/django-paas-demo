@@ -145,7 +145,7 @@ class ConsumerInfo(models.Model):
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
     cummulative = models.FloatField(default=0)
-    penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
+    penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
     
 class Transactions(models.Model):
     TRANS_TYPE = (
