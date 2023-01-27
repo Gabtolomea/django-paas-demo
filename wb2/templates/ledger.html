@@ -83,7 +83,7 @@ Account Ledger
 	.invoice-box table tr.top table td.title {
 		font-size: 45px;
 		line-height: 45px;
-		color: #333;
+		color: rgb(0, 0, 0);
 	}
 
 	.invoice-box table tr.information table td {
@@ -212,16 +212,16 @@ Account Ledger
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="id_amount">Amount</label>
-						<input type="number" name="amount" min="1" id="id_amount" class="input form-control">
+						<input type="number" name="amount" min="1" id="id_amount" required class="input form-control">
 						<label for="id_or_num">OR Number</label>
-						<input type="number" name="or_num" id="id_or_num" class="input form-control">
+						<input type="number" name="or_num" id="id_or_num" required class="input form-control">
 						<label for="id_dis_code">Discount Code</label>
 						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
 				</div>
 			</form>
 		</div>
@@ -280,7 +280,7 @@ Account Ledger
 								<h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
 								<h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
 								<h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
-								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid}}</h6><br>
+								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid.contype}}</h6><br>
 								<h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
 							</td>
 						</tr>
@@ -362,7 +362,7 @@ Account Ledger
 <h1 class="mb-3 text-center">Account Ledger</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive">
-		<table id="dtBasicExample2" class="table table-bordered table-sm" cellspacing="0" width="100%">
+		<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr>
 					<th style="min-width: 100px;">Transaction ID</th>
@@ -380,7 +380,7 @@ Account Ledger
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
-				<tr>
+				<tr {% if t.transtype == "Payment" %} style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{t.transid}}" {% endif %}>
 					<td class="{{t.style}}">{{t.transid}}</td>
 					<td class="{{t.style}}">{{t.date}}</td>
 					<td class="{{t.style}}">{{t.prev}}</td>
@@ -401,7 +401,39 @@ Account Ledger
 </div>
 </div>
 
-
+<!-- Edit Payment -->
+{% for i in table reversed %}
+{% if i.transtype == "Payment" %}
+<div class="modal fade" id="edit-{{i.transid}}" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'editpayment' i.transid %}" method="POST">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Amount</label>
+						<input value="{{i.payment}}" name="amount" type="" class="form-control" required>
+						<label>OR Number</label>
+						<input value="{{i.ornum}}" name="or_num" type="" class="form-control" required>
+						<label>Discount Code</label>
+						<input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" name="btnform2" >Update</button>
+				</div>
+				<input type="hidden" name="fshow" value="{{disp}}">
+			</form>
+		</div>
+	</div>
+</div>
+{% endif %}
+{% endfor %}
 <script type="text/javascript">
 
 	function getpdf() {

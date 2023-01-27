@@ -30,9 +30,6 @@ header {
     height: 70px;
 }
 
-.table-responsive {
-    overflow-x: hidden!important;
-}
 
 .header_toggle {
     background: transparent;
@@ -559,29 +556,3 @@ li.active {
     opacity: 1;
     transition: 0.3s all ease-in-out;
 }
-/* @media(max-width: 720px) {
-    .toggle_desktop{
-        display: none;
-    }
-    .toggle_mobile{
-        display: inline !important;
-    }
-    .sidebar {
-       width: 0;
-       transition :all 1s ease;
-       opacity: 0;
-    }
-    .main_content{
-        padding-left: 20px !important;
-        transition :all 1s ease;
-    }
-    .mobile_header_font{
-        font-size: 25px;
-    }
-    .mobile_header_nav{
-        display: none;
-    }
-    i.fa.fa-bars {
-        font-size: 24px;
-    }
-} */

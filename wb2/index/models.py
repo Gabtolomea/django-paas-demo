@@ -55,7 +55,7 @@ class ConsumerType(models.Model):
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
     def __str__(self) -> str:
-        return self.contypeid
+        return self.contype
 
 class Penalty(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
@@ -162,7 +162,7 @@ class Transactions(models.Model):
     usage = models.IntegerField(blank=True, null=True)
     contypeid = models.CharField(max_length=20, blank=True, null=True)#consumertype
     penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
-    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
+    discountcode = models.CharField(max_length=50, null=True)
     bill = models.FloatField(null=True)
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
@@ -170,7 +170,7 @@ class Transactions(models.Model):
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
     def __str__(self) -> str:
-        return str(self.date)
+        return str(self.transactionid)
 
 class usage_record(models.Model):
     #generate date

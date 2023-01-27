@@ -2,15 +2,15 @@
 {% load static %}
 {% block title %}
 Registration Form
-{% endblock title %} 
+{% endblock title %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 
 <style>
-    .invalid-feedback{
-        display: block!important;
+    .invalid-feedback {
+        display: block !important;
     }
-    
+
     .form-header {
         margin: 0px 0px 16px;
         padding: 0px 12px;
@@ -55,22 +55,6 @@ Registration Form
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
     }
-/* 
-    .fa-eye:before {
-        padding: 0.5rem 0.75rem;
-        color: #495057;
-        text-align: center;
-        background-color: #e9ecef;
-        border: 1px solid rgba(0, 0, 0, .15);
-    }
-
-    .fa-eye-slash:before {
-        padding: 0.5rem 0.75rem;
-        color: #495057;
-        text-align: center;
-        background-color: #e9ecef;
-        border: 1px solid rgba(0, 0, 0, .15);
-    } */
 </style>
 {% endblock style %}
 {% block registration %}
@@ -148,7 +132,8 @@ Registration Form
                         <div class="input-group">
                             {{form.password1}}
                             <div class="input-group-text" style="cursor: pointer;" onclick="showhide('id_password1')">
-                                <img style="width: 20px;" id="id_password1_eye" src="{% static '/images/eye-off.svg' %}">
+                                <img style="width: 20px;" id="id_password1_eye"
+                                    src="{% static '/images/eye-off.svg' %}">
                             </div>
                         </div>
                         {% for error in form.password2.errors %}
@@ -162,7 +147,8 @@ Registration Form
                         <div class="input-group">
                             {{form.password2}}
                             <div class="input-group-text" style="cursor: pointer;" onclick="showhide('id_password2')">
-                                <img style="width: 20px;" id="id_password2_eye" src="{% static '/images/eye-off.svg' %}">
+                                <img style="width: 20px;" id="id_password2_eye"
+                                    src="{% static '/images/eye-off.svg' %}">
                             </div>
                         </div>
                         {% for error in form.password2.errors %}
@@ -175,39 +161,40 @@ Registration Form
                 <div class="row form-group m-auto w-100">
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
                         <label>Type of User</label>
-                        <div class="form-check">
+                        <div class="form-check" type="checkbox">
                             {{form.is_admin}}
                             <label class="form-check-label" for="id_is_admin">Admin</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check" type="checkbox">
                             {{form.is_teller}}
                             <label class="form-check-label" for="id_is_teller">Teller</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check" type="checkbox">
                             {{form.is_supervisor}}
                             <label class="form-check-label" for="id_is_supervisor">Supervisor</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check" type="checkbox">
                             {{form.is_manager}}
                             <label class="form-check-label" for="id_is_manager">Manager</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check" type="checkbox">
                             {{form.is_reader}}
                             <label class="form-check-label" for="id_is_reader">Meter Reader</label>
                         </div>
                     </div>
                     <!-- TO BE IMPLEMENTED PUHON -->
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-                        <label >Authorized Approver</label>
+                        <label>Authorized Approver</label>
                         {{form.authorizedapprover}}
                     </div>
                     <!--  -->
                 </div>
                 <div class="row m-auto" style="display: block; text-align: center;">
                     <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
-                        <img style="width: 23px;" src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
-                            <span style="padding: 10px; font-family: Arial;">Submit</span>
-                        
+                        <img style="width: 23px;"
+                            src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                        <span style="padding: 10px; font-family: Arial;">Submit</span>
+
                     </button>
                 </div>
             </div>
@@ -218,23 +205,44 @@ Registration Form
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
 <script>
-    window.onload = function() {
+    window.onload = function () {
         input = document.getElementById("id_first_name");
         input.focus();
     }
     function showhide(id) {
         pass = document.getElementById(id)
-        eye = document.getElementById(id+"_eye")
+        eye = document.getElementById(id + "_eye")
         console.log(pass);
         if (pass.type === "text") {
             pass.type = 'password'
-            eye.src="{% static '/images/eye-off.svg' %}"
-          
+            eye.src = "{% static '/images/eye-off.svg' %}"
+
         } else {
             pass.type = 'text'
-            eye.src="{% static '/images/eye-on.svg' %}"
-  
+            eye.src = "{% static '/images/eye-on.svg' %}"
+
         }
     }
 </script>
+<script>
+    function onlyNumberKey(evt) {
+          
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+</script>
+<script>
+    $(document).ready(function(){
+    $("form").submit(function(){
+		if ($('input:checkbox').filter(':checked').length < 1){
+        alert("Check at least one Role!");
+		return false;
+		}
+    });
+});
+</script>
+
 {% endblock registration %}

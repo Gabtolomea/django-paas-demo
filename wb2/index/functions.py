@@ -49,35 +49,26 @@ def capitalize():
         c.lastname = c.lastname.upper()
         c.middlename = c.middlename.upper()
         c.save()
-def len_years():
+def years():
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
-            years.append(i.year)
-    return len(years)
+            years.append(int(i.year))
+    return years
 def last_reading(id, year, mo):
-    ye = year
-    for i in reversed(range(1,13)):
-        try:
-            lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=ye, month=i)
-            mo=i
-        except ObjectDoesNotExist:
-            pass
-    if mo == 1:
-        mo=12
-        ye -= 1
-    for i in range(len_years()):
-        for j in range(mo):
+    allyears = years()
+    allyears.sort(reverse=True)
+    fyears = [item for item in allyears if item <= year]
+    for i in fyears:
+        for j in reversed(range(1,mo)):
             try:
-                lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=ye, month=mo)
+                lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=i, month=j)
                 lastreading = lasttran.meterReading
                 return lastreading
             except ObjectDoesNotExist:
-                mo-=1
-            if mo <= 0:
-                mo = 12
-                ye-=1
+                pass
+        mo = 13
     return 0
 
 def create_brec(address_id, year):
