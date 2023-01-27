@@ -191,7 +191,7 @@ Account Ledger
 					<td class="table-light">{{u.meternumber}}</td>
 					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
-						<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
+						<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
@@ -380,7 +380,7 @@ Account Ledger
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
-				<tr {% if t.transtype == "Payment" %} style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{t.transid}}" {% endif %}>
+				<tr {% if t.transtype == "Payment" %} title="Edit Payment {{t.transid}}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{t.transid}}" {% endif %}>
 					<td class="{{t.style}}">{{t.transid}}</td>
 					<td class="{{t.style}}">{{t.date}}</td>
 					<td class="{{t.style}}">{{t.prev}}</td>

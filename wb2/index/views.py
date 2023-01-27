@@ -1436,7 +1436,7 @@ def revenue_report(request, year):
     return render(request, 'revenue_report.html',  context)
 
 
-def deleteconsumer(request, id):
+def deleteconsumer(request):
     template = ""
     LoginSession = request.user 
     if LoginSession:
@@ -1445,11 +1445,15 @@ def deleteconsumer(request, id):
         else:
             template = redirect('bills_list')
             return template
-
-    con = ConsumerInfo.objects.get(consumer_id=id)
-    con.deleteflag = True
-    con.save()
-    return redirect('consumer_list')
+    if request.method == 'POST':
+        id = request.POST['id']
+        search = request.POST['search']
+        page = request.POST['page']
+        p = request.POST['p']
+        con = ConsumerInfo.objects.get(consumer_id=id)
+        con.deleteflag = True
+        con.save()
+    return redirect(f'/consumer_list/?page={page}&search={search}&p={p}')
 
 
 
@@ -1934,6 +1938,7 @@ def bulkreading(request):
             get_balance(c.consumer_id)
         return redirect(f'/meterreading/bulkreading?page={ub.number}&fyear={year}&fmonth={month}&search={search}&p={paginate_by}')
     context = {
+        'bulky':True,
         'search':search,
         'year':year,
         'month':mname,

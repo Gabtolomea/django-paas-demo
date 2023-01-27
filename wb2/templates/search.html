@@ -1,6 +1,6 @@
 
 {% load static %}
- 
+{% load humanize %}
 <div class="row">
     <div class="col-sm-12 col-md-4 col-lg-4">
         <form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
@@ -16,8 +16,15 @@
                 <input type="hidden" name="search" id="fsearch_id" value="{{search}}">
         </form>
     </div>
-    <div class="col-sm-12 col-md-4 col-lg-4">
-        <label class="text-center" for=""></label>
+    <div class="col-sm-12 col-md-4 col-lg-4 text-center">
+        <h5 class="">
+            {% if tb %}
+                Total Balance of all Unsettled Bills : &#8369; {{tb.tots|floatformat:2|intcomma}}
+            {% endif %}
+            {% if bulky %}
+                {{month}} {{year}}
+            {% endif %}
+        </h5>
     </div>
     <div class="col-sm-12 col-md-4 col-lg-4">
         <div id="table_filter" style="padding: 10px; float: right;" class="dataTables_filter">
