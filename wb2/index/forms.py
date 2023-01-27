@@ -25,7 +25,7 @@ class SystemUserForm(UserCreationForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}))
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'09XXXXXXXXX','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}))
     authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group m-0'}), choices=CHOICES)
     class Meta:
         model = SystemUsers
@@ -99,7 +99,7 @@ class ConsumerForm(ModelForm):
     firstname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     middlename = forms.CharField(widget = forms.TextInput(attrs={'class': 'form-control'}),required=False)
     lastname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}),required=False)
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'09XXXXXXXXX','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}),required=False)
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=False)
     birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}),required=False)
     sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}), choices=CHOICES)
