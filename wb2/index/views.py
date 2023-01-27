@@ -1804,7 +1804,7 @@ def bulkreading(request):
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
-    page = int(request.GET.get('page'))
+    page = request.GET.get('page')
     paginator = Paginator (consumers,paginate_by)
     try:
         ub = paginator.page(page)
