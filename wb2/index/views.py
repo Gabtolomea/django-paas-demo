@@ -502,11 +502,11 @@ def inputreading(request, id, year):
             self.reading = reading
             self.next = next
             self.style = style
+    lastreading = last_reading(id, year-1, 12)
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
     trans = alltrans.filter(year=year)
-    lastreading = last_reading(id, year, 12)
     for i in alltrans:
         if i.date.year not in years:
             years.append(i.date.year)
