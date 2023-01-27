@@ -1194,7 +1194,7 @@ def editpayment(request, id):
                     ted.discountcode = dt.transactionid
                     ted.save()
         get_balance(ted.acctID.consumer_id)
-        return redirect('ledger', id=ted.acctID.consumer_id)
+        return redirect(f'/bills_list/ledger/{ted.acctID.consumer_id}/?show=Payment')
 
 def reports(request):
     cur_year =  datetime.today().year
@@ -1932,7 +1932,7 @@ def bulkreading(request):
                         con_b_rec.total_due_dec += bill
                         con_b_rec.total_usage_dec += usage
             get_balance(c.consumer_id)
-        return redirect(f'/meterreading/bulkreading?fyear={year}&fmonth={month}')
+        return redirect(f'/meterreading/bulkreading?page={ub.number}&fyear={year}&fmonth={month}&search={search}&p={paginate_by}')
     context = {
         'search':search,
         'year':year,
