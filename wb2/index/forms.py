@@ -23,15 +23,9 @@ class SystemUserForm(UserCreationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=True)
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-<<<<<<< HEAD
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'09XXXXXXXXX','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}))
-=======
-    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',}),required=False)
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11', 'placeholder':'09XXXXXXXXX'}))
->>>>>>> 3075757d9e88bc9ad4473684b6cf627ec9bb1d83
     authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group m-0'}), choices=CHOICES)
     class Meta:
         model = SystemUsers
@@ -105,15 +99,9 @@ class ConsumerForm(ModelForm):
     firstname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     middlename = forms.CharField(widget = forms.TextInput(attrs={'class': 'form-control'}),required=False)
     lastname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-<<<<<<< HEAD
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'09XXXXXXXXX','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}),required=False)
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=False)
     birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}),required=False)
-=======
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}),required=False)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=False)
-    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}))
->>>>>>> 3075757d9e88bc9ad4473684b6cf627ec9bb1d83
     sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}), choices=CHOICES)
     sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
     homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -121,11 +109,7 @@ class ConsumerForm(ModelForm):
     initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
     installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Barangays.objects.all())
     contypeid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=ConsumerType.objects.all())
-<<<<<<< HEAD
     penaltycode = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Penalty.objects.all(),required=False)
-=======
-    penaltycode = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Penalty.objects.all())
->>>>>>> 3075757d9e88bc9ad4473684b6cf627ec9bb1d83
     
     class Meta():
         model = ConsumerInfo

@@ -380,11 +380,7 @@ Account Ledger
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
-<<<<<<< HEAD
 				<tr {% if t.transtype == "Payment" %} title="Edit Payment {{t.transid}}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{t.transid}}" {% endif %}>
-=======
-				<tr {% if t.transtype == "Payment" %} style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{t.transid}}" {% endif %}>
->>>>>>> 3075757d9e88bc9ad4473684b6cf627ec9bb1d83
 					<td class="{{t.style}}">{{t.transid}}</td>
 					<td class="{{t.style}}">{{t.date}}</td>
 					<td class="{{t.style}}">{{t.prev}}</td>
