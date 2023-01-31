@@ -15,7 +15,11 @@ urlpatterns = [
     path('editpayment/<id>/', views.editpayment,name='editpayment'),
     path('payment/<id>/', views.payment, name='payment'),
     path('meterreading', views.meterreading,name='meterreading'),
+<<<<<<< HEAD
     path('meterreading/bulkreading', views.bulkreading,name='bulkreading'),
+=======
+    path('meterreading/bulkreading/<int:year>/<int:month>', views.bulkreading,name='bulkreading'),
+>>>>>>> 3075757d9e88bc9ad4473684b6cf627ec9bb1d83
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
     path('resetpassword/<uidb64>/<token>', views.resetpassword,name='resetpassword'),
