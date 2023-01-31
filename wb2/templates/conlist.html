@@ -150,14 +150,19 @@ Consumer List
 									{% endif %}
 								</td>
 								<td class="p-0 align-middle" style="cursor: default;">
-									<a title="Delete" href="{%url 'deleteconsumer' con.consumer_id %}">
-										<button class="btn btn-danger btn-sm rounded-0" type="button"
+									<form action="{%url 'deleteconsumer' %}" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="page" value="{{consumer_list.number}}">
+										<input type="hidden" name="search" value="{{search}}">
+										<input type="hidden" name="p" value="{{paginate_by}}">
+										<input type="hidden" name="id" value="{{con.consumer_id}}">
+										<button class="btn btn-danger btn-sm rounded-0" type="submit"
 											onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
 											data-placement="top" title="Delete">
-											<img style="width:20px;"
-												src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+											<img style="width:20px;" src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
 										</button>
-									</a>
+
+									</form>
 								</td>
 
 							</tr>

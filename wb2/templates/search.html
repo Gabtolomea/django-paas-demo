@@ -1,8 +1,8 @@
 
 {% load static %}
- 
+{% load humanize %}
 <div class="row">
-    <div class="col-sm-12 col-md-6 col-lg-6">
+    <div class="col-sm-12 col-md-4 col-lg-4">
         <form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
             <label style="display:flex;">Show
                 <select id="selector" name="p" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
@@ -12,11 +12,24 @@
                     <option value="50" {% if paginate_by == 50 %}selected{% endif %}>50</option>
                     <option value="100" {% if paginate_by == 100 %}selected{% endif %}>100</option>
                     <option value="0" {% if paginate_by == count %}selected{% endif %}>All</option>
-                </select> entries</label>
-                <input type="hidden" name="search" id="fsearch_id" value="{{search}}">
+                </select> entries
+            </label>
+            <input type="hidden" name="search" id="fsearch_id" value="{{search}}">
+            <input type="hidden" name="fyear" id="fp" value="{{year}}">
+            <input type="hidden" name="fmonth" id="fp" value="{{monthval}}">
         </form>
     </div>
-    <div class="col-sm-12 col-md-6 col-lg-6">
+    <div class="col-sm-12 col-md-4 col-lg-4 text-center">
+        <h5 class="">
+            {% if tb %}
+                Total Balance of all Unsettled Bills : &#8369; {{tb.tots|floatformat:2|intcomma}}
+            {% endif %}
+            {% if bulky %}
+                {{month}} {{year}}
+            {% endif %}
+        </h5>
+    </div>
+    <div class="col-sm-12 col-md-4 col-lg-4">
         <div id="table_filter" style="padding: 10px; float: right;" class="dataTables_filter">
             <label>
                 <form class="input-group" action="" id="form" method="GET" role="form">
@@ -25,6 +38,8 @@
                     </div>
                     <input  type="search" name="search" id="myInput" oninput="check()" class="form-control form-control-sm" placeholder="Search..." value="{{ search}}">
                     <input type="hidden" name="p" id="fp" value="{{paginate_by}}">
+                    <input type="hidden" name="fyear" id="fp" value="{{year}}">
+                    <input type="hidden" name="fmonth" id="fp" value="{{monthval}}">
                 </form>
             
                 <script>

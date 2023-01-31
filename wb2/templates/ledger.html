@@ -191,7 +191,7 @@ Account Ledger
 					<td class="table-light">{{u.meternumber}}</td>
 					<td class="table-light">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
-						<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
+						<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button>
 					</td>
 				</tr>
 			</tbody>
@@ -221,7 +221,7 @@ Account Ledger
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
 				</div>
 			</form>
 		</div>
@@ -380,7 +380,7 @@ Account Ledger
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table reversed %}
-				<tr>
+				<tr {% if t.transtype == "Payment" %} title="Edit Payment {{t.transid}}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{t.transid}}" {% endif %}>
 					<td class="{{t.style}}">{{t.transid}}</td>
 					<td class="{{t.style}}">{{t.date}}</td>
 					<td class="{{t.style}}">{{t.prev}}</td>
@@ -401,7 +401,39 @@ Account Ledger
 </div>
 </div>
 
-
+<!-- Edit Payment -->
+{% for i in table reversed %}
+{% if i.transtype == "Payment" %}
+<div class="modal fade" id="edit-{{i.transid}}" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'editpayment' i.transid %}" method="POST">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Amount</label>
+						<input value="{{i.payment}}" name="amount" type="" class="form-control" required>
+						<label>OR Number</label>
+						<input value="{{i.ornum}}" name="or_num" type="" class="form-control" required>
+						<label>Discount Code</label>
+						<input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" name="btnform2" >Update</button>
+				</div>
+				<input type="hidden" name="fshow" value="{{disp}}">
+			</form>
+		</div>
+	</div>
+</div>
+{% endif %}
+{% endfor %}
 <script type="text/javascript">
 
 	function getpdf() {
