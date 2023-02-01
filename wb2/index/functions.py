@@ -67,6 +67,7 @@ def last_reading(id, year, mo):
             try:
                 lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=i, month=j)
                 lastreading = lasttran.meterReading
+                print(lastreading)
                 return lastreading
             except ObjectDoesNotExist:
                 pass

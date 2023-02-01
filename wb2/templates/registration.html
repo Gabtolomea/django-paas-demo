@@ -109,7 +109,7 @@ Registration Form
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
                         <label for="">Email<span class="text-danger">*</span></label>
                         {{form.email}}
-                        {% for error in form.email.errors %}
+                        {% for error in form.email.errors %} 
                         <div id="id_emailFeedback" class="invalid-feedback">
                             <small>{{ error|escape }}</small>
                         </div>

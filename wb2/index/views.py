@@ -1099,7 +1099,7 @@ def payment(request, id):
                 dt.year = year
                 dt.month = month
                 dt.processedBy = request.user
-                dt.or_number = or_num
+                dt.or_number = ''
                 dt.discountcode = discount.discountcode
                 dt.payment = amount*(discount.discount_rate/100)
                 amount -= amount*(discount.discount_rate/100)
@@ -1166,7 +1166,7 @@ def editpayment(request, id):
                     dt.year = ted.year
                     dt.month = ted.month
                     dt.processedBy = request.user.username
-                    dt.or_number = or_num
+                    dt.or_number = ''
                     dt.discountcode = dcode.discountcode
                     dt.payment = amount*(dcode.discount_rate/100)
                     amount -= amount*(dcode.discount_rate/100)
