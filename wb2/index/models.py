@@ -169,6 +169,7 @@ class Transactions(models.Model):
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
+    
     def __str__(self) -> str:
         return str(self.transactionid)
 
