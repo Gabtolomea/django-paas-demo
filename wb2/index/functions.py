@@ -49,15 +49,17 @@ def capitalize():
         c.lastname = c.lastname.upper()
         c.middlename = c.middlename.upper()
         c.save()
-def years():
+def years(id):
     years = []
-    my = BarangayRecord.objects.all()
-    for i in my:
-        if i.year not in years:
-            years.append(int(i.year))
+    alltrans = Transactions.objects.filter(acctID=id, transType='Billing') | Transactions.objects.filter(acctID=id, transType='Reset Meter')
+    for i in alltrans:
+        if i.date.year not in years:
+            years.append(i.date.year)
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
     return years
 def last_reading(id, year, mo):
-    allyears = years()
+    allyears = years(id)
     allyears.sort(reverse=True)
     fyears = [item for item in allyears if item <= year]
     for i in fyears:

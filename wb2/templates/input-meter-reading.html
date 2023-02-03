@@ -189,8 +189,7 @@ Input Reading
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
 							{{t.usage}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}"
-								id="{{t.transid}}" onfocus="this.select()" disabled type="number"{% if t.prev %} min={{t.prev}}  {% endif %}
+							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled type="number"{% if t.prev %} min={{t.prev}} {% endif %} onblur="blurry({{t.prev}}, '{{t.transid}}')"
 								{% if t.next %}max="{{t.next}}" {%endif%} {% if t.reading %}value="{{t.reading}}"{% endif %}>
 						</td>
 							{% if consumer.stopmeterflag %}
@@ -228,6 +227,12 @@ Input Reading
 						submit.style.display = "inline"
 					}
 					input.focus()
+				}
+				function blurry(n, id){
+					input = document.getElementById(id)
+					if (input.value == ''){
+						input.value = n
+					}
 				}
 			</script>
 		</table>
