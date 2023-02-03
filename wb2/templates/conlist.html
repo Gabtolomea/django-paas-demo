@@ -111,8 +111,9 @@ Consumer List
 								<th style="min-width: 100px;">Name</th>
 								<th style="min-width: 100px;">Address</th>
 								<th style="min-width: 100px;">Meter Number</th>
+								<th style="min-width: 100px;">Date Added </th>
 								<th scope="col">Connection</th>
-								<th scope="col">Delete</th>
+								<th scope="col">Condemn</th>
 							</tr>
 						</thead>
 						<tbody class="wb_tbody">
@@ -129,6 +130,8 @@ Consumer List
 									class="{{t.style}}">
 									{{con.meternumber}}
 								</td>
+								<td class='clickable-row' data-href="{% url 'consumerupdate' con.consumer_id %}">
+									{{con.date_added}}</td>
 								<td class="p-0 align-middle" style="cursor: default;">
 									{% if con.disconnectionflag %}
 									<a title="Disconnect" href="{%url 'reconnectconsumer' con.consumer_id %}">
@@ -157,8 +160,8 @@ Consumer List
 										<input type="hidden" name="p" value="{{paginate_by}}">
 										<input type="hidden" name="id" value="{{con.consumer_id}}">
 										<button class="btn btn-danger btn-sm rounded-0" type="submit"
-											onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
-											data-placement="top" title="Delete">
+											onclick="return confirm('Are you sure you want to Codemn {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
+											data-placement="top" title="Condemn">
 											<img style="width:20px;" src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
 										</button>
 
@@ -421,5 +424,6 @@ Consumer List
 	}
 
 </script>
+
 
 {% endblock consumer_list %}

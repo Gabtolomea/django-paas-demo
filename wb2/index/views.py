@@ -818,6 +818,7 @@ def consumercreation(request):
             c.installation_address = Barangays.objects.get(id=installation_address) 
             c.contypeid = ConsumerType.objects.get(contypeid=contypeid) 
             c.disconnectionflag = False
+            c.date_added = datetime.today()
             c.save()
             return redirect('consumer_list')
     context = {
