@@ -816,6 +816,7 @@ def consumercreation(request):
             c.installation_address = Barangays.objects.get(id=installation_address) 
             c.contypeid = ConsumerType.objects.get(contypeid=contypeid) 
             c.disconnectionflag = False
+            c.date_added = datetime.today()
             c.save()
             return redirect('consumer_list')
     context = {
@@ -1804,7 +1805,7 @@ def bulkreading(request):
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
-    page = int(request.GET.get('page'))
+    page = request.GET.get('page')
     paginator = Paginator (consumers,paginate_by)
     try:
         ub = paginator.page(page)
