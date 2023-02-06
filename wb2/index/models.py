@@ -147,7 +147,6 @@ class ConsumerInfo(models.Model):
     cummulative = models.FloatField(default=0)
     date_added = models.DateField(auto_now_add=True, null=True)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
-    
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
