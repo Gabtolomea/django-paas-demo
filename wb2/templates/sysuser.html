@@ -90,7 +90,7 @@ System User
                         <td class="align-middle text-center">{{t.email }}</td>
                         <td class="align-middle text-center">{{t.role}}</td>
                         <td class="align-middle text-center p-0">
-                            <a href="{%url 'user_edit' t.username%}">
+                            <a href="{% url 'user_edit' t.username %}">
                                 <button class="btn hide btn-success btn-sm " data-toggle="modal" type="button"
                                     data-placement="top" title="Edit">
                                     <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />

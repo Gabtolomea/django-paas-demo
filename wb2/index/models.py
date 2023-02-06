@@ -145,8 +145,8 @@ class ConsumerInfo(models.Model):
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
     cummulative = models.FloatField(default=0)
+    date_added = models.DateField(auto_now_add=True, null=True)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
-    
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
@@ -159,6 +159,7 @@ class Transactions(models.Model):
     acctID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
     transType = models.CharField(max_length=20, choices=TRANS_TYPE)
     meterReading = models.IntegerField(blank=True, null=True)
+    prevReading = models.IntegerField(blank=True, null=True)
     usage = models.IntegerField(blank=True, null=True)
     contypeid = models.CharField(max_length=20, blank=True, null=True)#consumertype
     penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)

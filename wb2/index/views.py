@@ -266,6 +266,7 @@ def ledger(request, id):
                     connectionType = ''
                 cur = asc_trans[i].meterReading
                 current = cur
+                prev = asc_trans[i].prevReading
                 style = ''
                 pb = ''
                 bal += bill
@@ -323,12 +324,6 @@ def ledger(request, id):
             ttype = asc_trans[i].transType
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style, dcode, ttype)
             table.append(new_row)
-            if i < len(asc_trans)-1:
-                if asc_trans[i+1].transType == 'Payment' or asc_trans[i+1].transType == 'Discount':
-                    p = cur
-                else:
-                    p = p + current
-            prev = p
 
     context = {
         'disp':disp,
@@ -816,6 +811,7 @@ def consumercreation(request):
             c.installation_address = Barangays.objects.get(id=installation_address) 
             c.contypeid = ConsumerType.objects.get(contypeid=contypeid) 
             c.disconnectionflag = False
+            c.date_added = datetime.today()
             c.save()
             return redirect('consumer_list')
     context = {
@@ -1510,11 +1506,11 @@ def unsettled_bills(request):
     isnum = search.isnumeric()
     if search:
         if isnum:
-            ubs = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
+            ubs = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), current_bal__gt = 0).order_by('current_bal').reverse()
         else:
-            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
+            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('current_bal').reverse()
     else:
-        ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
+        ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('current_bal').reverse()
     pages = int(request.GET.get('p', 10))
     table = []
     count = len(ubs)

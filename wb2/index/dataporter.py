@@ -30,13 +30,13 @@ alltables = [
 
 sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#    host="localhost",
-#    user="root",
-#    password="yjh434ctuG@-@",
-#    database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+   host="localhost",
+   user="root",
+   password="yjh434ctuG@-@",
+   database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 
 def porter_in():
     col = 0
@@ -346,6 +346,11 @@ def billing_out():
             jan.payment = 0
             jan.transType = 'Billing'
             jan.usage = u.usage_jan
+            prev = u.reading_jan - u.usage_jan
+            if prev < 0:
+                jan.prevReading = u.reading_jan
+            else:
+                jan.prevReading = prev
             jan.save()
 
         if u.totalbill_feb != 0:
@@ -366,6 +371,11 @@ def billing_out():
             feb.payment = 0
             feb.transType = 'Billing'
             feb.usage = u.usage_feb
+            prev = u.reading_feb - u.usage_feb
+            if prev < 0:
+                feb.prevReading = u.reading_feb
+            else:
+                feb.prevReading = prev
             feb.save()
 
         if u.totalbill_mar != 0:
@@ -386,6 +396,11 @@ def billing_out():
             mar.payment = 0
             mar.transType = 'Billing'
             mar.usage = u.usage_mar
+            prev = u.reading_mar - u.usage_mar
+            if prev < 0:
+                mar.prevReading = u.reading_mar
+            else:
+                mar.prevReading = prev
             mar.save()
 
         if u.totalbill_apr != 0:
@@ -406,6 +421,11 @@ def billing_out():
             apr.payment = 0
             apr.transType = 'Billing'
             apr.usage = u.usage_apr
+            prev = u.reading_apr - u.usage_apr
+            if prev < 0:
+                apr.prevReading = u.reading_apr
+            else:
+                apr.prevReading = prev
             apr.save()
 
         if u.totalbill_may != 0:
@@ -426,6 +446,11 @@ def billing_out():
             may.payment = 0
             may.transType = 'Billing'
             may.usage = u.usage_may
+            prev = u.reading_may - u.usage_may
+            if prev < 0:
+                may.prevReading = u.reading_may
+            else:
+                may.prevReading = prev
             may.save()
 
         if u.totalbill_jun != 0:
@@ -446,6 +471,11 @@ def billing_out():
             jun.payment = 0
             jun.transType = 'Billing'
             jun.usage = u.usage_jun
+            prev = u.reading_jun - u.usage_jun
+            if prev < 0:
+                jun.prevReading = u.reading_jun
+            else:
+                jun.prevReading = prev
             jun.save()
 
         if u.totalbill_jul != 0:
@@ -466,6 +496,11 @@ def billing_out():
             jul.payment = 0
             jul.transType = 'Billing'
             jul.usage = u.usage_jul
+            prev = u.reading_jul - u.usage_jul
+            if prev < 0:
+                jul.prevReading = u.reading_jul
+            else:
+                jul.prevReading = prev
             jul.save()
 
         if u.totalbill_aug != 0:
@@ -486,6 +521,11 @@ def billing_out():
             aug.payment = 0
             aug.transType = 'Billing'
             aug.usage = u.usage_aug
+            prev = u.reading_aug - u.usage_aug
+            if prev < 0:
+                aug.prevReading = u.reading_aug
+            else:
+                aug.prevReading = prev
             aug.save()
 
         if u.totalbill_sept != 0:
@@ -506,6 +546,11 @@ def billing_out():
             sept.payment = 0
             sept.transType = 'Billing'
             sept.usage = u.usage_sept
+            prev = u.reading_sept - u.usage_sept
+            if prev < 0:
+                sept.prevReading = u.reading_sept
+            else:
+                sept.prevReading = prev
             sept.save()
 
         if u.totalbill_oct != 0:
@@ -526,6 +571,11 @@ def billing_out():
             oct.payment = 0
             oct.transType = 'Billing'
             oct.usage = u.usage_oct
+            prev = u.reading_oct - u.usage_oct
+            if prev < 0:
+                oct.prevReading = u.reading_oct
+            else:
+                oct.prevReading = prev
             oct.save()
 
 
@@ -547,6 +597,11 @@ def billing_out():
             nov.payment = 0
             nov.transType = 'Billing'
             nov.usage = u.usage_nov
+            prev = u.reading_nov - u.usage_nov
+            if prev < 0:
+                nov.prevReading = u.reading_nov
+            else:
+                nov.prevReading = prev
             nov.save()
 
         if u.totalbill_dec != 0:
@@ -567,7 +622,13 @@ def billing_out():
             dec.payment = 0
             dec.transType = 'Billing'
             dec.usage = u.usage_dec
+            prev = u.reading_dec - u.usage_dec
+            if prev < 0:
+                dec.prevReading = u.reading_dec
+            else:
+                dec.prevReading = prev
             dec.save()
+
 
 def balance():
     for i in ConsumerInfo.objects.all():
