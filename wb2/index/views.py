@@ -345,7 +345,8 @@ def ledger(request, id):
         'pen': pen,
         'bal': bal,
         'bill': bill,
-        'user': request.user
+        'user': request.user,
+        'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1]
     }
     return render(request, 'ledger.html', context)
 
@@ -1656,6 +1657,17 @@ def editdiscount(request, id):
         messages.success(request, 'Code has been updated')
         
     return redirect('discount')
+
+def deletepenalty(request,id):
+
+    try:
+        pen = Penalty.objects.get(penaltycode=id)
+        pen.delete()
+        messages.success(request, 'Code has been deleted')
+    except Penalty.DoesNotExist:
+        messages.error(request, 'Code does not exist')
+    return redirect('penalty')
+
 
 
 @login_required(login_url='login')
