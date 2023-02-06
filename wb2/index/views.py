@@ -1658,15 +1658,15 @@ def editdiscount(request, id):
         
     return redirect('discount')
 
-def deletepenalty(request,id):
+def deletediscount(request,id):
 
     try:
-        pen = Penalty.objects.get(penaltycode=id)
-        pen.delete()
+        dis = Discount.objects.get(discountcode=id)
+        dis.delete()
         messages.success(request, 'Code has been deleted')
     except Penalty.DoesNotExist:
         messages.error(request, 'Code does not exist')
-    return redirect('penalty')
+    return redirect('discount')
 
 
 
