@@ -1257,7 +1257,7 @@ def barangayreport(request, year):
         'years': years,
         'fr': fr,
         'user': request.user,
-        'is_br':True
+        'is_br':True,
     }
     return render(request, 'waterusage.html', context)
 
