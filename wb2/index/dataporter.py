@@ -583,8 +583,6 @@ def balance():
         user.current_bal = math.ceil(bal*100)/100
         user.save()
 
-
-
 def get_cummulative(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
     trans = Transactions.objects.filter(acctID = id, year = date.today().year)
@@ -684,3 +682,8 @@ def b_rec_out(i):
     b_rec.total_usage_dec = i[41]
     b_rec.save()
 
+
+    
+        
+                
+                

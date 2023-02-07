@@ -28,6 +28,7 @@ from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.core.files.storage import FileSystemStorage
+from django.db.models.functions import Lower
 
 
 
@@ -1512,11 +1513,20 @@ def unsettled_bills(request):
     isnum = search.isnumeric()
     if search:
         if isnum:
-            ubs = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
+            ubs = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), current_bal__gt = 0).order_by('lastname','firstname','middlename')
         else:
-            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('lastname', 'firstname', 'middlename')
+            ubs = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search), current_bal__gt = 0).order_by('lastname','firstname','middlename')
     else:
-        ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname', 'firstname', 'middlename')
+        ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname','firstname','middlename')
+
+
+    #Sort code to sort fields
+    sort_field = request.GET.get("sort_field", "consumer_id")
+    sort_order = request.GET.get("sort_order","asc")
+    if sort_order == "desc":
+        sort_field = "-" + sort_field
+    
+    ubs = ubs.order_by(sort_field)
     pages = int(request.GET.get('p', 10))
     table = []
     count = len(ubs)
@@ -1541,7 +1551,9 @@ def unsettled_bills(request):
             else:
                 a = 0
         yeah = ub_year(a,j)
-        table.append(yeah)    
+        table.append(yeah)  
+    
+  
     context = {
         'search': search,
         'ub': ub,
@@ -1552,6 +1564,10 @@ def unsettled_bills(request):
         'tb': tb,
         'count':count,
         'user': request.user,
+        'sort_field' : sort_field,
+        'sort_order' : sort_order,
+   
+     
     }
     return render(request, 'unsettled_bill.html', context)
 
