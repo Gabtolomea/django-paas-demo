@@ -65,10 +65,10 @@ Unsettled Bills
 
                                 <tr>
                                     <th style="min-width: 100px;">Account ID</th>
-                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;"data-href="?sort_field=lastname&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}">Name</a></th>
-                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;"data-href="?sort_field=meternumber&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}">Meter Number</th>
-                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;" data-href="?sort_field=installation_address&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}">Address</th>
-                                    <th style="min-width: 100px;"class='clickable-row' onclick="click" style="cursor: pointer;" data-href="?sort_field=-current_bal&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}"><a href">Current Balance</th>
+                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;"data-href="?sort_field=lastname&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Name</a></th>
+                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;"data-href="?sort_field=meternumber&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Meter Number</th>
+                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;" data-href="?sort_field=installation_address&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Address</th>
+                                    <th style="min-width: 100px;"class='clickable-row' onclick="click" style="cursor: pointer;" data-href="?sort_field=-current_bal&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Current Balance</th>
                                 </tr>
                             
                         </thead>
