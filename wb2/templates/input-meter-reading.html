@@ -181,7 +181,7 @@ Input Reading
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table %}
-				<form class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
+				<form id="form-{{t.transid}}" class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
 					{% csrf_token %}
 					<tr class="showOnHover text-center">
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
@@ -189,13 +189,21 @@ Input Reading
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
 							{{t.usage}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<input class="input form-control border-0 rounded-0 " name="reading-{{t.month}}" id="{{t.transid}}" onfocus="this.select()" disabled type="number"{% if t.prev %} min={{t.prev}} {% endif %} onblur="blurry({{t.prev}}, '{{t.transid}}')"
-								{% if t.next %}max="{{t.next}}" {%endif%} {% if t.reading %}value="{{t.reading}}"{% endif %}>
+							<input 
+								class = "input form-control border-0 rounded-0 " 
+								name = "reading-{{t.month}}" 
+								id = "{{t.transid}}" 
+								onfocus = "this.select()" 
+								disabled 
+								type = "number"
+								{% if t.prev %} min={{t.prev}} {% endif %} 
+								{% if t.next %} max="{{t.next}}" {%endif%} 
+								{% if t.reading %} value="{{t.reading}}" {% endif %}>
 						</td>
 							{% if consumer.stopmeterflag %}
 							{% else %}
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<button id="submit-{{t.transid}}" style="display: none;" class="btn btn-success" onclick="enableAll()" type="submit">
+							<button id="submit-{{t.transid}}" type="button" style="display: none;" class="btn btn-success" onclick="submit_this('{{t.transid}}',{{t.prev}})">
 								SAVE
 							</button>
 							<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}})">
@@ -208,6 +216,20 @@ Input Reading
 				{% endfor %}
 			</tbody>
 			<script>
+				function submit_this(id, prev) {
+					form = document.getElementById('form-'+id)
+					input = document.getElementById(id)
+					if (input.value<prev || input.value == ''){
+						console.log('object');
+						input.classList.remove('border-0')
+						input.classList.add('is-invalid')
+					
+					}
+					else{
+						enableAll()
+						form.submit()
+					}
+				}
 				function enableAll() {
 					inputs = document.getElementsByClassName('input')
 					for (let i = 0; i < inputs.length; i++) {
