@@ -209,16 +209,44 @@ Account Ledger
 					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
+
+
 				<div class="modal-body">
 					<div class="form-group">
+
+						<div class="form-check form-switch">
+							<input class="form-check-input" name="ratetoamount" type="checkbox" id="switchdefault">
+							<label class="form-check-label" for="switchdefault">Pay with Discounted Amount</label>
+						</div>
+
+
 						<label for="id_amount">Amount</label>
 						<input type="number" name="amount" min="1" id="id_amount" required class="input form-control">
+						
 						<label for="id_or_num">OR Number</label>
 						<input type="number" name="or_num" id="id_or_num" required class="input form-control">
+						
 						<label for="id_dis_code">Discount Code</label>
-						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
+						<input type="text" name="dis_code" id="id_dis_code" required class="input form-control">
+						
+					
 					</div>
 				</div>
+				<script>
+					dis_amount = document.getElementById('dis_amount')
+					id_dis_code = document.getElementById('id_dis_code')
+					id_or_num = document.getElementById('id_or_num')
+					id_amount = document.getElementById('id_amount')
+					document.getElementById('switchdefault').onchange = function() {
+						id_dis_code.disabled = this.checked;
+						id_or_num.disabled = this.checked;
+
+					};
+					
+				</script>
+
+
+
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
