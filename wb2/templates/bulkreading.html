@@ -6,33 +6,6 @@ Bulk Reading
 {% endblock title %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
-<style>
-	.button2 {
-		background-color: var(--main-color); 
-		color: white;
-		padding: 8px 30px;
-		border: none;
-		border-radius: 15px;
-		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-		transition: all ease 0.3s;
-		margin-top: 30px;
-		margin-bottom: 30px;
-	}
-	.btn.button2:hover {
-		background: var(--main-color);
-		color: #ffffff;
-		border-radius: 30px;
-		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-		transition: all ease-in 0.5s;
-	}
-	.btn.button2:focus {
-		background: var(--main-color);
-		color: #ffffff;
-		border-radius: 30px;
-		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-		transition: all 0.1s;
-	}
-</style>
 {% endblock style %}
 {% block script %}
 <script src="{% static 'bootstrap.min.js' %}"></script>
@@ -50,397 +23,338 @@ Bulk Reading
 		</button>
 	</div>
 	<div class="col-4 text-center">
-		<h1>Bulk Reading Entry</h1>
+		<h1 >Bulk Reading Entry</h1>
 	</div>
 	<div class="col-4">
 	</div>
 </div>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLongTitle">Bulk Meter Reading Entry</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label for="recipient-name" class="col-form-label">Select Year</label>
-					<select name="year" id="year" class="form-control" required>
-						<option value=""></option>
-						{% for y in years %}
-						<option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>
-						{% endfor %}
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="recipient-name" class="col-form-label">Select Month</label>
-					<select name="month" id="month" class="form-control" required>
-						<option value=""></option>
-						{% for m in months %}
-						<option value="{{m.num}}" {% if m.num == monthval %} selected {% endif %}>{{m.name}}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
-				<button type="button" onclick=go() class="btn btn-primary">Proceed</button>
-				<a id="aydi" style="display: none;" href=""></a>
-			</div>
-			<script>
-				function go(){
-					year = document.getElementById("year")
-					aydi = document.getElementById("aydi")
-					month = document.getElementById("month")
-					if (year.value != "" && month.value != ""){
-						aydi.href = "/meterreading/bulkreading/"+year.value+"/"+month.value+"/10"
-						aydi.click()
-					}
-				}
-			</script>
-		</div>
-	</div>
-</div>
+{% include 'bulkreadingmodal.html'%}
 
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			<div class="row" style="height: 55px;">
-				<div class="col-lg-4 col-md-4 col-sm-12">
-					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
-						<label style="display:flex;">Show
-						<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
-							<option disabled selected value>--Select--</option>
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
-							<option value="0">All</option>
-						</select> entries</label>
+			{% include 'search.html' %}
+			<div class="row">
+				<div class="col-sm-12">
+					<form id="post" action="{% url 'bulkreading' %}?page={{ub.number}}" method="post">
+						{% csrf_token %}
+						<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0" width="100%">
+							<thead class="wb_thead">
+								<tr>
+									<th>Meter Number</th>
+									<th>Account Number</th>
+									<th>Customer</th>
+									<th>Previous Reading</th>
+									<th>Current Reading</th>
+								</tr>
+							</thead>
+							<tbody class="wb_tbody">
+								{% for c in consumers_list %}
+								<tr style="cursor: pointer;" onclick="foc_this('con{{c.con.consumer_id}}_id')">
+									<td>{{c.con.meternumber}}</td>
+									<td>{{c.con.consumer_id}}</td>
+									<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
+									<td>{{c.prev}}</td>
+									<td class="balance p-0 align-middle"><input class="form-control rounded-0 border-0"  title="Current Reading" min="{{c.prev}}" type="number" {% if c.cur == 0 %}onfocus="foc_check('con{{c.con.consumer_id}}_id')" onblur="fcheck('con{{c.con.consumer_id}}_id')"{% endif %} name="con{{c.con.consumer_id}}" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}"></td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<input type="hidden" name="pyear" value="{{year}}">
+						<input type="hidden" name="pmonth" value="{{monthval}}">
+						<input type="hidden" name="psearch" id="fsearch_id" value="{{search}}">
+						<input type="hidden" name="pp" value="{{paginate_by}}">
+						<input type="hidden" name="ppage" value="{{ub.number}}">
+						<div class="row w-100 m-auto pt-2">
+							<div class="col-lg-12 col-md-12 col-sm-12">
+								<button type="submit" class="btn button2">
+									Save
+								</button>
+							</div>
+						</div>
 					</form>
-					<script src="{% static 'jquery/jquery.js' %}"></script>
+					
 					<script>
-						yearselection = document.getElementById("yearselection")
-						selector = document.getElementById("selector")
-						function change() {
-							yearselection.action = selector.value
-							yearselection.submit()
+						function foc_this(id){
+							document.getElementById(id).focus()
 						}
+						function foc_check(id){
+							p = document.getElementById(id)
+							if (p.value == 0){
+								p.value = ''
+							}
+						}
+						function fcheck(id) {
+							p = document.getElementById(id)
+							if (p.value == ''){
+								p.value = 0
+							}
+						}
+						$(document).ready(function() {
+							$("input[type='number']").on('change', function() {
+								$(this).addClass('changed');
+							});
+							$('#post').on('submit', function() {
+								$("input[type='number']:not(.changed)").prop('disabled', true);
+							});
+						});
 					</script>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 text-center">
-					<strong>Bulk Input Reading for {{month}} {{year}}</strong>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12" style=" display: flex; justify-content: flex-end; align-items: flex-end;">
-					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<form action="" id ="form" method="GET" role="form">
-							<label style="float: right;">Search:
-								<input type="search" name="search" id="myInput" onsearch="myFunction()" class="form-control form-control-sm" placeholder="Search..." title="Type in a name" value="{{ search}}">					
-							</label>
-						</form>
-						<script>
-							let myInput = document.getElementById('myInput');
-							form = document.getElementById('form')
-							//on keyup, start the countdown
-							myInput.addEventListener('input', () => {
-								if(myInput.value == "") {
-									var newURL = window.location.href.split("?")[0]
-									form.action = newURL
-									form.submit()
-								};
-							});
-							function myFunction(){
-								var newURL = window.location.href
-								form.action = newURL + "?search="+myInput.value
-								form.submit()
+			</div>
+			<div class="row">
+				<div class="d-flex justify-content-center">
+					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
+						<ul style="display: flex; padding-left: 0; list-style: none;">
+							{% if ub.paginator.num_pages > 5 %}
+								{% if ub.number < 5 %}
+									{% if ub.has_previous %}
+										<a class="add-product-save-link" href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<li class="paginate_button page-item previous">Previous</li>
+										</a>
+									{% else %}
+										<li class="paginate_button disabled page-item previous">Previous</li>
+									{% endif %}
+									{% for i in five %}
+										{% if i == ub.number %}
+											<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item active">{{i}}</li>
+											</a>
+										{% else %}
+											<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item">{{i}}</li>
+											</a>
+										{% endif %}
+									{% endfor %}
+									<li class="paginate_button disabled page-item">...</li>
+									<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+										<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
+									</a>
+									{% if ub.has_next %}
+										<a class="add-product-save-link" href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<li class="paginate_button page-item next">Next</li>
+										</a>
+									{% else %}
+										<li class="paginate_button disabled page-item next">Next</li>
+									{% endif %}
+								{% else %}
+									{% if ub.number > ub.paginator.num_pages|add:'-3'%}
+										{% if ub.has_previous %}
+											<a class="add-product-save-link" href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item previous">Previous</li>
+											</a>
+										{% else %}
+											<li class="paginate_button disabled page-item previous">Previous</li>
+										{% endif %}
+										<a class="add-product-save-link" href="?page=1&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<li class="paginate_button page-item">1</li>
+										</a>
+										<li class="paginate_button disabled page-item">...</li>
+										{% for i in last %}
+											{% if i == ub.number %}
+												<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+													<li class="paginate_button page-item active">{{i}}</li>
+												</a>
+											{% else %}
+												<a class="add-product-save-link" href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+													<li class="paginate_button page-item">{{i}}</li>
+												</a>
+											{% endif %}
+										{% endfor %}
+										{% if ub.number == ub.paginator.num_pages %}
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item active">{{ ub.paginator.num_pages }}</li>
+											</a>
+										{% else %}
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
+											</a>
+										{% endif %}
+										{% if ub.has_next %}
+											<a class="add-product-save-link" href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item next">Next</li>
+											</a>
+										{% else %}
+											<li class="paginate_button disabled page-item next">Next</li>
+										{% endif %}
+									{% else %}
+										{% if ub.has_previous %}
+											<a class="add-product-save-link" href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item previous">Previous</li>
+											</a>
+										{% else %}
+											<li class="paginate_button disabled page-item previous">Previous</li>
+										{% endif %}
+										{% if ub.number > 2 %}
+											<a class="add-product-save-link" href="?page=1&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item">1</li>
+											</a>
+											{% if ub.number > 3 %}
+												<li class="paginate_button disabled page-item">...</li>
+											{% endif %}
+										{% endif %}
+
+										{% for num in ub.paginator.page_range %}
+											{% if ub.number == num %}
+												<a class="add-product-save-link" href="?page={{ num }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+													<li class="paginate_button page-item active">{{ num }}</li>
+												</a>
+											{% elif num > ub.number|add:'-2' and num < ub.number|add:'2' %}
+												<a class="add-product-save-link" href="?page={{ num }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}"> 
+													<li class="paginate_button page-item">{{ num }}</li>
+												</a>
+											{% endif %}
+										{% endfor %}
+
+										{% if ub.number < ub.paginator.num_pages|add:'-2' %}
+											<li class="paginate_button disabled page-item">...</li>
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
+											</a>
+										{% elif ub.number < ub.paginator.num_pages|add:'-1' %} 
+											<a class="add-product-save-link" href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
+											</a>
+										{% endif %}
+										{% if ub.has_next %}
+											<a class="add-product-save-link" href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+												<li class="paginate_button page-item next">Next</li>
+											</a>
+										{% else %}
+											<li class="paginate_button page-item disabled next">Next</li>
+										{% endif %}
+									{% endif %}
+								{% endif %}
+							{% else %}
+								{% if ub.has_previous %}
+									<a href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+										<li class="paginate_button page-item previous">Previous</li>
+									</a>
+								{% else %}
+									<li class="paginate_button disabled page-item previous">Previous</li>
+								{% endif %}
+								{% for i in ub.paginator.page_range %}
+									{% if i == ub.number %}
+										<a href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<li class="paginate_button page-item active">{{i}}</li>
+										</a>
+									{% else %}
+										<a href="?page={{i}}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+											<li class="paginate_button page-item">{{i}}</li>
+										</a>
+									{% endif %}
+								{% endfor %}
+								{% if ub.has_next %}
+									<a href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&fyear={{year}}&fmonth={{monthval}}">
+										<li class="paginate_button page-item next">Next</li>
+									</a>
+								{% else %}
+									<li class="paginate_button disabled page-item next">Next</li>
+								{% endif %}
+							{% endif %}
+						</ul>
+    					<script src="{% static 'jquery/jquery.js' %}"></script>
+						<style>
+							a{		
+								-webkit-touch-callout: none;
+								-webkit-user-select: none;
+								-khtml-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+								cursor: default;
+								text-decoration: none;
 							}
-							window.onload = function() {
-								var input = document.getElementById("myInput");
-								const end = input.value.length;
-								input.setSelectionRange(end, end);
-								input.focus();
+							.paginate_button {
+								cursor: pointer;
+								position: relative;
+								display: block;
+								padding: 0.375rem 0.75rem;
+								font-size: 1rem;
+								color: var(--main-color);
+								text-decoration: none;
+								background-color: white;
+								border: 1px solid #dee2e6;
+								transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 							}
-						</script>
+							.active>.paginate_button, .paginate_button.active {
+								z-index: 3;
+								color: white !important;
+								background-color: var(--main-color);
+								border-color: #dee2e6;
+							}
+							.previous {
+								border-top-left-radius: .375rem;
+								border-bottom-left-radius: .375rem;
+							}
+							.next {
+								border-top-right-radius: .375rem;
+								border-bottom-right-radius: .375rem;
+							}
+							.disabled {		
+								-webkit-touch-callout: none;
+								-webkit-user-select: none;
+								-khtml-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+								cursor: default;
+								color: #6c757d;
+							}
+										
+							.page-link {
+								position: relative;
+								display: block;
+								color: #006c85;
+								text-decoration: none;
+								background-color: #fff;
+								border: 1px solid #dee2e6;
+								transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+							}
+							.page-item.active .page-link {
+								z-index: 3;
+								color: #fff;
+								background-color: #006c85;
+								border-color: #006c85;
+							}
+							.hide {
+								opacity: 0;
+								transition: 0.3s all ease-in-out;
+							}
+
+							.showOnHover:hover .hide {
+								opacity: 1;
+								transition: 0.3s all ease-in-out;
+							}
+							.button2 {
+								background-color: var(--main-color); 
+								color: white;
+								padding: 8px 30px;
+								border: none;
+								border-radius: 15px;
+								box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+								transition: all ease 0.3s;
+								margin-top: 30px;
+								margin-bottom: 30px;
+							}
+							.btn.button2:hover {
+								background: var(--main-color);
+								color: #ffffff;
+								border-radius: 30px;
+								box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+								transition: all ease-in 0.5s;
+							}
+							.btn.button2:focus {
+								background: var(--main-color);
+								color: #ffffff;
+								border-radius: 30px;
+								box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+								transition: all 0.1s;
+							}
+						</style>
 					</div>
 				</div>
 			</div>
-			<form id="post" action="{% url 'bulkreading' year monthval 10 %}" method="post">
-				<div class="row">
-					<div class="col-sm-12">
-							{% csrf_token %}
-							<input type="hidden" id="page_num" name="page_num" value="{{ub.number}}">
-							<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0" width="100%">
-								<thead class="wb_thead">
-									<tr>
-										<th>Meter Number</th>
-										<th>Account Number</th>
-										<th>Customer</th>
-										<th>Previous Reading</th>
-										<th>Current Reading</th>
-									</tr>
-								</thead>
-								<tbody class="wb_tbody">
-									{% for c in consumers_list %}
-									<tr style="cursor: pointer;" onclick="foc_this('con{{c.con.consumer_id}}_id')">
-										<td>{{c.con.meternumber}}</td>
-										<td>{{c.con.consumer_id}}</td>
-										<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
-										<td>{{c.prev}}</td>
-										<td class="balance p-0 align-middle">
-											<input class="form-control rounded-0 border-0" title="Current Reading" min="{{c.prev}}" type="number" {% if c.cur == 0 %}onfocus="foc_check('con{{c.con.consumer_id}}_id')" onblur="check('con{{c.con.consumer_id}}_id')"{% endif %} name="con{{c.con.consumer_id}}" onchange="this.classList.add('changed')" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}">
-										</td>
-									</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						
-						<script>
-							function foc_this(id){
-								document.getElementById(id).focus()
-							}
-							function foc_check(id){
-								p = document.getElementById(id)
-								if (p.value == 0){
-									p.value = ''
-								}
-							}
-							function check(id) {
-								p = document.getElementById(id)
-								if (p.value == ''){
-									p.value = 0
-								}
-							}
-							$(document).ready(function() {
-								$('#post').on('submit', function() {
-									$("input[type='number']:not(.changed)").prop('disabled', true);
-								});
-							});
-						</script>
-					</div>
-				</div>
-				<div class="row d-flex">
-					<div class="col-lg-4 col-md-4 col-sm-12">
-						<button id="form_sub" type="submit" class="btn button2 m-0">
-							Save
-						</button>
-					</div>
-					<div class="col-lg-4 col-md-4 col-sm-12">
-						<div class="d-flex justify-content-center">
-							<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
-								<ul style="display: flex; padding-left: 0; list-style: none;">
-									{% if ub.paginator.num_pages > 5 %}
-										{% if ub.number < 5 %}
-											{% if ub.has_previous %}
-											<a class="save-link" data-href="?page={{ ub.previous_page_number }}" onclick="save_confirm()">
-												<li class="paginate_button page-item previous">Previous</li>
-											</a>
-											{% else %}
-												<li class="paginate_button disabled page-item previous">Previous</li>
-											{% endif %}
-											{% for i in five %}
-												{% if i == ub.number %}
-													<a class="save-link" data-href="?page={{i}}" onclick="save_confirm()">
-														<li class="paginate_button page-item active">{{i}}</li>
-													</a>
-												{% else %}
-													<a class="save-link" data-href="?page={{i}}" onclick="save_confirm()">
-														<li class="paginate_button page-item">{{i}}</li>
-													</a>
-												{% endif %}
-											{% endfor %}
-											<li class="paginate_button disabled page-item">...</li>
-											<a class="save-link" data-href="?page={{ ub.paginator.num_pages }}" onclick="save_confirm()">
-												<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-											</a>
-											{% if ub.has_next %}
-											<a class="save-link" data-href="?page={{ ub.next_page_number }}" onclick="save_confirm()">
-												<li class="paginate_button page-item next">Next</li>
-											</a>
-											{% else %}
-												<li class="paginate_button disabled page-item next">Next</li>
-											{% endif %}
-										{% else %}
-											{% if ub.number > ub.paginator.num_pages|add:'-3'%}
-												{% if ub.has_previous %}
-												<a class="save-link" data-href="?page={{ ub.previous_page_number }}" onclick="save_confirm()">
-													<li class="paginate_button page-item previous">Previous</li>
-												</a>
-												{% else %}
-													<li class="paginate_button disabled page-item previous">Previous</li>
-												{% endif %}
-												<a class="save-link" data-href="?page=1" onclick="save_confirm()">
-													<li class="paginate_button page-item">1</li>
-												</a>
-												<li class="paginate_button disabled page-item">...</li>
-												{% for i in last %}
-													{% if i == ub.number %}
-														<a class="save-link" data-href="?page={{i}}" onclick="save_confirm()">
-															<li class="paginate_button page-item active">{{i}}</li>
-														</a>
-													{% else %}
-														<a class="save-link" data-href="?page={{i}}" onclick="save_confirm()">
-															<li class="paginate_button page-item">{{i}}</li>
-														</a>
-													{% endif %}
-												{% endfor %}
-												{% if ub.number == ub.paginator.num_pages %}
-												<a class="save-link" data-href="?page={{ ub.paginator.num_pages }}" onclick="save_confirm()">
-													<li class="paginate_button page-item active">{{ ub.paginator.num_pages }}</li>
-												</a>
-												{% else %}
-												<a class="save-link" data-href="?page={{ ub.paginator.num_pages }}" onclick="save_confirm()">
-													<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-												</a>
-												{% endif %}
-												{% if ub.has_next %}
-												<a class="save-link" data-href="?page={{ ub.next_page_number }}" onclick="save_confirm()">
-													<li class="paginate_button page-item next">Next</li>
-												</a>
-												{% else %}
-													<li class="paginate_button disabled page-item next">Next</li>
-												{% endif %}
-											{% else %}
-												{% if ub.has_previous %}
-													<a class="save-link" data-href="?page={{ ub.previous_page_number }}" onclick="save_confirm()">
-														<li class="paginate_button page-item previous">Previous</li>
-													</a>
-												{% else %}
-													<li class="paginate_button disabled page-item previous">Previous</li>
-												{% endif %}
-												{% if ub.number > 2 %}
-													<a class="save-link" data-href="?page=1" onclick="save_confirm()">
-														<li class="paginate_button page-item">1</li>
-													</a>
-													{% if ub.number > 3 %}
-														<li class="paginate_button disabled page-item">...</li>
-													{% endif %}
-												{% endif %}
-
-												{% for num in ub.paginator.page_range %}
-												{% if ub.number == num %}<a class="save-link" data-href="?page={{ num }}" onclick="save_confirm()">
-												<li class="paginate_button page-item active">
-													{{ num }}
-												</li></a>
-												{% elif num > ub.number|add:'-2' and num < ub.number|add:'2' %}
-													<a class="save-link" data-href="?page={{ num }}" onclick="save_confirm()"> 
-														<li class="paginate_button page-item">{{ num }}</li>
-													</a>
-													{% endif %}
-													{% endfor %}
-
-												{% if ub.number < ub.paginator.num_pages|add:'-2' %}
-													<li class="paginate_button disabled page-item">...</li>
-													<a class="save-link" data-href="?page={{ ub.paginator.num_pages }}" onclick="save_confirm()">
-														<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-													</a>
-												{% elif ub.number < ub.paginator.num_pages|add:'-1' %} 
-													<a class="save-link" data-href="?page={{ ub.paginator.num_pages }}" onclick="save_confirm()">
-														<li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-													</a>
-												{% endif %}
-												{% if ub.has_next %}
-													<a class="save-link" data-href="?page={{ ub.next_page_number }}" onclick="save_confirm()">
-														<li class="paginate_button page-item next">Next</li>
-													</a>
-												{% else %}
-													<li class="paginate_button page-item disabled next">Next</li>
-												{% endif %}
-											{% endif %}
-										{% endif %}
-									{% endif %}
-								</ul>
-								<script>
-									post = document.getElementById('post')
-									page_num = document.getElementById('page_num')
-									$(document).ready(function() { 
-										$('.save-link').click(function() {
-											$("input[type='number']:not(.changed)").prop('disabled', true);
-											page_num.value = $(this).data("href").split("=")[1]
-											post.action = post.action + $(this).data("href");
-											post.submit();
-										});
-									});
-								</script>
-								<style>
-									a{
-										-webkit-touch-callout: none;
-										-webkit-user-select: none;
-										-khtml-user-select: none;
-										-moz-user-select: none;
-										-ms-user-select: none;
-										user-select: none;
-										cursor: default;
-										text-decoration: none;
-									}
-									.paginate_button {
-										cursor: pointer;
-										position: relative;
-										display: block;
-										padding: 0.375rem 0.75rem;
-										font-size: 1rem;
-										color: var(--main-color);
-										text-decoration: none;
-										background-color: white;
-										border: 1px solid #dee2e6;
-										transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-									}
-									.active>.paginate_button, .paginate_button.active {
-										z-index: 3;
-										color: white !important;
-										background-color: var(--main-color);
-										border-color: #dee2e6;
-									}
-									.previous {
-										border-top-left-radius: .375rem;
-										border-bottom-left-radius: .375rem;
-									}
-									.next {
-										border-top-right-radius: .375rem;
-										border-bottom-right-radius: .375rem;
-									}
-									.disabled {
-										-webkit-touch-callout: none;
-										-webkit-user-select: none;
-										-khtml-user-select: none;
-										-moz-user-select: none;
-										-ms-user-select: none;
-										user-select: none;
-										cursor: default;
-										color: #6c757d;
-									}
-									.page-link {
-										position: relative;
-										display: block;
-										color: #006c85;
-										text-decoration: none;
-										background-color: #fff;
-										border: 1px solid #dee2e6;
-										transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-									}
-									.page-item.active .page-link {
-										z-index: 3;
-										color: #fff;
-										background-color: #006c85;
-										border-color: #006c85;
-									}
-									.hide {
-										opacity: 0;
-										transition: 0.3s all ease-in-out;
-									}
-
-									.showOnHover:hover .hide {
-										opacity: 1;
-										transition: 0.3s all ease-in-out;
-									}
-								</style>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-4 col-md-4 col-sm-12">
-					</div>
-				</div>
-			</form>
 		</div>
 	</div>
 </div>

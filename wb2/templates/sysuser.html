@@ -13,7 +13,6 @@ System User
         opacity: 0;
         transition: 0.3s all ease-in-out;
     }
-
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
@@ -50,92 +49,23 @@ System User
 <script src="{% static 'jquery.js' %}"></script>
 <script src="{% static 'jspdf.min.js' %}"></script>
 <script src="{% static 'bootstrap.min.js' %}"></script>
-<script>
-    $(document).ready(function () {
-        $('#table').DataTable({
-            order: [[1, 'asc']],
-        });
-    });
-</script>
 {% endblock script %}
 {% block sysuser %}
 <div class="pt-3 row">
-    <div class="col-5 align-middle">
+    <div class="col-4 align-middle">
         <a href="{% url 'user_creation' %}">
             <button class="btn button2"><img style="width: 23px;" src="{% static '/images/person_add_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                 <span style="padding: 10px; font-family: Arial;">Add System User</span>
             </button>
         </a>
     </div>
-    <div class="col-7">
-        <h1 class="">System Users</h1>
+    <div class="col-4">
+        <h1 class="text-center">System Users</h1>
+    </div>
+    <div class="col-4">
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-12 col-md-6">
-        <form id="yearselection" style="padding: 10px; " class="dataTables_length" action="" method="GET">
-            <label style="display:flex;">Show
-                <select id="selector" name="p" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option disabled selected value>--Select--</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="0">All</option>
-                </select> entries
-            </label>
-        </form>
-        <script src="{% static 'jquery/jquery.js' %}"></script>
-    </div>
-    <div class="col-sm-12 col-md-6">
-        <div id="table_filter" style="float:right; padding: 10px;" class="dataTables_filter">
-            <form action="" id="form" method="GET" role="form">
-                <img style="width: 35px;" src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
-                <label style="float: right;">
-                    <input type="search" name="search" id="myInput" onsearch="myFunction()"
-                        class="form-control form-control-sm" placeholder="Search..."
-                        value="{{ search}}">
-                </label>
-            </form>
-            <style>
-                form {
-                    text-align: right !important;
-                    width: -moz-fit-content;
-                    width: fit-content;
-                }
-
-                #myInput {
-                    margin-left: .5em;
-                    display: inline-block;
-                    width: auto;
-                }
-            </style>
-            <script>
-                let myInput = document.getElementById('myInput');
-                form = document.getElementById('form')
-                //on keyup, start the countdown
-                myInput.addEventListener('input', () => {
-                    if (myInput.value == "") {
-                        var newURL = window.location.href.split("?")[0]
-                        form.action = newURL
-                        form.submit()
-                    };
-                });
-                function myFunction() {
-                    var newURL = window.location.href
-                    form.action = newURL + "?search=" + myInput.value
-                    form.submit()
-                }
-                window.onload = function () {
-                    var input = document.getElementById("myInput");
-                    const end = input.value.length;
-                    input.setSelectionRange(end, end);
-                    input.focus();
-                }
-            </script>
-        </div>
-    </div>
-</div>
+{% include 'search.html' %}
 <section id="main-content">
     <section class="wrapper">
         <div class="table-responsive ">
@@ -160,7 +90,7 @@ System User
                         <td class="align-middle text-center">{{t.email }}</td>
                         <td class="align-middle text-center">{{t.role}}</td>
                         <td class="align-middle text-center p-0">
-                            <a href="{%url 'user_edit' t.username%}">
+                            <a href="{% url 'user_edit' t.username %}">
                                 <button class="btn hide btn-success btn-sm " data-toggle="modal" type="button"
                                     data-placement="top" title="Edit">
                                     <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />
@@ -192,7 +122,7 @@ System User
             <ul style="display: flex; padding-left: 0; list-style: none;">
                 {% if sys_list.paginator.num_pages > 5 %}
                 {% if sys_list.number < 5 %} {% if sys_list.has_previous %} <a
-                    href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                    href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                     <li class="paginate_button page-item previous">Previous</li>
                     </a>
                     {% else %}
@@ -200,21 +130,21 @@ System User
                     {% endif %}
                     {% for i in five %}
                     {% if i == sys_list.number %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">{{i}}</li>
                     </a>
                     {% else %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{i}}</li>
                     </a>
                     {% endif %}
                     {% endfor %}
                     <li class="paginate_button disabled page-item">...</li>
-                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}</li>
                     </a>
                     {% if sys_list.has_next %}
-                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item next">Next</li>
                     </a>
                     {% else %}
@@ -223,39 +153,39 @@ System User
                     {% else %}
                     {% if sys_list.number > sys_list.paginator.num_pages|add:'-3'%}
                     {% if sys_list.has_previous %}
-                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item previous">Previous</li>
                     </a>
                     {% else %}
                     <li class="paginate_button disabled page-item previous">Previous</li>
                     {% endif %}
-                    <a href="?page=1&search={{search}}">
+                    <a href="?page=1&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">1</li>
                     </a>
                     <li class="paginate_button disabled page-item">...</li>
                     {% for i in last %}
                     {% if i == sys_list.number %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">{{i}}</li>
                     </a>
                     {% else %}
-                    <a href="?page={{i}}&search={{search}}">
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{i}}</li>
                     </a>
                     {% endif %}
                     {% endfor %}
                     {% if sys_list.number == sys_list.paginator.num_pages %}
-                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">{{ sys_list.paginator.num_pages }}
                         </li>
                     </a>
                     {% else %}
-                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}</li>
                     </a>
                     {% endif %}
                     {% if sys_list.has_next %}
-                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item next">Next</li>
                     </a>
                     {% else %}
@@ -263,14 +193,14 @@ System User
                     {% endif %}
                     {% else %}
                     {% if sys_list.has_previous %}
-                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item previous">Previous</li>
                     </a>
                     {% else %}
                     <li class="paginate_button disabled page-item previous">Previous</li>
                     {% endif %}
                     {% if sys_list.number > 2 %}
-                    <a href="?page=1&search={{search}}">
+                    <a href="?page=1&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">1</li>
                     </a>
                     {% if sys_list.number > 3 %}
@@ -279,13 +209,13 @@ System User
                     {% endif %}
 
                     {% for num in sys_list.paginator.page_range %}
-                    {% if sys_list.number == num %}<a href="?page={{ num }}&search={{search}}">
+                    {% if sys_list.number == num %}<a href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item active">
                             {{ num }}
                         </li>
                     </a>
                     {% elif num > sys_list.number|add:'-2' and num < sys_list.number|add:'2' %} <a
-                        href="?page={{ num }}&search={{search}}">
+                        href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
                         <li class="paginate_button page-item">{{ num }}</li>
                         </a>
                         {% endif %}
@@ -293,18 +223,18 @@ System User
 
                         {% if sys_list.number < sys_list.paginator.num_pages|add:'-2' %} <li
                             class="paginate_button disabled page-item">...</li>
-                            <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                            <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                                 <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}
                                 </li>
                             </a>
                             {% elif sys_list.number < sys_list.paginator.num_pages|add:'-1' %} <a
-                                href="?page={{ sys_list.paginator.num_pages }}&search={{search}}">
+                                href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
                                 <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}
                                 </li>
                                 </a>
                                 {% endif %}
                                 {% if sys_list.has_next %}
-                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item next">Next</li>
                                 </a>
                                 {% else %}
@@ -314,7 +244,7 @@ System User
                                 {% endif %}
                                 {% else %}
                                 {% if sys_list.has_previous %}
-                                <a href="?page={{ sys_list.previous_page_number }}&search={{search}}">
+                                <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item previous">Previous</li>
                                 </a>
                                 {% else %}
@@ -322,17 +252,17 @@ System User
                                 {% endif %}
                                 {% for i in sys_list.paginator.page_range %}
                                 {% if i == sys_list.number %}
-                                <a href="?page={{i}}&search={{search}}">
+                                <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item active">{{i}}</li>
                                 </a>
                                 {% else %}
-                                <a href="?page={{i}}&search={{search}}">
+                                <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item">{{i}}</li>
                                 </a>
                                 {% endif %}
                                 {% endfor %}
                                 {% if sys_list.has_next %}
-                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}">
+                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
                                     <li class="paginate_button page-item next">Next</li>
                                 </a>
                                 {% else %}

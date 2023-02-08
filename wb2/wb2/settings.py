@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'index',
     'active_link',
     'django.contrib.humanize',
-    'ajax_datatable',
     'crispy_forms',
 ]
 

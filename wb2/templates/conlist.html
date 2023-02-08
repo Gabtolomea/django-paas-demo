@@ -99,65 +99,7 @@ Consumer List
 <div class="container-fluid p-0">
 	<div class="table-responsive">
 		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-			<div class="row">
-				<div class="col-sm-12 col-md-6">
-					<form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
-						<label style="display:flex;">Show
-							<select id="selector" style="width: 100px; margin: 0 5px;" class="form-select form-select-sm" onchange="change()">
-								<option disabled selected value>--Select--</option>
-								<option value="10">10</option>
-								<option value="25">25</option>
-								<option value="50">50</option>
-								<option value="100">100</option>
-								<option value="0">All</option>
-							</select> entries</label>
-					</form>
-					<script>
-						yearselection = document.getElementById("yearselection")
-						selector = document.getElementById("selector")
-						function change() {
-							yearselection.action = selector.value
-							yearselection.submit('')
-						}
-					</script>
-				</div>
-				<div class="col-sm-12 col-md-6">
-					<div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-						<img style="width: 35px;" src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
-						<label>
-							<form class="input-group" action="" id="form" method="GET" role="form">
-								<input type="search" name="search" onsearch="myFunction()" id="myInput"
-									class="form-control form-control-sm" placeholder="Search..."
-									title="Type in a name" value="{{search}}">
-							</form>
-
-							<script>
-								let myInput = document.getElementById('myInput');
-								form = document.getElementById('form')
-								//on keyup, start the countdown
-								myInput.addEventListener('input', () => {
-									if (myInput.value == "") {
-										var newURL = window.location.href.split("?")[0]
-										form.action = newURL
-										form.submit()
-									};
-								});
-								function myFunction() {
-									var newURL = window.location.href
-									form.action = newURL + "?search=" + myInput.value
-									form.submit()
-								}
-								window.onload = function () {
-									var input = document.getElementById("myInput");
-									const end = input.value.length;
-									input.setSelectionRange(end, end);
-									input.focus();
-								}
-							</script>
-						</label>
-					</div>
-				</div>
-			</div>
+			{% include 'search.html' %}
 			<script src="{% static 'jquery/jquery.js' %}"></script>
 			<div class="row">
 				<div class="col-sm-12">
@@ -169,8 +111,9 @@ Consumer List
 								<th style="min-width: 100px;">Name</th>
 								<th style="min-width: 100px;">Address</th>
 								<th style="min-width: 100px;">Meter Number</th>
+								<th style="min-width: 100px;">Date Added </th>
 								<th scope="col">Connection</th>
-								<th scope="col">Delete</th>
+								<th scope="col">Condemn</th>
 							</tr>
 						</thead>
 						<tbody class="wb_tbody">
@@ -187,6 +130,8 @@ Consumer List
 									class="{{t.style}}">
 									{{con.meternumber}}
 								</td>
+								<td class='clickable-row' data-href="{% url 'consumerupdate' con.consumer_id %}">
+									{{con.date_added}}</td>
 								<td class="p-0 align-middle" style="cursor: default;">
 									{% if con.disconnectionflag %}
 									<a title="Disconnect" href="{%url 'reconnectconsumer' con.consumer_id %}">
@@ -208,14 +153,19 @@ Consumer List
 									{% endif %}
 								</td>
 								<td class="p-0 align-middle" style="cursor: default;">
-									<a title="Delete" href="{%url 'deleteconsumer' con.consumer_id %}">
-										<button class="btn btn-danger btn-sm rounded-0" type="button"
-											onclick="return confirm('Are you sure you want to delete {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
-											data-placement="top" title="Delete">
-											<img style="width:20px;"
-												src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+									<form action="{%url 'deleteconsumer' %}" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="page" value="{{consumer_list.number}}">
+										<input type="hidden" name="search" value="{{search}}">
+										<input type="hidden" name="p" value="{{paginate_by}}">
+										<input type="hidden" name="id" value="{{con.consumer_id}}">
+										<button class="btn btn-danger btn-sm rounded-0" type="submit"
+											onclick="return confirm('Are you sure you want to Codemn {{con.lastname}}, {{con.firstname}} {{con.middlename}}?')"
+											data-placement="top" title="Condemn">
+											<img style="width:20px;" src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
 										</button>
-									</a>
+
+									</form>
 								</td>
 
 							</tr>
@@ -237,7 +187,7 @@ Consumer List
 						<ul style="display: flex; padding-left: 0; list-style: none;">
 							{% if consumer_list.paginator.num_pages > 5 %}
 							{% if consumer_list.number < 5 %} {% if consumer_list.has_previous %} <a
-								href="?page={{ consumer_list.previous_page_number }}">
+								href="?page={{ consumer_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
 								<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
@@ -245,21 +195,21 @@ Consumer List
 								{% endif %}
 								{% for i in five %}
 								{% if i == consumer_list.number %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item active">{{i}}</li>
 								</a>
 								{% else %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{i}}</li>
 								</a>
 								{% endif %}
 								{% endfor %}
 								<li class="paginate_button disabled page-item">...</li>
-								<a href="?page={{ consumer_list.paginator.num_pages }}">
+								<a href="?page={{ consumer_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
 								</a>
 								{% if consumer_list.has_next %}
-								<a href="?page={{ consumer_list.next_page_number }}">
+								<a href="?page={{ consumer_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item next">Next</li>
 								</a>
 								{% else %}
@@ -268,39 +218,39 @@ Consumer List
 								{% else %}
 								{% if consumer_list.number > consumer_list.paginator.num_pages|add:'-3'%}
 								{% if consumer_list.has_previous %}
-								<a href="?page={{ consumer_list.previous_page_number }}">
+								<a href="?page={{ consumer_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
 								<li class="paginate_button disabled page-item previous">Previous</li>
 								{% endif %}
-								<a href="?page=1">
+								<a href="?page=1&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">1</li>
 								</a>
 								<li class="paginate_button disabled page-item">...</li>
 								{% for i in last %}
 								{% if i == consumer_list.number %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item active">{{i}}</li>
 								</a>
 								{% else %}
-								<a href="?page={{i}}">
+								<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{i}}</li>
 								</a>
 								{% endif %}
 								{% endfor %}
 								{% if consumer_list.number == consumer_list.paginator.num_pages %}
-								<a href="?page={{ consumer_list.paginator.num_pages }}">
+								<a href="?page={{ consumer_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item active">{{ consumer_list.paginator.num_pages }}
 									</li>
 								</a>
 								{% else %}
-								<a href="?page={{ consumer_list.paginator.num_pages }}">
+								<a href="?page={{ consumer_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
 								</a>
 								{% endif %}
 								{% if consumer_list.has_next %}
-								<a href="?page={{ consumer_list.next_page_number }}">
+								<a href="?page={{ consumer_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item next">Next</li>
 								</a>
 								{% else %}
@@ -308,14 +258,14 @@ Consumer List
 								{% endif %}
 								{% else %}
 								{% if consumer_list.has_previous %}
-								<a href="?page={{ consumer_list.previous_page_number }}">
+								<a href="?page={{ consumer_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item previous">Previous</li>
 								</a>
 								{% else %}
 								<li class="paginate_button disabled page-item previous">Previous</li>
 								{% endif %}
 								{% if consumer_list.number > 2 %}
-								<a href="?page=1">
+								<a href="?page=1&search={{search}}&p={{paginate_by}}">
 									<li class="paginate_button page-item">1</li>
 								</a>
 								{% if consumer_list.number > 3 %}
@@ -338,16 +288,16 @@ Consumer List
 
 									{% if consumer_list.number < consumer_list.paginator.num_pages|add:'-2' %} <li
 										class="paginate_button disabled page-item">...</li>
-										<a href="?page={{ consumer_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
+										<a href="?page={{ consumer_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages}}</li>
 										</a>
 										{% elif consumer_list.number < consumer_list.paginator.num_pages|add:'-1' %} <a
-											href="?page={{ consumer_list.paginator.num_pages }}">
-											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages }}</li>
+											href="?page={{ consumer_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+											<li class="paginate_button page-item">{{ consumer_list.paginator.num_pages}}</li>
 											</a>
 											{% endif %}
 											{% if consumer_list.has_next %}
-											<a href="?page={{ consumer_list.next_page_number }}">
+											<a href="?page={{ consumer_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 											{% else %}
@@ -357,7 +307,7 @@ Consumer List
 											{% endif %}
 											{% else %}
 											{% if consumer_list.has_previous %}
-											<a href="?page={{ consumer_list.previous_page_number }}&search={{search}}">
+											<a href="?page={{ consumer_list.previous_page_number }}&search={{search}}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item previous">Previous</li>
 											</a>
 											{% else %}
@@ -365,17 +315,17 @@ Consumer List
 											{% endif %}
 											{% for i in consumer_list.paginator.page_range %}
 											{% if i == consumer_list.number %}
-											<a href="?page={{i}}&search={{search}}">
+											<a href="?page={{i}}&search={{search}}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item active">{{i}}</li>
 											</a>
 											{% else %}
-											<a href="?page={{i}}&search={{search}}">
+											<a href="?page={{i}}&search={{search}}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item">{{i}}</li>
 											</a>
 											{% endif %}
 											{% endfor %}
 											{% if consumer_list.has_next %}
-											<a href="?page={{ consumer_list.next_page_number }}&search={{search}}">
+											<a href="?page={{ consumer_list.next_page_number }}&search={{search}}&search={{search}}&p={{paginate_by}}">
 												<li class="paginate_button page-item next">Next</li>
 											</a>
 											{% else %}
@@ -474,5 +424,6 @@ Consumer List
 	}
 
 </script>
+
 
 {% endblock consumer_list %}

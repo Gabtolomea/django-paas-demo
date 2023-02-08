@@ -44,6 +44,7 @@ Unsettled Bills
     .dataTables_empty {
         text-align: center;
     }
+
 </style>
 {% endblock style %}
 {% block unsettled_bills %}
@@ -51,111 +52,35 @@ Unsettled Bills
     <div class="col-12">
         <h1 class="text-center">Unsettled Bills</h1>
     </div>
-
 </div>
 <div class="container-fluid p-0">
     <div class="table-responsive">
         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <form id="yearselection" style="padding: 10px;" class="dataTables_length" action="" method="GET">
-                        <label style="display:flex;">Show
-                            <select id="selector" style="width: 100px; margin: 0 5px;"
-                                class="form-select form-select-sm" onchange="change()">
-                                <option disabled selected value>--Select--</option>
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                                <option value="0">All</option>
-                            </select> entries</label>
-                    </form>
-                    <script>
-                        yearselection = document.getElementById("yearselection")
-                        selector = document.getElementById("selector")
-                        function change() {
-                            yearselection.action = selector.value
-                            yearselection.submit('')
-                        }
-                    </script>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12 text-center align-self-center">
-                    <label class="">
-                        <strong>Total Balance of all Unsettled Bills : &#8369; {{tb.tots|floatformat:2|intcomma}}</strong>
-                    </label>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12" style=" display: flex; justify-content: flex-end; ">
-                    <div id="table_filter" style="padding: 10px;" class="dataTables_filter">
-                        <form action="" id="form" method="GET" role="form">
-                            <label style="float: right; margin-left: 315px;">
-                                <img style="width: 35px;"
-                                    src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
-                                <input type="search" onsearch="myFunction()" name="search" id="myInput"
-                                    class="form-control form-control-sm" placeholder="Search..."
-                                    value="{{ search}}">
-                            </label>
-                        </form>
-                        <style>
-                            form {
-                                text-align: right !important;
-                                width: fit-content;
-                            }
-
-                            #myInput {
-                                margin-left: .5em;
-                                display: inline-block;
-                                width: auto;
-                            }
-                        </style>
-
-                        <script>
-                            let myInput = document.getElementById('myInput');
-                            form = document.getElementById('form')
-                            //on keyup, start the countdown
-                            myInput.addEventListener('input', () => {
-                                if (myInput.value == "") {
-                                    var newURL = window.location.href.split("?")[0]
-                                    form.action = newURL
-                                    form.submit()
-                                };
-                            });
-                            function myFunction() {
-                                var newURL = window.location.href
-                                form.action = newURL + "?search=" + myInput.value
-                                form.submit()
-                            }
-                            window.onload = function () {
-                                var input = document.getElementById("myInput");
-                                const end = input.value.length;
-                                input.setSelectionRange(end, end);
-                                input.focus();
-                            }
-                        </script>
-                    </div>
-                </div>
-            </div>
+			{% include 'search.html' %}
             <div class="row">
                 <div class="col-sm-12">
                     <table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0"
                         width="100%">
                         <thead class="wb_thead">
-                            <tr>
-                                <th style="min-width: 100px;">Account ID</th>
-                                <th style="min-width: 100px;">Name</th>
-                                <th style="min-width: 100px;">Meter Number</th>
-                                <th style="min-width: 100px;">Address</th>
-                                <th style="min-width: 100px;">Current Balance</th>
-                            </tr>
+
+                                <tr>
+                                    <th style="min-width: 100px;">Account ID</th>
+                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;"data-href="?sort_field=lastname&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Name</a></th>
+                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;"data-href="?sort_field=meternumber&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Meter Number</th>
+                                    <th style="min-width: 100px;" class='clickable-row' onclick="click" style="cursor: pointer;" data-href="?sort_field=installation_address&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Address</th>
+                                    <th style="min-width: 100px;"class='clickable-row' onclick="click" style="cursor: pointer;" data-href="?sort_field=-current_bal&sort_order={{ "sort_order|default:asc == asc ? desc : asc" }}&p={{paginate_by}}">Current Balance</th>
+                                </tr>
+                            
                         </thead>
                         <tbody class="wb_tbody">
                             {% if table %}
                             {% for ub in table %}
                             <tr class='clickable-row' onclick="click" style="cursor: pointer;"
                                 data-href="{% url 'view_unsettled_bills' ub.u.consumer_id ub.y %}">
-                                <td>{{ub.u.consumer_id}}</td>
+                                <td class="text-center">{{ub.u.consumer_id}}</td> 
                                 <td>{{ub.u.lastname}}, {{ub.u.firstname}} {{ub.u.middlename}}</td>
-                                <td>{{ub.u.meternumber}}</td>
-                                <td>{{ub.u.installation_address}}</td>
+                                <td class="text-center">{{ub.u.meternumber}}</td>
+                                <td class="text-center">{{ub.u.installation_address}}</td>
                                 <td>&#8369; {{ub.u.current_bal|floatformat:2|intcomma}}</td>
                             </tr>
                             {% endfor %}
@@ -179,127 +104,152 @@ Unsettled Bills
             <div class="row">
                 <div class="d-flex justify-content-center">
                     <div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
-                        <ul style="display: flex; padding-left: 0; list-style: none;">
-                            {% if ub.paginator.num_pages > 5 %}
-                            {% if ub.number < 5 %} {% if ub.has_previous %} <a
-                                href="?page={{ ub.previous_page_number }}">
-                                <li class="paginate_button page-item previous">Previous</li>
-                                </a>
+                        <ul style="display: flex; padding-left: 0; list-style: none;">{% if ub.paginator.num_pages > 5 %}
+                            {% if ub.number < 5 %} 
+                                {% if ub.has_previous %} 
+                                    <a href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                        <li class="paginate_button page-item previous">Previous</li>
+                                    </a>
                                 {% else %}
-                                <li class="paginate_button disabled page-item previous">Previous</li>
+                                    <li class="paginate_button disabled page-item previous">Previous</li>
                                 {% endif %}
                                 {% for i in five %}
-                                {% if i == ub.number %}
-                                <a href="?page={{i}}">
-                                    <li class="paginate_button page-item active">{{i}}</li>
-                                </a>
-                                {% else %}
-                                <a href="?page={{i}}">
-                                    <li class="paginate_button page-item">{{i}}</li>
-                                </a>
-                                {% endif %}
-                                {% endfor %}
-                                <li class="paginate_button disabled page-item">...</li>
-                                <a href="?page={{ ub.paginator.num_pages }}">
-                                    <li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-                                </a>
-                                {% if ub.has_next %}
-                                <a href="?page={{ ub.next_page_number }}">
-                                    <li class="paginate_button page-item next">Next</li>
-                                </a>
-                                {% else %}
-                                <li class="paginate_button disabled page-item next">Next</li>
-                                {% endif %}
-                                {% else %}
-                                {% if ub.number > ub.paginator.num_pages|add:'-3'%}
-                                {% if ub.has_previous %}
-                                <a href="?page={{ ub.previous_page_number }}">
-                                    <li class="paginate_button page-item previous">Previous</li>
-                                </a>
-                                {% else %}
-                                <li class="paginate_button disabled page-item previous">Previous</li>
-                                {% endif %}
-                                <a href="?page=1">
-                                    <li class="paginate_button page-item">1</li>
-                                </a>
-                                <li class="paginate_button disabled page-item">...</li>
-                                {% for i in last %}
-                                {% if i == ub.number %}
-                                <a href="?page={{i}}">
-                                    <li class="paginate_button page-item active">{{i}}</li>
-                                </a>
-                                {% else %}
-                                <a href="?page={{i}}">
-                                    <li class="paginate_button page-item">{{i}}</li>
-                                </a>
-                                {% endif %}
-                                {% endfor %}
-                                {% if ub.number == ub.paginator.num_pages %}
-                                <a href="?page={{ ub.paginator.num_pages }}">
-                                    <li class="paginate_button page-item active">{{ ub.paginator.num_pages }}</li>
-                                </a>
-                                {% else %}
-                                <a href="?page={{ ub.paginator.num_pages }}">
-                                    <li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
-                                </a>
-                                {% endif %}
-                                {% if ub.has_next %}
-                                <a href="?page={{ ub.next_page_number }}">
-                                    <li class="paginate_button page-item next">Next</li>
-                                </a>
-                                {% else %}
-                                <li class="paginate_button disabled page-item next">Next</li>
-                                {% endif %}
-                                {% else %}
-                                {% if ub.has_previous %}
-                                <a href="?page={{ ub.previous_page_number }}">
-                                    <li class="paginate_button page-item previous">Previous</li>
-                                </a>
-                                {% else %}
-                                <li class="paginate_button disabled page-item previous">Previous</li>
-                                {% endif %}
-                                {% if ub.number > 2 %}
-                                <a href="?page=1">
-                                    <li class="paginate_button page-item">1</li>
-                                </a>
-                                {% if ub.number > 3 %}
-                                <li class="paginate_button disabled page-item">...</li>
-                                {% endif %}
-                                {% endif %}
-
-                                {% for num in ub.paginator.page_range %}
-                                {% if ub.number == num %}<a href="?page={{ num }}">
-                                    <li class="paginate_button page-item active">
-                                        {{ num }}
-                                    </li>
-                                </a>
-                                {% elif num > ub.number|add:'-2' and num < ub.number|add:'2' %} <a
-                                    href="?page={{ num }}">
-                                    <li class="paginate_button page-item">{{ num }}</li>
-                                    </a>
+                                    {% if i == ub.number %}
+                                        <a href="?page={{i}}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item active">{{i}}</li>
+                                        </a>
+                                    {% else %}
+                                        <a href="?page={{i}}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item">{{i}}</li>
+                                        </a>
                                     {% endif %}
+                                {% endfor %}
+                                <li class="paginate_button disabled page-item">...</li>
+                                <a href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                    <li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
+                                </a>
+                                {% if ub.has_next %}
+                                    <a href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                        <li class="paginate_button page-item next">Next</li>
+                                    </a>
+                                {% else %}
+                                    <li class="paginate_button disabled page-item next">Next</li>
+                                {% endif %}
+                            {% else %}
+                                {% if ub.number > ub.paginator.num_pages|add:'-3'%}
+                                    {% if ub.has_previous %}
+                                        <a href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item previous">Previous</li>
+                                        </a>
+                                    {% else %}
+                                        <li class="paginate_button disabled page-item previous">Previous</li>
+                                    {% endif %}
+                                    <a href="?page=1&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                        <li class="paginate_button page-item">1</li>
+                                    </a>
+                                    <li class="paginate_button disabled page-item">...</li>
+                                    {% for i in last %}
+                                        {% if i == ub.number %}
+                                            <a href="?page={{i}}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                                <li class="paginate_button page-item active">{{i}}</li>
+                                            </a>
+                                        {% else %}
+                                            <a href="?page={{i}}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                                <li class="paginate_button page-item">{{i}}</li>
+                                            </a>
+                                        {% endif %}
                                     {% endfor %}
-
-                                    {% if ub.number < ub.paginator.num_pages|add:'-2' %} <li
-                                        class="paginate_button disabled page-item">...</li>
-                                        <a href="?page={{ ub.paginator.num_pages }}">
+                                    {% if ub.number == ub.paginator.num_pages %}
+                                        <a href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item active">{{ ub.paginator.num_pages }}</li>
+                                        </a>
+                                    {% else %}
+                                        <a href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
                                             <li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
                                         </a>
-                                        {% elif ub.number < ub.paginator.num_pages|add:'-1' %} <a
-                                            href="?page={{ ub.paginator.num_pages }}">
-                                            <li class="paginate_button page-item">{{ ub.paginator.num_pages }}</li>
+                                    {% endif %}
+                                    {% if ub.has_next %}
+                                        <a href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item next">Next</li>
+                                        </a>
+                                    {% else %}
+                                        <li class="paginate_button disabled page-item next">Next</li>
+                                    {% endif %}
+                                {% else %}
+                                    {% if ub.has_previous %}
+                                        <a href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item previous">Previous</li>
+                                        </a>
+                                    {% else %}
+                                        <li class="paginate_button disabled page-item previous">Previous</li>
+                                    {% endif %}
+                                    {% if ub.number > 2 %}
+                                        <a href="?page=1&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item">1</li>
+                                        </a>
+                                        {% if ub.number > 3 %}
+                                            <li class="paginate_button disabled page-item">...</li>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% for num in ub.paginator.page_range %}
+                                        {% if ub.number == num %}
+                                            <a href="?page={{ num }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                                <li class="paginate_button page-item active">{{ num }}</li>
                                             </a>
-                                            {% endif %}
-                                            {% if ub.has_next %}
-                                            <a href="?page={{ ub.next_page_number }}">
-                                                <li class="paginate_button page-item next">Next</li>
-                                            </a>
-                                            {% else %}
-                                            <li class="paginate_button page-item disabled next">Next</li>
-                                            {% endif %}
-                                            {% endif %}
-                                            {% endif %}
-                                            {% endif %}
+                                        {% elif num > ub.number|add:'-2' and num < ub.number|add:'2' %} 
+                                        <a href="?page={{ num }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item">{{ num }}</li>
+                                        </a>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if ub.number < ub.paginator.num_pages|add:'-2' %} 
+                                        <li class="paginate_button disabled page-item">...</li>
+                                        <a href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item">{{ ub.paginator.num_pages }} </li>
+                                        </a>
+                                    {% elif ub.number < ub.paginator.num_pages|add:'-1' %} 
+                                        <a href="?page={{ ub.paginator.num_pages }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item">{{ ub.paginator.num_pages }} </li>
+                                        </a>
+                                    {% endif %}
+                                    {% if ub.has_next %}
+                                        <a href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                            <li class="paginate_button page-item next">Next</li>
+                                        </a>
+                                    {% else %}
+                                        <li class="paginate_button page-item disabled next">Next</li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if ub.has_previous %}
+                                <a href="?page={{ ub.previous_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                    <li class="paginate_button page-item previous">Previous</li>
+                                </a>
+                            {% else %}
+                                <li class="paginate_button disabled page-item previous">Previous</li>
+                            {% endif %}
+                            {% for i in ub.paginator.page_range %}
+                                {% if i == ub.number %}
+                                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                        <li class="paginate_button page-item active">{{i}}</li>
+                                    </a>
+                                {% else %}
+                                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                        <li class="paginate_button page-item">{{i}}</li>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if ub.has_next %}
+                                <a href="?page={{ ub.next_page_number }}&search={{search}}&p={{paginate_by}}&sort_field={{ sort_field }}&sort_order={{ sort_order }}">
+                                    <li class="paginate_button page-item next">Next</li>
+                                </a>
+                            {% else %}
+                                <li class="paginate_button disabled page-item next">Next</li>
+                            {% endif %}
+                        {% endif %}
                         </ul>
                         <style>
                             a {
@@ -354,6 +304,7 @@ Unsettled Bills
                                 cursor: default;
                                 color: #6c757d;
                             }
+
                         </style>
                     </div>
                 </div>

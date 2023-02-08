@@ -21,23 +21,21 @@ System User
     }
 
     .form-header {
-        font-family: Arial;
         margin: 0px 0px 16px;
         padding: 0px 12px;
+        text-align: center;
     }
 
     .container {
-        font-family: Arial;
         color: #212529;
     }
 
     .wrapper {
         font-size: 20px;
-        font-family: Arial;
-        margin: 0px 0px 16px;
+        margin-top: 80px;
         padding: 0px 12px;
         background: #fff;
-        border-radius: 40px;
+        border-radius: 15px;
         padding: 30px;
     }
 
@@ -47,24 +45,30 @@ System User
         padding: 0px 12px;
     }
 
-    .btn {
-        background-color: #0cb3c2;
-        color: #212529;
-        padding: 8px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        transition-duration: 0.4s;
-        cursor: pointer;
-        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
     }
 
-    .btn:first-child:hover,
-    :not(.btn-check)+.btn:hover {
-        background-color: white !important;
-        color: black;
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
     }
 </style>
 {% endblock style %}
@@ -73,7 +77,7 @@ System User
 	<form action="{%url 'user_edit' sys.username%}" enctype="multipart/form-data" method="POST" class="signup-form">
 		{% csrf_token %}
 		<div class="container">
-			<div class=" shadow wrapper m-4">
+			<div class=" shadow wrapper">
 				<div class="form-header">
 					<center><h1>System User</h1></center>
 				</div>
@@ -136,18 +140,18 @@ System User
 					</div>
 				</div>
 				<div class="row m-auto w-100">
-					<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+					<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
 						<h3>Type of User</h3>
 						{{form.is_admin}}
-						<label for="id_is_admin">ADMIN</label><br>
+						<label for="id_is_admin">Admin</label><br>
 						{{form.is_teller}}
-						<label for="id_is_teller">TELLER</label><br>
+						<label for="id_is_teller">Teller</label><br>
 						{{form.is_supervisor}}
-						<label for="id_is_supervisor">SUPERVISOR</label><br>
+						<label for="id_is_supervisor">Superior</label><br>
 						{{form.is_manager}}
-						<label for="id_is_manager">MANAGER</label><br>
+						<label for="id_is_manager">Manager</label><br>
 						{{form.is_reader}}
-						<label for="id_is_reader">METER READER</label><br>
+						<label for="id_is_reader">Meter Reading</label><br>
 					</div>
 				</div>
 				<div class="row w-100 m-auto mb-2">
@@ -156,7 +160,13 @@ System User
 						{{form.profilepic}}
 					</div>
 				</div>
-				<center><button type="submit" id="footer-subscription-button" class="btn">Submit</button></center>
+				<div class="row m-auto" style="display: block; text-align: center;">
+                    <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
+                        <img style="width: 23px;" src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            <span style="padding: 10px; font-family: Arial;">Submit</span>
+                        
+                    </button>
+                </div>
 			</div>
 		</div>
 	</form>

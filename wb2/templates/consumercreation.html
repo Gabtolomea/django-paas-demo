@@ -7,36 +7,35 @@ Consumer Creation
 {% block consumercreation %}
 
 <style>
-    
-    html{
-    height: 100% !important ;                                                  ;
-    }
-    body{
-        height: auto;
-        background-image: linear-gradient(white, var(--main-color));
-    }
+
     .form-header {
     font-family: Arial;
     margin: 0px 0px 16px;
     padding: 0px 12px;
     text-align: center;
     }
+
     .consumer{
     box-sizing: content-box;
     }
+
     .container-fluid{
     font-family: Arial;
-    color: #ffffff;
+    color: #212529;
     width: 100%;
     margin-right: auto;
     margin-left: auto;
     }
-    .wrapper{
-    font: 16px Arial;
-    background-color:var(--main-color);
-    border-radius: 50px;
-    padding-top: 30px;
+
+    .wrapper {
+        font-size: 20px;
+        margin-top: 80px;
+        padding: 0px 12px;
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
     }
+
     .btn{
     background-color: #0cb3c2;
     color: #ffffff;
@@ -50,9 +49,36 @@ Consumer Creation
     cursor: pointer;
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
     }
+
     .btn:first-child:hover, :not(.btn-check)+.btn:hover{
     background-color:white !important;
     color:black;
+    }
+    
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
     }
 
 </style>
@@ -62,83 +88,95 @@ Consumer Creation
         <input type="hidden" name="isUpdate" value="{{isUpdate}}">
         <input type="hidden" name="conid" value="{{conid}}">
         <div class="form-header">
-            <h1>Consumer Creation</h1>
+            <h1>Consumer {% if create %}Creation{% else %}Update{% endif %}</h1>
         </div>
         <div class="row form-group w-100 m-auto">
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">First Name*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">First Name<span class="text-danger">*</span></label>
                 {{form.firstname}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Middle Name*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Middle Name</label>
             {{form.middlename}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Last Name*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Last Name<span class="text-danger">*</span></label>
                 {{form.lastname}}
             </div>
         </div>
         <div class="row form-group w-100 m-auto">
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Home Address*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Home Address<span class="text-danger">*</span></label>
                 {{form.homeaddress}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Sitio*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Sitio</label>
                 {{form.sitio}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Email*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Email</label>
             {{form.email}}
             </div>
         </div>
         <div class="row form-group w-100 m-auto">
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Meter Number*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Meter Number<span class="text-danger">*</span></label>
                 {{form.meternumber}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Initial Meter Reading*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Initial Meter Reading<span class="text-danger">*</span></label>
                 {{form.initialmeterreading}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for="id"style="font-size: 20px;">Rate I.D.*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for="id"style="font-size: 20px;">Rate I.D.<span class="text-danger">*</span></label>
                 {{form.contypeid}}
             </div>
         </div>
         <div class="row form-group w-100 m-auto">
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Installation Address*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Installation Address<span class="text-danger">*</span></label>
             {{form.installation_address}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for="start"style="font-size: 20px;">Birthdate*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for="start"style="font-size: 20px;">Birthdate<span class="text-danger">*</span></label>
                 {{form.birthdate}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Sex*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Sex<span class="text-danger">*</span></label>
                 {{form.sex}}
             </div>
         </div>
         <div class="row form-group w-100 m-auto">
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for=""style="font-size: 20px;">Mobile Number*</label>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+                <label for=""style="font-size: 20px;">Mobile Number</label>
                 {{form.mobilenum}}
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                <label for="" class=""style="font-size: 20px;">Picture*</label>
-                {{form.picture}}
-            </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
                 <label for="" class=""style="font-size: 20px;">Penalty Code</label>
                 {{form.penaltycode}}
             </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-2">
+            </div>
         </div>
-        <center class="pb-4">
-            <button type="submit" id="footer-subscription-button" class="btn submit" >Submit</button>
-        </center>
+        <div class="row m-auto" style="display: block; text-align: center;">
+            <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
+                <img style="width: 23px;" src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                    <span style="padding: 10px; font-family: Arial;">Submit</span>
+                
+            </button>
+        </div>
     </form>
 </div>
+<script>
+    function onlyzNumberKey(evt) {
+          
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+</script>
 {% block script %}
 {% endblock script %}
 {% endblock consumercreation %}
