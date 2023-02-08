@@ -1905,7 +1905,6 @@ def bulkreading(request):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
-    cons = []
     for i in ub:
         try:
             tran = Transactions.objects.get(acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
@@ -1924,15 +1923,42 @@ def bulkreading(request):
             prev = 0
         # prev = last_reading(i.consumer_id, year, month)
         consumers_list.append(new_con(i, prev, cur))
-        cons.append(i.consumer_id)
     if request.method == "POST":
+        con_list = []
+        psearch = request.POST.get('psearch')
+        isnum = psearch.isnumeric()
+        if psearch:
+            if isnum:
+                consumers = ConsumerInfo.objects.filter(Q(meternumber=psearch) | Q(consumer_id__icontains=psearch),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+            else:
+                consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=psearch) | Q(middlename__icontains=psearch) | Q(lastname__icontains=psearch)| Q(homeaddress__icontains=psearch),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+        else:
+            consumers = ConsumerInfo.objects.filter(stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+        
+        for i in consumers:
+            try:
+                tran = Transactions.objects.get(acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
+                cur = tran.meterReading
+            except ObjectDoesNotExist:
+                cur = 0
+            try:
+                if month == 1:
+                    tran = Transactions.objects.get(
+                        acctID_id=i.consumer_id, month=12, year=year-1, transType="Billing")
+                else:
+                    tran = Transactions.objects.get(
+                        acctID_id=i.consumer_id, month=month-1, year=year, transType="Billing")
+                prev = tran.meterReading
+            except ObjectDoesNotExist:
+                prev = 0
+            # prev = last_reading(i.consumer_id, year, month)
+            con_list.append(new_con(i, prev, cur))
         interest = 0
         pmonth = int(request.POST.get('pmonth'))
         pyear = int(request.POST.get('pyear'))
         pp = request.POST.get('pp')
-        psearch = request.POST.get('psearch')
-        for j in cons:
-            c = ConsumerInfo.objects.get(consumer_id=j)
+        for j in con_list:
+            c = ConsumerInfo.objects.get(consumer_id=j.con.consumer_id)
             a = request.POST.get(f"con{c.consumer_id}", None)
             if a is not None:
                 try:

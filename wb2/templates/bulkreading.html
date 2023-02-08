@@ -37,7 +37,7 @@ Bulk Reading
 			{% include 'search.html' %}
 			<div class="row">
 				<div class="col-sm-12">
-					<form id="post" action="{% url 'bulkreading' %}?page={{ub.number}}" method="post">
+					<form id="post" action="{% url 'bulkreading' %}?page={{ub.number}}" method="POST">
 						{% csrf_token %}
 						<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0" width="100%">
 							<thead class="wb_thead">
@@ -56,7 +56,8 @@ Bulk Reading
 									<td>{{c.con.consumer_id}}</td>
 									<td>{{c.con.lastname}}, {{c.con.firstname}} {{c.con.middlename}}</td>
 									<td>{{c.prev}}</td>
-									<td class="balance p-0 align-middle"><input class="form-control rounded-0 border-0"  title="Current Reading" min="{{c.prev}}" type="number" {% if c.cur == 0 %}onfocus="foc_check('con{{c.con.consumer_id}}_id')" onblur="fcheck('con{{c.con.consumer_id}}_id')"{% endif %} name="con{{c.con.consumer_id}}" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}"></td>
+									<td class="balance p-0 align-middle">
+										<input class="form-control rounded-0 border-0 unchanged" onchange="this.classList.remove('unchanged')"  title="Current Reading" min="{{c.prev}}" type="number" name="con{{c.con.consumer_id}}" id="con{{c.con.consumer_id}}_id" value="{{c.cur}}"></td>
 								</tr>
 								{% endfor %}
 							</tbody>
@@ -68,7 +69,7 @@ Bulk Reading
 						<input type="hidden" name="ppage" value="{{ub.number}}">
 						<div class="row w-100 m-auto pt-2">
 							<div class="col-lg-12 col-md-12 col-sm-12">
-								<button type="submit" class="btn button2">
+								<button type="button" onclick="check2()" class="btn button2">
 									Save
 								</button>
 							</div>
@@ -76,6 +77,14 @@ Bulk Reading
 					</form>
 					
 					<script>
+						post = document.getElementById('post')
+						function check2(){
+							unchanged = document.getElementsByClassName('unchanged')
+							for(i=0;i<unchanged.length;i++){
+								unchanged[i].disabled = true
+							}
+							post.submit()
+						}
 						function foc_this(id){
 							document.getElementById(id).focus()
 						}
@@ -91,14 +100,6 @@ Bulk Reading
 								p.value = 0
 							}
 						}
-						$(document).ready(function() {
-							$("input[type='number']").on('change', function() {
-								$(this).addClass('changed');
-							});
-							$('#post').on('submit', function() {
-								$("input[type='number']:not(.changed)").prop('disabled', true);
-							});
-						});
 					</script>
 				</div>
 			</div>
