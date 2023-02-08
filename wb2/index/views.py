@@ -524,6 +524,7 @@ def meterreading(request):
     else:
         meterred = ConsumerInfo.objects.filter(deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')   
     
+    
     count = meterred.count()
 
     my = BarangayRecord.objects.all()
@@ -793,8 +794,15 @@ def consumer_list(request):
             cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
         cons = ConsumerInfo.objects.filter(deleteflag=0).order_by('lastname', 'firstname', 'middlename')   
+  
+    #Code for Table Header to sort by name, address or meter number  
+    sort_field = request.GET.get("sort_field", "consumer_id")
+    sort_order = request.GET.get("sort_order", "asc")
+    if sort_order == "desc":
+        sort_field = "-" + sort_field
     
-    
+    cons = cons.order_by(sort_field)
+
     pages = int(request.GET.get('p', 10))
     user = request.user
     count = cons.count()
@@ -822,6 +830,8 @@ def consumer_list(request):
         'count':count,
         'consumer_list': cons_list,
         'user': user,
+        'sort_field': sort_field,
+        'sort_order' : sort_order,
     }
     return render(request, 'conlist.html', context)
 
@@ -1581,7 +1591,7 @@ def unsettled_bills(request):
         ubs = ConsumerInfo.objects.filter(current_bal__gt=0).order_by('lastname','firstname','middlename')
 
 
-    #Sort code to sort fields
+    #Code for Table Header to sort by name, address or meter number
     sort_field = request.GET.get("sort_field", "consumer_id")
     sort_order = request.GET.get("sort_order","asc")
     if sort_order == "desc":
