@@ -243,7 +243,7 @@ def user_creation(request):
         is_supervisor = request.POST.get('is_supervisor','') == 'on'
         is_manager = request.POST.get('is_manager','') == 'on'
         is_reader = request.POST.get('is_reader','') == 'on'
-        authorizedapprover = request.POST['authorizedapprover']
+        # authorizedapprover = request.POST['authorizedapprover']
         for i in form.fields:
             try:
                 form.fields[i].widget.attrs['class'] += ' is-valid'
@@ -263,7 +263,7 @@ def user_creation(request):
             user.is_supervisor = is_supervisor
             user.is_manager = is_manager
             user.is_reader = is_reader
-            user.authorizedapprover = authorizedapprover
+            # user.authorizedapprover = authorizedapprover
             user.save()
             messages.success(request, 'User created successfully')
             return redirect('sysuser')
@@ -575,7 +575,7 @@ def inputreading(request, id, year):
             self.reading = reading
             self.next = next
             self.style = style
-    lastreading = last_reading(id, year-1, 12)
+    lastreading = last_reading(id, year, 1)
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
@@ -659,6 +659,7 @@ def inputreading(request, id, year):
                         t.month = 12
                     t.year = year
                     t.meterReading = i
+                    t.prevReading = lastreading
                     t.usage = i - lastreading
                     usage = t.usage
                     t.contypeid = consumer.contypeid_id
@@ -672,17 +673,17 @@ def inputreading(request, id, year):
                     t.processedBy = request.user
                     t.save()
                     if interest:
-                        t = Transactions()
-                        t.acctID = consumer
-                        t.transType = 'Penalty'
-                        t.date = datetime.today()
-                        t.month = d
-                        t.year = year
-                        t.bill = interest
+                        p = Transactions()
+                        p.acctID = consumer
+                        p.transType = 'Penalty'
+                        p.date = datetime.today()
+                        p.month = d
+                        p.year = year
+                        p.bill = interest
                         bill += interest
-                        t.payment = 0
-                        t.processedBy = request.user
-                        t.save()
+                        p.payment = 0
+                        p.processedBy = request.user
+                        p.save()
                 else:
                     t = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                     lastreading = last_reading(id, year, d)
@@ -698,6 +699,7 @@ def inputreading(request, id, year):
                     except ObjectDoesNotExist:
                         pass
                     t.meterReading = i
+                    t.prevReading = lastreading
                     t.date = datetime.today()
                     t.usage = i - lastreading
                     usage = t.usage
@@ -709,16 +711,16 @@ def inputreading(request, id, year):
                     t.processedBy = str(request.user)
                     t.save()
                     if interest:
-                        t = Transactions()
-                        t.acctID = consumer
-                        t.transType = 'Penalty'
-                        t.date = datetime.today()
-                        t.month = d
-                        t.year = year
-                        t.bill = interest
-                        t.payment = 0
-                        t.processedBy = request.user
-                        t.save()
+                        p = Transactions()
+                        p.acctID = consumer
+                        p.transType = 'Penalty'
+                        p.date = datetime.today()
+                        p.month = d
+                        p.year = year
+                        p.bill = interest
+                        p.payment = 0
+                        p.processedBy = request.user
+                        p.save()
                 get_balance(id)
             match d:
                 case 1:
@@ -857,7 +859,9 @@ def consumercreation(request):
         initialmeterreading = request.POST['initialmeterreading']
         installation_address = request.POST['installation_address']
         contypeid = request.POST['contypeid']
-        penaltycode = request.POST['penaltycode']
+        penaltycode = request.POST.get('penaltycode')
+        if penaltycode == '':
+            penaltycode = 'P001'
         if form.is_valid():
             if isUpdate:
                 c = ConsumerInfo.objects.get(consumer_id=conid)
@@ -1448,43 +1452,49 @@ def revenue_report(request, year):
             years.append(i.year)
     if int(year) in years:
         years.remove(int(year))
-    # Total Collection
-    rev_col = BarangayRecord.objects.filter(year=year).aggregate(
-        jan=Sum('total_paid_jan'),
-        feb=Sum('total_paid_feb'),
-        mar=Sum('total_paid_mar'),
-        apr=Sum('total_paid_apr'),
-        may=Sum('total_paid_may'),
-        jun=Sum('total_paid_jun'),
-        jul=Sum('total_paid_jul'),
-        aug=Sum('total_paid_aug'),
-        sept=Sum('total_paid_sept'),
-        oct=Sum('total_paid_oct'),
-        nov=Sum('total_paid_nov'),
-        dec=Sum('total_paid_dec'),
-    )
-    values = rev_col.values()
-    col = sum(values)
+    # Total Collection\-
+    print(BarangayRecord.objects.filter(year=year))
+    if BarangayRecord.objects.filter(year=year):
+        rev_col = BarangayRecord.objects.filter(year=year).aggregate(
+            jan=Sum('total_paid_jan'),
+            feb=Sum('total_paid_feb'),
+            mar=Sum('total_paid_mar'),
+            apr=Sum('total_paid_apr'),
+            may=Sum('total_paid_may'),
+            jun=Sum('total_paid_jun'),
+            jul=Sum('total_paid_jul'),
+            aug=Sum('total_paid_aug'),
+            sept=Sum('total_paid_sept'),
+            oct=Sum('total_paid_oct'),
+            nov=Sum('total_paid_nov'),
+            dec=Sum('total_paid_dec'),
+        )
+        values = rev_col.values()
+        col = sum(values)
+        # Total Receivables
+        rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
+            jan=Sum('total_due_jan') - Sum('total_paid_jan'),
+            feb=Sum('total_due_feb') - Sum('total_paid_jan'),
+            mar=Sum('total_due_mar') - Sum('total_paid_jan'),
+            apr=Sum('total_due_apr') - Sum('total_paid_jan'),
+            may=Sum('total_due_may') - Sum('total_paid_jan'),
+            jun=Sum('total_due_jun') - Sum('total_paid_jan'),
+            jul=Sum('total_due_jul') - Sum('total_paid_jan'),
+            aug=Sum('total_due_aug') - Sum('total_paid_jan'),
+            sept=Sum('total_due_sept') - Sum('total_paid_jan'),
+            oct=Sum('total_due_oct') - Sum('total_paid_jan'),
+            nov=Sum('total_due_nov') - Sum('total_paid_jan'),
+            dec=Sum('total_due_dec') - Sum('total_paid_jan'),
+        )
 
-    # Total Receivables
-    rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
-        jan=Sum('total_due_jan') - Sum('total_paid_jan'),
-        feb=Sum('total_due_feb') - Sum('total_paid_jan'),
-        mar=Sum('total_due_mar') - Sum('total_paid_jan'),
-        apr=Sum('total_due_apr') - Sum('total_paid_jan'),
-        may=Sum('total_due_may') - Sum('total_paid_jan'),
-        jun=Sum('total_due_jun') - Sum('total_paid_jan'),
-        jul=Sum('total_due_jul') - Sum('total_paid_jan'),
-        aug=Sum('total_due_aug') - Sum('total_paid_jan'),
-        sept=Sum('total_due_sept') - Sum('total_paid_jan'),
-        oct=Sum('total_due_oct') - Sum('total_paid_jan'),
-        nov=Sum('total_due_nov') - Sum('total_paid_jan'),
-        dec=Sum('total_due_dec') - Sum('total_paid_jan'),
-    )
-
-    filt = dict((i, j) for i, j in rev_rec.items() if j >= 0)
-    values = filt.values()
-    rec = sum(values)
+        filt = dict((i, j) for i, j in rev_rec.items() if j >= 0)
+        values = filt.values()
+        rec = sum(values)
+    else:
+        rev_col = {'jan': 0, 'feb': 0, 'mar': 0, 'apr': 0, 'may': 0, 'jun': 0, 'jul': 0, 'aug': 0, 'sept': 0, 'oct': 0, 'nov': 0, 'dec': 0}
+        filt = {}
+        col = 0
+        rec = 0
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
 
     context = {
@@ -1714,7 +1724,11 @@ def discount(request):
     if request.method == "POST":
         discount_rate = request.POST['discount_rate']
         addD = Discount()
-        addD.discountcode = "D00"+str(lastdisc_id+1)
+        strlen = len(str(lastdisc_id+1))
+        zeroes = ''
+        for i in range(3-strlen):
+            zeroes+="0"
+        addD.discountcode = "D"+zeroes+str(lastdisc_id+1)
         addD.discount_rate = discount_rate
         addD.added_by = user
         addD.date_added = datetime.today()
@@ -1752,7 +1766,7 @@ def deletediscount(request,id):
 
 @login_required(login_url='login')
 def new_consumertype(request):
-    cont = ConsumerType.objects.all()
+    cont = ConsumerType.objects.all().order_by
     form = ConscumertypecreationForm()
     contypecount = int(ConsumerType.objects.all().order_by('-contypeid')[0].contypeid.split('C')[::-1][0])
     if request.method == "POST":
@@ -1761,12 +1775,17 @@ def new_consumertype(request):
         minReadingCharge = request.POST['minReadingCharge']
         rateAfterMin = request.POST['rateAfterMin']
         ct = ConsumerType()
-        ct.contypeid = "C00"+str(contypecount+1)
+        strlen = len(str(contypecount+1))
+        zeroes = ''
+        for i in range(3-strlen):
+            zeroes+="0"
+        ct.contypeid = "C"+zeroes+str(contypecount+1)
         ct.contype = contype
         ct.minReading = minReading
         ct.minReadingCharge = minReadingCharge
         ct.rateAfterMin = rateAfterMin
         ct.added_by = request.user
+        ct.date_added = date.today()
         ct.save()
         messages.success(request, 'Consumer Type has been added')
         return redirect('new_consumertype')
@@ -1808,7 +1827,11 @@ def penalty(request):
         penalty_after = request.POST['penalty_after']
         daysappliedafter = request.POST['daysappliedafter']
         pen = Penalty()
-        pen.penaltycode = "P00"+str(penaltycounter+1)
+        strlen = len(str(penaltycounter+1))
+        zeroes = ''
+        for i in range(3-strlen):
+            zeroes+="0"
+        pen.penaltycode = "P"+zeroes+str(penaltycounter+1)
         pen.penalty_info = penalty_info
         pen.penalty_rate = penalty_rate
         pen.penalty_after = penalty_after
@@ -1905,7 +1928,6 @@ def bulkreading(request):
         ub = paginator.page(1)
     except EmptyPage:
         ub = paginator.page(paginator.num_pages)
-    cons = []
     for i in ub:
         try:
             tran = Transactions.objects.get(acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
@@ -1914,25 +1936,63 @@ def bulkreading(request):
             cur = 0
         try:
             if month == 1:
-                tran = Transactions.objects.get(
-                    acctID_id=i.consumer_id, month=12, year=year-1, transType="Billing")
+                tran = Transactions.objects.get(acctID_id=i.consumer_id, month=12, year=year-1, transType="Billing")
             else:
-                tran = Transactions.objects.get(
-                    acctID_id=i.consumer_id, month=month-1, year=year, transType="Billing")
+                tran = Transactions.objects.get(acctID_id=i.consumer_id, month=month-1, year=year, transType="Billing")
             prev = tran.meterReading
         except ObjectDoesNotExist:
             prev = 0
         # prev = last_reading(i.consumer_id, year, month)
         consumers_list.append(new_con(i, prev, cur))
-        cons.append(i.consumer_id)
     if request.method == "POST":
+        con_list = []
+        psearch = request.POST.get('psearch')
+        isnum = psearch.isnumeric()
+        pp = request.POST.get('pp')
+        if psearch:
+            if isnum:
+                consumers = ConsumerInfo.objects.filter(Q(meternumber=psearch) | Q(consumer_id__icontains=psearch),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+            else:
+                consumers = ConsumerInfo.objects.filter(Q(firstname__icontains=psearch) | Q(middlename__icontains=psearch) | Q(lastname__icontains=psearch)| Q(homeaddress__icontains=psearch),stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+        else:
+            consumers = ConsumerInfo.objects.filter(stopmeterflag=0, deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+
+        count = len(consumers)
+        if pp == 0:
+            paginate_by = request.GET.get('paginate_by', count)
+        else:
+            paginate_by = request.GET.get('paginate_by', pp)
+        page = request.GET.get('page')
+        paginator = Paginator(consumers,paginate_by)
+        try:
+            ub = paginator.page(page)
+        except PageNotAnInteger:
+            ub = paginator.page(1)
+        except EmptyPage:
+            ub = paginator.page(paginator.num_pages)
+        for i in ub:
+            try:
+                tran = Transactions.objects.get(acctID_id=i.consumer_id, month=month, year=year, transType="Billing")
+                cur = tran.meterReading
+            except ObjectDoesNotExist:
+                cur = 0
+            try:
+                if month == 1:
+                    tran = Transactions.objects.get(
+                        acctID_id=i.consumer_id, month=12, year=year-1, transType="Billing")
+                else:
+                    tran = Transactions.objects.get(
+                        acctID_id=i.consumer_id, month=month-1, year=year, transType="Billing")
+                prev = tran.meterReading
+            except ObjectDoesNotExist:
+                prev = 0
+            # prev = last_reading(i.consumer_id, year, month)
+            con_list.append(new_con(i, prev, cur))
         interest = 0
         pmonth = int(request.POST.get('pmonth'))
         pyear = int(request.POST.get('pyear'))
-        pp = request.POST.get('pp')
-        psearch = request.POST.get('psearch')
-        for j in cons:
-            c = ConsumerInfo.objects.get(consumer_id=j)
+        for j in con_list:
+            c = ConsumerInfo.objects.get(consumer_id=j.con.consumer_id)
             a = request.POST.get(f"con{c.consumer_id}", None)
             if a is not None:
                 try:
@@ -1971,6 +2031,7 @@ def bulkreading(request):
                     t.month = pmonth
                     t.year = pyear
                     t.meterReading = a
+                    t.prevReading = prev
                     t.usage = a - prev
                     usage = a - prev
                     t.contypeid = c.contypeid_id

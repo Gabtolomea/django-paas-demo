@@ -4,13 +4,8 @@
 Usage Report 
 {% endblock title%} 
 {% block style %}
-<style>
-  canvas {
-    border: 10px outset #63cdd7;
-    padding: 20px;
-  }
 
-</style>
+
 
 {% endblock style %}
 {% block usage_report_data %}
@@ -20,8 +15,8 @@ Usage Report
 <script src="{% static 'jquery/jquery.min.js' %}"></script>
 
 {% include 'reportstabs.html' %}
-<div>
-	<div class="pt-3 row">
+<div class="pt-3 row">
+	<div>
 		<h1 class="" style="text-align: center;">Usage Report</h1>
 	</div>
 
@@ -45,121 +40,137 @@ Usage Report
 		</script>
 	</div>
 
-	<div class="pt-3 row">
-		<h3 style="text-align: center;">Barangay Total Usage: Year {{cur_year}}
-		</h3>
+	<div style="background-color: white;"  class="mt-4">
+		<div class="col-12 text-center mt-4">
+			<h3>Barangay Total Usage: Year {{cur_year}}
+			</h3>
+		</div>
+
+  
+    	<canvas id="barangay"  class="p-3" width="800" height="150"></canvas>
+ 
+	
+		<script>
+			// setup
+			const data = {
+				labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
+			datasets: [{
+				label: 'Barangay Usage',
+				data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
+				backgroundColor: [
+					'rgba(255, 99, 132, 1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(75, 200, 100, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+				],
+					borderColor: [
+						'rgba(255, 99, 132, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+					],
+						borderWidth: 1,
+			}]
+				}
+
+			// config
+			const config = {
+				type: 'bar',
+				data,
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					},
+					responsive:true
+				}
+			};
+
+			// render init block
+			const ctx2 = document.getElementById('barangay').getContext('2d');
+
+
+			const barangay = new Chart(
+				ctx2,
+				config
+			);
+		</script>
 	</div>
 
-  <div class="chartBox">
-    <canvas id="barangay" width="500" height="150"></canvas>
-  </div>
-
-  <script>
-    // setup
-    const data = {
-    	labels: [{%for t in tu_bay %}'{{t.barangaycode}}', {% endfor %}],
-    datasets: [{
-    	label: 'Barangay Usage',
-    	data: [{%for t in tu_bay %}'{{ t.sum }}', {% endfor %}],
-    	backgroundColor: [
-    		'rgba(255, 99, 132, 1)',
-    		'rgba(54, 162, 235, 1)',
-    		'rgba(75, 200, 100, 1)',
-    		'rgba(153, 102, 255, 1)',
-    		'rgba(255, 159, 64, 1)'
-    	],
-    		borderColor: [
-    			'rgba(255, 99, 132, 1)',
-    			'rgba(54, 162, 235, 1)',
-    			'rgba(75, 192, 192, 1)',
-    			'rgba(153, 102, 255, 1)',
-    			'rgba(255, 159, 64, 1)'
-    		],
-    			borderWidth: 1,
-    }]
-     	}
-
-    // config
-    const config = {
-    	type: 'bar',
-    	data,
-    	options: {
-    		scales: {
-    			y: {
-    				beginAtZero: true
-    			}
-    		}
-    	}
-    };
-
-    // render init block
-    const ctx2 = document.getElementById('barangay');
-    const barangay = new Chart(
-    	ctx2,
-    	config
-    );
-  </script>
 
 
+	<div style="background-color: white;" class="mt-4 mb-5">
+		<div class="row mt-4">
+			<div class="col-12 text-center">
+				<h3>Barangay Monthly Usage: Year {{cur_year}}
+				</h3>
+			</div>
+		</div>
+		<div class="row" style="text-align: center;">
+			<p2>
+				<i>click on select to view individual Barangay Monthly usage</i>
+			</p2>
+			<div class="col-4"></div>
+			<div class="col-4">
+				<label>Select Barangay</label>
+				<select class="form-select input-group mt-1" id="coffeesales">
+					<option
+						value="{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} ">
+						Total Monthly
+					</option>
+					{% for b in mybars %}
+					<option value="{% for m in b.months %}{{m}},{% endfor %}">
+						{{b.name}}
+					</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-4"></div>
+		</div>
+		<div class="row pb-4">
+    		<canvas id="myChart" class="p-3" width="800" height="150"></canvas>
 
-  <div class="col-8">
-	<h3 style="text-align:right;padding-top: 25px;">Barangay Monthly Usage: Year {{cur_year}}
-	</h3>
-	
+		</div>
+
+	</div>
+	<script>
+		const ctx = document.getElementById('myChart').getContext('2d');
+		
+
+		const myChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+				datasets: [{
+					label: 'Total Monthly',
+					data: [{{ tu_mon.jan }}, {{ tu_mon.feb }}, {{ tu_mon.mar }}, {{ tu_mon.apr }}, {{ tu_mon.may }}, {{ tu_mon.jun }}, {{ tu_mon.jul }}, {{ tu_mon.aug }}, {{ tu_mon.sept }}, {{ tu_mon.oct }}, {{ tu_mon.nov }}, {{ tu_mon.dec }}],
+		fill: false,
+			backgroundColor: ['#FD2F02'],
+				borderColor: ['#FD2F02'],
+					tension: 0.1,
+					}]
+				},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			},
+		responsive:true,
+		}
+			});
+		const coffeesales = document.getElementById('coffeesales');
+		coffeesales.addEventListener('change', salesTracker);
+		function salesTracker() {
+			const label = coffeesales.options[coffeesales.selectedIndex].text;
+			myChart.data.datasets[0].label = label;
+			myChart.data.datasets[0].data = coffeesales.value.split(',');
+
+			myChart.update()
+		}
+	</script>
 </div>
-<div style="text-align: center;">
- <p2><i>click on select to view individual Barangay Monthly usage</i></p2>
-
-    <div class="selectBox">
-      <label>Select Barangay</label>
-      <select class="form-select" id="coffeesales" style="margin:auto;margin-bottom: 15px;">
-        <option value="{{tu_mon.jan}}, {{tu_mon.feb}}, {{tu_mon.mar}}, {{tu_mon.apr}}, {{tu_mon.may}}, {{tu_mon.jun}}, {{tu_mon.jul}}, {{tu_mon.aug}}, {{tu_mon.sept}}, {{tu_mon.oct}}, {{tu_mon.nov}}, {{tu_mon.dec}} ">
-          Total Monlthy
-        </option>
-        {% for b in mybars %}
-        <option value="{% for m in b.months %}{{m}},{% endfor %}">
-          {{b.name}}
-        </option>
-        {% endfor %}
-      </select>
-    </div>
-</div>
-  <div class="chartBox">
-    <canvas id="myChart" width="500" height="150"></canvas>
-  </div>
-
-  <script>
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-    	type: 'line',
-    	data: {
-    		labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-    		datasets: [{
-    			label: 'Total Monthly',
-    			data: [{{ tu_mon.jan }}, {{ tu_mon.feb }}, {{ tu_mon.mar }}, {{ tu_mon.apr }}, {{ tu_mon.may }}, {{ tu_mon.jun }}, {{ tu_mon.jul }}, {{ tu_mon.aug }}, {{ tu_mon.sept }}, {{ tu_mon.oct }}, {{ tu_mon.nov }}, {{ tu_mon.dec }}],
-    fill: false,
-    	backgroundColor: ['#FD2F02'],
-    		borderColor: ['#FD2F02'],
-    			tension: 0.1,
-    			}]
-    		},
-    options: {
-    	scales: {
-    		y: {
-    			beginAtZero: true
-    		}
-    	}
-    }
-    	});
-    const coffeesales = document.getElementById('coffeesales');
-    coffeesales.addEventListener('change', salesTracker);
-    function salesTracker() {
-    	const label = coffeesales.options[coffeesales.selectedIndex].text;
-    	myChart.data.datasets[0].label = label;
-    	myChart.data.datasets[0].data = coffeesales.value.split(',');
-
-    	myChart.update()
-    }
-  </script>
-
-	{% endblock usage_report_data %}
+{% endblock usage_report_data %}
