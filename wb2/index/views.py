@@ -39,10 +39,10 @@ def porter(request):
     porter_out(sorted_tables)
     billing_out()
     balance()
-    cons = ConsumerInfo.objects.all()
-    for i in cons:
-        i.cummulative = get_cummulative(i.consumer_id)
-        i.save()
+    # cons = ConsumerInfo.objects.all()
+    # for i in cons:
+    #     i.cummulative = get_cummulative(i.consumer_id)
+    #     i.save()
     return render(request, "landing.html")
 
 
