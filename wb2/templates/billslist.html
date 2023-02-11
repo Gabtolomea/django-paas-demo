@@ -65,7 +65,7 @@ Billing
 						<tbody class="wb_tbody">
 							{% if bills_list %}
 							{% for bill in bills_list %}
-							<tr class='clickable-row' style="cursor: pointer;"
+							<tr class='clickable-row' style="cursor: pointer;" title="Click for Payment and Ledger"
 								data-href="{% url 'ledger' bill.consumer_id %}">
 								<td style="text-align:center;">{{bill.consumer_id}}</td>
 								<td style="text-align:center;">{{bill.meternumber}}</td>
