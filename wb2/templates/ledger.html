@@ -1,5 +1,5 @@
 {% extends 'dashboard.html' %}
-{% load static %} 
+{% load static %}
 {% block title %}
 Account Ledger
 {% endblock title %}
@@ -11,7 +11,7 @@ Account Ledger
 <script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
 
 <style>
-	
+
 	/* .table-scrolls{
 		width: 100%;
 		display: table-caption;
@@ -191,7 +191,6 @@ Account Ledger
 					<th scope="col" style="min-width:25px">Name</th>
 					<th scope="col" style="min-width:25px">Meter Number</th>
 					<th scope="col" style="min-width:25px">Excess Payment</th>
-					<th scope="col" style="min-width:25px">Current Reading</th>
 					<th scope="col" style="min-width:25px">Current Balance</th>
 				</tr>
 			</thead>
@@ -201,7 +200,6 @@ Account Ledger
 					<td class="table-light text-center">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
 					<td class="table-light text-center">{{u.meternumber}}</td>
 					<td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
-					<td class="table-light text-center">{{u.current_reading}}</td>
 					<td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
 					 	{% if not ispaid %}<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button> {% endif %}
@@ -249,10 +247,10 @@ Account Ledger
 
 	<!-- Buttons -->
 	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
-			
+
 		<button type="button" onclick="toggleVisibility('ledger');" class="btn button2" style="float: left; margin-right: 5px;">Ledger</button>
-		<button type="button" onclick="toggleVisibility('monthly');"class="btn button2" style="float:left;">Monthly</button>
-		
+		<a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left;">Monthly</button></a>
+
 	</div>
 
 	<!-- Sort for Billing, Payment, Penalty, Discount and Get copy buttom -->
@@ -437,45 +435,6 @@ Account Ledger
 </div>
 </div>
 </div>
-<!-- Monthly View -->
-<div id="monthly" style="display: none;">
-	<div class="">
-		<form></form>
-		<h1 class="mb-3 text-center">Monthly Summary</h1>
-		<div class="container-fluid p-0">
-			<div class="table-responsive">
-				<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
-					<thead class="wb_thead">
-						<tr>
-							<th style="min-width: 100px;">Month</th>
-							<th style="min-width: 100px;">Reading</th>
-							<th style="min-width: 100px;">Usage</th>
-							<th style="min-width: 100px;">Bill</th>
-							<th style="min-width: 110px;">Amount Paid</th>
-						</tr>
-					</thead>
-					
-					
-					<tbody class="wb_tbody">
-						{% for tm in tabsmon %}
-						<tr>
-							<td class="text-center">{{tm.month}}</td>
-							<td class="text-center">{{tm.reading}}</td>
-							<td class="text-center">{{tm.usage}}</td>
-							<td class="text-center">{% if tm.total_bill %} &#8369; {{tm.total_bill}} {% endif %}</td>
-							<td class="text-center">{% if tm.total_amount_paid %} &#8369; {{tm.total_amount_paid}}{% endif %}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-					
-				</table>
-			</div>
-		</div>
-	
-	</form>
-	</div>
-	</div>
-	
 
 <!-- Edit Payment -->
 {% for i in table reversed %}
@@ -512,32 +471,7 @@ Account Ledger
 {% endfor %}
 
 
-<!-- Script for button switching between Ledger and Month Summary -->
-<script>
-	var divs = ["ledger", "monthly"];
-	var visibleDivId = null;
-	function toggleVisibility(divId) {
-	  if(visibleDivId === divId) {
-		//visibleDivId = null;
-	  } else {
-		visibleDivId = divId;
-	  }
-	  hideNonVisibleDivs();
-	}
-	function hideNonVisibleDivs() {
-	  var i, divId, div;
-	  for(i = 0; i < divs.length; i++) {
-		divId = divs[i];
-		div = document.getElementById(divId);
-		if(visibleDivId === divId) {
-		  div.style.display = "block";
-		} else {
-		  div.style.display = "none";
-		}
-	  }
-	}
-	</script>
-	
+
 <!-- Script for PDF Get Copy -->
 <script type="text/javascript">
 

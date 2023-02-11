@@ -483,6 +483,80 @@ def ledger(request, id):
     }
     return render(request, 'ledger.html', context)
 
+def monthly_summary (request, id, year):
+    table = []
+    years = []
+    class montly_sum():
+        def __init__(self, month, reading, reading_date, usage, total_bill, total_amount_paid):
+            self.month = month
+            self.reading = reading
+            self.reading_date = reading_date
+            self.usage = usage
+            self.total_bill = total_bill
+            self.total_amount_paid = total_amount_paid
+
+    consumer = ConsumerInfo.objects.get(consumer_id=id)
+    alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
+    billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
+    payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year)
+
+
+    pcount = len(payment)
+    count = len(billing)
+    j = 0
+    try:
+        if billing[0].date.month == 1:
+            j = 1
+    except IndexError:
+        j=0
+
+    for i in alltran:
+        if i.year not in years:
+            years.append(i.year)
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
+    if int(year) in years:
+        years.remove(int(year))
+    # --------------------------#
+
+    j = 0
+    c = 0
+    if not billing:
+        for i in range(1, 13):
+            month = calendar.month_name[i]
+            a = montly_sum(month, '', '', '', '', '')
+            table.append(a)
+    else:
+        for i in range(1, 13):
+            month = calendar.month_name[i]
+            usage = 0
+            reading = 0
+            total_bill = 0
+            reading_date = ''
+            total_amount_paid = 0
+            if c < pcount and pcount != 0:
+                if i == payment[c].month:
+                    total_amount_paid = payment[c].payment
+                    c += 1
+            if j < count and count != 0:
+                if i == billing[j].month:
+                    usage = billing[j].usage
+                    reading = billing[j].meterReading
+                    reading_date = billing[j].date
+                    total_bill = billing[j].bill
+                    j += 1
+                    a = montly_sum(month, reading, reading_date, usage, total_bill, total_amount_paid)
+                    table.append(a)
+
+    context = {
+        'table': table,
+        'consumer': consumer,
+        'year' : year,
+        'years': years
+
+    }
+    return render(request,'conmon_summary.html', context)
+
 @unauthenticated_user
 def forgetpassword(request):
     if request.method == "POST":
