@@ -129,7 +129,6 @@ def get_balance(id):
             bal+=asc_trans[i].bill
         elif asc_trans[i].transType == 'Discount':
             bal-=asc_trans[i].payment
-    user.current_reading = trans.filter(transType='Billing').order_by('-year', '-month')[0].meterReading
     user.current_bal = math.ceil(bal*100)/100
     user.save()
 
