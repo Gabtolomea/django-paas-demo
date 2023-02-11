@@ -126,6 +126,7 @@ Discount Type
                     <th class="align-middle text-center">Added By</th>
                     <th class="align-middle text-center">Date Added</th>
                     <th class="align-middle text-center">Edit</th>
+                    <th class="align-middle text-center">Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -139,6 +140,16 @@ Discount Type
                     <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"  data-bs-target="#edit-{{d.discountcode}}"> <img style="width:20px;"
                         src="{% static '/images/edit_white_36dp.svg' %}" />
                     </button>
+                    </td>
+                    <td class="align-middle text-center p-0">
+                        <a href="{%url 'deletediscount' d.discountcode %}">
+                            <button class="btn button2 btn-danger btn-sm" type="button"
+                                onclick="return confirm('Are you sure you want to delete  {{ d.discountcode }} ?')"
+                                data-placement="top" title="Delete">
+                                <img style="width:20px;"
+                                    src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            </button>
+                        </a>
                     </td>
                 </tr> 
                 {% endfor %}

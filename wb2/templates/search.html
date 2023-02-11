@@ -36,7 +36,7 @@
                     <div class="input-group-text">
                         <img style="width: 23px;" src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
                     </div>
-                    <input  type="search" name="search" id="myInput" oninput="check()" class="form-control form-control-sm" placeholder="Search..." value="{{ search}}">
+                    <input  type="search" name="search" style="z-index:0;" id="myInput" oninput="check()" class="form-control form-control-sm rounded-end" placeholder="Search..." value="{{ search}}">
                     <input type="hidden" name="p" id="fp" value="{{paginate_by}}">
                     <input type="hidden" name="fyear" id="fp" value="{{year}}">
                     <input type="hidden" name="fmonth" id="fp" value="{{monthval}}">
