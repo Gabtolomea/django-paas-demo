@@ -1,8 +1,12 @@
+{% extends 'dashboard.html' %}
 {% load humanize %}
+{% load static %}
+{% block title %}
+Barangay {{bang.barangaycode}} Monthly Usage
+{% endblock title %}
+{% block style %}
 
 <html>
-
-
 <style>
 	html {
 		background-color: #F2F3F2;
@@ -14,18 +18,17 @@
 		margin: 0;
 		padding: 0;
 		width: 100%;
-		table-layout: fixed;
 	}
 
-	table {
-		border: 1px solid #ccc;
-		border-collapse: collapse;
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		table-layout: fixed;
+	.form-select {
+		width: 10%;
+		margin-left: 30px;
 	}
 
+	table caption {
+		font-size: 1.5em;
+		margin: .5em 0 .75em;
+	}
 
 	table tr {
 		background-color: #f8f8f8;
@@ -45,9 +48,112 @@
 		text-transform: uppercase;
 	}
 
-	table td:last-child {
-		border-bottom: 0;
+	@media screen and (max-width: 600px) {
+		table {
+			border: 0;
+		}
+
+		table caption {
+			font-size: 1.3em;
+		}
+
+		table thead {
+			border: none;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px;
+		}
+
+		table tr {
+			border-bottom: 3px solid #ddd;
+			display: block;
+			margin-bottom: .625em;
+		}
+
+		table td {
+			border-bottom: 1px solid #ddd;
+			display: block;
+			font-size: .8em;
+			text-align: right;
+		}
+
+		table th {
+			font-size: .85em;
+			letter-spacing: .1em;
+			text-transform: uppercase;
+		}
 	}
+
+	@media screen and (max-width: 600px) {
+		table {
+			border: 0;
+		}
+
+		table caption {
+			font-size: 1.3em;
+		}
+
+		table thead {
+			border: none;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px;
+
+		}
+
+		table tr {
+			border-bottom: 3px solid #ddd;
+			display: block;
+			margin-bottom: .625em;
+		}
+
+		table td {
+			border-bottom: 1px solid #ddd;
+			display: block;
+			font-size: .8em;
+			text-align: right;
+		}
+
+		table td::before {
+
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+
+		}
+
+		table td:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	body {
+		font-family: "Open Sans", sans-serif;
+		line-height: 1.25;
+
+		table td::before {
+			/*
+			* aria-label has no advantage, it won't be read inside a table
+			content: attr(aria-label);
+			*/
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		table td:last-child {
+			border-bottom: 0;
+		}
 	}
 
 	body {
@@ -79,210 +185,230 @@
 		}
 	}
 
-	.header {
-		margin-bottom: 70px;
-		margin-top: 30px;
-		font-size: 25px;
+	#years {
+		width: 180px;
+		height: 23px;
+		border-radius: 50px;
+
+	}
+
+	p {
+		font-size: 16px;
 	}
 
 	.button2 {
-		background-color: #0E86D4;
+		background-color: var(--main-color); 
 		color: white;
-		font-weight: bold;
-		width: 30%;
-		text-decoration: none;
-		padding: 8px 32px;
-		margin: 4px 2px;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
 		border-radius: 30px;
-		box-shadow: 0 12px 16px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
 	}
-
-	select {
-		width: 70px;
-		border-radius: 25px;
-	}
-
-	a:hover {
-		cursor: pointer;
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
 	}
 </style>
+{% endblock style %}
+{% block view_barangay %}
 
-
-
-<center class="header"><label> Barangay {{bang.barangaycode}} Monthly Records </label></center>
+<h2 style="font-weight: bold; margin-bottom: 30px; margin-top: 30px; text-align: center;">Barangay {{bang.barangaycode}}
+	Monthly Records </h2>
 
 
 <title>Barangay {{bang.barangaycode}}</title>
 
 <body onload="collection_rate()">
-	<table style="margin-bottom: 30px; margin-top: 30px;">
-		<thead>
-			<tr>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Billing Cycle Cutoff Month</th>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Total Usage (Cubic Meter)</th>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Total Receivable</th>
-				<th scope="col" style="background-color: #0093b7; font-size: 12px;">Total Collection</th>
 
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>January</p>
-				</td>
+	<div class="col-sm-12 col-md-6">
+		<button type="button" class="btn button2" onclick="history.back()">
+			<i class="fa fa-rotate-left"></i>
+			Return
+		</button>
+	</div>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_jan|floatformat:1}}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_jan|floatformat:2|intcomma}}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_jan|floatformat:2|intcomma}}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>February</p>
-				</td>
+	<div lass="row table-responsive">
+		<table class="table table-bordered table-hover table-striped table-sm " width="100%">
+			<thead class="wb_thead">
+				<tr>
+					<th scope="col" style="background-color: #006c85">Billing Cycle Cutoff Month</th>
+					<th scope="col" style="background-color: #006c85">Total Usage (Cubic Meter)</th>
+					<th scope="col" style="background-color: #006c85">Total Receivable</th>
+					<th scope="col" style="background-color: #006c85">Total Collection</th>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_feb|floatformat:1}}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_feb|floatformat:2|intcomma}}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_feb|floatformat:2|intcomma}}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>March</p>
-				</td>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				<tr lass='clickable-row' style="cursor: pointer;">
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>January</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_mar|floatformat:1}}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_mar|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_mar|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>April</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_jan|floatformat:1}}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_jan|floatformat:2|intcomma}}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_jan|floatformat:2|intcomma}}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>February</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_apr|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_apr|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_apr|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>May</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_feb|floatformat:1}}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_feb|floatformat:2|intcomma}}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_feb|floatformat:2|intcomma}}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>March</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_may|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_may|floatformat:2|intcomma}}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_may|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>June</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_mar|floatformat:1}}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_mar|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_mar|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>April</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_jun|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_jun|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_jun|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>July</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_apr|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_apr|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_apr|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>May</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_jul|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_jul|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_jul|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>August</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_may|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_may|floatformat:2|intcomma}}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_may|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>June</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_aug|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_aug|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_aug|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>September</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_jun|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_jun|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_jun|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>July</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_sept|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_sept|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_sept|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>October</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_jul|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_jul|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_jul|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>August</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_oct|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_oct|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_oct|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>November</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_aug|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_aug|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_aug|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>September</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_nov|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_nov|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_nov|floatformat:2|intcomma }}</td>
-			</tr>
-			<tr>
-				<td data-label="Billing Cycle Cutoff Month" style="background-color: #DBF3FA;">
-					<p>December</p>
-				</td>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_sept|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_sept|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_sept|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>October</p>
+					</td>
 
-				<td data-label="Total Usage(Cubic Meter)" style="background-color: #DBF3FA;">
-					{{bang.total_usage_dec|floatformat:1 }}</td>
-				<td data-label="Total Receivable" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_due_dec|floatformat:2|intcomma }}</td>
-				<td data-label="Total Collection" style="background-color: #DBF3FA;">&#8369;
-					{{bang.total_paid_dec|floatformat:2|intcomma }} </td>
-			</tr>
-		</tbody>
-	</table>
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_oct|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_oct|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_oct|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>November</p>
+					</td>
+
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_nov|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_nov|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_nov|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td data-label="Billing Cycle Cutoff Month">
+						<p>December</p>
+					</td>
+
+					<td data-label="Total Usage(Cubic Meter)">
+						{{bang.total_usage_dec|floatformat:1 }}</td>
+					<td data-label="Total Receivable">&#8369;
+						{{bang.total_due_dec|floatformat:2|intcomma }}</td>
+					<td data-label="Total Collection">&#8369;
+						{{bang.total_paid_dec|floatformat:2|intcomma }} </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 
 
 
-	<a class="button2 btn-primary" role="button" onclick="history.back()">BACK</a>
 
 	<!--<button type="button" onclick="alert('Hello world!')"><a
   href="{&'url barangayreport'%}/bang.year">BACK</a></button>-->
 </body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="{% static 'jquery.min.js' %}"></script>
 <script>
 	function collection_rate() {
 		total_paid = document.getElementsByClassName("total_paid")
@@ -304,3 +430,4 @@
 </script>
 
 </html>
+{% endblock view_barangay %}

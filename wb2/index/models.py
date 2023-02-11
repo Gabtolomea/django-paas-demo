@@ -1,6 +1,10 @@
 from datetime import date, datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import sys
 # Create your models here.
 
 class LoginRec(models.Model):
@@ -23,13 +27,22 @@ class SystemUsers(AbstractUser):
     is_reader = models.BooleanField(default=False)
     mid_name = models.CharField(max_length=20, blank=True)
     mobilenum = models.CharField(max_length=20, blank=True)
-    profilepic = models.ImageField(blank=True, null=True)
     authorizedapprover = models.CharField(max_length=20)
     email = models.EmailField(max_length=100,null=True, blank=True)
+    profilepic = models.ImageField(upload_to= '', blank=True, null=True, default='profile12.png')
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        SIZE = 300, 300
+        if self.profilepic:
+            pic = Image.open(self.profilepic.path)
+            pic.thumbnail(SIZE, Image.LANCZOS)
+            pic.save(self.profilepic.path)
 
+    
     def __str__(self) -> str:
         return self.username
-
+    
 
 class ConsumerType(models.Model):
     contypeid = models.CharField(primary_key=True, max_length=20)
@@ -42,14 +55,14 @@ class ConsumerType(models.Model):
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
 
     def __str__(self) -> str:
-        return self.contypeid
+        return self.contype
 
 class Penalty(models.Model):
     penaltycode = models.CharField(primary_key=True, max_length=20)
     penalty_after =  models.IntegerField(default = 0)#months
     penalty_rate = models.FloatField(default = 0)
     penalty_info = models.TextField(max_length=300, blank=True, null=True)
-    date_added = models.DateField(auto_now_add=True)
+    date_added = models.DateField(auto_now_add=True, null=True)
     daysappliedafter = models.IntegerField(default=0)
     added_by = models.ForeignKey(SystemUsers, on_delete=models.SET_NULL, null=True)
     def __str__(self) -> str:
@@ -110,7 +123,7 @@ class BarangayRecord(models.Model):
 
 #Consumer Creation
 class ConsumerInfo(models.Model):
-    consumer_id = models.IntegerField(primary_key=True)
+    consumer_id = models.CharField(primary_key=True, max_length=15)
     meternumber = models.CharField(max_length=20, blank=True, null=True)
     firstname = models.CharField(max_length=50, blank=True)
     lastname = models.CharField(max_length=50, blank=True)
@@ -123,6 +136,7 @@ class ConsumerInfo(models.Model):
     penaltycounter = models.IntegerField(null=True)
     stopmeterflag = models.BooleanField()
     deleteflag = models.BooleanField()
+    disconnectionflag = models.BooleanField()
     mobilenum = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=100,null=True, blank=True)
     birthdate = models.DateField(null=True, blank=True)
@@ -131,9 +145,8 @@ class ConsumerInfo(models.Model):
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
     cummulative = models.FloatField(default=0)
-    penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
-    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
-    
+    date_added = models.DateField(auto_now_add=True, null=True)
+    penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
@@ -149,15 +162,16 @@ class Transactions(models.Model):
     usage = models.IntegerField(blank=True, null=True)
     contypeid = models.CharField(max_length=20, blank=True, null=True)#consumertype
     penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
-    discountcode = models.ForeignKey(Discount, on_delete= models.SET_NULL, null=True)
+    discountcode = models.CharField(max_length=50, null=True)
     bill = models.FloatField(null=True)
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
+    
     def __str__(self) -> str:
-        return str(self.date)
+        return str(self.transactionid)
 
 class usage_record(models.Model):
     #generate date

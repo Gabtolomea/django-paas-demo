@@ -1,3 +1,6 @@
+from base64 import urlsafe_b64decode
+
+from django.forms import ValidationError
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 import math
@@ -46,20 +49,72 @@ def capitalize():
         c.lastname = c.lastname.upper()
         c.middlename = c.middlename.upper()
         c.save()
-
-def last_reading(id, year, month):
-    cont = month-1
-    while year:
-        while cont>0:
+def years(id):
+    years = []
+    alltrans = Transactions.objects.filter(acctID=id, transType='Billing') | Transactions.objects.filter(acctID=id, transType='Reset Meter')
+    for i in alltrans:
+        if i.date.year not in years:
+            years.append(i.date.year)
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
+    return years
+def last_reading(id, year, mo):
+    allyears = years(id)
+    allyears.sort(reverse=True)
+    fyears = [item for item in allyears if item <= year]
+    for i in fyears:
+        for j in reversed(range(1,mo)):
             try:
-                Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=cont)
+                lasttran = Transactions.objects.get(acctID=id, transType='Billing', year=i, month=j)
+                lastreading = lasttran.meterReading
+                return lastreading
             except ObjectDoesNotExist:
-                cont-=1
-            else:
-                return Transactions.objects.get(acctID_id=id, transType = 'Billing',year=year,month=cont).meterReading
-        year-=1
-        cont=12
+                pass
+        mo = 13
+    return 0
 
+def create_brec(address_id, year):
+    con_b_rec = BarangayRecord()  
+    con_b_rec.barangayrec_id = f"{address_id}-{year}"
+    con_b_rec.barangaycode = Barangays.objects.get(id=address_id)
+    con_b_rec.year = year
+    con_b_rec.total_due_jan = 0
+    con_b_rec.total_due_feb = 0
+    con_b_rec.total_due_mar = 0
+    con_b_rec.total_due_apr = 0
+    con_b_rec.total_due_may = 0
+    con_b_rec.total_due_jun = 0
+    con_b_rec.total_due_jul = 0
+    con_b_rec.total_due_aug = 0
+    con_b_rec.total_due_sept = 0
+    con_b_rec.total_due_oct = 0
+    con_b_rec.total_due_nov = 0
+    con_b_rec.total_due_dec = 0
+    con_b_rec.total_paid_jan = 0
+    con_b_rec.total_paid_feb = 0
+    con_b_rec.total_paid_mar = 0
+    con_b_rec.total_paid_apr = 0
+    con_b_rec.total_paid_may = 0
+    con_b_rec.total_paid_jun = 0
+    con_b_rec.total_paid_jul = 0
+    con_b_rec.total_paid_aug = 0
+    con_b_rec.total_paid_sept = 0
+    con_b_rec.total_paid_oct = 0
+    con_b_rec.total_paid_nov = 0
+    con_b_rec.total_paid_dec = 0
+    con_b_rec.total_usage_jan = 0
+    con_b_rec.total_usage_feb = 0
+    con_b_rec.total_usage_mar = 0
+    con_b_rec.total_usage_apr = 0
+    con_b_rec.total_usage_may = 0
+    con_b_rec.total_usage_jun = 0
+    con_b_rec.total_usage_jul = 0
+    con_b_rec.total_usage_aug = 0
+    con_b_rec.total_usage_sept = 0
+    con_b_rec.total_usage_oct = 0
+    con_b_rec.total_usage_nov = 0
+    con_b_rec.total_usage_dec = 0
+    return con_b_rec
 def get_balance(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
     trans = Transactions.objects.filter(acctID = id)
@@ -69,7 +124,11 @@ def get_balance(id):
         if asc_trans[i].transType == 'Billing':
             bal+=asc_trans[i].bill
         elif asc_trans[i].transType == 'Payment':
-            bal=bal-asc_trans[i].payment
+            bal-=asc_trans[i].payment
+        elif asc_trans[i].transType == 'Penalty':
+            bal+=asc_trans[i].bill
+        elif asc_trans[i].transType == 'Discount':
+            bal-=asc_trans[i].payment
     user.current_bal = math.ceil(bal*100)/100
     user.save()
 
