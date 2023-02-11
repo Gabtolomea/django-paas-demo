@@ -1,0 +1,141 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% static "images" as images %}
+
+{% block title %}
+Account Settings
+{% endblock title %}
+
+{% block viewprof %}
+<style>
+    .profile-image img {
+        margin-left: 99px;
+        border: 1px solid #000000;
+    }
+    
+    .img-fluid2 {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .profile-user-settings {
+        float: left;
+        width: calc(66.666% - 2rem);
+        margin-top: 1.1rem;
+    }
+
+    
+
+    h4 {
+        font-family: 'Arial';
+        font-style: normal;
+        margin-top: 20px;
+        font-weight: 700;
+        font-size: 40px;
+        line-height: 7px;
+        letter-spacing: 0.135em;
+        color: #000000; 
+    }
+
+    p4 {
+        font-family: 'Arial';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 27px;
+        letter-spacing: 0.135em;
+        color: #000000;
+    }
+
+    .line {
+        width: 550px;
+        height: 0px;
+        border: 1px solid #000000;
+        transform: rotate(-0.16deg);
+    }
+
+    .details {
+        font-family: Arial;
+        font-size: 30px;
+    }
+
+    .button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+    }
+</style>
+
+{% include 'settingstabs.html'%}
+
+
+
+<div class="edit_profile">
+    <a href="{% url 'userprof' %}"> <button class="btn button2"
+            style="float: right; margin-top: 60px;margin-right: 100px;">
+            <img style="width: 20px;"src="{% static '/images/edit_white_36dp.svg' %}" /><span style="font-family: Arial;"> Edit Profile</span></i></button></a>
+</div>
+
+
+
+<div class="profile">
+    <div class="row w-100 m-auto">
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="profile-image">
+                <img class="img-fluid2" src="{{images}}/{{user.profilepic}}">
+                <h4 style="text-align: center;">{{user}}</h4>
+            </div>
+
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8" style="margin-top: 70px;">
+            <div class="profile-user-settings" style="margin-left: 30px;">
+                <p4 class="profile-user-name">{{user.email}}</p4>
+                <h1 style="margin-top: 30px; color:#0093B7;">About</h1>
+                <p class="line" style="margin-left: 2px;"></p>
+            </div>
+            <div class="row w-100">
+                <div class="col-lg-4 col-md-4 col-4 ">
+                    <p style="font-size: 30px; margin-left: 30px;">Name:</p>
+                    <p style="font-size: 30px; margin-left: 30px;">Role:</p>
+                </div>
+                <div class="col-lg-4 col-md-4 col-4 ">
+                    <strong>
+                        <p style="font-size: 25px;">{{user.first_name}} {{user.mid_name}} {{user.last_name}}</p>
+                    </strong>
+                    <strong>
+                        <p style="font-size: 25px;">{{role}}</p>
+                    </strong>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</html>
+{% endblock viewprof %}
