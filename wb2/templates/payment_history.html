@@ -276,7 +276,7 @@ Payment History
                             <td class="text-center">{{t.transactionid}}</td>
                             <td class="text-center">{{t.or_number}}</td>
                             <td class="text-center">{{t.date}}</td>
-                            <td class="">&#8369; {{t.receivedamt|floatformat:2|intcomma}}</td>
+                            <td class="">{% if t.receivedamt %}&#8369; {{t.receivedamt|floatformat:2|intcomma}}{% endif %}</td>
                             <td class="text-center">{{t.processedBy}}</td>
 
                         </tr>

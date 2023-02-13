@@ -499,7 +499,7 @@ def monthly_summary (request, id, year):
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
     billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
     payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year)
-
+    
 
     pcount = len(payment)
     count = len(billing)
