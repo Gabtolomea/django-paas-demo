@@ -517,6 +517,7 @@ def monthly_summary (request, id, year):
         years.append(datetime.today().year)
     if int(year) in years:
         years.remove(int(year))
+
     # --------------------------#
 
     j = 0
@@ -556,6 +557,8 @@ def monthly_summary (request, id, year):
 
     }
     return render(request,'conmon_summary.html', context)
+
+
 
 @unauthenticated_user
 def forgetpassword(request):
@@ -1462,13 +1465,13 @@ def editpayment(request, id):
                     dt.save()
                     ted.discountcode = dt.transactionid
                     ted.save()
-        brec = BarangayRecord.objects.get(year=ted.year, barangaycode=ted.acctID.installation_address)
-        brec.__dict__[f"total_paid_{months[ted.month-1]}"] -= prevpayment
-        brec.__dict__[f"total_paid_{months[ted.month-1]}"] += ted.payment
-        brec.save()
+            brec = BarangayRecord.objects.get(year=ted.year, barangaycode=ted.acctID.installation_address)
+            brec.__dict__[f"total_paid_{months[ted.month-1]}"] -= prevpayment
+            brec.__dict__[f"total_paid_{months[ted.month-1]}"] += ted.payment
+            brec.save()
 
         get_balance(ted.acctID.consumer_id)
-        return redirect(f'/bills_list/ledger/{ted.acctID.consumer_id}/?show=Payment')
+        return redirect('payment_history',ted.acctID.consumer_id,ted.year)
 
 def reports(request):
     cur_year =  datetime.today().year
@@ -2361,3 +2364,29 @@ def userprof(request):
         'form':form,
     }
     return render(request, 'userprof.html', context)
+
+def payment_history (request, id, year):
+    years = []
+    
+    consumer = ConsumerInfo.objects.get(consumer_id = id)
+    yer = Transactions.objects.filter(acctID_id=id, transType='Received Amount')
+    alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', year = year) | Transactions.objects.filter(acctID_id=id, transType='Received Amount', year=year)
+
+
+    for i in yer:
+        if i.year not in years:
+            years.append(i.year)
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
+    if int(year) in years:
+        years.remove(int(year))
+
+        
+    context = {
+        'consumer' : consumer,
+        'alltrans' : alltran,
+        'years'    : years,
+        'year'     : year
+    }
+
+    return render(request,'payment_history.html', context)

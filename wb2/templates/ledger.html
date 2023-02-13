@@ -249,8 +249,8 @@ Account Ledger
 	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 
 		<button type="button" onclick="toggleVisibility('ledger');" class="btn button2" style="float: left; margin-right: 5px;">Ledger</button>
-		<a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left;">Monthly</button></a>
-
+		<a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Monthly</button></a>
+		<a href="{% url 'payment_history' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left;">Payment History</button></a>
 	</div>
 
 	<!-- Sort for Billing, Payment, Penalty, Discount and Get copy buttom -->

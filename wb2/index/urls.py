@@ -13,6 +13,7 @@ urlpatterns = [
     path('bills_list', views.bills_list, name='bills_list'),
     path('bills_list/ledger/<id>/', views.ledger,name='ledger'),
     path('bills_list/ledger/conmon_summary/<id>/<int:year>', views.monthly_summary,name='monthly_summary'),
+    path('bills_list/ledger/payment_history/<id>/<int:year>', views.payment_history,name='payment_history'),
     path('editpayment/<id>/', views.editpayment,name='editpayment'),
     path('payment/<id>/', views.payment, name='payment'),
     path('meterreading', views.meterreading,name='meterreading'),
