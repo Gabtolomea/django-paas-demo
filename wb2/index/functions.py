@@ -134,6 +134,9 @@ def get_balance(id):
     if user.current_bal < 0:
         user.excess += (user.current_bal*-1)
         user.current_bal = 0
+    if user.excess < 0:
+        user.excess = 0
+        user.current_bal += (user.excess*-1)
     user.save()
 
 

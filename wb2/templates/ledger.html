@@ -399,154 +399,55 @@ Account Ledger
 </div>
 
 <!-- Ledger -->
-<div class="" id="ledger">
-<h1 class="mb-3 text-center">Account Ledger</h1>
-<div class="container-fluid p-0">
-	<div class="table-responsive">
-		<div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
-			<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
-				<thead class="wb_thead"  style="position: sticky; top: 0;">
-					<tr>
-						<th style="min-width: 100px;">Transaction ID</th>
-						<th style="min-width: 100px;">Date</th>
-						<th style="min-width: 100px;">Month</th>
-						<th style="min-width: 100px;">Previous</th>
-						<th style="min-width: 100px;">Current Reading</th>
-						<th style="min-width: 110px;">Cubic Meter Used</th>
-						<th style="min-width: 110px;">Amount Billed</th>
-						<th style="min-width: 100px;">Payment</th>
-						<th style="min-width: 100px;">Current Balance</th>
-						<th style="min-width: 110px;">Connection Type</th>
-						<th style="min-width: 100px;">Processed By</th>
-						<th style="min-width: 110px;">ispaid</th>
-					</tr>
-				</thead>
-				<tbody class="wb_tbody" >
-					{% for t in table reversed %}
-					<tr>
-						<td class="{{t.style}}">{{t.transid}}</td>
-						<td class="{{t.style}}">{{t.date}}</td>
-						<td class="{{t.style}}">{{t.month}}</td>
-						<td class="{{t.style}}">{{t.prev}}</td>
-						<td class="{{t.style}}">{{t.reading}}</td>
-						<td class="{{t.style}}">{{t.usage}}</td>
-						<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
-						<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
-						<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
-						<td class="{{t.style}}">{{t.rateid}}</td>
-						</td>
-						<td class="{{t.style}}">{{t.pb}}</td>
-						<td class="{{t.style}}">{% if t.ispaid %} Yes {% endif %}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
-</div>
-</div>
-<!-- Monthly View -->
-<div id="monthly" style="display: none;">
-	<div class="">
-		<form></form>
-		<h1 class="mb-3 text-center">Monthly Summary</h1>
+	<div class="" id="ledger">
+		<h1 class="mb-3 text-center">Account Ledger</h1>
 		<div class="container-fluid p-0">
 			<div class="table-responsive">
-				<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
-					<thead class="wb_thead">
-						<tr>
-							<th style="min-width: 100px;">Month</th>
-							<th style="min-width: 100px;">Reading</th>
-							<th style="min-width: 100px;">Usage</th>
-							<th style="min-width: 100px;">Bill</th>
-							<th style="min-width: 110px;">Amount Paid</th>
-						</tr>
-					</thead>
-					
-					
-					<tbody class="wb_tbody">
-						{% for tm in tabsmon %}
-						<tr>
-							<td class="text-center">{{tm.month}}</td>
-							<td class="text-center">{{tm.reading}}</td>
-							<td class="text-center">{{tm.usage}}</td>
-							<td class="text-center">{% if tm.total_bill %} &#8369; {{tm.total_bill}} {% endif %}</td>
-							<td class="text-center">{% if tm.total_amount_paid %} &#8369; {{tm.total_amount_paid}}{% endif %}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-					
-				</table>
+				<div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
+					<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
+						<thead class="wb_thead"  style="position: sticky; top: 0;">
+							<tr>
+								<th style="min-width: 100px;">Transaction ID</th>
+								<th style="min-width: 100px;">Date</th>
+								<th style="min-width: 100px;">Month</th>
+								<th style="min-width: 100px;">Previous Reading</th>
+								<th style="min-width: 100px;">Current Reading</th>
+								<th style="min-width: 110px;">Cubic Meter Used</th>
+								<th style="min-width: 110px;">Amount Billed</th>
+								<th style="min-width: 100px;">Payment</th>
+								<th style="min-width: 100px;">Current Balance</th>
+								<th style="min-width: 110px;">Connection Type</th>
+								<th style="min-width: 100px;">Processed By</th>
+								<th style="min-width: 110px;">Payment Status</th>
+							</tr>
+						</thead>
+						<tbody class="wb_tbody" >
+							{% for t in table reversed %}
+							<tr>
+								<td class="{{t.style}}">{{t.transid}}</td>
+								<td class="{{t.style}}">{{t.date}}</td>
+								<td class="{{t.style}}">{{t.month}}</td>
+								<td class="{{t.style}}">{{t.prev}}</td>
+								<td class="{{t.style}}">{{t.reading}}</td>
+								<td class="{{t.style}}">{{t.usage}}</td>
+								<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+								<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+								<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+								<td class="{{t.style}}">{{t.rateid}}</td>
+								</td>
+								<td class="{{t.style}}">{{t.pb}}</td>
+								<td class="{{t.style}}">{% if t.ispaid %} Yes {% endif %}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
-	
-	</form>
 	</div>
-	</div>
-	
-
-<!-- Edit Payment -->
-{% for i in table reversed %}
-{% if i.transtype == "Payment" %}
-<div class="modal fade" id="edit-{{i.transid}}" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<form action="{% url 'editpayment' i.transid %}" method="POST">
-				{% csrf_token %}
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label>Amount</label>
-						<input value="{{i.payment}}" name="amount" type="" class="form-control" required>
-						<label>OR Number</label>
-						<input value="{{i.ornum}}" name="or_num" type="" class="form-control" required>
-						<label>Discount Code</label>
-						<input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary" name="btnform2" >Update</button>
-				</div>
-				<input type="hidden" name="fshow" value="{{disp}}">
-			</form>
-		</div>
-	</div>
-</div>
-{% endif %}
-{% endfor %}
+</div>	
 
 
-<!-- Script for button switching between Ledger and Month Summary -->
-<script>
-	var divs = ["ledger", "monthly"];
-	var visibleDivId = null;
-	function toggleVisibility(divId) {
-	  if(visibleDivId === divId) {
-		//visibleDivId = null;
-	  } else {
-		visibleDivId = divId;
-	  }
-	  hideNonVisibleDivs();
-	}
-	function hideNonVisibleDivs() {
-	  var i, divId, div;
-	  for(i = 0; i < divs.length; i++) {
-		divId = divs[i];
-		div = document.getElementById(divId);
-		if(visibleDivId === divId) {
-		  div.style.display = "block";
-		} else {
-		  div.style.display = "none";
-		}
-	  }
-	}
-	</script>
-	
 <!-- Script for PDF Get Copy -->
 <script type="text/javascript">
 

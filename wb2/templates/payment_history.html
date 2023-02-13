@@ -272,7 +272,7 @@ Payment History
 
                     <tbody class="wb_tbody">
                         {% for t in alltrans %}
-                        <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{t.transactionid}}">
+                        <tr style="cursor: pointer;" title="Edit Payment {{t.transactionid}}" data-bs-toggle="modal" data-bs-target="#edit-{{t.transactionid}}">
                             <td class="text-center">{{t.transactionid}}</td>
                             <td class="text-center">{{t.or_number}}</td>
                             <td class="text-center">{{t.date}}</td>

@@ -100,6 +100,7 @@ def signin(request):
 
 @login_required(login_url='login')
 def bills_list(request):
+    # balance()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -396,73 +397,12 @@ def ledger(request, id):
                 table.append(new_row)
             last = i
         try:
-            ispaid = asc_trans[last].is_billpaid
-        except IndexError:
+            ispaid = asc_trans[last-1].is_billpaid
+        except (IndexError, ValueError):
             ispaid = True
     except ObjectDoesNotExist:
         u = False
-    #Monthly Summary
-    tabsmon = []
-    years = []
-    class montly_sum():
-        def __init__(self, month, reading, reading_date, usage, total_bill, total_amount_paid):
-            self.month = month
-            self.reading = reading
-            self.reading_date = reading_date
-            self.usage = usage
-            self.total_bill = total_bill
-            self.total_amount_paid = total_amount_paid
-    alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
-    payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year)
- 
-
-    pcount = len(payment)
-    count = len(billing)
-    j = 0
-    try:
-        if billing[0].date.month == 1:
-            j = 1
-    except IndexError:
-        j=0
-    for i in alltran:
-        if i.year not in years:
-            if i.year is not None:
-                years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
-    # --------------------------#
-    
-    j = 0
-    c = 0
-    if not billing:
-        for i in range(1, 13):
-            month = calendar.month_name[i]
-            a = montly_sum(month, '', '', '', '', '')
-            tabsmon.append(a)
-    else:
-        for i in range(1, 13):
-            month = calendar.month_name[i]
-            usage = 0
-            reading = 0
-            total_bill = 0
-            reading_date = ''
-            total_amount_paid = 0
-            if c < pcount and pcount != 0:
-                if i == payment[c].month:
-                    total_amount_paid = payment[c].payment
-                    c += 1
-            if j < count and count != 0:
-                if i == billing[j].month:
-                    usage = billing[j].usage
-                    reading = billing[j].meterReading
-                    reading_date = billing[j].date
-                    total_bill = billing[j].bill
-                    j += 1
-                    a = montly_sum(month, reading, reading_date, usage, total_bill, total_amount_paid)
-                    tabsmon.append(a)
     context = {
-        'tabsmon':tabsmon,
         'disp':disp,
         'month': calendar.month_name[datetime.today().month-1],
         'date_today': datetime.today().strftime('%B %d, %Y - %I:%M %p'),
@@ -624,6 +564,23 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 @login_required(login_url='login')
+def deletereading(request, id):
+    reading = Transactions.objects.get(transactionid = id)
+    con = reading.acctID
+    try:
+        payment = Transactions.objects.get(month=reading.month, year=reading.year, transType="Payment")
+        con.current_bal += payment.payment
+        payment.delete()
+    except ObjectDoesNotExist:
+        pass
+    con.current_bal -= reading.bill
+    if con.current_bal < 0:
+        con.excess += (con.current_bal*1)
+        con.current_bal = 0
+    con.save()
+    reading.delete()
+    return redirect('inputreading', con.consumer_id, date.today().year)
+@login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -667,13 +624,11 @@ def inputreading(request, id, year):
             prev = lastreading
             reading = 0
             style = ''
-            next = False
+            try:
+                next = asc_trans[j].meterReading
+            except IndexError:
+                next = False
             if j < count and count != 0:
-                if i < asc_trans[j].month:
-                    try:
-                        next = asc_trans[j+1].meterReading
-                    except IndexError:
-                        next = False
                 if i == asc_trans[j].month:
                     transid = asc_trans[j].transactionid
                     usage = asc_trans[j].usage
@@ -687,7 +642,6 @@ def inputreading(request, id, year):
                     style = 'table-success'
                     j += 1
             m = meterreaderclass(transid, month, usage, prev, reading, next, style)
-            print(m.prev, m.next)
             table.append(m)
     if consumer.penaltycode is None:
         con_penalty = Penalty.objects.get(penaltycode='P001')
@@ -1398,6 +1352,11 @@ def editpayment(request, id):
             brec.save()
 
         get_balance(ted.acctID.consumer_id)
+        
+        if con.excess < 0:
+            con.current_bal += (con.excess*-1)
+            con.excess = 0
+            con.save()
         return redirect('payment_history',ted.acctID.consumer_id,ted.year)
 
 def reports(request):
@@ -2256,6 +2215,9 @@ def bulkreading(request):
             'user':request.user
         }
         return render(request,'bulkreading.html', context)
+
+
+
 @login_required(login_url='login')
 def viewprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
@@ -2338,32 +2300,26 @@ def monthly_summary (request, id, year):
 
     j = 0
     c = 0
-    if not billing:
-        for i in range(1, 13):
-            month = calendar.month_name[i]
-            a = montly_sum(month, '', '', '', '', '')
-            table.append(a)
-    else:
-        for i in range(1, 13):
-            month = calendar.month_name[i]
-            usage = 0
-            reading = 0
-            total_bill = 0
-            reading_date = ''
-            total_amount_paid = 0
-            if c < pcount and pcount != 0:
-                if i == payment[c].month:
-                    total_amount_paid = payment[c].payment
-                    c += 1
-            if j < count and count != 0:
-                if i == billing[j].month:
-                    usage = billing[j].usage
-                    reading = billing[j].meterReading
-                    reading_date = billing[j].date
-                    total_bill = billing[j].bill
-                    j += 1
-                    a = montly_sum(month, reading, reading_date, usage, total_bill, total_amount_paid)
-                    table.append(a)
+    for i in range(1, 13):
+        month = calendar.month_name[i]
+        usage = 0
+        reading = 0
+        total_bill = 0
+        reading_date = ''
+        total_amount_paid = 0
+        if c < pcount and pcount != 0:
+            if i == payment[c].month:
+                total_amount_paid = payment[c].payment
+                c += 1
+        if j < count and count != 0:
+            if i == billing[j].month:
+                usage = billing[j].usage
+                reading = billing[j].meterReading
+                reading_date = billing[j].date
+                total_bill = billing[j].bill
+                j += 1
+        a = montly_sum(month, reading, reading_date, usage, total_bill, total_amount_paid)
+        table.append(a)
 
     context = {
         'table': table,
@@ -2379,7 +2335,7 @@ def payment_history (request, id, year):
     
     consumer = ConsumerInfo.objects.get(consumer_id = id)
     yer = Transactions.objects.filter(acctID_id=id, transType='Received Amount')
-    alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', year = year) | Transactions.objects.filter(acctID_id=id, transType='Received Amount', year=year)
+    alltran = Transactions.objects.filter(acctID_id=id, transType='Received Amount', year=year)
 
 
     for i in yer:

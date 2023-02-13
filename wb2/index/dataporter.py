@@ -189,55 +189,19 @@ def porter_out(tables):
                         con.current_reading = j[149]
                         break
             if i[3]:
-                con.excess = i[3]
+                con.excess = 0
             con.save()
             for m in range(1,13):
                 if i[bill_index]:
                     billing_out(con, i[1], i[reading_index], i[date_index], i[5], i[usage_index], m, i[paidamt_index])
-                    if i[paidamt_index]:
-                        payment_out(con, i[date_index], i[5], m, i[bill_index], i[paidamt_index])
                 reading_index += 13
                 date_index += 13
                 usage_index += 13
                 bill_index += 13
                 paidamt_index += 13
 
-def payment_out(con, date, year, month, bill, payment):
-    create = False
-    try:
-        paymentT = Transactions.objects.get(acctID_id = con, transType="Payment", year = year, month = month)
-        create = True
-    except ObjectDoesNotExist:
-        paymentT = Transactions()
-        create = True
-    except MultipleObjectsReturned:
-        pass
-    if create:
-        paymentT.date = date
-        paymentT.acctID = con
-        paymentT.transType = 'Payment'
-        if payment > bill:
-            con.excess += payment-bill
-        elif payment < bill:
-            con.excess -= bill-payment
-        paymentT.payment = bill
-        paymentT.month = month
-        paymentT.year = year
-        try:
-            brec = BarangayRecord.objects.get(year=paymentT.year, barangaycode=con.installation_address)
-            brec.__dict__[f"total_paid_{months[paymentT.month-1]}"] += paymentT.payment
-        except ObjectDoesNotExist:
-            brec = BarangayRecord()
-            brec.barangayrec_id = f"{con.installation_address.id}-{paymentT.year}"
-            brec.year = paymentT.year
-            brec.barangaycode = con.installation_address
-            brec.__dict__[f"total_paid_{months[paymentT.month-1]}"] = paymentT.payment
-            brec.__dict__[f"total_usage_{months[paymentT.month-1]}"] = 0
-            brec.__dict__[f"total_due_{months[paymentT.month-1]}"] = 0
-        brec.save()
-        con.save()
-        paymentT.save()
-def billing_out(con, rate, reading, date, year, usage, month, paid):
+    
+def billing_out(con, rate, reading, date, year, usage, month, payment):
     billingT = Transactions()
     billingT.acctID = con
     billingT.contypeid = "C00"+rate
@@ -293,7 +257,41 @@ def billing_out(con, rate, reading, date, year, usage, month, paid):
         brec.__dict__[f"total_paid_{months[month-1]}"] = 0
     brec.save()
     billingT.save()
-    
+    if payment:
+        create = False
+        try:
+            paymentT = Transactions.objects.get(acctID_id = con, transType="Payment", year = year, month = month)
+            create = True
+        except ObjectDoesNotExist:
+            paymentT = Transactions()
+            create = True
+        except MultipleObjectsReturned:
+            pass
+        if create:
+            paymentT.date = date
+            paymentT.acctID = con
+            paymentT.transType = 'Payment'
+            if payment > billingT.bill:
+                con.excess += payment-billingT.bill
+            elif payment < billingT.bill:
+                con.excess -= billingT.bill-payment
+            paymentT.payment = billingT.bill
+            paymentT.month = month
+            paymentT.year = year
+            try:
+                brec = BarangayRecord.objects.get(year=paymentT.year, barangaycode=con.installation_address)
+                brec.__dict__[f"total_paid_{months[paymentT.month-1]}"] += paymentT.payment
+            except ObjectDoesNotExist:
+                brec = BarangayRecord()
+                brec.barangayrec_id = f"{con.installation_address.id}-{paymentT.year}"
+                brec.year = paymentT.year
+                brec.barangaycode = con.installation_address
+                brec.__dict__[f"total_paid_{months[paymentT.month-1]}"] = paymentT.payment
+                brec.__dict__[f"total_usage_{months[paymentT.month-1]}"] = 0
+                brec.__dict__[f"total_due_{months[paymentT.month-1]}"] = 0
+            brec.save()
+            con.save()
+            paymentT.save()
 
 def balance():
     for i in ConsumerInfo.objects.all():
@@ -307,9 +305,12 @@ def balance():
             elif asc_trans[i].transType == 'Payment':
                 bal=bal-asc_trans[i].payment
         user.current_bal = math.ceil(bal*100)/100
-        if user.current_bal < 0:
-            user.excess += (user.current_bal*-1)
-            user.current_bal = 0
+        # if user.current_bal < 0:
+        #     user.excess += (user.current_bal*-1)
+        #     user.current_bal = 0
+        if user.excess < 0:
+            user.excess = 0
+            user.current_bal += (user.excess*-1)
         user.save()
 
 

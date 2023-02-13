@@ -18,6 +18,7 @@ urlpatterns = [
     path('payment/<id>/', views.payment, name='payment'),
     path('meterreading', views.meterreading,name='meterreading'),
     path('meterreading/bulkreading', views.bulkreading,name='bulkreading'),
+    path('meterreading/deletereading/<int:id>', views.deletereading,name='deletereading'),
     path('meterreading/<id>/<int:year>', views.inputreading,name='inputreading'),
     path('forgetpassword', views.forgetpassword,name='forgetpassword'),
     path('resetpassword/<uidb64>/<token>', views.resetpassword,name='resetpassword'),
