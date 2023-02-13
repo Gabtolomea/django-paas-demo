@@ -124,7 +124,7 @@ Meter Reading
 						<tbody class="wb_tbody">
 							{% if meterred %}
 							{% for m in meterred %}
-							<tr class='clickable-row' style="cursor: pointer;" title = "Click for Input Reading"
+							<tr class='clickable-row' style="cursor: pointer;"
 								data-href="{% url 'inputreading' m.consumer_id year %}" style="text-align:center;">
 								<td class="{{t.style}}" style="text-align:center;">
 									{{m.consumer_id}}

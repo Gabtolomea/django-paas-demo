@@ -30,7 +30,7 @@ Bulk Reading
     }
 	.table-scrolls{
 		display: block;
-		height: 500px;
+		height: 600px;
 		overflow-y: scroll;
 	}
 
@@ -69,7 +69,7 @@ Bulk Reading
 					{% csrf_token %}
 					<div class="col-sm-12 {% if paginate_by >= 25 %}table-scrolls{% endif %}">
 						<table id="myTable" class="table table-bordered table-hover table-striped " cellspacing="0" width="100%">
-							<thead class="wb_thead">
+							<thead class="wb_thead" style="position: sticky; top: 0;">
 								<tr>
 									<th>Meter Number</th>
 									<th>Account Number</th>

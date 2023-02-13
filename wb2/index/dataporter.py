@@ -31,13 +31,13 @@ alltables = [
 
 sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#    host="localhost",
-#    user="root",
-#    password="yjh434ctuG@-@",
-#    database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+   host="localhost",
+   user="root",
+   password="yjh434ctuG@-@",
+   database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 
 
 def porter_in():
@@ -185,7 +185,7 @@ def porter_out(tables):
             con = ConsumerInfo.objects.get(consumer_id=i[175])
             for j in tables[1]:
                 if j[175] == i[175]:
-                    if j[5] == 2020:
+                    if j[5] == i[5]-1:
                         con.current_reading = j[149]
                         break
             if i[3]:
@@ -195,14 +195,14 @@ def porter_out(tables):
                 if i[bill_index]:
                     billing_out(con, i[1], i[reading_index], i[date_index], i[5], i[usage_index], m, i[paidamt_index])
                     if i[paidamt_index]:
-                        payment_out(con, i[date_index], i[5], m, i[paidamt_index])
+                        payment_out(con, i[date_index], i[5], m, i[bill_index], i[paidamt_index])
                 reading_index += 13
                 date_index += 13
                 usage_index += 13
                 bill_index += 13
                 paidamt_index += 13
 
-def payment_out(con, date, year, month, payment):
+def payment_out(con, date, year, month, bill, payment):
     create = False
     try:
         paymentT = Transactions.objects.get(acctID_id = con, transType="Payment", year = year, month = month)
@@ -216,7 +216,11 @@ def payment_out(con, date, year, month, payment):
         paymentT.date = date
         paymentT.acctID = con
         paymentT.transType = 'Payment'
-        paymentT.payment = payment
+        if payment > bill:
+            con.excess += payment-bill
+        elif payment < bill:
+            con.excess -= bill-payment
+        paymentT.payment = bill
         paymentT.month = month
         paymentT.year = year
         try:
@@ -231,6 +235,7 @@ def payment_out(con, date, year, month, payment):
             brec.__dict__[f"total_usage_{months[paymentT.month-1]}"] = 0
             brec.__dict__[f"total_due_{months[paymentT.month-1]}"] = 0
         brec.save()
+        con.save()
         paymentT.save()
 def billing_out(con, rate, reading, date, year, usage, month, paid):
     billingT = Transactions()
@@ -302,6 +307,9 @@ def balance():
             elif asc_trans[i].transType == 'Payment':
                 bal=bal-asc_trans[i].payment
         user.current_bal = math.ceil(bal*100)/100
+        if user.current_bal < 0:
+            user.excess += (user.current_bal*-1)
+            user.current_bal = 0
         user.save()
 
 
