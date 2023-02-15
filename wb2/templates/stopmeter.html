@@ -1,0 +1,342 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+Billing
+{% endblock title %}
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
+
+<style>
+	.odd {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%; 
+		-webkit-tap-highlight-color: transparent;
+
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+	}
+
+	.dataTables_empty {
+		text-align: center;
+	}
+
+
+
+</style>
+{% endblock style %}
+{% block script %}
+{% endblock script %}
+{% block stopmeter %}
+<div class="pt-3 row">
+	<div class="col-12">
+		<h1 class="text-center">Stopped Meters</h1>
+	</div>
+</div>
+
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<div class="container-fluid p-0">
+	<div class="table-responsive">
+		<div id="table_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+			{% include 'search.html' %}
+			<div class="row">
+				<div class="col-sm-12">
+					<table id="myTable" class="table table-bordered table-hover table-striped" cellspacing="0"
+						width="100%">
+						<thead class="wb_thead">
+							<tr>
+								<th style="min-width: 100px;">Account ID</th>
+								<th style="min-width: 100px;">Meter Number</th>
+								<th style="min-width: 100px;">Name</th>
+								<th style="min-width: 100px;">Address</th>
+								<th style="min-width: 100px;">Total Balance</th>
+							</tr>
+						</thead>
+						<tbody class="wb_tbody">
+							{% if stopmeters %}
+							{% for bill in stopmeters %}
+							<tr class='clickable-row' style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-{{bill.consumer_id}}">
+								<td style="text-align:center;">{{bill.consumer_id}}</td>
+								<td style="text-align:center;">{{bill.meternumber}}</td>
+								<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
+								<td style="text-align:center;">{{bill.installation_address}}</td>
+								<td class="balance"> &#8369; {{bill.current_bal|floatformat:2|intcomma}}</td>
+							</tr>
+							{% endfor %}
+							{% else %}
+							<tr class="odd">
+								<td valign="top" colspan="5" class="dataTables_empty">No matching records found</td>
+							</tr>
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{% for i in stopmeters %}
+			
+			<div class="modal fade " id="edit-{{i.consumer_id}}" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Edit Penalty</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form method="POST" action="{% url 'editpenalty' i.consumer_id %}">
+								{% csrf_token %}
+								<div class="row form-group w-100 m-auto">
+									<div class="col-lg-4 col-md-12 col-sm-12 col-12">
+										<label >Rate*</label>
+										<input type="number" value="{{i.penalty_rate}}" name="penalty_rate" type="" class="form-control" required>
+									
+									</div>
+									<div class="col-lg-4 col-md-12 col-sm-12 col-12">
+										<label>Penalty After*</label>
+										<input type="number" value="{{i.penalty_after}}" name="penalty_after" type="" class="form-control" required>
+										
+									</div>
+									<div class="col-lg-4 col-md-12 col-sm-12 ">
+										<label >Days to Application*</label>
+										<input type="number" value="{{i.daysappliedafter}}" name="daysappliedafter" type="" class="form-control" required>
+										
+									</div>
+									<div class="row w-100 m-auto">
+										<label >Details:</label><br>
+										<input value="{{i.penalty_info}}" name="penalty_info" type="" class="form-control" required>
+										
+									</div>
+
+									<div class="modal-footer">
+										<input class="btn btn-primary2" name="btnform2" type="submit" value="Update">
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+			<div class="row">
+				<div class="d-flex justify-content-center">
+					<div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
+						<ul style="display: flex; padding-left: 0; list-style: none;">
+							{% if stopmeters.paginator.num_pages > 5 %}
+								{% if stopmeters.number < 5 %} 
+									{% if stopmeters.has_previous %} 
+										<a href="?page={{ stopmeters.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+											<li class="paginate_button page-item previous">Previous</li>
+										</a>
+									{% else %}
+										<li class="paginate_button disabled page-item previous">Previous</li>
+									{% endif %}
+									{% for i in five %}
+										{% if i == stopmeters.number %}
+											<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item active">{{i}}</li>
+											</a>
+										{% else %}
+											<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item">{{i}}</li>
+											</a>
+										{% endif %}
+									{% endfor %}
+									<li class="paginate_button disabled page-item">...</li>
+									<a href="?page={{ stopmeters.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+										<li class="paginate_button page-item">{{ stopmeters.paginator.num_pages }}</li>
+									</a>
+									{% if stopmeters.has_next %}
+										<a href="?page={{ stopmeters.next_page_number }}&search={{search}}&p={{paginate_by}}">
+											<li class="paginate_button page-item next">Next</li>
+										</a>
+									{% else %}
+										<li class="paginate_button disabled page-item next">Next</li>
+									{% endif %}
+								{% else %}
+									{% if stopmeters.number > stopmeters.paginator.num_pages|add:'-3'%}
+										{% if stopmeters.has_previous %}
+											<a href="?page={{ stopmeters.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item previous">Previous</li>
+											</a>
+										{% else %}
+											<li class="paginate_button disabled page-item previous">Previous</li>
+										{% endif %}
+										<a href="?page=1&search={{search}}&p={{paginate_by}}">
+											<li class="paginate_button page-item">1</li>
+										</a>
+										<li class="paginate_button disabled page-item">...</li>
+										{% for i in last %}
+											{% if i == stopmeters.number %}
+												<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+													<li class="paginate_button page-item active">{{i}}</li>
+												</a>
+											{% else %}
+												<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+													<li class="paginate_button page-item">{{i}}</li>
+												</a>
+											{% endif %}
+										{% endfor %}
+										{% if stopmeters.number == stopmeters.paginator.num_pages %}
+											<a href="?page={{ stopmeters.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item active">{{ stopmeters.paginator.num_pages }}</li>
+											</a>
+										{% else %}
+											<a href="?page={{ stopmeters.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item">{{ stopmeters.paginator.num_pages }}</li>
+											</a>
+										{% endif %}
+										{% if stopmeters.has_next %}
+											<a href="?page={{ stopmeters.next_page_number }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item next">Next</li>
+											</a>
+										{% else %}
+											<li class="paginate_button disabled page-item next">Next</li>
+										{% endif %}
+									{% else %}
+										{% if stopmeters.has_previous %}
+											<a href="?page={{ stopmeters.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item previous">Previous</li>
+											</a>
+										{% else %}
+											<li class="paginate_button disabled page-item previous">Previous</li>
+										{% endif %}
+										{% if stopmeters.number > 2 %}
+											<a href="?page=1&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item">1</li>
+											</a>
+											{% if stopmeters.number > 3 %}
+												<li class="paginate_button disabled page-item">...</li>
+											{% endif %}
+										{% endif %}
+
+										{% for num in stopmeters.paginator.page_range %}
+											{% if stopmeters.number == num %}
+												<a href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
+													<li class="paginate_button page-item active">{{ num }}</li>
+												</a>
+											{% elif num > stopmeters.number|add:'-2' and num < stopmeters.number|add:'2' %} 
+											<a href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item">{{ num }}</li>
+											</a>
+											{% endif %}
+										{% endfor %}
+
+										{% if stopmeters.number < stopmeters.paginator.num_pages|add:'-2' %} 
+											<li class="paginate_button disabled page-item">...</li>
+											<a href="?page={{ stopmeters.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item">{{ stopmeters.paginator.num_pages }} </li>
+											</a>
+										{% elif stopmeters.number < stopmeters.paginator.num_pages|add:'-1' %} 
+											<a href="?page={{ stopmeters.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item">{{ stopmeters.paginator.num_pages }} </li>
+											</a>
+										{% endif %}
+										{% if stopmeters.has_next %}
+											<a href="?page={{ stopmeters.next_page_number }}&search={{search}}&p={{paginate_by}}">
+												<li class="paginate_button page-item next">Next</li>
+											</a>
+										{% else %}
+											<li class="paginate_button page-item disabled next">Next</li>
+										{% endif %}
+									{% endif %}
+								{% endif %}
+							{% else %}
+								{% if stopmeters.has_previous %}
+									<a href="?page={{ stopmeters.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+										<li class="paginate_button page-item previous">Previous</li>
+									</a>
+								{% else %}
+									<li class="paginate_button disabled page-item previous">Previous</li>
+								{% endif %}
+								{% for i in stopmeters.paginator.page_range %}
+									{% if i == stopmeters.number %}
+										<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+											<li class="paginate_button page-item active">{{i}}</li>
+										</a>
+									{% else %}
+										<a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+											<li class="paginate_button page-item">{{i}}</li>
+										</a>
+									{% endif %}
+								{% endfor %}
+								{% if stopmeters.has_next %}
+									<a href="?page={{ stopmeters.next_page_number }}&search={{search}}&p={{paginate_by}}">
+										<li class="paginate_button page-item next">Next</li>
+									</a>
+								{% else %}
+									<li class="paginate_button disabled page-item next">Next</li>
+								{% endif %}
+							{% endif %}
+						</ul>
+						<style>
+							a {
+								-webkit-touch-callout: none;
+								-webkit-user-select: none;
+								-khtml-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+								cursor: default;
+								text-decoration: none;
+							}
+
+							.paginate_button {
+								cursor: pointer;
+								position: relative;
+								display: block;
+								padding: 0.375rem 0.75rem;
+								font-size: 1rem;
+								color: var(--main-color);
+								text-decoration: none;
+								background-color: white;
+								border: 1px solid #dee2e6;
+								transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+							}
+
+							.active>.paginate_button,
+							.paginate_button.active {
+								z-index: 3;
+								color: white !important;
+								background-color: var(--main-color);
+								border-color: #dee2e6;
+							}
+
+							.previous {
+								border-top-left-radius: .375rem;
+								border-bottom-left-radius: .375rem;
+							}
+
+							.next {
+								border-top-right-radius: .375rem;
+								border-bottom-right-radius: .375rem;
+							}
+
+							.disabled {
+								-webkit-touch-callout: none;
+								-webkit-user-select: none;
+								-khtml-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+								cursor: default;
+								color: #6c757d;
+							}
+
+						</style>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock stopmeter %}
