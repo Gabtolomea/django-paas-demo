@@ -277,7 +277,17 @@ Monthly Summary
                             <td class="text-center">{{t.reading}}</td>
                             <td class="text-center">{{t.usage}}</td>
                             <td class="text-center">{% if t.total_bill %} &#8369; {{t.total_bill}} {% endif %}</td>
-                            <td class="text-center">{% if t.total_amount_paid %} &#8369; {{t.total_amount_paid}}{% endif %}</td>
+                            <td class="text-center">
+
+                                {% if t.total_bill %} 
+                                {% if t.total_amount_paid %}
+                                    &#8369; {{t.total_amount_paid}}
+                                {% else %}
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#pay-{{t.monthval}}"> PAY </button> 
+                                {% endif %}
+                                {% endif %}
+                                
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -290,7 +300,43 @@ Monthly Summary
     </div>
 </div>
 
+{% for t in table %}
 
+{% if t.total_bill %} 
+{% if t.total_amount_paid %}
+{% else %}
+<div class="modal fade" id="pay-{{t.monthval}}" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'monthlypayment' %}" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+                        
+                        <input type="hidden" name="conid" value="{{consumer.consumer_id}}">
+                        <input type="hidden" name="month" value="{{t.monthval}}">
+                        <input type="hidden" name="year" value="{{year}}">
+                        <input type="hidden" name="payment" value="{{t.total_bill}}">
+						<label for="id_or_num">OR Number</label>
+						<input type="text" name="or_num" id="id_or_num" required class="input form-control">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endif %}
+{% endif %}
+{% endfor %}
 
 
 

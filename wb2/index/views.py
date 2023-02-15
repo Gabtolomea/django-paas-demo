@@ -65,6 +65,8 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
+    # !!!please ask previous developers before attempting to uncomment!!!
+    # portfromcsv()
     enye(ConsumerInfo.objects.all())
     camelize()
     # capitalize()
@@ -301,6 +303,7 @@ def ledger(request, id):
     pen = 0
     bill = 0
     ispaid = False
+    get_balance(id)
     class ledgerclass():
         def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):
             self.transid = transid
@@ -331,7 +334,6 @@ def ledger(request, id):
             trans = Transactions.objects.filter(acctID=u.consumer_id, transType = disp)
         asc_trans = trans.order_by('year', 'month','transType')
         bal = 0
-        last = 0
         for i in range(len(asc_trans)):
             prev = 0
             ornum = ''
@@ -395,10 +397,10 @@ def ledger(request, id):
             if asc_trans[i].transType != 'Received Amount':
                 new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style, dcode, ttype, m, y, ispaid)
                 table.append(new_row)
-            last = i
-        try:
-            ispaid = asc_trans[last-1].is_billpaid
-        except (IndexError, ValueError):
+        
+        if bal > 0:
+            ispaid = False
+        else:
             ispaid = True
     except ObjectDoesNotExist:
         u = False
@@ -567,16 +569,16 @@ def meterreading(request):
 def deletereading(request, id):
     reading = Transactions.objects.get(transactionid = id)
     con = reading.acctID
-    try:
-        payment = Transactions.objects.get(month=reading.month, year=reading.year, transType="Payment")
-        con.current_bal += payment.payment
-        payment.delete()
-    except ObjectDoesNotExist:
-        pass
     con.current_bal -= reading.bill
     if con.current_bal < 0:
         con.excess += (con.current_bal*1)
         con.current_bal = 0
+    try:
+        payment = Transactions.objects.get(acctID_id=con.consumer_id, month=reading.month, year=reading.year, transType="Payment")
+        con.current_bal += payment.payment
+        payment.delete()
+    except ObjectDoesNotExist:
+        pass
     con.save()
     reading.delete()
     return redirect('inputreading', con.consumer_id, date.today().year)
@@ -599,8 +601,8 @@ def inputreading(request, id, year):
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
     trans = alltrans.filter(year=year)
     for i in alltrans:
-        if i.date.year not in years:
-            years.append(i.date.year)
+        if i.year not in years:
+            years.append(i.year)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
     if int(year) in years:
@@ -686,12 +688,14 @@ def inputreading(request, id, year):
                     billtran.usage = i - billtran.prevReading
                     usage = billtran.usage
                     rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
+                    dif = billtran.bill
                     if billtran.usage <= rate.minReading:
                         billtran.bill = rate.minReadingCharge
                     else:
                         billtran.bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
                     billtran.processedBy = str(request.user)
                     billtran.save()
+                    dif = billtran.bill - dif
                     if interest:
                         p = Transactions()
                         p.acctID = consumer
@@ -703,6 +707,16 @@ def inputreading(request, id, year):
                         p.payment = 0
                         p.processedBy = request.user
                         p.save()
+                    try:
+                        paymentT = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=ye, month=d)
+                        if dif:
+                            paymentT.payment = paymentT.payment + dif
+                            consumer.excess = consumer.excess - dif
+                            consumer.current_bal = consumer.current_bal - dif
+                        paymentT.save()
+                        consumer.save()
+                    except ObjectDoesNotExist:
+                        pass
                 except ObjectDoesNotExist:
                     lastreading = last_reading(id, year, d)
                     bill = 0
@@ -774,7 +788,6 @@ def inputreading(request, id, year):
                             else:
                                 consumer.save()
                                 break
-                get_balance(id)
             match d:
                 case 1:
                     con_b_rec.total_due_jan += bill
@@ -817,6 +830,7 @@ def inputreading(request, id, year):
             usage = 0
             con_b_rec.save()
             d += 1
+        get_balance(id)
         return redirect('inputreading', id=id , year=year)
     context = {
         'consumer': consumer,
@@ -2265,20 +2279,22 @@ def monthly_summary (request, id, year):
     table = []
     years = []
     class montly_sum():
-        def __init__(self, month, reading, reading_date, usage, total_bill, total_amount_paid):
+        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, total_amount_paid, payid):
             self.month = month
+            self.monthval = monthval
             self.reading = reading
             self.reading_date = reading_date
             self.usage = usage
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
+            self.payid = payid
 
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing')
-    billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year)
-    payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year)
+    billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year).order_by('month')
+    payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year).order_by('month')
     
-
+    lastid = Transactions.objects.latest('transactionid').transactionid
     pcount = len(payment)
     count = len(billing)
     j = 0
@@ -2301,6 +2317,8 @@ def monthly_summary (request, id, year):
     j = 0
     c = 0
     for i in range(1, 13):
+        lastid+=1
+        payid = lastid
         month = calendar.month_name[i]
         usage = 0
         reading = 0
@@ -2310,6 +2328,7 @@ def monthly_summary (request, id, year):
         if c < pcount and pcount != 0:
             if i == payment[c].month:
                 total_amount_paid = payment[c].payment
+                payid = payment[c].transactionid
                 c += 1
         if j < count and count != 0:
             if i == billing[j].month:
@@ -2318,9 +2337,8 @@ def monthly_summary (request, id, year):
                 reading_date = billing[j].date
                 total_bill = billing[j].bill
                 j += 1
-        a = montly_sum(month, reading, reading_date, usage, total_bill, total_amount_paid)
+        a = montly_sum(month, i, reading, reading_date, usage, total_bill, total_amount_paid, payid)
         table.append(a)
-
     context = {
         'table': table,
         'consumer': consumer,
@@ -2329,6 +2347,76 @@ def monthly_summary (request, id, year):
 
     }
     return render(request,'conmon_summary.html', context)
+
+def monthlypayment(request):
+    if request.method == "POST":
+        month = int(request.POST.get(f'month', 0))
+        year = int(request.POST.get(f'year', 0))
+        payment = float(request.POST.get(f'payment', 0))
+        conid = request.POST.get(f'conid', 0)
+        or_num = request.POST.get(f'or_num', 0)
+        consumer = ConsumerInfo.objects.get(consumer_id = conid)
+        try:
+            con_b_rec = BarangayRecord.objects.get(barangaycode_id=consumer.installation_address_id, year=year)
+        except ObjectDoesNotExist:
+            con_b_rec = create_brec(consumer.installation_address_id, year)
+        try:
+            Transactions.objects.get(acctID_id = conid, transType = "Payment", month = month, year = year)
+        except ObjectDoesNotExist:
+            paytran = Transactions()
+            paytran.payment = payment
+            paytran.date = date.today()
+            paytran.acctID = consumer
+            paytran.month = month
+            paytran.year = year
+            paytran.transType = "Payment"
+            paytran.processedBy = request.user
+            paytran.save()
+            recT = Transactions()
+            recT.receivedamt = payment
+            recT.date = date.today()
+            recT.acctID = consumer
+            recT.month = month
+            recT.year = year
+            recT.transType = "Received Amount"
+            recT.processedBy = request.user
+            recT.or_number = or_num
+            recT.save()
+            try:
+                billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
+                billtran.is_billpaid = True
+                billtran.save()
+            except ObjectDoesNotExist:
+                pass
+            get_balance(consumer.consumer_id)
+            match month:
+                case 1:
+                    con_b_rec.total_paid_jan += payment
+                case 2:
+                    con_b_rec.total_paid_feb += payment
+                case 3:
+                    con_b_rec.total_paid_mar += payment
+                case 4:
+                    con_b_rec.total_paid_apr += payment
+                case 5:
+                    con_b_rec.total_paid_may += payment
+                case 6:
+                    con_b_rec.total_paid_jun += payment
+                case 7:
+                    con_b_rec.total_paid_jul += payment
+                case 8:
+                    con_b_rec.total_paid_aug += payment
+                case 9:
+                    con_b_rec.total_paid_sept += payment
+                case 10:
+                    con_b_rec.total_paid_oct += payment
+                case 11:
+                    con_b_rec.total_paid_nov += payment
+                case 12:
+                    con_b_rec.total_paid_dec += payment
+            con_b_rec.save()
+            
+    return redirect('monthly_summary', id=conid, year=year)
 
 def payment_history (request, id, year):
     years = []

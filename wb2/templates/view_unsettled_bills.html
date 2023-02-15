@@ -1,7 +1,9 @@
 {% extends 'dashboard.html' %}
 {% load humanize %}
 {% load static %}
-
+{% block title %}
+{{uv.lastname}} {{uv.firstname}} {{uv.middlename}} 's Unsettled Bills
+{% endblock title %}
 
 {% block view_unsettled_bills %}
 <div class="table-responsive">

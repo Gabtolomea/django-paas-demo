@@ -16,6 +16,7 @@ urlpatterns = [
     path('bills_list/ledger/payment_history/<id>/<int:year>', views.payment_history,name='payment_history'),
     path('editpayment/<id>/', views.editpayment,name='editpayment'),
     path('payment/<id>/', views.payment, name='payment'),
+    path('monthlypayment/', views.monthlypayment, name='monthlypayment'),
     path('meterreading', views.meterreading,name='meterreading'),
     path('meterreading/bulkreading', views.bulkreading,name='bulkreading'),
     path('meterreading/deletereading/<int:id>', views.deletereading,name='deletereading'),

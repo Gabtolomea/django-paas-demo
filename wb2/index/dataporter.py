@@ -154,7 +154,7 @@ def porter_out(tables):
             else:
                 trans.month = tables[4][i][2].month-1
                 trans.year = tables[4][i][2].year
-            if trans.year >= 2021:
+            if trans.year >= 2019:
                 trans.date = tables[4][i][2]
                 trans.acctID = ConsumerInfo.objects.get(consumer_id=tables[4][i][7])
                 trans.transType = 'Received Amount'
@@ -176,7 +176,7 @@ def porter_out(tables):
                 #     brec.__dict__[f"total_due_{months[trans.month-1]}"] = 0
                 # brec.save()
     for i in tables[1]:
-        if i[5] >= 2021:
+        if i[5] >= 2019:
             reading_index = 6
             date_index = 7
             usage_index = 9
@@ -213,8 +213,8 @@ def billing_out(con, rate, reading, date, year, usage, month, payment):
         billingT.meterReading = prev
     else:
         billingT.meterReading = reading
-        con.current_reading = reading
-        con.save()
+    con.current_reading = billingT.meterReading
+    con.save()
     date_str = date
     if date_str!=" " and date_str!="":
         try:
@@ -227,7 +227,7 @@ def billing_out(con, rate, reading, date, year, usage, month, payment):
     billingT.year = year
     billingT.payment = 0
     billingT.transType = 'Billing'
-    billingT.is_billpaid = paid!=0
+    billingT.is_billpaid = payment!=0
     if prev < 0:
         billingT.prevReading = reading
         billingT.processedBy = "System Adjustment"
@@ -301,6 +301,7 @@ def balance():
         bal = 0
         for i in range(len(asc_trans)):
             if asc_trans[i].transType == 'Billing':
+                user.current_reading = asc_trans[i].meterReading
                 bal+=asc_trans[i].bill
             elif asc_trans[i].transType == 'Payment':
                 bal=bal-asc_trans[i].payment

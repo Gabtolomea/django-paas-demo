@@ -271,7 +271,7 @@ Account Ledger
 
 		<form id="displayselection" action="" method="GET">
 			<label class="d-flex" style="float: right; align-items: center;">Show
-				<select id="selector" name="show" style="width: 100px; margin: 0 5px;" class="form-select form-select" onchange="this.form.submit()">
+				<select id="selector" name="show" class="form-select form-select ms-1 me-3" onchange="this.form.submit()">
 					<option value="" {% if disp == ""%}selected{% endif %}>All</option>
 					<option value="Billing" {% if disp == "Billing"%}selected{% endif %}>Billing</option>
 					<option value="Payment" {% if disp == "Payment"%}selected{% endif %}>Payment</option>
@@ -436,7 +436,7 @@ Account Ledger
 								<td class="{{t.style}}">{{t.rateid}}</td>
 								</td>
 								<td class="{{t.style}}">{{t.pb}}</td>
-								<td class="{{t.style}}">{% if t.ispaid %} Yes {% endif %}</td>
+								<td style="text-align: center;" class="{{t.style}} text-center align-middle">{% if t.ispaid %} Paid {% endif %}</td>
 							</tr>
 							{% endfor %}
 						</tbody>

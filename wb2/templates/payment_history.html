@@ -18,6 +18,29 @@ Payment History
 		overflow-y: scroll;
 		overflow-x: hidden;
 	} */
+
+	.dataTables_empty {
+		text-align: center;
+	}
+
+	.odd {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%; 
+		-webkit-tap-highlight-color: transparent;
+
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+	}
+
     .hide {
         opacity: 0;
         transition: 0.3s all ease-in-out;
@@ -271,6 +294,7 @@ Payment History
                     </thead>
 
                     <tbody class="wb_tbody">
+                        {% if alltrans %}
                         {% for t in alltrans %}
                         <tr style="cursor: pointer;" title="Edit Payment {{t.transactionid}}" data-bs-toggle="modal" data-bs-target="#edit-{{t.transactionid}}">
                             <td class="text-center">{{t.transactionid}}</td>
@@ -281,6 +305,11 @@ Payment History
 
                         </tr>
                         {% endfor %}
+                        {% else %}
+                        <tr class="odd">
+                            <td valign="top" colspan="5" class="dataTables_empty">No records found</td>
+                        </tr>
+                        {% endif %}                       
                     </tbody>
 
                 </table>
