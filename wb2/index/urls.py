@@ -50,4 +50,5 @@ urlpatterns = [
     path('settings/penalty/editpenalty/<id>', views.editpenalty, name='editpenalty'),
     path('settings/userprof', views.userprof, name='userprof'),
     path('settings', views.viewprof, name='settings'),
+    path('stopmeters', views.stopmeters, name='stopmeters'),
 ]
