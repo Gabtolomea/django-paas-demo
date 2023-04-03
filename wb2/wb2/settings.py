@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.104']
+ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.93','172.28.52.86','172.28.52.83','172.28.52.102','172.28.52.54']
 
 # Application definition
 
@@ -102,7 +102,7 @@ SERVER_EMAIL = 'ginatilancebuwater'
 EMAIL_HOST_PASSWORD = 'axsrouetdxposfko'
 EMAIL_PORT = 587
 
-
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 30240
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
