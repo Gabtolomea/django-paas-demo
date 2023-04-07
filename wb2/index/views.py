@@ -1,10 +1,7 @@
-
-
 import calendar
 import math
 import datetime
 from .dataporter import *
-from .DBdb import *
 from .decorators import *
 from .forms import *
 from .functions import * 
@@ -13,7 +10,7 @@ from .tokens import generate_token
 from datetime import datetime, timedelta
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import EmailMultiAlternatives, send_mail, BadHeaderError, EmailMessage
+from django.core.mail import EmailMultiAlternatives, BadHeaderError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -22,12 +19,10 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F, Sum, Q
-from django.db.models.functions import Greatest
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.files.storage import FileSystemStorage
 
 
 
@@ -55,11 +50,6 @@ def porter(request):
     for i in cons:
         i.cummulative = get_cummulative(i.consumer_id)
         i.save()
-    
-    # for i in sorted_tables[6]:
-    #     passAscii = base64.b64decode(i[1])
-    #     p = passAscii.decode("ascii")
-    #     print(f'username: {i[0]} | password: {p}')
     return redirect("login")
 
 
@@ -69,52 +59,37 @@ def lp(request):
     # portfromcsv()
     enye(ConsumerInfo.objects.all())
     camelize()
-    # capitalize()
     return render(request, "landing.html")
 
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
-        u = request.POST['username']
-        password = request.POST['password']
-        auth = authenticate(username=u, password=password)
+        post_username = request.POST['username']
+        post_password = request.POST['password']
+        auth = authenticate(username=post_username, password=post_password)
         if auth is not None:
-            user = SystemUsers.objects.get(username=u)
+            user = SystemUsers.objects.get(username=post_username)
             login_rec = LoginRec()
             request.user = user.username
-            request.session[ReqParams.auth] = True
+            request.session['auth'] = True
             request.session.modified = True
             login_rec.username = user.username
             login_rec.token = gen_token()
             login_rec.last_access = timezone.now()
-            login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
+            login_rec.expiration = login_rec.last_access + timedelta(minutes=5)
             login_rec.save()
             login(request, auth)
             messages.success(request, "Logged In as " + user.username)
             return redirect('bills_list')
         else:
             messages.error(request, "Invalid Username or Password")
-    context = {
-        'ReqParams': ReqParams,
-    }
-    return render(request, 'login.html', context)
+
+    return render(request, 'login.html')
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def bills_list(request):
-    # balance()
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = redirect('bills_list')
-        else:
-            if LoginSession.is_admin:
-                template = redirect('sysuser')
-            else:
-                if LoginSession.is_reader:
-                    template = redirect('meterreading')
-            return template
     sidebar = request.GET.get("sidebar")
     if sidebar == 'False':
         hipos = True
@@ -159,20 +134,8 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def stopmeters(request):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = redirect('stopmeters')
-        else:
-            if LoginSession.is_admin:
-                template = redirect('sysuser')
-            else:
-                if LoginSession.is_reader:
-                    template = redirect('meterreading')
-            return template
-
     search = request.GET.get("search", "")
     page = request.GET.get('page')
     isnum = search.isnumeric()
@@ -222,15 +185,8 @@ def signout(request):
     return redirect('login')
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def user_creation(request):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_admin:
-            template = "registration.html"
-        else:
-            template = redirect('bills_list')
-            return template
     form = SystemUserForm()
     if request.method == "POST":
         form = SystemUserForm(request.POST)
@@ -282,17 +238,9 @@ def user_creation(request):
     return render(request, 'registration.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def ledger(request, id):
     disp = request.GET.get('show','')
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "ledger.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     table = []
     year = datetime.today().year
     usage = 0
@@ -492,15 +440,8 @@ def resetpassword(request, uidb64, token):
     return render(request, 'password_reset_form.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor', 'reader'])
 def meterreading(request):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
-            template = redirect('meterreading')
-        else:
-            template = redirect('bills_list')
-            return template
     months = []
     years = []
 
@@ -566,6 +507,7 @@ def meterreading(request):
     return render(request, 'meterreading.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor', 'reader'])
 def deletereading(request, id):
     reading = Transactions.objects.get(transactionid = id)
     con = reading.acctID
@@ -583,6 +525,7 @@ def deletereading(request, id):
     reading.delete()
     return redirect('inputreading', con.consumer_id, date.today().year)
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor', 'reader'])
 def inputreading(request, id, year):
     table = []
     years = []
@@ -788,44 +731,10 @@ def inputreading(request, id, year):
                             else:
                                 consumer.save()
                                 break
-            match d:
-                case 1:
-                    con_b_rec.total_due_jan += bill
-                    con_b_rec.total_usage_jan += usage
-                case 2:
-                    con_b_rec.total_due_feb += bill
-                    con_b_rec.total_usage_feb += usage
-                case 3:
-                    con_b_rec.total_due_mar += bill
-                    con_b_rec.total_usage_mar += usage
-                case 4:
-                    con_b_rec.total_due_apr += bill
-                    con_b_rec.total_usage_apr += usage
-                case 5:
-                    con_b_rec.total_due_may += bill
-                    con_b_rec.total_usage_may += usage
-                case 6:
-                    con_b_rec.total_due_jun += bill
-                    con_b_rec.total_usage_jun += usage
-                case 7:
-                    con_b_rec.total_due_jul += bill
-                    con_b_rec.total_usage_jul += usage
-                case 8:
-                    con_b_rec.total_due_aug += bill
-                    con_b_rec.total_usage_aug += usage
-                case 9:
-                    con_b_rec.total_due_sept += bill
-                    con_b_rec.total_usage_sept += usage
-                case 10:
-                    con_b_rec.total_due_oct += bill
-                    con_b_rec.total_usage_oct += usage
-                case 11:
-                    con_b_rec.total_due_nov += bill
-                    con_b_rec.total_usage_nov += usage
-                case 12:
-                    con_b_rec.total_due_dec += bill
-                    con_b_rec.total_usage_dec += usage
-            
+            con_b_rec.__dict__[f'total_due_{months[d]}']+=bill
+            con_b_rec.__dict__[f'total_usage_{months[d]}']+=usage
+            con_b_rec.save()
+
             bill = 0
             usage = 0
             con_b_rec.save()
@@ -843,16 +752,8 @@ def inputreading(request, id, year):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def consumer_list(request):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "conlist.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     search = request.GET.get("search", "")
     page = request.GET.get('page')
     isnum = search.isnumeric()
@@ -896,16 +797,8 @@ def consumer_list(request):
     return render(request, 'conlist.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor', 'reader'])
 def consumercreation(request):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "consumercreation.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     form = ConsumerForm()
     cons = ConsumerInfo.objects.all().order_by("-consumer_id")
     id = cons[0].consumer_id
@@ -974,16 +867,8 @@ def consumercreation(request):
     return render(request, 'consumercreation.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def consumerupdate(request, id):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "consumercreation.html"
-        else:
-            template = redirect('bills_list')
-            return template 
-
     con = ConsumerInfo.objects.get(consumer_id=id)
     form = ConsumerForm(instance=con)
     penaltyc = con.penaltycounter
@@ -997,17 +882,8 @@ def consumerupdate(request, id):
     return render(request, 'consumercreation.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor', 'reader'])
 def stopmeter(request, id):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
-            template = redirect('inputreading', id=id, year=datetime.today().year)
-        else:
-            template = redirect('bills_list')
-            return template
-
-
     if request.method == 'POST':
         consumer = ConsumerInfo.objects.get(consumer_id=id)
         consumer.stopmeterflag = not consumer.stopmeterflag
@@ -1015,17 +891,8 @@ def stopmeter(request, id):
     return redirect('inputreading', id=id, year=datetime.today().year)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor', 'reader'])
 def enablemeter(request, id):
-
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader or LoginSession.is_supervisor:
-            template = redirect('inputreading', id=id, year=datetime.today().year)
-        else:
-            template = redirect('bills_list')
-            return template
-
     if request.method == 'POST':
         is_new = request.POST.get('newmeter','off')=='on'
         consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -1056,17 +923,8 @@ def enablemeter(request, id):
     return redirect('inputreading', id=id, year=datetime.today().year)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def sysuser(request):
-    
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_admin:
-            template = "sysuser.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     table = []
     search = request.GET.get("search", "")
     page = request.GET.get('page')
@@ -1132,6 +990,7 @@ def sysuser(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def user_edit(request, id):
     sys = SystemUsers.objects.get(username=id)
     form = sysup(instance=sys)
@@ -1185,6 +1044,8 @@ def user_edit(request, id):
     return render(request, 'user_edit.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def deleteUser(request, id):
     template = ""
     LoginSession = request.user
@@ -1206,6 +1067,8 @@ def deleteUser(request, id):
 def about(request):
     return render(request, 'about.html')
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def payment(request, id):
     if request.method == 'POST':
         amount = float(request.POST.get('amount'))
@@ -1272,34 +1135,13 @@ def payment(request, id):
                 rt.processedBy = request.user.username
                 rt.save()
             get_balance(id)
-            match month:
-                case 1:
-                    con_b_rec.total_paid_jan += amount
-                case 2:
-                    con_b_rec.total_paid_feb += amount
-                case 3:
-                    con_b_rec.total_paid_mar += amount
-                case 4:
-                    con_b_rec.total_paid_apr += amount
-                case 5:
-                    con_b_rec.total_paid_may += amount
-                case 6:
-                    con_b_rec.total_paid_jun += amount
-                case 7:
-                    con_b_rec.total_paid_jul += amount
-                case 8:
-                    con_b_rec.total_paid_aug += amount
-                case 9:
-                    con_b_rec.total_paid_sept += amount
-                case 10:
-                    con_b_rec.total_paid_oct += amount
-                case 11:
-                    con_b_rec.total_paid_nov += amount
-                case 12:
-                    con_b_rec.total_paid_dec += amount
+            con_b_rec.__dict__[f'total_paid_{months[month]}']+=amount
             con_b_rec.save()
             
     return redirect('ledger', id=id)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def editpayment(request, id):
     if request.method =='POST':
         ted = Transactions.objects.get(transactionid=id)
@@ -1373,6 +1215,9 @@ def editpayment(request, id):
             con.save()
         return redirect('payment_history',ted.acctID.consumer_id,ted.year)
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def reports(request):
     cur_year =  datetime.today().year
     cur_month = datetime.today().month
@@ -1381,15 +1226,8 @@ def reports(request):
     return redirect('barangayreport', cur_year)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def barangayreport(request, year):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "waterusage.html"
-        else:
-            template = redirect('bills_list')
-            return template
 
     years = []
     my = BarangayRecord.objects.all()
@@ -1437,15 +1275,9 @@ def barangayreport(request, year):
     return render(request, 'waterusage.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def view_barangay(request, id):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "view_barangay.html"
-        else:
-            template = redirect('bills_list')
-            return template
 
     bang = BarangayRecord.objects.get(barangayrec_id=id)
 
@@ -1454,18 +1286,9 @@ def view_barangay(request, id):
     }
     return render(request, 'view_barangay.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def usage_report_data(request, year):
-
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "usage_report_data.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
-
     years = []
     bars = Barangays.objects.all()
     mybars = []
@@ -1530,16 +1353,9 @@ def usage_report_data(request, year):
     return render(request, 'usage_report_data.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def revenue_report(request, year):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "revenue_report.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -1604,16 +1420,9 @@ def revenue_report(request, year):
     }
     return render(request, 'revenue_report.html',  context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def deleteconsumer(request):
-    template = ""
-    LoginSession = request.user 
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "consumercreation.html"
-        else:
-            template = redirect('bills_list')
-            return template
     if request.method == 'POST':
         id = request.POST['id']
         search = request.POST['search']
@@ -1625,50 +1434,26 @@ def deleteconsumer(request):
     return redirect(f'/consumer_list/?page={page}&search={search}&p={p}')
 
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def disconnectconsumer(request, id):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "consumercreation.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     con = ConsumerInfo.objects.get(consumer_id=id)
     con.disconnectionflag = True
     con.save()
     return redirect('consumer_list')
 
-def reconnectconsumer(request, id):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "consumercreation.html"
-        else:
-            template = redirect('bills_list')
-            return template
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
+def reconnectconsumer(request, id):
     con = ConsumerInfo.objects.get(consumer_id=id)
     con.disconnectionflag = False
     con.save()
     return redirect('consumer_list')
 
-
-
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def unsettled_bills(request):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "unsettled_bill.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     class ub_year:
         def __init__(self, y, u):
             self.y = y
@@ -1738,16 +1523,9 @@ def unsettled_bills(request):
     return render(request, 'unsettled_bill.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def view_unsettled_bills(request, id, year):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "view_unsettled_bills.html"
-        else:
-            template = redirect('bills_list')
-            return template
-
     years = []
     table = []
     uv = ConsumerInfo.objects.get(consumer_id=id)
@@ -1809,6 +1587,8 @@ def view_unsettled_bills(request, id, year):
     return render(request, 'view_unsettled_bills.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def discount(request):
     dc = Discount.objects.all()
     try:
@@ -1837,6 +1617,9 @@ def discount(request):
     }
     return render(request, 'discount.html', context)
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def editdiscount(request, id):
     dis = Discount.objects.get(discountcode=id)
     if request.method == 'POST':
@@ -1847,6 +1630,9 @@ def editdiscount(request, id):
         
     return redirect('discount')
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def deletediscount(request,id):
 
     try:
@@ -1860,6 +1646,7 @@ def deletediscount(request,id):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def new_consumertype(request):
     cont = ConsumerType.objects.all().order_by
     form = ConscumertypecreationForm()
@@ -1893,6 +1680,9 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def editcontype(request, id):
     con = ConsumerType.objects.get(contypeid=id)
     if request.method == 'POST':
@@ -1912,6 +1702,7 @@ def editcontype(request, id):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def penalty(request):
     penalty = Penalty.objects.all()
     form = addPenalty
@@ -1946,6 +1737,8 @@ def penalty(request):
     return render(request, 'penalty.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def editpenalty(request, id):
     pen = Penalty.objects.get(penaltycode=id)
     if request.method == 'POST':
@@ -1962,19 +1755,13 @@ def editpenalty(request, id):
         messages.success(request, 'Code has been updated')
         return redirect('penalty')
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'reader'])
 def bulkreading(request):
-    template = ""
     year = int(request.GET.get('fyear', datetime.today().year))
     month = int(request.GET.get('fmonth', datetime.today().month))
     search = request.GET.get("search", "")
     page = request.GET.get('page')
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_reader:
-            pass
-        else:
-            template = redirect('bills_list')
-            return template
     months = []
     years = []
     class monthname():
@@ -2151,43 +1938,9 @@ def bulkreading(request):
                         p.payment = 0
                         p.processedBy = request.user
                         p.save()
-                match pmonth:
-                    case 1:
-                        con_b_rec.total_due_jan += bill
-                        con_b_rec.total_usage_jan += usage
-                    case 2:
-                        con_b_rec.total_due_feb += bill
-                        con_b_rec.total_usage_feb += usage
-                    case 3:
-                        con_b_rec.total_due_mar += bill
-                        con_b_rec.total_usage_mar += usage
-                    case 4:
-                        con_b_rec.total_due_apr += bill
-                        con_b_rec.total_usage_apr += usage
-                    case 5:
-                        con_b_rec.total_due_may += bill
-                        con_b_rec.total_usage_may += usage
-                    case 6:
-                        con_b_rec.total_due_jun += bill
-                        con_b_rec.total_usage_jun += usage
-                    case 7:
-                        con_b_rec.total_due_jul += bill
-                        con_b_rec.total_usage_jul += usage
-                    case 8:
-                        con_b_rec.total_due_aug += bill
-                        con_b_rec.total_usage_aug += usage
-                    case 9:
-                        con_b_rec.total_due_sept += bill
-                        con_b_rec.total_usage_sept += usage
-                    case 10:
-                        con_b_rec.total_due_oct += bill
-                        con_b_rec.total_usage_oct += usage
-                    case 11:
-                        con_b_rec.total_due_nov += bill
-                        con_b_rec.total_usage_nov += usage
-                    case 12:
-                        con_b_rec.total_due_dec += bill
-                        con_b_rec.total_usage_dec += usage
+                con_b_rec.__dict__[f'total_due_{months[pmonth]}']+=bill
+                con_b_rec.__dict__[f'total_usage_{months[pmonth]}']+=usage
+                
                 if c.excess > 0:
                     unsettled = Transactions.objects.filter(acctID_id=c, transType="Billing", is_billpaid=False).order_by('-year', '-month')
                     if unsettled:
@@ -2230,9 +1983,8 @@ def bulkreading(request):
         }
         return render(request,'bulkreading.html', context)
 
-
-
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def viewprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
     role = ""
@@ -2254,6 +2006,7 @@ def viewprof(request):
     return render(request, 'viewprof.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def userprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
     form = ProfileForm(instance=user)
@@ -2275,6 +2028,9 @@ def userprof(request):
     }
     return render(request, 'userprof.html', context)
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def monthly_summary (request, id, year):
     table = []
     years = []
@@ -2348,6 +2104,9 @@ def monthly_summary (request, id, year):
     }
     return render(request,'conmon_summary.html', context)
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def monthlypayment(request):
     if request.method == "POST":
         month = int(request.POST.get(f'month', 0))
@@ -2389,35 +2148,15 @@ def monthlypayment(request):
             except ObjectDoesNotExist:
                 pass
             get_balance(consumer.consumer_id)
-            match month:
-                case 1:
-                    con_b_rec.total_paid_jan += payment
-                case 2:
-                    con_b_rec.total_paid_feb += payment
-                case 3:
-                    con_b_rec.total_paid_mar += payment
-                case 4:
-                    con_b_rec.total_paid_apr += payment
-                case 5:
-                    con_b_rec.total_paid_may += payment
-                case 6:
-                    con_b_rec.total_paid_jun += payment
-                case 7:
-                    con_b_rec.total_paid_jul += payment
-                case 8:
-                    con_b_rec.total_paid_aug += payment
-                case 9:
-                    con_b_rec.total_paid_sept += payment
-                case 10:
-                    con_b_rec.total_paid_oct += payment
-                case 11:
-                    con_b_rec.total_paid_nov += payment
-                case 12:
-                    con_b_rec.total_paid_dec += payment
+            con_b_rec.__dict__[f'total_paid_{months[month]}']+=payment
             con_b_rec.save()
             
     return redirect('monthly_summary', id=conid, year=year)
 
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teller', 'supervisor'])
 def payment_history (request, id, year):
     years = []
     
