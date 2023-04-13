@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.93','172.28.52.86','172.28.52.83','172.28.52.102','172.28.52.54']
 
-# Application definition
+# Application definitionsdfsdfs
 
 INSTALLED_APPS = [
     'django.contrib.admin',
