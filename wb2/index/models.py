@@ -144,8 +144,10 @@ class ConsumerInfo(models.Model):
     sitio = models.CharField(max_length=100,null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     current_bal = models.FloatField(default=0)
+    current_reading = models.IntegerField(default=0)
     cummulative = models.FloatField(default=0)
     date_added = models.DateField(auto_now_add=True, null=True)
+    excess = models.IntegerField(default=0)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
 class Transactions(models.Model):
     TRANS_TYPE = (
@@ -165,8 +167,10 @@ class Transactions(models.Model):
     penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
     discountcode = models.CharField(max_length=50, null=True)
     bill = models.FloatField(null=True)
+    is_billpaid = models.BooleanField(default = False)
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
+    receivedamt = models.FloatField(null=True)
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)

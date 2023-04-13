@@ -117,17 +117,26 @@ Input Reading
 							<label class="form-check-label" for="flexSwitchCheckDefault">Replaced with New Meter</label>
 						</div>
 						<label for="meternum" class="form-label">New Meter Number</label>
-						<input type="number" disabled name="meternum" class="form-control" required id="meternum">
+						<input type="text" disabled name="meternum" class="form-control" required id="meternum">
 						<label for="initialreading" class="form-label">Initial Meter Reading</label>
 						<input type="number" disabled name="initialreading" class="form-control" required id="initialreading">
+						<label for="month_id" class="form-label">Month</label>
+						<select name="month" disabled id="month_id" class="form-select input-group">
+							<option value=""></option>
+							{% for t in table %}
+							<option value="{{t.monthval}}">{{t.month}}</option>
+							{% endfor %}
+						</select>
 					</div>
 				</div>
 				<script>
 					meternum = document.getElementById('meternum')
 					initialreading = document.getElementById('initialreading')
+					month = document.getElementById('month_id')
 					document.getElementById('flexSwitchCheckDefault').onchange = function() {
 						meternum.disabled = !this.checked;
 						initialreading.disabled = !this.checked;
+						month.disabled = !this.checked;
 					};
 				</script>
 				<div class="modal-footer">
@@ -153,9 +162,8 @@ Input Reading
 	<div class="table-responsive" style="max-height: 700px;">
 		<form id="yearselection" action="">
 			<select class="form-select mb-3" id="selector" onchange="change()">
-				<option value="{{cur_year}}">{{cur_year}}</option>
-				{% for i in years reversed %}
-				<option value="{{i}}">{{i}}</option>
+				{% for i in years %}
+				<option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
 				{% endfor %}
 			</select>
 		</form>
@@ -181,27 +189,28 @@ Input Reading
 			</thead>
 			<tbody class="wb_tbody">
 				{% for t in table %}
-				<form id="form-{{t.transid}}" class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
-					{% csrf_token %}
 					<tr class="showOnHover text-center">
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
 							{{t.month}}</td>
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
 							{{t.usage}}</td>
-						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<input 
-								class = "input form-control border-0 rounded-0 " 
-								name = "reading-{{t.month}}" 
-								id = "{{t.transid}}" 
-								onfocus = "this.select()" 
-								disabled 
-								type = "number"
-								{% if t.prev %} min={{t.prev}} {% endif %} 
-								{% if t.next %} max="{{t.next}}" {%endif%} 
-								{% if t.reading %} value="{{t.reading}}" {% endif %}>
-						</td>
-							{% if consumer.stopmeterflag %}
-							{% else %}
+						<form id="form-{{t.transid}}" class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
+							{% csrf_token %}
+							<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+								<input 
+									class = "input form-control border-0 rounded-0 " 
+									name = "reading-{{t.month}}" 
+									id = "{{t.transid}}" 
+									onfocus = "this.select()" 
+									disabled 
+									type = "number"
+									{% if t.prev %} min={{t.prev}} {% endif %} 
+									{% if t.next %} max="{{t.next}}" {%endif%} 
+									{% if t.reading %} value="{{t.reading}}" {% endif %}>
+							</td>
+						</form>
+						{% if consumer.stopmeterflag %}
+						{% else %}
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
 							<button id="submit-{{t.transid}}" type="button" style="display: none;" class="btn btn-success" onclick="submit_this('{{t.transid}}',{{t.prev}})">
 								SAVE
@@ -209,10 +218,12 @@ Input Reading
 							<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}},{{t.prev}},{{t.reading}})">
 								EDIT
 							</button>
-						</td>
+							{% if t.reading %}
+							<button id="delete-{{t.transid}}" class="hide btn btn-danger" onclick="window.location.href='{% url 'deletereading' t.transid %}'">DELETE</button>
 							{% endif %}
+						{% endif %}
+						</td>
 					</tr>
-				</form>
 				{% endfor %}
 			</tbody>
 			<script>
@@ -242,12 +253,22 @@ Input Reading
 					input = document.getElementById(id)
 					edit = document.getElementById("edit-" + id)
 					submit = document.getElementById("submit-" + id)
+					has_del = {% if t.reading %}true{% else %}false{% endif %}
 					if (!input.disabled) {
+						if (has_del){
+							del = document.getElementById("delete-" + id)
+							del.style.display = "inline"
+						}
 						submit.style.display = "none"
 						edit.innerHTML = "EDIT" 
 						edit.classList.remove("btn-danger")
 						edit.classList.add("btn-primary")
 					} else {
+						if (has_del){
+							del = document.getElementById("delete-" + id)
+							
+						del.style.display = "none"
+						}
 						submit.style.display = "inline"
 						edit.innerHTML = "CANCEL"
 						edit.classList.remove("btn-primary")
