@@ -13,7 +13,7 @@ from .tokens import generate_token
 from datetime import datetime, timedelta
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import EmailMultiAlternatives, send_mail, BadHeaderError, EmailMessage
+from django.core.mail import EmailMultiAlternatives, BadHeaderError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -22,12 +22,10 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F, Sum, Q
-from django.db.models.functions import Greatest
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.files.storage import FileSystemStorage
 
 
 def porter(request):
@@ -838,7 +836,7 @@ def consumer_list(request):
     context = {
         'search' :search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
-        'five':range(1,6),
+        'five':range(1, 6),
         'paginate_by': paginate_by,
         'count':count,
         'consumer_list': cons_list,

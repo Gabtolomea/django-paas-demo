@@ -1,8 +1,7 @@
-from django.http import HttpResponse
+
 from django.shortcuts import redirect
 from .DBdb import *
 from .models import *
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def unauthenticated_user(view_func):

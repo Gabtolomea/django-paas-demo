@@ -1,12 +1,10 @@
-from base64 import urlsafe_b64decode
+
 import pandas as pd
-from django.forms import ValidationError
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 import math
 import random
 import string
-import calendar
 import math
 import datetime
 from datetime import datetime
