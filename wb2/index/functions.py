@@ -157,10 +157,19 @@ def gen_token():
         token+=(char)
     return token
 
+def spz():
+    allzerobills = Transactions.objects.filter(transType="Billing", is_billpaid = False, bill = 0)
+    for i in allzerobills:
+        i.is_billpaid = True
+        i.save()
 
-
+def sxz():
+    allconsumers = ConsumerInfo.objects.all()
+    for i in allconsumers:
+        i.excess = 0
+        i.save()
 def portfromcsv():
-    df = pd.read_csv("olddbcsv-21423.csv")
+    df = pd.read_csv("21723-latesttransactions.csv")
     arr_df = df.to_numpy()
     class billings():
         def __init__(self, transid, date,transtype, reading,prevreading, usage, contype, disc, bill, month, year, payment, pb, ornum, conid):
@@ -191,11 +200,12 @@ def portfromcsv():
     new_billings = []
     new_payments = []
     for i in arr_df:
+        # print(i)
         if i[2] == "Billing":
-            b = billings(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[9],i[10],i[11],i[12],i[13],i[14])
+            b = billings(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[10],i[11],i[13],i[14],i[15],i[16])
             new_billings.append(b)
         elif i[2] == "Payment":
-            p = payments(i[7],i[9],i[10],i[11],i[12],i[13],i[14])
+            p = payments(i[7],i[10],i[11],i[13],i[14],i[15],i[16])
             new_payments.append(p)
     for i in new_billings:
         con = ConsumerInfo.objects.get(consumer_id=i.conid)
@@ -265,7 +275,31 @@ def bulkpayment(amount, or_num, dis_code, pb, id, month, year):
             rt.processedBy = pb.username
             rt.save()
         get_balance(id)
-        con_b_rec.__dict__[f'total_paid_{months[month]}'] += amount
+        match month:
+            case 1:
+                con_b_rec.total_paid_jan += amount
+            case 2:
+                con_b_rec.total_paid_feb += amount
+            case 3:
+                con_b_rec.total_paid_mar += amount
+            case 4:
+                con_b_rec.total_paid_apr += amount
+            case 5:
+                con_b_rec.total_paid_may += amount
+            case 6:
+                con_b_rec.total_paid_jun += amount
+            case 7:
+                con_b_rec.total_paid_jul += amount
+            case 8:
+                con_b_rec.total_paid_aug += amount
+            case 9:
+                con_b_rec.total_paid_sept += amount
+            case 10:
+                con_b_rec.total_paid_oct += amount
+            case 11:
+                con_b_rec.total_paid_nov += amount
+            case 12:
+                con_b_rec.total_paid_dec += amount
         con_b_rec.save()
 
 def bulkinputreading(consumer, year, reading, pb, d):
@@ -371,7 +405,63 @@ def bulkinputreading(consumer, year, reading, pb, d):
                     else:
                         consumer.save()
                         break
-    con_b_rec.__dict__[f'total_usage_{months[d]}'] += usage
-    con_b_rec.__dict__[f'total_due_{months[d]}'] += bill
+    match d:
+        case 1:
+            con_b_rec.total_due_jan += bill
+            con_b_rec.total_usage_jan += usage
+        case 2:
+            con_b_rec.total_due_feb += bill
+            con_b_rec.total_usage_feb += usage
+        case 3:
+            con_b_rec.total_due_mar += bill
+            con_b_rec.total_usage_mar += usage
+        case 4:
+            con_b_rec.total_due_apr += bill
+            con_b_rec.total_usage_apr += usage
+        case 5:
+            con_b_rec.total_due_may += bill
+            con_b_rec.total_usage_may += usage
+        case 6:
+            con_b_rec.total_due_jun += bill
+            con_b_rec.total_usage_jun += usage
+        case 7:
+            con_b_rec.total_due_jul += bill
+            con_b_rec.total_usage_jul += usage
+        case 8:
+            con_b_rec.total_due_aug += bill
+            con_b_rec.total_usage_aug += usage
+        case 9:
+            con_b_rec.total_due_sept += bill
+            con_b_rec.total_usage_sept += usage
+        case 10:
+            con_b_rec.total_due_oct += bill
+            con_b_rec.total_usage_oct += usage
+        case 11:
+            con_b_rec.total_due_nov += bill
+            con_b_rec.total_usage_nov += usage
+        case 12:
+            con_b_rec.total_due_dec += bill
+            con_b_rec.total_usage_dec += usage
+    
     con_b_rec.save()
     get_balance(consumer.consumer_id)
+
+def get_consumers_yearly():
+    cons = ConsumerInfo.objects.all()
+    # for c in cons:
+    #     trans = Transactions.objects.filter(acctID_id=c.consumer_id).order_by('year')
+    #     try:
+    #         c.first_tran = trans[0].year
+    #     except IndexError:
+    #         c.first_tran = 0
+    #     c.save()
+    y2019 = len(cons.filter(first_tran__lt=2020))
+    y2020 = len(cons.filter(first_tran__lt=2021))
+    y2021 = len(cons.filter(first_tran__lt=2022))
+    y2022 = len(cons.filter(first_tran__lt=2023))
+    y2023 = len(cons.filter(first_tran__lt=2024))
+    print(f"y2019 = {y2019}")
+    print(f"y2020 = {y2020}")
+    print(f"y2021 = {y2021}")
+    print(f"y2022 = {y2022}")
+    print(f"y2023 = {y2023}")

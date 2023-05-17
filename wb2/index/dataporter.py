@@ -31,13 +31,13 @@ alltables = [
 
 sorted_tables = []
 
-# mydb = mysql.connector.connect(
-#    host="localhost",
-#    user="root",
-#    password="yjh434ctuG@-@",
-#    database="lgu_ginatilan_db"
-# )
-# mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+   host="localhost",
+   user="root",
+   password="yjh434ctuG@-@",
+   database="lgu_ginatilan_db"
+)
+mycursor = mydb.cursor()
 
 
 def porter_in():
@@ -193,7 +193,7 @@ def porter_out(tables):
             con.save()
             for m in range(1,13):
                 if i[bill_index]:
-                    billing_out(con, i[1], i[reading_index], i[date_index], i[5], i[usage_index], m, i[paidamt_index])
+                    billing_out(con, i[1], i[reading_index], i[date_index], i[5], i[usage_index], m, i[paidamt_index], i[bill_index])
                 reading_index += 13
                 date_index += 13
                 usage_index += 13
@@ -201,7 +201,7 @@ def porter_out(tables):
                 paidamt_index += 13
 
     
-def billing_out(con, rate, reading, date, year, usage, month, payment):
+def billing_out(con, rate, reading, date, year, usage, month, payment, bill):
     billingT = Transactions()
     billingT.acctID = con
     billingT.contypeid = "C00"+rate
@@ -213,8 +213,6 @@ def billing_out(con, rate, reading, date, year, usage, month, payment):
         billingT.meterReading = prev
     else:
         billingT.meterReading = reading
-    con.current_reading = billingT.meterReading
-    con.save()
     date_str = date
     if date_str!=" " and date_str!="":
         try:
@@ -235,27 +233,33 @@ def billing_out(con, rate, reading, date, year, usage, month, payment):
         billingT.prevReading = prev
     if usage < 0:
         billingT.usage = 0
-        billingT.processedBy = "System Adjustment"
+        billingT.bill = 0
     else:
-        billingT.usage = billingT.meterReading - prev
-    rate = ConsumerType.objects.get(contypeid=billingT.contypeid)
-    if billingT.usage <= rate.minReading:
-        billingT.bill = rate.minReadingCharge
-    else:
-        billingT.bill = ((billingT.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-    try:
-        brec = BarangayRecord.objects.get(year=billingT.year, barangaycode=con.installation_address)
-        brec.__dict__[f"total_usage_{months[month-1]}"] += billingT.usage
-        brec.__dict__[f"total_due_{months[month-1]}"] += billingT.bill
-    except ObjectDoesNotExist:
-        brec = BarangayRecord()
-        brec.barangayrec_id = f"{con.installation_address.id}-{billingT.year}"
-        brec.year = billingT.year
-        brec.barangaycode = con.installation_address
-        brec.__dict__[f"total_usage_{months[month-1]}"] = billingT.usage
-        brec.__dict__[f"total_due_{months[month-1]}"] = billingT.bill
-        brec.__dict__[f"total_paid_{months[month-1]}"] = 0
-    brec.save()
+        if bill < 0:
+            billingT.usage = 0
+            billingT.bill = 0
+        else:
+            con.current_reading = billingT.meterReading
+            con.save()
+            billingT.usage = billingT.meterReading - prev
+            rate = ConsumerType.objects.get(contypeid=billingT.contypeid)
+            if billingT.usage <= rate.minReading:
+                billingT.bill = rate.minReadingCharge
+            else:
+                billingT.bill = ((billingT.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+            try:
+                brec = BarangayRecord.objects.get(year=billingT.year, barangaycode=con.installation_address)
+                brec.__dict__[f"total_usage_{months[month-1]}"] += billingT.usage
+                brec.__dict__[f"total_due_{months[month-1]}"] += billingT.bill
+            except ObjectDoesNotExist:
+                brec = BarangayRecord()
+                brec.barangayrec_id = f"{con.installation_address.id}-{billingT.year}"
+                brec.year = billingT.year
+                brec.barangaycode = con.installation_address
+                brec.__dict__[f"total_usage_{months[month-1]}"] = billingT.usage
+                brec.__dict__[f"total_due_{months[month-1]}"] = billingT.bill
+                brec.__dict__[f"total_paid_{months[month-1]}"] = 0
+            brec.save()
     billingT.save()
     if payment:
         create = False
