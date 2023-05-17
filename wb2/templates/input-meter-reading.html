@@ -117,17 +117,26 @@ Input Reading
 							<label class="form-check-label" for="flexSwitchCheckDefault">Replaced with New Meter</label>
 						</div>
 						<label for="meternum" class="form-label">New Meter Number</label>
-						<input type="number" disabled name="meternum" class="form-control" required id="meternum">
+						<input type="text" disabled name="meternum" class="form-control" required id="meternum">
 						<label for="initialreading" class="form-label">Initial Meter Reading</label>
 						<input type="number" disabled name="initialreading" class="form-control" required id="initialreading">
+						<label for="month_id" class="form-label">Month</label>
+						<select name="month" disabled id="month_id" class="form-select input-group">
+							<option value=""></option>
+							{% for t in table %}
+							<option value="{{t.monthval}}">{{t.month}}</option>
+							{% endfor %}
+						</select>
 					</div>
 				</div>
 				<script>
 					meternum = document.getElementById('meternum')
 					initialreading = document.getElementById('initialreading')
+					month = document.getElementById('month_id')
 					document.getElementById('flexSwitchCheckDefault').onchange = function() {
 						meternum.disabled = !this.checked;
 						initialreading.disabled = !this.checked;
+						month.disabled = !this.checked;
 					};
 				</script>
 				<div class="modal-footer">
@@ -153,9 +162,8 @@ Input Reading
 	<div class="table-responsive" style="max-height: 700px;">
 		<form id="yearselection" action="">
 			<select class="form-select mb-3" id="selector" onchange="change()">
-				<option value="{{cur_year}}">{{cur_year}}</option>
-				{% for i in years reversed %}
-				<option value="{{i}}">{{i}}</option>
+				{% for i in years %}
+				<option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
 				{% endfor %}
 			</select>
 		</form>
@@ -196,9 +204,11 @@ Input Reading
 									onfocus = "this.select()" 
 									disabled 
 									type = "number"
+									{% comment %}
 									{% if t.prev %} min={{t.prev}} {% endif %} 
-									{% if t.next %} max="{{t.next}}" {%endif%} 
+									{% if t.next %} max="{{t.next}}" {%endif%} {% endcomment %}
 									{% if t.reading %} value="{{t.reading}}" {% endif %}>
+								
 							</td>
 						</form>
 						{% if consumer.stopmeterflag %}
@@ -221,17 +231,17 @@ Input Reading
 			<script>
 				function submit_this(id, prev) {
 					form = document.getElementById('form-'+id)
-					input = document.getElementById(id)
-					if (input.value<prev || input.value == ''){
-						console.log('object');
-						input.classList.remove('border-0')
-						input.classList.add('is-invalid')
+					// input = document.getElementById(id)
+					// if (input.value<prev || input.value == ''){
+					// 	console.log('object');
+					// 	input.classList.remove('border-0')
+					// 	input.classList.add('is-invalid')
 					
-					}
-					else{
+					// }
+					// else{
 						enableAll()
 						form.submit()
-					}
+					// }
 				}
 				function enableAll() {
 					inputs = document.getElementsByClassName('input')
