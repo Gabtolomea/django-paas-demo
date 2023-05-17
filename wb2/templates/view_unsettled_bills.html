@@ -1,7 +1,9 @@
 {% extends 'dashboard.html' %}
 {% load humanize %}
 {% load static %}
-
+{% block title %}
+{{uv.lastname}} {{uv.firstname}} {{uv.middlename}} 's Unsettled Bills
+{% endblock title %}
 
 {% block view_unsettled_bills %}
 <div class="table-responsive">
@@ -40,7 +42,7 @@
 			yearselection.submit('')
 		}
 	</script>
-	<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
+	<table id="table" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
 		<thead class="wb_thead">
 			<tr class="header ">
 				<th style="width: 25% !important;">Month</th>

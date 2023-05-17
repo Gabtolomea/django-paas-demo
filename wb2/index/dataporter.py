@@ -86,7 +86,6 @@ bar = [
     'Others...'
 ]
 months = [
-    '',
     'jan',
     'feb',
     'mar',
@@ -246,16 +245,16 @@ def billing_out(con, rate, reading, date, year, usage, month, payment):
         billingT.bill = ((billingT.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
     try:
         brec = BarangayRecord.objects.get(year=billingT.year, barangaycode=con.installation_address)
-        brec.__dict__[f"total_usage_{months[month]}"] += billingT.usage
-        brec.__dict__[f"total_due_{months[month]}"] += billingT.bill
+        brec.__dict__[f"total_usage_{months[month-1]}"] += billingT.usage
+        brec.__dict__[f"total_due_{months[month-1]}"] += billingT.bill
     except ObjectDoesNotExist:
         brec = BarangayRecord()
         brec.barangayrec_id = f"{con.installation_address.id}-{billingT.year}"
         brec.year = billingT.year
         brec.barangaycode = con.installation_address
-        brec.__dict__[f"total_usage_{months[month]}"] = billingT.usage
-        brec.__dict__[f"total_due_{months[month]}"] = billingT.bill
-        brec.__dict__[f"total_paid_{months[month]}"] = 0
+        brec.__dict__[f"total_usage_{months[month-1]}"] = billingT.usage
+        brec.__dict__[f"total_due_{months[month-1]}"] = billingT.bill
+        brec.__dict__[f"total_paid_{months[month-1]}"] = 0
     brec.save()
     billingT.save()
     if payment:
@@ -281,15 +280,15 @@ def billing_out(con, rate, reading, date, year, usage, month, payment):
             paymentT.year = year
             try:
                 brec = BarangayRecord.objects.get(year=paymentT.year, barangaycode=con.installation_address)
-                brec.__dict__[f"total_paid_{months[paymentT.month]}"] += paymentT.payment
+                brec.__dict__[f"total_paid_{months[paymentT.month-1]}"] += paymentT.payment
             except ObjectDoesNotExist:
                 brec = BarangayRecord()
                 brec.barangayrec_id = f"{con.installation_address.id}-{paymentT.year}"
                 brec.year = paymentT.year
                 brec.barangaycode = con.installation_address
-                brec.__dict__[f"total_paid_{months[paymentT.month]}"] = paymentT.payment
-                brec.__dict__[f"total_usage_{months[paymentT.month]}"] = 0
-                brec.__dict__[f"total_due_{months[paymentT.month]}"] = 0
+                brec.__dict__[f"total_paid_{months[paymentT.month-1]}"] = paymentT.payment
+                brec.__dict__[f"total_usage_{months[paymentT.month-1]}"] = 0
+                brec.__dict__[f"total_due_{months[paymentT.month-1]}"] = 0
             brec.save()
             con.save()
             paymentT.save()
