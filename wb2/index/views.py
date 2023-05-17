@@ -2172,7 +2172,6 @@ def payment_history (request, id, year):
         years.append(datetime.today().year)
     if int(year) in years:
         years.remove(int(year))
-
         
     context = {
         'consumer' : consumer,
