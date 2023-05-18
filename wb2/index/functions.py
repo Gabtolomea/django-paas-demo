@@ -1,12 +1,10 @@
-from base64 import urlsafe_b64decode
+
 import pandas as pd
-from django.forms import ValidationError
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 import math
 import random
 import string
-import calendar
 import math
 import datetime
 from datetime import datetime
@@ -467,3 +465,8 @@ def get_consumers_yearly():
     print(f"y2021 = {y2021}")
     print(f"y2022 = {y2022}")
     print(f"y2023 = {y2023}")
+
+# def get_transaction_error():
+#     cons = ConsumerInfo.objects.all()
+#     for c in cons:
+#         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')

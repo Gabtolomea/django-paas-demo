@@ -3,7 +3,7 @@ from .models import *
 from .colnames import *
 from datetime import datetime
 import math
-import mysql.connector
+# import mysql.connector
 import base64
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
@@ -38,7 +38,6 @@ sorted_tables = []
 #    database="lgu_ginatilan_db"
 # )
 # mycursor = mydb.cursor()
-
 
 
 def porter_in():
