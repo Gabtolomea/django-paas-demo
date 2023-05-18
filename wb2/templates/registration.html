@@ -183,10 +183,10 @@ Registration Form
                         </div>
                     </div>
                     <!-- TO BE IMPLEMENTED PUHON -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                    <!-- <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
                         <label>Authorized Approver</label>
                         {{form.authorizedapprover}}
-                    </div>
+                    </div> -->
                     <!--  -->
                 </div>
                 <div class="row m-auto" style="display: block; text-align: center;">
@@ -222,16 +222,6 @@ Registration Form
             eye.src = "{% static '/images/eye-on.svg' %}"
 
         }
-    }
-</script>
-<script>
-    function onlyNumberKey(evt) {
-          
-        // Only ASCII character in that range allowed
-        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
-            return false;
-        return true;
     }
 </script>
 <script>

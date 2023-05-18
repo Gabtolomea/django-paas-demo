@@ -11,13 +11,13 @@ from .models import *
 
 
 class SystemUserForm(UserCreationForm):
-    CHOICES =(
-        ("0", "Approver for Inbound Application"),
-        ("1", "Non Approver"),
-        ("2", "Supervisor"),
-        ("3", "Engineer's Office"),
-        ("4", "Mayor's Office"),
-    )
+    # CHOICES =(
+    #     ("0", "Approver for Inbound Application"),
+    #     ("1", "Non Approver"),
+    #     ("2", "Supervisor"),
+    #     ("3", "Engineer's Office"),
+    #     ("4", "Mayor's Office"),
+    # )
     password1 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
     password2 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
@@ -25,8 +25,8 @@ class SystemUserForm(UserCreationForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'09XXXXXXXXX','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}))
-    authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group m-0'}), choices=CHOICES)
+    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'maxlength':'13', 'minlength':'11'}))
+    # authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group m-0'}), choices=CHOICES)
     class Meta:
         model = SystemUsers
         fields = (
@@ -44,7 +44,7 @@ class SystemUserForm(UserCreationForm):
             'is_reader',
             'mid_name',
             'mobilenum',
-            'authorizedapprover',
+            # 'authorizedapprover',
         )
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))

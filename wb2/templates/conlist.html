@@ -8,7 +8,31 @@ Consumer List
 
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.css'%} ">
 <script src="{% static 'DataTables/js/dataTables.bootstrap5.js'%}"></script>
+
 <style>
+	
+	.odd {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%; 
+		-webkit-tap-highlight-color: transparent;
+
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+	}
+
+	.dataTables_empty {
+		text-align: center;
+	}
+
 	.hide {
 		opacity: 0;
 		transition: 0.3s all ease-in-out;
@@ -117,6 +141,7 @@ Consumer List
 							</tr>
 						</thead>
 						<tbody class="wb_tbody">
+							{% if consumer_list %}
 							{% for con in consumer_list %}
 							<tr style="cursor: pointer; user-select: none;">
 								<td class='clickable-row' data-href="{% url 'consumerupdate' con.consumer_id %}">
@@ -170,6 +195,12 @@ Consumer List
 
 							</tr>
 							{% endfor %}
+							
+							{% else %}
+							<tr class="odd">
+								<td valign="top" colspan="7" class="dataTables_empty">No matching records found</td>
+							</tr>
+							{% endif %}
 							<script>
 								jQuery(document).ready(function ($) {
 									$(".clickable-row").click(function () {

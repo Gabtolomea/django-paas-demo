@@ -40,6 +40,11 @@
                 Revenue Reports
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_cc %}active{% endif %}" id="consumption_button" data-href="{% url 'consumption' cur_year %}" type="button" role="tab">
+                Consumption
+            </button>
+        </li>
     </ul>
 </div>
 <script src="{% static 'jquery/jquery.js' %}"></script>
