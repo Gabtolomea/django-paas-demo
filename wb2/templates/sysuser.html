@@ -9,6 +9,30 @@ System User
 
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <style>
+    
+	.odd {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%; 
+		-webkit-tap-highlight-color: transparent;
+
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+	}
+
+	.dataTables_empty {
+		text-align: center;
+	}
+
+
     .hide {
         opacity: 0;
         transition: 0.3s all ease-in-out;
@@ -83,6 +107,7 @@ System User
                     </tr>
                 </thead>
                 <tbody>
+                    {% if table %}
                     {%for t in table%}
                     <tr class="showOnHover">
                         <td class="align-middle text-center"> {{t.username }}</td>
@@ -90,7 +115,7 @@ System User
                         <td class="align-middle text-center">{{t.email }}</td>
                         <td class="align-middle text-center">{{t.role}}</td>
                         <td class="align-middle text-center p-0">
-                            <a href="{%url 'user_edit' t.username%}">
+                            <a href="{% url 'user_edit' t.username %}">
                                 <button class="btn hide btn-success btn-sm " data-toggle="modal" type="button"
                                     data-placement="top" title="Edit">
                                     <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />
@@ -110,6 +135,11 @@ System User
 
                     </tr>
                     {%endfor%}
+                    {% else %}
+                    <tr class="odd">
+                        <td valign="top" colspan="6" class="dataTables_empty">No matching records found</td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
