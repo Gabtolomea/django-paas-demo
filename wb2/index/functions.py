@@ -480,7 +480,8 @@ def dump_database():
         password='jazfer',
         host='localhost',
         port=3307,
-        database='wb2'
+        database='wb2',
+        charset='latin1'
     )
 
     cursor = cnx.cursor()
@@ -489,7 +490,7 @@ def dump_database():
     tables = cursor.fetchall()
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    directory = 'C:/Users/CTU/Downloads/Dump/'
+    directory = 'C:/Users/CTU - GINATILAN/Dump/'
     unique_identifier = uuid.uuid4().hex 
     directory = f'{directory}{timestamp}_{unique_identifier}/'
     os.makedirs(directory, exist_ok=True) 

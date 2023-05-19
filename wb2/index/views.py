@@ -105,6 +105,7 @@ def signin(request):
 def bills_list(request):
     # balance()
     # get_consumers_yearly()
+    # dump_database()
     template = ""
     LoginSession = request.user
     if LoginSession:
