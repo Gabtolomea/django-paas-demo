@@ -28,7 +28,7 @@ from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.core.files.storage import FileSystemStorage
-
+from .functions import dump_database
 
 months = [
     'jan',
@@ -1510,7 +1510,7 @@ def view_barangay(request, id):
     return render(request, 'view_barangay.html', context)
 
 def usage_report_data(request, year):
-
+    dump_database()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -2618,4 +2618,3 @@ def consumption(request, year):
         'tsm':stopped_meters,
     }
     return render(request,'consumption.html', context)
-
