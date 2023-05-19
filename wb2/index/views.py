@@ -105,6 +105,7 @@ def signin(request):
 def bills_list(request):
     # balance()
     # get_consumers_yearly()
+    dump_db()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -2663,6 +2664,7 @@ def consumption(request, year):
         '<=50': 0,
         '>50': 0,
     }
+    years = []
     top_10 = []
     top_10_del_amount = []
     top_10_del_month = []
@@ -2706,6 +2708,8 @@ def consumption(request, year):
     for i in del_month:
         if i.penaltycounter > 0:
             top_10_del_month.append(delinquent_month(f"{i.firstname} {i.lastname}", i.penaltycounter))
+    
+    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by
 
     # find total stopped meters
     stopped_meters = 0
@@ -2713,12 +2717,29 @@ def consumption(request, year):
         if i.stopmeterflag:
             stopped_meters += 1
     
+    condemntots = 0
+    for i in cons:
+        if i.deleteflag:
+            condemntots += 1
+ 
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+
     context = {
+        'condemn':condemn,
         'count_ranges':count_ranges,
         'top_10':top_10,
         'top_10_del_amount':top_10_del_amount,
         'top_10_del_month':top_10_del_month,
         'tsm':stopped_meters,
+        'condemntots':condemntots,
+        'cur_year': year,
+        'years': years,
+        'is_cc':True,
     }
     return render(request,'consumption.html', context)
 

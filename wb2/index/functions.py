@@ -2,6 +2,7 @@
 import pandas as pd
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management import call_command
 import math
 import random
 import string
@@ -470,3 +471,6 @@ def get_consumers_yearly():
 #     cons = ConsumerInfo.objects.all()
 #     for c in cons:
 #         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+
+def dump_db():
+    pass
