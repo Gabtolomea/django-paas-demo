@@ -13,7 +13,6 @@ import os
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
-#Daghan ni jazpeerrrrr
 
 def n_int(var):
     if var is None:
@@ -540,15 +539,24 @@ def dump_database():
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
 
-    timestamp = datetime.now().strftime("%Y.%m.%d-%H.%M")
-    print(timestamp)
-    directory = 'D:/Users/CTU - GINATILAN/Desktop/Dump/'
-    # directory = f'{directory}{timestamp}/'
-    # os.makedirs(directory, exist_ok=True) 
-    dump_file_path = f'{directory}{timestamp}wb2_data_dump.sql'
+    timestamp = datetime.now().strftime("%Y.%m.%d")
+    desktop_path = os.path.expanduser("~/Desktop")
+
+    folder_name = "Dump"
+
+    folder_path = os.path.join(desktop_path, folder_name)
+
+    if os.path.exists(folder_path):
+        print("Folder already exists!")
+    else:
+        os.makedirs(folder_path)
+        print("Folder created successfully!")
+    dump_directory = desktop_path + f'/{folder_name}/'
+    dump_file_path = f'{dump_directory}{timestamp}wb2_data_dump.sql'
     
     if os.path.exists(dump_file_path):
-        os.remove(dump_file_path)
+        print("already dumped today, balik lang ugma")
+        return
 
     with open(dump_file_path, 'w', buffering=1000000) as dump_file:
         print("Dumping...")
@@ -596,16 +604,7 @@ def dump_database():
 
     cursor.close()
     cnx.close()
-
-
-
-
-
-def db_upload():
-
-    folder_directory = "C:/Users/CTU - GINATILAN/Dump"
-
-    credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/wb2/index/service_key.json"
+    credentials_file = "wb2/index/service_key.json"
 
     if not os.path.exists(credentials_file):
         print(f"Please save the service account credentials JSON file at the specified path.")
@@ -620,8 +619,8 @@ def db_upload():
     existing_files = response.get("files", [])
 
 
-    for filename in os.listdir(folder_directory):
-        file_path = os.path.join(folder_directory, filename)
+    for filename in os.listdir(dump_directory):
+        file_path = os.path.join(dump_directory, filename)
 
         file_exists = any(file_info["name"] == filename for file_info in existing_files)
         if file_exists:
@@ -633,8 +632,3 @@ def db_upload():
         drive_service.files().create(body=file_metadata, media_body=media).execute()
 
     print("Files uploaded successfully to the specified folder on Google Drive.")
-
-
-
-
-

@@ -47,6 +47,7 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
+    dump_database()
     # !!!please ask previous developers before attempting to uncomment!!!
     # portfromcsv()
     sxz()
