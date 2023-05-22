@@ -104,6 +104,9 @@ def signin(request):
 @login_required(login_url='login')
 def bills_list(request):
     # balance()
+    # get_consumers_yearly()
+    # dump_database()
+    # db_upload()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -583,6 +586,7 @@ def deletereading(request, id):
     con.save()
     reading.delete()
     return redirect('inputreading', con.consumer_id, date.today().year)
+
 @login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
@@ -598,6 +602,17 @@ def inputreading(request, id, year):
             self.style = style
             self.monthval = monthval
     consumer = ConsumerInfo.objects.get(consumer_id=id)
+    yt = Transactions.objects.filter(acctID=consumer.consumer_id).values_list('year', flat=True)
+    years_backward = []
+    for i in yt:
+        if i not in years_backward and i <= year:
+            years_backward.append(i)
+    years_backward.sort(reverse=True)
+    years_forward = []
+    for i in yt:
+        if i not in years_forward and i >= year:
+            years_forward.append(i)
+    years_forward.sort()
     lastreading = consumer.current_reading
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
@@ -643,7 +658,6 @@ def inputreading(request, id, year):
                         except IndexError:
                             next = False
                         lastreading = reading
-                        print(reading)
                         style = 'table-success'
                     else:
                         prev = 0
@@ -656,7 +670,6 @@ def inputreading(request, id, year):
                             except IndexError:
                                 next = False
                             lastreading = reading
-                            print(reading)
                             style = 'table-success'
                             j+=1
                         except IndexError:
@@ -665,7 +678,6 @@ def inputreading(request, id, year):
 
             m = meterreaderclass(transid, month, i, usage, prev, reading, next, style)
             table.append(m)
-    print(table[1].reading)
     if consumer.penaltycode is None:
         con_penalty = Penalty.objects.get(penaltycode='P001')
     else:
@@ -692,25 +704,49 @@ def inputreading(request, id, year):
                     interest = xy/100
                 try:
                     billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                    try:
-                        mo = d + 1
-                        ye = year
-                        if d == 12:
-                            mo = 1
-                            ye += 1
-                        next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
-                        next.prevReading = i
-                        next.usage = next.meterReading - i
-                        next.save()
-                    except ObjectDoesNotExist:
-                        pass
+                    last_reading = billtran.prevReading
+                    # finding next billing
+                    mm = d+1
+                    has_next = False
+                    for y in years_forward:
+                        for x in range(mm, 13):
+                            try:
+                                next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                next.prevReading = i
+                                next.usage = next.meterReading - i
+                                next.save()
+                                has_next = True
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_next:
+                            break
+                        mm = 1
+                    
+                    # finding previous billing
+                    if has_next:
+                        mm = d-1
+                        has_prev = False
+                        for y in years_backward:
+                            for x in range(mm, 0, -1):
+                                try:
+                                    prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                    last_reading = prev.meterReading
+                                    has_prev = True
+                                    break
+                                except ObjectDoesNotExist:
+                                    pass
+                            if has_prev:
+                                break
+                            mm = 12
                     billtran.meterReading = i
                     billtran.date = datetime.today()
-                    billtran.usage = i - billtran.prevReading
+                    billtran.prevReading = last_reading
+                    billtran.usage = i - last_reading
                     usage = billtran.usage
                     rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
                     dif = billtran.bill
-                    if billtran.usage <= rate.minReading:
+                    if billtran.usage <= rate.minReading or billtran.usage < 0:
                         billtran.bill = rate.minReadingCharge
                     else:
                         billtran.bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
@@ -729,7 +765,7 @@ def inputreading(request, id, year):
                         p.processedBy = request.user
                         p.save()
                     try:
-                        paymentT = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=ye, month=d)
+                        paymentT = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=year, month=d)
                         if dif:
                             paymentT.payment = paymentT.payment + dif
                             consumer.excess = consumer.excess - dif
@@ -739,7 +775,36 @@ def inputreading(request, id, year):
                     except ObjectDoesNotExist:
                         pass
                 except ObjectDoesNotExist:
-                    lastreading = consumer.current_reading
+                    
+                    # finding next billing
+                    fm = d+1
+                    has_next = False
+                    for y in years_forward:
+                        for x in range(fm, 13):
+                            try:
+                                next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                
+                                # finding previous billing
+                                bm = d-1
+                                has_prev = False
+                                for y in years_backward:
+                                    for x in range(bm, 0, -1):
+                                        try:
+                                            prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                            last_reading = prev.meterReading
+                                            break
+                                        except ObjectDoesNotExist:
+                                            pass
+                                    if has_prev:
+                                        break
+                                    bm = 12
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_next:
+                            break
+                        fm = 1
+                    
                     bill = 0
                     billtran = Transactions()
                     billtran.acctID = consumer
@@ -788,6 +853,18 @@ def inputreading(request, id, year):
                     except ObjectDoesNotExist:
                         pass
                 
+                try:
+                    mo = d - 1
+                    ye = year
+                    if d == 1:
+                        mo = 12
+                        ye -= 1
+                    prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
+                    if not prev_bill.is_billpaid:
+                        consumer.penaltycounter += 1
+                except ObjectDoesNotExist:
+                    pass
+
                 if consumer.excess > 0:
                     unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False).order_by('-year', '-month')
                     if unsettled:
@@ -809,8 +886,43 @@ def inputreading(request, id, year):
                             else:
                                 consumer.save()
                                 break
-                con_b_rec.__dict__[f"total_due_{months[d]}"]+=bill
-                con_b_rec.__dict__[f"total_usage_{months[d]}"]+=usage
+                match d:
+                    case 1:
+                        con_b_rec.total_due_jan += bill
+                        con_b_rec.total_usage_jan += usage
+                    case 2:
+                        con_b_rec.total_due_feb += bill
+                        con_b_rec.total_usage_feb += usage
+                    case 3:
+                        con_b_rec.total_due_mar += bill
+                        con_b_rec.total_usage_mar += usage
+                    case 4:
+                        con_b_rec.total_due_apr += bill
+                        con_b_rec.total_usage_apr += usage
+                    case 5:
+                        con_b_rec.total_due_may += bill
+                        con_b_rec.total_usage_may += usage
+                    case 6:
+                        con_b_rec.total_due_jun += bill
+                        con_b_rec.total_usage_jun += usage
+                    case 7:
+                        con_b_rec.total_due_jul += bill
+                        con_b_rec.total_usage_jul += usage
+                    case 8:
+                        con_b_rec.total_due_aug += bill
+                        con_b_rec.total_usage_aug += usage
+                    case 9:
+                        con_b_rec.total_due_sept += bill
+                        con_b_rec.total_usage_sept += usage
+                    case 10:
+                        con_b_rec.total_due_oct += bill
+                        con_b_rec.total_usage_oct += usage
+                    case 11:
+                        con_b_rec.total_due_nov += bill
+                        con_b_rec.total_usage_nov += usage
+                    case 12:
+                        con_b_rec.total_due_dec += bill
+                        con_b_rec.total_usage_dec += usage
                 
                 bill = 0
                 usage = 0
@@ -1277,7 +1389,31 @@ def payment(request, id):
                 rt.processedBy = request.user.username
                 rt.save()
             get_balance(id)
-            con_b_rec.__dict__[f"total_paid_{months[month]}"]+=amount
+            match month:
+                case 1:
+                    con_b_rec.total_paid_jan += amount
+                case 2:
+                    con_b_rec.total_paid_feb += amount
+                case 3:
+                    con_b_rec.total_paid_mar += amount
+                case 4:
+                    con_b_rec.total_paid_apr += amount
+                case 5:
+                    con_b_rec.total_paid_may += amount
+                case 6:
+                    con_b_rec.total_paid_jun += amount
+                case 7:
+                    con_b_rec.total_paid_jul += amount
+                case 8:
+                    con_b_rec.total_paid_aug += amount
+                case 9:
+                    con_b_rec.total_paid_sept += amount
+                case 10:
+                    con_b_rec.total_paid_oct += amount
+                case 11:
+                    con_b_rec.total_paid_nov += amount
+                case 12:
+                    con_b_rec.total_paid_dec += amount
             con_b_rec.save()
             
     return redirect('ledger', id=id)
@@ -1472,7 +1608,20 @@ def usage_report_data(request, year):
         nov=Sum('total_usage_nov'),
         dec=Sum('total_usage_dec'),
     )
-
+    tu_bills = BarangayRecord.objects.filter(year=year).aggregate(
+        jan=Sum('total_due_jan'),
+        feb=Sum('total_due_feb'),
+        mar=Sum('total_due_mar'),
+        apr=Sum('total_due_apr'),
+        may=Sum('total_due_may'),
+        jun=Sum('total_due_jun'),
+        jul=Sum('total_due_jul'),
+        aug=Sum('total_due_aug'),
+        sept=Sum('total_due_sept'),
+        oct=Sum('total_due_oct'),
+        nov=Sum('total_due_nov'),
+        dec=Sum('total_due_dec'),
+    )
     # By Barangay total Usage
     tu_bay = BarangayRecord.objects.filter(year=year,).annotate(
         sums=Sum(F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') + F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') + F('total_usage_oct') + F('total_usage_nov') + F('total_usage_dec'))).annotate(
@@ -1497,7 +1646,15 @@ def usage_report_data(request, year):
         n = br(b.barangay, mymonths)
         mymonths = []
         mybars.append(n)
-    
+
+    total_unb = []
+    class total_usages_and_billing:
+        def __init__(self, month, usage, bill) -> None:
+            self.month = month
+            self.usage = usage
+            self.bill = bill
+    for i, m in enumerate(months):
+        total_unb.append(total_usages_and_billing(m,tu_mon[m],tu_bills[m]))
     context = {
         'mybars':mybars,
         'tu_mon': tu_mon,
@@ -1507,6 +1664,7 @@ def usage_report_data(request, year):
         'my': my,
         'user': request.user,
         'is_ur':True,
+        'total_unb':total_unb,
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1529,7 +1687,6 @@ def revenue_report(request, year):
     if int(year) in years:
         years.remove(int(year))
     # Total Collection\-
-    print(BarangayRecord.objects.filter(year=year))
     if BarangayRecord.objects.filter(year=year):
         rev_col = BarangayRecord.objects.filter(year=year).aggregate(
             jan=Sum('total_paid_jan'),
@@ -2027,6 +2184,7 @@ def bulkreading(request):
         # prev = last_reading(i.consumer_id, year, month)
         consumers_list.append(new_con(i, prev, cur))
     if request.method == "POST":
+        
         con_list = []
         psearch = request.POST.get('psearch')
         isnum = psearch.isnumeric()
@@ -2075,6 +2233,17 @@ def bulkreading(request):
         pyear = int(request.POST.get('pyear'))
         for j in con_list:
             c = ConsumerInfo.objects.get(consumer_id=j.con.consumer_id)
+            yt = Transactions.objects.filter(acctID=c.consumer_id).values_list('year', flat=True)
+            years_backward = []
+            for i in yt:
+                if i not in years_backward and i <= pyear:
+                    years_backward.append(i)
+            years_backward.sort(reverse=True)
+            years_forward = []
+            for i in yt:
+                if i not in years_forward and i >= pyear:
+                    years_forward.append(i)
+            years_forward.sort()
             a = request.POST.get(f"con{c.consumer_id}", None)
             if a is not None:
                 try:
@@ -2086,8 +2255,44 @@ def bulkreading(request):
                 a = int(a)
                 try:
                     tran = Transactions.objects.get(acctID_id=c.consumer_id,month=pmonth,year=pyear,transType = "Billing")
-                    tran.prevReading = last_reading(c.consumer_id,pyear,pmonth)
+                    lastreading = tran.prevReading
+                    # finding next billing
+                    mm = pmonth+1
+                    has_next = False
+                    for y in years_forward:
+                        for x in range(mm, 13):
+                            try:
+                                next = Transactions.objects.get(acctID=c.consumer_id, transType='Billing', year=y, month=x)
+                                next.prevReading = a
+                                next.usage = next.meterReading - a
+                                next.save()
+                                has_next = True
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_next:
+                            break
+                        mm = 1
+                    
+                    # finding previous billing
+                    if has_next:
+                        mm = pmonth-1
+                        has_prev = False
+                        for y in years_backward:
+                            for x in range(mm, 0, -1):
+                                try:
+                                    prev = Transactions.objects.get(acctID=c.consumer_id, transType='Billing', year=y, month=x)
+                                    lastreading = prev.meterReading
+                                    has_prev = True
+                                    break
+                                except ObjectDoesNotExist:
+                                    pass
+                            if has_prev:
+                                break
+                            mm = 12
+
                     tran.meterReading = a
+                    tran.usage = a - lastreading
                     tran.save()
                 except ObjectDoesNotExist:
                     t = Transactions()
@@ -2118,7 +2323,7 @@ def bulkreading(request):
                     usage = a - prev
                     t.contypeid = c.contypeid_id
                     rate = ConsumerType.objects.get(contypeid=c.contypeid_id)
-                    if t.usage <= rate.minReading:
+                    if t.usage <= rate.minReading or t.usage < 0:
                         t.bill = rate.minReadingCharge
                     else:
                         bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
@@ -2126,6 +2331,18 @@ def bulkreading(request):
                     t.payment = 0
                     t.processedBy = request.user
                     t.save()
+                    
+                    try:
+                        mo = pmonth - 1
+                        ye = year
+                        if pmonth == 1:
+                            mo = 12
+                            ye -= 1
+                        prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
+                        if not prev_bill.is_billpaid:
+                            consumer.penaltycounter += 1
+                    except ObjectDoesNotExist:
+                        pass
                     if interest:
                         p = Transactions()
                         p.acctID = c
@@ -2138,9 +2355,44 @@ def bulkreading(request):
                         p.payment = 0
                         p.processedBy = request.user
                         p.save()
-                con_b_rec.__dict__[f"total_due_{months[pmonth]}"]+=bill
-                con_b_rec.__dict__[f"total_usage_{months[pmonth]}"]+=usage
-
+                match pmonth:
+                    case 1:
+                        con_b_rec.total_due_jan += bill
+                        con_b_rec.total_usage_jan += usage
+                    case 2:
+                        con_b_rec.total_due_feb += bill
+                        con_b_rec.total_usage_feb += usage
+                    case 3:
+                        con_b_rec.total_due_mar += bill
+                        con_b_rec.total_usage_mar += usage
+                    case 4:
+                        con_b_rec.total_due_apr += bill
+                        con_b_rec.total_usage_apr += usage
+                    case 5:
+                        con_b_rec.total_due_may += bill
+                        con_b_rec.total_usage_may += usage
+                    case 6:
+                        con_b_rec.total_due_jun += bill
+                        con_b_rec.total_usage_jun += usage
+                    case 7:
+                        con_b_rec.total_due_jul += bill
+                        con_b_rec.total_usage_jul += usage
+                    case 8:
+                        con_b_rec.total_due_aug += bill
+                        con_b_rec.total_usage_aug += usage
+                    case 9:
+                        con_b_rec.total_due_sept += bill
+                        con_b_rec.total_usage_sept += usage
+                    case 10:
+                        con_b_rec.total_due_oct += bill
+                        con_b_rec.total_usage_oct += usage
+                    case 11:
+                        con_b_rec.total_due_nov += bill
+                        con_b_rec.total_usage_nov += usage
+                    case 12:
+                        con_b_rec.total_due_dec += bill
+                        con_b_rec.total_usage_dec += usage
+                con_b_rec.save()
                 if c.excess > 0:
                     unsettled = Transactions.objects.filter(acctID_id=c, transType="Billing", is_billpaid=False).order_by('-year', '-month')
                     if unsettled:
@@ -2342,8 +2594,31 @@ def monthlypayment(request):
             except ObjectDoesNotExist:
                 pass
             get_balance(consumer.consumer_id)
-            con_b_rec.__dict__[f"total_paid_{months[month]}"]+=payment
-            
+            match month:
+                case 1:
+                    con_b_rec.total_paid_jan += payment
+                case 2:
+                    con_b_rec.total_paid_feb += payment
+                case 3:
+                    con_b_rec.total_paid_mar += payment
+                case 4:
+                    con_b_rec.total_paid_apr += payment
+                case 5:
+                    con_b_rec.total_paid_may += payment
+                case 6:
+                    con_b_rec.total_paid_jun += payment
+                case 7:
+                    con_b_rec.total_paid_jul += payment
+                case 8:
+                    con_b_rec.total_paid_aug += payment
+                case 9:
+                    con_b_rec.total_paid_sept += payment
+                case 10:
+                    con_b_rec.total_paid_oct += payment
+                case 11:
+                    con_b_rec.total_paid_nov += payment
+                case 12:
+                    con_b_rec.total_paid_dec += payment
             con_b_rec.save()
             
     return redirect('monthly_summary', id=conid, year=year)
@@ -2363,7 +2638,6 @@ def payment_history (request, id, year):
         years.append(datetime.today().year)
     if int(year) in years:
         years.remove(int(year))
-
         
     context = {
         'consumer' : consumer,
@@ -2373,3 +2647,100 @@ def payment_history (request, id, year):
     }
 
     return render(request,'payment_history.html', context)
+
+def consumption(request, year):
+    cons = ConsumerInfo.objects.all()
+    cons_len = len(cons)
+    latest_bills = []
+    count_ranges = {
+        '<=5': 0,
+        '<=10': 0,
+        '<=15': 0,
+        '<=20': 0,
+        '<=25': 0,
+        '<=30': 0,
+        '<=35': 0,
+        '<=40': 0,
+        '<=45': 0,
+        '<=50': 0,
+        '>50': 0,
+    }
+    years = []
+    top_10 = []
+    top_10_del_amount = []
+    top_10_del_month = []
+    class delinquent_amount:
+        def __init__(self, name, balance) -> None:
+            self.name = name
+            self.balance = balance
+    class delinquent_month:
+        def __init__(self, name, months) -> None:
+            self.name = name
+            self.months = months
+    class consumption:
+        def __init__(self, name, usage) -> None:
+            self.name = name
+            self.usage = usage
+    for i in cons:
+        try:
+            bill = Transactions.objects.filter(acctID_id=i.consumer_id, year=year, transType="Billing").order_by('-transactionid')[0]
+            latest_bills.append(bill)
+            for k, v in count_ranges.items():
+                range_max = int(k[2:])  # extract the minimum value from the key (e.g. 'l10' -> 10)
+                if bill.usage < range_max:
+                    count_ranges[k] += 1
+                    break
+            else:
+                count_ranges['>50'] += 1 
+        except IndexError:
+            pass
+    bill_len = sum(count_ranges.values())
+    count_ranges['<=5']+=(cons_len-bill_len)
+    top10 = sorted(latest_bills, key=lambda c: c.usage, reverse=True)[:10]
+    for i in top10:
+        con = consumption(f"{i.acctID.firstname} {i.acctID.lastname}", i.usage)
+        top_10.append(con)
+
+    del_amount = sorted(cons, key=lambda c: c.current_bal, reverse=True)[:10]
+    for i in del_amount:
+        top_10_del_amount.append(delinquent_amount(f"{i.firstname} {i.lastname}", i.current_bal))
+
+    del_month = sorted(cons, key=lambda c: c.penaltycounter, reverse=True)[:10]
+    for i in del_month:
+        if i.penaltycounter > 0:
+            top_10_del_month.append(delinquent_month(f"{i.firstname} {i.lastname}", i.penaltycounter))
+    
+    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by
+
+    # find total stopped meters
+    stopped_meters = 0
+    for i in cons:
+        if i.stopmeterflag:
+            stopped_meters += 1
+    
+    condemntots = 0
+    for i in cons:
+        if i.deleteflag:
+            condemntots += 1
+ 
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+
+    context = {
+        'condemn':condemn,
+        'count_ranges':count_ranges,
+        'top_10':top_10,
+        'top_10_del_amount':top_10_del_amount,
+        'top_10_del_month':top_10_del_month,
+        'tsm':stopped_meters,
+        'condemntots':condemntots,
+        'cur_year': year,
+        'years': years,
+        'is_cc':True,
+    }
+    return render(request,'consumption.html', context)
+

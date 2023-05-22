@@ -204,9 +204,11 @@ Input Reading
 									onfocus = "this.select()" 
 									disabled 
 									type = "number"
+									{% comment %}
 									{% if t.prev %} min={{t.prev}} {% endif %} 
-									{% if t.next %} max="{{t.next}}" {%endif%} 
+									{% if t.next %} max="{{t.next}}" {%endif%} {% endcomment %}
 									{% if t.reading %} value="{{t.reading}}" {% endif %}>
+								
 							</td>
 						</form>
 						{% if consumer.stopmeterflag %}
@@ -229,17 +231,17 @@ Input Reading
 			<script>
 				function submit_this(id, prev) {
 					form = document.getElementById('form-'+id)
-					input = document.getElementById(id)
-					if (input.value<prev || input.value == ''){
-						console.log('object');
-						input.classList.remove('border-0')
-						input.classList.add('is-invalid')
+					// input = document.getElementById(id)
+					// if (input.value<prev || input.value == ''){
+					// 	console.log('object');
+					// 	input.classList.remove('border-0')
+					// 	input.classList.add('is-invalid')
 					
-					}
-					else{
+					// }
+					// else{
 						enableAll()
 						form.submit()
-					}
+					// }
 				}
 				function enableAll() {
 					inputs = document.getElementsByClassName('input')
