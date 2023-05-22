@@ -336,32 +336,30 @@ Usage Report
 		}
 	</script>
 
-	
-		<div class="">
-			<h3 style="text-align: center;"> Barangay Monthly Consumptions and Billings: Year {{cur_year}}
-			</h3>
-		</div>
-			<div class="row table-responsive">
-				<table id="dtBasicExample2" class="table table-bordered  table-striped table-sm ">
-					<thead class="wb_thead">
-					<tr>
-						<th scope="col" style="background-color: #006c85">Month</th>
-						<th scope="col" style="background-color: #006c85">Consumptions</th>
-						<th scope="col" style="background-color: #006c85">Bills</th>
-					</tr>
-					</thead>
-					<tbody >
-						{% for t in total_unb %}
-						<tr>
-							<td>{{t.month}}</td>
-							<td>{{t.usage}} &#13221</td>
-							<td>&#8369; {{t.bill|floatformat:2|intcomma}}</td>
-						</tr>
-						{% endfor %}
-					</tbody
-				</table>
-			</div>
-	
-	
+
+	<div class="">
+		<h3 style="text-align: center;"> Barangay Monthly Consumptions and Billings: Year {{cur_year}}
+		</h3>
+	</div>
+	<div class="row table-responsive">
+		<table id="dtBasicExample2" class="table table-bordered  table-striped table-sm ">
+			<thead class="wb_thead">
+			<tr>
+				<th scope="col" style="background-color: #006c85">Month</th>
+				<th scope="col" style="background-color: #006c85">Consumptions</th>
+				<th scope="col" style="background-color: #006c85">Bills</th>
+			</tr>
+			</thead>
+			<tbody>
+				{% for t in total_unb %}
+				<tr>
+					<td>{{t.month}}</td>
+					<td>{{t.usage}} &#13221</td>
+					<td>&#8369; {{t.bill|floatformat:2|intcomma}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
 {% endblock usage_report_data %}

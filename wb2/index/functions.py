@@ -1,12 +1,12 @@
 
 import pandas as pd
+import csv
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 import math
 import random
 import string
-import math
-import datetime
+from django.db.models import F
 from datetime import datetime
 from .dataporter import *
 def n_int(var):
@@ -466,7 +466,108 @@ def get_consumers_yearly():
     print(f"y2022 = {y2022}")
     print(f"y2023 = {y2023}")
 
-# def get_transaction_error():
-#     cons = ConsumerInfo.objects.all()
-#     for c in cons:
-#         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+
+class MonthYearPair:
+    def __init__(self, month, year):
+        self.month = month
+        self.year = year
+
+def billing_errors_to_csv():
+    csv_file_path = "output.csv"
+    header = ["Year", "Month", "Consumer ID", "Consumer Name", "Meter Reading", "Next Previous", "Next Current"]
+    program_output = [header]
+
+    consumer_transactions = {}
+
+    for consumer in ConsumerInfo.objects.all():
+        transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, transType='Billing').order_by('year', 'month')
+        consumer_transactions[consumer.consumer_id] = list(transactions)
+
+    for consumer in consumer_transactions:
+        transactions = consumer_transactions[consumer]
+
+        for i in range(len(transactions) - 1):
+            t = transactions[i]
+            nt = transactions[i + 1]
+
+            t_year = t.year
+            t_month = t.month
+            t_reading = t.meterReading
+            nt_prev_reading = nt.prevReading
+            nt_reading = nt.meterReading
+
+            if t_reading > nt_prev_reading and t_reading <= nt_reading:
+                consumer_name = f"{consumer.firstname} {consumer.lastname}"
+                program_output.append([t_year, t_month, consumer.consumer_id, consumer_name, t_reading, nt_prev_reading, nt_reading])
+
+    with open(csv_file_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(program_output)
+
+def fix_billing_errors():
+    consumers = ConsumerInfo.objects.all().select_related('installation_address')
+    transactions = Transactions.objects.filter(acctID__in=consumers, transType='Billing').order_by('year', 'month')
+
+    for consumer in consumers:
+        consumer_bal_delta = 0
+        consumer_brec_updates = []
+
+        consumer_transactions = transactions.filter(acctID=consumer)
+        month_years = [MonthYearPair(t.month, t.year) for t in consumer_transactions]
+
+        for i in range(len(month_years) - 1):
+            current_transaction = consumer_transactions[i]
+            next_transaction = consumer_transactions[i + 1]
+            rate = ConsumerType.objects.get(contypeid=current_transaction.contypeid)
+
+            if current_transaction.meterReading > next_transaction.prevReading and current_transaction.meterReading <= next_transaction.meterReading:
+                rate_next = ConsumerType.objects.get(contypeid=next_transaction.contypeid)
+
+                next_transaction.prevReading = current_transaction.meterReading
+                next_transaction.usage = next_transaction.meterReading - next_transaction.prevReading
+                dif = next_transaction.bill
+                if next_transaction.bill == 0:
+                    next_transaction.is_billpaid = False
+                if next_transaction.usage <= rate_next.minReading or next_transaction.usage < 0:
+                    next_transaction.bill = rate_next.minReadingCharge
+                else:
+                    next_transaction.bill = ((next_transaction.usage - rate_next.minReading) * rate_next.rateAfterMin) + rate_next.minReadingCharge
+                next_transaction.processedBy = "System Adjustment"
+                dif = next_transaction.bill - dif
+                next_transaction.save()
+
+                consumer_bal_delta += dif
+
+                if dif:
+                    try:
+                        payment_transaction = Transactions.objects.get(acctID=consumer, year=next_transaction.year, month=next_transaction.month, transType="Payment")
+                        payment_transaction.payment += dif
+                        consumer.current_bal -= dif
+                        payment_transaction.save()
+                    except Transactions.DoesNotExist:
+                        pass
+
+                brec_key = f"{consumer.installation_address_id}-{next_transaction.year}"
+                brec_field_due = f"total_due_{months[next_transaction.month - 1]}"
+                brec_field_usage = f"total_usage_{months[next_transaction.month - 1]}"
+                consumer_brec_updates.append((brec_key, brec_field_due, brec_field_usage, next_transaction.bill, next_transaction.usage))
+
+            if current_transaction.bill == 0 and current_transaction.transType == "Billing":
+                current_transaction.bill = rate.minReadingCharge
+                current_transaction.is_billpaid = False
+                consumer_bal_delta += current_transaction.bill
+
+                brec_key = f"{consumer.installation_address_id}-{current_transaction.year}"
+                brec_field_due = f"total_due_{months[current_transaction.month - 1]}"
+                brec_field_usage = f"total_usage_{months[current_transaction.month - 1]}"
+                consumer_brec_updates.append((brec_key, brec_field_due, brec_field_usage, current_transaction.bill, current_transaction.usage))
+
+        Transactions.objects.bulk_update(consumer_transactions, ['prevReading', 'usage', 'bill', 'is_billpaid', 'processedBy'])
+
+        for brec_key, brec_field_due, brec_field_usage, bill_delta, usage_delta in consumer_brec_updates:
+            BarangayRecord.objects.filter(barangayrec_id=brec_key).update(
+                **{brec_field_due: F(brec_field_due) - bill_delta, brec_field_usage: F(brec_field_usage) - usage_delta}
+            )
+
+        consumer.current_bal += consumer_bal_delta
+        consumer.save()

@@ -4,7 +4,6 @@ import calendar
 import math
 import datetime
 from .dataporter import *
-from .DBdb import *
 from .decorators import *
 from .forms import *
 from .functions import * 
@@ -13,7 +12,7 @@ from .tokens import generate_token
 from datetime import datetime, timedelta
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import EmailMultiAlternatives, send_mail, BadHeaderError, EmailMessage
+from django.core.mail import EmailMultiAlternatives, BadHeaderError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -22,29 +21,12 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F, Sum, Q
-from django.db.models.functions import Greatest
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.files.storage import FileSystemStorage
 
 
-
-months = [
-    'jan',
-    'feb',
-    'mar',
-    'apr',
-    'may',
-    'jun',
-    'jul',
-    'aug',
-    'sept',
-    'oct',
-    'nov',
-    'dec'
-]
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -83,28 +65,27 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             login_rec = LoginRec()
             request.user = user.username
-            request.session[ReqParams.auth] = True
+            request.session["auth"] = True
             request.session.modified = True
             login_rec.username = user.username
             login_rec.token = gen_token()
             login_rec.last_access = timezone.now()
-            login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
+            login_rec.expiration = login_rec.last_access + timedelta(minutes=5)
             login_rec.save()
             login(request, auth)
             messages.success(request, "Logged In as " + user.username)
             return redirect('bills_list')
         else:
             messages.error(request, "Invalid Username or Password")
-    context = {
-        'ReqParams': ReqParams,
-    }
-    return render(request, 'login.html', context)
+    return render(request, 'login.html')
 
 
 @login_required(login_url='login')
 def bills_list(request):
     # balance()
     # get_consumers_yearly()
+    # billing_errors_to_csv()
+    # fix_billing_errors()
     template = ""
     LoginSession = request.user
     if LoginSession:

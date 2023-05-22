@@ -1,10 +1,7 @@
-from datetime import date, datetime
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from PIL import Image
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-import sys
 # Create your models here.
 
 class LoginRec(models.Model):

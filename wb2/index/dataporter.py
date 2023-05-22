@@ -1,7 +1,7 @@
 # import mysql.connector
 from .models import *
 from .colnames import *
-from datetime import datetime
+from datetime import date, datetime
 import math
 # import mysql.connector
 import base64
@@ -17,16 +17,16 @@ tablenames = [
     "systemuser",      #6
     # "yearly_records"
 ]
-alltables = [
-    accountinfo,
-    accountrecord,
-    barangay_record,
-    consumerinfo,
-    payment_history,
-    ratestable,
-    systemuser,
-    #yearly_records,
-]
+# alltables = [
+#     accountinfo,
+#     accountrecord,
+#     barangay_record,
+#     consumerinfo,
+#     payment_history,
+#     ratestable,
+#     systemuser,
+#     #yearly_records,
+# ]
 
 
 sorted_tables = []
