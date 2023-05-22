@@ -451,6 +451,7 @@ def bulkinputreading(consumer, year, reading, pb, d):
     con_b_rec.save()
     get_balance(consumer.consumer_id)
 
+
 def dump_database():
     cnx = mysql.connector.connect(
         user='root',
@@ -471,6 +472,10 @@ def dump_database():
     directory = f'{directory}{timestamp}/'
     os.makedirs(directory, exist_ok=True) 
     dump_file_path = f'{directory}wb2_data_dump.sql'
+    
+    if os.path.exists(dump_file_path):
+        os.remove(dump_file_path)
+
     with open(dump_file_path, 'w', buffering=1000000) as dump_file:
         print("Dumping...")
 
@@ -479,39 +484,6 @@ def dump_database():
         dump_file.write(f"USE `wb2`;\n\n")
         dump_file.write(f"SET FOREIGN_KEY_CHECKS=0;\n\n")
 
-        for table in tables:
-            table_name = table[0]
-            dump_file.write(f"DROP TABLE IF EXISTS `{table_name}`;\n")
-            cursor.execute(f"SHOW CREATE TABLE `{table_name}`")
-            create_table_result = cursor.fetchone()
-            create_table_statement = create_table_result[1]
-            create_table_statement = create_table_statement.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
-            dump_file.write(create_table_statement + ';\n\n')
-            query = f"SELECT * FROM `{table_name}`"
-            cursor.execute(query)
-            rows = cursor.fetchall()
-
-            if len(rows) > 0:
-                batch_size = 1000
-                num_rows = len(rows)
-                num_batches = (num_rows // batch_size) + (num_rows % batch_size > 0)
-
-                for batch_index in range(num_batches):
-                    start_index = batch_index * batch_size
-                    end_index = min((batch_index + 1) * batch_size, num_rows)
-                    dump_file.write(f"INSERT INTO `{table_name}` VALUES\n")
-                    for i in range(start_index, end_index):
-                        row = rows[i]
-                        values = [f"'{str(value)}'" if value is not None else 'NULL' for value in row]
-                        row_data = f"({', '.join(values)})"
-                        if i < end_index - 1:
-                            row_data += ','
-                        dump_file.write(row_data + '\n')
-
-                    dump_file.write(';\n\n')
-            else:
-                dump_file.write(f"DELETE FROM `{table_name}`;\n\n")
-        dump_file.write(f"SET FOREIGN_KEY_CHECKS=1;\n\n")
 
         print("Success...")
 
