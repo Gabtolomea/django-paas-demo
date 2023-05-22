@@ -63,6 +63,9 @@ def porter(request):
 @unauthenticated_user
 def lp(request):
     # !!!please ask previous developers before attempting to uncomment!!!
+    #Dump from database
+    dump_database()
+
     # portfromcsv()
     sxz()
     enye(ConsumerInfo.objects.all())

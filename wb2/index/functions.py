@@ -484,7 +484,6 @@ def dump_database():
         dump_file.write(f"USE `wb2`;\n\n")
         dump_file.write(f"SET FOREIGN_KEY_CHECKS=0;\n\n")
 
-
         print("Success...")
 
     cursor.close()
