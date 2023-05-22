@@ -4,7 +4,6 @@ import calendar
 import math
 import datetime
 from .dataporter import *
-from .DBdb import *
 from .decorators import *
 from .forms import *
 from .functions import * 
@@ -13,7 +12,7 @@ from .tokens import generate_token
 from datetime import datetime, timedelta
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import EmailMultiAlternatives, send_mail, BadHeaderError, EmailMessage
+from django.core.mail import EmailMultiAlternatives, BadHeaderError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -22,29 +21,12 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F, Sum, Q
-from django.db.models.functions import Greatest
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.files.storage import FileSystemStorage
 
 
-
-months = [
-    'jan',
-    'feb',
-    'mar',
-    'apr',
-    'may',
-    'jun',
-    'jul',
-    'aug',
-    'sept',
-    'oct',
-    'nov',
-    'dec'
-]
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -65,6 +47,7 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
+    dump_database()
     # !!!please ask previous developers before attempting to uncomment!!!
     # portfromcsv()
     sxz()
@@ -83,28 +66,28 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             login_rec = LoginRec()
             request.user = user.username
-            request.session[ReqParams.auth] = True
+            request.session["auth"] = True
             request.session.modified = True
             login_rec.username = user.username
             login_rec.token = gen_token()
             login_rec.last_access = timezone.now()
-            login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
+            login_rec.expiration = login_rec.last_access + timedelta(minutes=5)
             login_rec.save()
             login(request, auth)
             messages.success(request, "Logged In as " + user.username)
             return redirect('bills_list')
         else:
             messages.error(request, "Invalid Username or Password")
-    context = {
-        'ReqParams': ReqParams,
-    }
-    return render(request, 'login.html', context)
+    return render(request, 'login.html')
+
 
 
 @login_required(login_url='login')
 def bills_list(request):
     # balance()
     # get_consumers_yearly()
+    # billing_errors_to_csv()
+    # fix_billing_errors()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -584,6 +567,7 @@ def deletereading(request, id):
     con.save()
     reading.delete()
     return redirect('inputreading', con.consumer_id, date.today().year)
+
 @login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
@@ -599,6 +583,17 @@ def inputreading(request, id, year):
             self.style = style
             self.monthval = monthval
     consumer = ConsumerInfo.objects.get(consumer_id=id)
+    yt = Transactions.objects.filter(acctID=consumer.consumer_id).values_list('year', flat=True)
+    years_backward = []
+    for i in yt:
+        if i not in years_backward and i <= year:
+            years_backward.append(i)
+    years_backward.sort(reverse=True)
+    years_forward = []
+    for i in yt:
+        if i not in years_forward and i >= year:
+            years_forward.append(i)
+    years_forward.sort()
     lastreading = consumer.current_reading
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
@@ -690,23 +685,45 @@ def inputreading(request, id, year):
                     interest = xy/100
                 try:
                     billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-
-                    #try finding next billing
-                    try:
-                        mo = d + 1
-                        ye = year
-                        if d == 12:
-                            mo = 1
-                            ye += 1
-                        next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
-                        next.prevReading = i
-                        next.usage = next.meterReading - i
-                        next.save()
-                    except ObjectDoesNotExist:
-                        pass
+                    last_reading = billtran.prevReading
+                    # finding next billing
+                    mm = d+1
+                    has_next = False
+                    for y in years_forward:
+                        for x in range(mm, 13):
+                            try:
+                                next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                next.prevReading = i
+                                next.usage = next.meterReading - i
+                                next.save()
+                                has_next = True
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_next:
+                            break
+                        mm = 1
+                    
+                    # finding previous billing
+                    if has_next:
+                        mm = d-1
+                        has_prev = False
+                        for y in years_backward:
+                            for x in range(mm, 0, -1):
+                                try:
+                                    prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                    last_reading = prev.meterReading
+                                    has_prev = True
+                                    break
+                                except ObjectDoesNotExist:
+                                    pass
+                            if has_prev:
+                                break
+                            mm = 12
                     billtran.meterReading = i
                     billtran.date = datetime.today()
-                    billtran.usage = i - billtran.prevReading
+                    billtran.prevReading = last_reading
+                    billtran.usage = i - last_reading
                     usage = billtran.usage
                     rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
                     dif = billtran.bill
@@ -729,7 +746,7 @@ def inputreading(request, id, year):
                         p.processedBy = request.user
                         p.save()
                     try:
-                        paymentT = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=ye, month=d)
+                        paymentT = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=year, month=d)
                         if dif:
                             paymentT.payment = paymentT.payment + dif
                             consumer.excess = consumer.excess - dif
@@ -739,7 +756,36 @@ def inputreading(request, id, year):
                     except ObjectDoesNotExist:
                         pass
                 except ObjectDoesNotExist:
-                    lastreading = consumer.current_reading
+                    
+                    # finding next billing
+                    fm = d+1
+                    has_next = False
+                    for y in years_forward:
+                        for x in range(fm, 13):
+                            try:
+                                next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                
+                                # finding previous billing
+                                bm = d-1
+                                has_prev = False
+                                for y in years_backward:
+                                    for x in range(bm, 0, -1):
+                                        try:
+                                            prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                            last_reading = prev.meterReading
+                                            break
+                                        except ObjectDoesNotExist:
+                                            pass
+                                    if has_prev:
+                                        break
+                                    bm = 12
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_next:
+                            break
+                        fm = 1
+                    
                     bill = 0
                     billtran = Transactions()
                     billtran.acctID = consumer
@@ -2119,6 +2165,7 @@ def bulkreading(request):
         # prev = last_reading(i.consumer_id, year, month)
         consumers_list.append(new_con(i, prev, cur))
     if request.method == "POST":
+        
         con_list = []
         psearch = request.POST.get('psearch')
         isnum = psearch.isnumeric()
@@ -2167,6 +2214,17 @@ def bulkreading(request):
         pyear = int(request.POST.get('pyear'))
         for j in con_list:
             c = ConsumerInfo.objects.get(consumer_id=j.con.consumer_id)
+            yt = Transactions.objects.filter(acctID=c.consumer_id).values_list('year', flat=True)
+            years_backward = []
+            for i in yt:
+                if i not in years_backward and i <= pyear:
+                    years_backward.append(i)
+            years_backward.sort(reverse=True)
+            years_forward = []
+            for i in yt:
+                if i not in years_forward and i >= pyear:
+                    years_forward.append(i)
+            years_forward.sort()
             a = request.POST.get(f"con{c.consumer_id}", None)
             if a is not None:
                 try:
@@ -2178,8 +2236,44 @@ def bulkreading(request):
                 a = int(a)
                 try:
                     tran = Transactions.objects.get(acctID_id=c.consumer_id,month=pmonth,year=pyear,transType = "Billing")
-                    tran.prevReading = last_reading(c.consumer_id,pyear,pmonth)
+                    lastreading = tran.prevReading
+                    # finding next billing
+                    mm = pmonth+1
+                    has_next = False
+                    for y in years_forward:
+                        for x in range(mm, 13):
+                            try:
+                                next = Transactions.objects.get(acctID=c.consumer_id, transType='Billing', year=y, month=x)
+                                next.prevReading = a
+                                next.usage = next.meterReading - a
+                                next.save()
+                                has_next = True
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_next:
+                            break
+                        mm = 1
+                    
+                    # finding previous billing
+                    if has_next:
+                        mm = pmonth-1
+                        has_prev = False
+                        for y in years_backward:
+                            for x in range(mm, 0, -1):
+                                try:
+                                    prev = Transactions.objects.get(acctID=c.consumer_id, transType='Billing', year=y, month=x)
+                                    lastreading = prev.meterReading
+                                    has_prev = True
+                                    break
+                                except ObjectDoesNotExist:
+                                    pass
+                            if has_prev:
+                                break
+                            mm = 12
+
                     tran.meterReading = a
+                    tran.usage = a - lastreading
                     tran.save()
                 except ObjectDoesNotExist:
                     t = Transactions()
@@ -2225,9 +2319,9 @@ def bulkreading(request):
                         if pmonth == 1:
                             mo = 12
                             ye -= 1
-                        prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
+                        prev_bill = Transactions.objects.get(acctID=c.consumer_id, transType='Billing', year=ye, month=mo)
                         if not prev_bill.is_billpaid:
-                            consumer.penaltycounter += 1
+                            c.penaltycounter += 1
                     except ObjectDoesNotExist:
                         pass
                     if interest:
@@ -2242,43 +2336,9 @@ def bulkreading(request):
                         p.payment = 0
                         p.processedBy = request.user
                         p.save()
-                match pmonth:
-                    case 1:
-                        con_b_rec.total_due_jan += bill
-                        con_b_rec.total_usage_jan += usage
-                    case 2:
-                        con_b_rec.total_due_feb += bill
-                        con_b_rec.total_usage_feb += usage
-                    case 3:
-                        con_b_rec.total_due_mar += bill
-                        con_b_rec.total_usage_mar += usage
-                    case 4:
-                        con_b_rec.total_due_apr += bill
-                        con_b_rec.total_usage_apr += usage
-                    case 5:
-                        con_b_rec.total_due_may += bill
-                        con_b_rec.total_usage_may += usage
-                    case 6:
-                        con_b_rec.total_due_jun += bill
-                        con_b_rec.total_usage_jun += usage
-                    case 7:
-                        con_b_rec.total_due_jul += bill
-                        con_b_rec.total_usage_jul += usage
-                    case 8:
-                        con_b_rec.total_due_aug += bill
-                        con_b_rec.total_usage_aug += usage
-                    case 9:
-                        con_b_rec.total_due_sept += bill
-                        con_b_rec.total_usage_sept += usage
-                    case 10:
-                        con_b_rec.total_due_oct += bill
-                        con_b_rec.total_usage_oct += usage
-                    case 11:
-                        con_b_rec.total_due_nov += bill
-                        con_b_rec.total_usage_nov += usage
-                    case 12:
-                        con_b_rec.total_due_dec += bill
-                        con_b_rec.total_usage_dec += usage
+                con_b_rec.__dict__[f"total_due_{months[pmonth-1]}"] += bill
+                con_b_rec.__dict__[f"total_usage_{months[pmonth-1]}"] += usage
+                
                 con_b_rec.save()
                 if c.excess > 0:
                     unsettled = Transactions.objects.filter(acctID_id=c, transType="Billing", is_billpaid=False).order_by('-year', '-month')
@@ -2525,7 +2585,6 @@ def payment_history (request, id, year):
         years.append(datetime.today().year)
     if int(year) in years:
         years.remove(int(year))
-
         
     context = {
         'consumer' : consumer,
@@ -2553,6 +2612,7 @@ def consumption(request, year):
         '<=50': 0,
         '>50': 0,
     }
+    years = []
     top_10 = []
     top_10_del_amount = []
     top_10_del_month = []
@@ -2596,6 +2656,8 @@ def consumption(request, year):
     for i in del_month:
         if i.penaltycounter > 0:
             top_10_del_month.append(delinquent_month(f"{i.firstname} {i.lastname}", i.penaltycounter))
+    
+    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by
 
     # find total stopped meters
     stopped_meters = 0
@@ -2603,12 +2665,29 @@ def consumption(request, year):
         if i.stopmeterflag:
             stopped_meters += 1
     
+    condemntots = 0
+    for i in cons:
+        if i.deleteflag:
+            condemntots += 1
+ 
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    if int(year) in years:
+        years.remove(int(year))
+
     context = {
+        'condemn':condemn,
         'count_ranges':count_ranges,
         'top_10':top_10,
         'top_10_del_amount':top_10_del_amount,
         'top_10_del_month':top_10_del_month,
         'tsm':stopped_meters,
+        'condemntots':condemntots,
+        'cur_year': year,
+        'years': years,
+        'is_cc':True,
     }
     return render(request,'consumption.html', context)
 
