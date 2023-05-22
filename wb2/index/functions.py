@@ -3,12 +3,17 @@ import pandas as pd
 import csv
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
-import math
 import random
 import string
-from django.db.models import F
+import math
 from datetime import datetime
 from .dataporter import *
+import mysql.connector
+import os
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+from google.oauth2 import service_account
+#Daghan ni jazpeerrrrr
 
 def n_int(var):
     if var is None:
@@ -276,8 +281,7 @@ def bulkpayment(amount, or_num, dis_code, pb, id, month, year):
             rt.processedBy = pb.username
             rt.save()
         get_balance(id)
-        con_b_rec.__dict__[f"total_paid_{months[month]}"]+=amount
-
+        con_b_rec.__dict__[f"total_paid_{months[month-1]}"] += amount
         con_b_rec.save()
 def bulkinputreading(consumer, year, reading, pb, d):
     
@@ -383,43 +387,9 @@ def bulkinputreading(consumer, year, reading, pb, d):
                     else:
                         consumer.save()
                         break
-    match d:
-        case 1:
-            con_b_rec.total_due_jan += bill
-            con_b_rec.total_usage_jan += usage
-        case 2:
-            con_b_rec.total_due_feb += bill
-            con_b_rec.total_usage_feb += usage
-        case 3:
-            con_b_rec.total_due_mar += bill
-            con_b_rec.total_usage_mar += usage
-        case 4:
-            con_b_rec.total_due_apr += bill
-            con_b_rec.total_usage_apr += usage
-        case 5:
-            con_b_rec.total_due_may += bill
-            con_b_rec.total_usage_may += usage
-        case 6:
-            con_b_rec.total_due_jun += bill
-            con_b_rec.total_usage_jun += usage
-        case 7:
-            con_b_rec.total_due_jul += bill
-            con_b_rec.total_usage_jul += usage
-        case 8:
-            con_b_rec.total_due_aug += bill
-            con_b_rec.total_usage_aug += usage
-        case 9:
-            con_b_rec.total_due_sept += bill
-            con_b_rec.total_usage_sept += usage
-        case 10:
-            con_b_rec.total_due_oct += bill
-            con_b_rec.total_usage_oct += usage
-        case 11:
-            con_b_rec.total_due_nov += bill
-            con_b_rec.total_usage_nov += usage
-        case 12:
-            con_b_rec.total_due_dec += bill
-            con_b_rec.total_usage_dec += usage
+                    
+    con_b_rec.__dict__[f"total_due_{months[d-1]}"] += bill
+    con_b_rec.__dict__[f"total_usage_{months[d-1]}"] += usage
     
     con_b_rec.save()
     get_balance(consumer.consumer_id)
@@ -549,3 +519,122 @@ def fix_billing_errors():
 
         consumer.current_bal += consumer_bal_delta
         consumer.save()
+# def get_transaction_error():
+#     cons = ConsumerInfo.objects.all()
+#     for c in cons:
+#         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+
+def dump_database():
+
+    cnx = mysql.connector.connect(
+        user='root',
+        password='jazfer',
+        host='localhost',
+        port=3307,
+        database='wb2',
+        charset='latin1'
+    )
+
+    cursor = cnx.cursor()
+
+    cursor.execute("SHOW TABLES")
+    tables = cursor.fetchall()
+
+    timestamp = datetime.now().strftime("%Y.%m.%d-%H.%M")
+    print(timestamp)
+    directory = 'D:/Users/CTU - GINATILAN/Desktop/Dump/'
+    # directory = f'{directory}{timestamp}/'
+    # os.makedirs(directory, exist_ok=True) 
+    dump_file_path = f'{directory}{timestamp}wb2_data_dump.sql'
+    
+    if os.path.exists(dump_file_path):
+        os.remove(dump_file_path)
+
+    with open(dump_file_path, 'w', buffering=1000000) as dump_file:
+        print("Dumping...")
+
+        dump_file.write(f"DROP DATABASE IF EXISTS `wb2`;\n\n")
+        dump_file.write(f"CREATE DATABASE IF NOT EXISTS `wb2`;\n\n")
+        dump_file.write(f"USE `wb2`;\n\n")
+        dump_file.write(f"SET FOREIGN_KEY_CHECKS=0;\n\n")
+
+        for table in tables:
+            table_name = table[0]
+            dump_file.write(f"DROP TABLE IF EXISTS `{table_name}`;\n")
+            cursor.execute(f"SHOW CREATE TABLE `{table_name}`")
+            create_table_result = cursor.fetchone()
+            create_table_statement = create_table_result[1]
+            create_table_statement = create_table_statement.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
+            dump_file.write(create_table_statement + ';\n\n')
+            query = f"SELECT * FROM `{table_name}`"
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+            if len(rows) > 0:
+                batch_size = 1000
+                num_rows = len(rows)
+                num_batches = (num_rows // batch_size) + (num_rows % batch_size > 0)
+
+                for batch_index in range(num_batches):
+                    start_index = batch_index * batch_size
+                    end_index = min((batch_index + 1) * batch_size, num_rows)
+                    dump_file.write(f"INSERT INTO `{table_name}` VALUES\n")
+                    for i in range(start_index, end_index):
+                        row = rows[i]
+                        values = [f"'{str(value)}'" if value is not None else 'NULL' for value in row]
+                        row_data = f"({', '.join(values)})"
+                        if i < end_index - 1:
+                            row_data += ','
+                        dump_file.write(row_data + '\n')
+
+                    dump_file.write(';\n\n')
+            else:
+                dump_file.write(f"DELETE FROM `{table_name}`;\n\n")
+        dump_file.write(f"SET FOREIGN_KEY_CHECKS=1;\n\n")
+
+        print("Success...")
+
+    cursor.close()
+    cnx.close()
+
+
+
+
+
+def db_upload():
+
+    folder_directory = "C:/Users/CTU - GINATILAN/Dump"
+
+    credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/wb2/index/service_key.json"
+
+    if not os.path.exists(credentials_file):
+        print(f"Please save the service account credentials JSON file at the specified path.")
+        return
+
+    credentials = service_account.Credentials.from_service_account_file(credentials_file, scopes=["https://www.googleapis.com/auth/drive.file"])
+    drive_service = build("drive", "v3", credentials=credentials)
+
+    target_folder_id = "1lI17XMChx8rHlh-g2xTRwFzbcjEf_ahU"
+
+    response = drive_service.files().list(q=f"'{target_folder_id}' in parents and trashed=false", fields="files(name)").execute()
+    existing_files = response.get("files", [])
+
+
+    for filename in os.listdir(folder_directory):
+        file_path = os.path.join(folder_directory, filename)
+
+        file_exists = any(file_info["name"] == filename for file_info in existing_files)
+        if file_exists:
+            print(f"File '{filename}' already exists in the target folder. Skipping...")
+            continue
+
+        file_metadata = {"name": filename, "parents": [target_folder_id]}
+        media = MediaFileUpload(file_path)
+        drive_service.files().create(body=file_metadata, media_body=media).execute()
+
+    print("Files uploaded successfully to the specified folder on Google Drive.")
+
+
+
+
+

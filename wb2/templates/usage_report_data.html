@@ -20,7 +20,7 @@ Usage Report
 	}
 
 	.form-select {
-		width: 10%;
+		width: 100%;
 		margin-left: 30px;
 	}
 
@@ -183,6 +183,8 @@ Usage Report
 		<h1 class="" style="text-align: center;">Usage Report</h1>
 	</div>
 
+
+<!-- Year Selection -->
 	<div>
 		<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
 		<form id="yearselection" action="GET" style="margin-right: 1370px;">
@@ -336,30 +338,36 @@ Usage Report
 		}
 	</script>
 
-
-	<div class="">
-		<h3 style="text-align: center;"> Barangay Monthly Consumptions and Billings: Year {{cur_year}}
-		</h3>
-	</div>
-	<div class="row table-responsive">
-		<table id="dtBasicExample2" class="table table-bordered  table-striped table-sm ">
-			<thead class="wb_thead">
-			<tr>
-				<th scope="col" style="background-color: #006c85">Month</th>
-				<th scope="col" style="background-color: #006c85">Consumptions</th>
-				<th scope="col" style="background-color: #006c85">Bills</th>
-			</tr>
-			</thead>
-			<tbody>
-				{% for t in total_unb %}
-				<tr>
-					<td>{{t.month}}</td>
-					<td>{{t.usage}} &#13221</td>
-					<td>&#8369; {{t.bill|floatformat:2|intcomma}}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
+	
+		<div class="pt-3 row">
+			<h3 style="text-align: center;"> Barangay Monthly Consumptions and Billings: Year {{cur_year}}
+			</h3>
+		
+			<div class="row table-responsive">
+				<table id="dtBasicExample2" class="table table-bordered  table-striped table-sm ">
+					<thead class="wb_thead">
+					<tr>
+						<th scope="col" style="background-color: #006c85">Month</th>
+						<th scope="col" style="background-color: #006c85">Consumptions</th>
+						<th scope="col" style="background-color: #006c85">Bills</th>
+					</tr>
+					</thead>
+					<tbody>
+						{% for t in total_unb %}
+						{% if t.usage%}
+						<tr>
+							<td>{{t.month}}</td>
+							<td>{{t.usage}} &#13221</td>
+							<td>&#8369; {{t.bill|floatformat:2|intcomma}}</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	
 </div>
+
+
 {% endblock usage_report_data %}
