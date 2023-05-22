@@ -80,6 +80,7 @@ def signin(request):
     return render(request, 'login.html')
 
 
+
 @login_required(login_url='login')
 def bills_list(request):
     # balance()
@@ -565,7 +566,6 @@ def deletereading(request, id):
     con.save()
     reading.delete()
     return redirect('inputreading', con.consumer_id, date.today().year)
-
 @login_required(login_url='login')
 def inputreading(request, id, year):
     table = []
@@ -865,43 +865,8 @@ def inputreading(request, id, year):
                             else:
                                 consumer.save()
                                 break
-                match d:
-                    case 1:
-                        con_b_rec.total_due_jan += bill
-                        con_b_rec.total_usage_jan += usage
-                    case 2:
-                        con_b_rec.total_due_feb += bill
-                        con_b_rec.total_usage_feb += usage
-                    case 3:
-                        con_b_rec.total_due_mar += bill
-                        con_b_rec.total_usage_mar += usage
-                    case 4:
-                        con_b_rec.total_due_apr += bill
-                        con_b_rec.total_usage_apr += usage
-                    case 5:
-                        con_b_rec.total_due_may += bill
-                        con_b_rec.total_usage_may += usage
-                    case 6:
-                        con_b_rec.total_due_jun += bill
-                        con_b_rec.total_usage_jun += usage
-                    case 7:
-                        con_b_rec.total_due_jul += bill
-                        con_b_rec.total_usage_jul += usage
-                    case 8:
-                        con_b_rec.total_due_aug += bill
-                        con_b_rec.total_usage_aug += usage
-                    case 9:
-                        con_b_rec.total_due_sept += bill
-                        con_b_rec.total_usage_sept += usage
-                    case 10:
-                        con_b_rec.total_due_oct += bill
-                        con_b_rec.total_usage_oct += usage
-                    case 11:
-                        con_b_rec.total_due_nov += bill
-                        con_b_rec.total_usage_nov += usage
-                    case 12:
-                        con_b_rec.total_due_dec += bill
-                        con_b_rec.total_usage_dec += usage
+                con_b_rec.__dict__[f"total_due_{months[d]}"]+=bill
+                con_b_rec.__dict__[f"total_usage_{months[d]}"]+=usage
                 
                 bill = 0
                 usage = 0
@@ -1368,31 +1333,7 @@ def payment(request, id):
                 rt.processedBy = request.user.username
                 rt.save()
             get_balance(id)
-            match month:
-                case 1:
-                    con_b_rec.total_paid_jan += amount
-                case 2:
-                    con_b_rec.total_paid_feb += amount
-                case 3:
-                    con_b_rec.total_paid_mar += amount
-                case 4:
-                    con_b_rec.total_paid_apr += amount
-                case 5:
-                    con_b_rec.total_paid_may += amount
-                case 6:
-                    con_b_rec.total_paid_jun += amount
-                case 7:
-                    con_b_rec.total_paid_jul += amount
-                case 8:
-                    con_b_rec.total_paid_aug += amount
-                case 9:
-                    con_b_rec.total_paid_sept += amount
-                case 10:
-                    con_b_rec.total_paid_oct += amount
-                case 11:
-                    con_b_rec.total_paid_nov += amount
-                case 12:
-                    con_b_rec.total_paid_dec += amount
+            con_b_rec.__dict__[f"total_paid_{months[month]}"]+=amount
             con_b_rec.save()
             
     return redirect('ledger', id=id)
@@ -2317,9 +2258,9 @@ def bulkreading(request):
                         if pmonth == 1:
                             mo = 12
                             ye -= 1
-                        prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
+                        prev_bill = Transactions.objects.get(acctID=c.consumer_id, transType='Billing', year=ye, month=mo)
                         if not prev_bill.is_billpaid:
-                            consumer.penaltycounter += 1
+                            c.penaltycounter += 1
                     except ObjectDoesNotExist:
                         pass
                     if interest:
@@ -2334,44 +2275,9 @@ def bulkreading(request):
                         p.payment = 0
                         p.processedBy = request.user
                         p.save()
-                match pmonth:
-                    case 1:
-                        con_b_rec.total_due_jan += bill
-                        con_b_rec.total_usage_jan += usage
-                    case 2:
-                        con_b_rec.total_due_feb += bill
-                        con_b_rec.total_usage_feb += usage
-                    case 3:
-                        con_b_rec.total_due_mar += bill
-                        con_b_rec.total_usage_mar += usage
-                    case 4:
-                        con_b_rec.total_due_apr += bill
-                        con_b_rec.total_usage_apr += usage
-                    case 5:
-                        con_b_rec.total_due_may += bill
-                        con_b_rec.total_usage_may += usage
-                    case 6:
-                        con_b_rec.total_due_jun += bill
-                        con_b_rec.total_usage_jun += usage
-                    case 7:
-                        con_b_rec.total_due_jul += bill
-                        con_b_rec.total_usage_jul += usage
-                    case 8:
-                        con_b_rec.total_due_aug += bill
-                        con_b_rec.total_usage_aug += usage
-                    case 9:
-                        con_b_rec.total_due_sept += bill
-                        con_b_rec.total_usage_sept += usage
-                    case 10:
-                        con_b_rec.total_due_oct += bill
-                        con_b_rec.total_usage_oct += usage
-                    case 11:
-                        con_b_rec.total_due_nov += bill
-                        con_b_rec.total_usage_nov += usage
-                    case 12:
-                        con_b_rec.total_due_dec += bill
-                        con_b_rec.total_usage_dec += usage
-                con_b_rec.save()
+                con_b_rec.__dict__[f"total_due_{months[pmonth]}"]+=bill
+                con_b_rec.__dict__[f"total_usage_{months[pmonth]}"]+=usage
+
                 if c.excess > 0:
                     unsettled = Transactions.objects.filter(acctID_id=c, transType="Billing", is_billpaid=False).order_by('-year', '-month')
                     if unsettled:
@@ -2573,31 +2479,8 @@ def monthlypayment(request):
             except ObjectDoesNotExist:
                 pass
             get_balance(consumer.consumer_id)
-            match month:
-                case 1:
-                    con_b_rec.total_paid_jan += payment
-                case 2:
-                    con_b_rec.total_paid_feb += payment
-                case 3:
-                    con_b_rec.total_paid_mar += payment
-                case 4:
-                    con_b_rec.total_paid_apr += payment
-                case 5:
-                    con_b_rec.total_paid_may += payment
-                case 6:
-                    con_b_rec.total_paid_jun += payment
-                case 7:
-                    con_b_rec.total_paid_jul += payment
-                case 8:
-                    con_b_rec.total_paid_aug += payment
-                case 9:
-                    con_b_rec.total_paid_sept += payment
-                case 10:
-                    con_b_rec.total_paid_oct += payment
-                case 11:
-                    con_b_rec.total_paid_nov += payment
-                case 12:
-                    con_b_rec.total_paid_dec += payment
+            con_b_rec.__dict__[f"total_paid_{months[month]}"]+=payment
+            
             con_b_rec.save()
             
     return redirect('monthly_summary', id=conid, year=year)

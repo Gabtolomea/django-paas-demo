@@ -9,6 +9,7 @@ import string
 from django.db.models import F
 from datetime import datetime
 from .dataporter import *
+
 def n_int(var):
     if var is None:
         return 0
@@ -275,31 +276,8 @@ def bulkpayment(amount, or_num, dis_code, pb, id, month, year):
             rt.processedBy = pb.username
             rt.save()
         get_balance(id)
-        match month:
-            case 1:
-                con_b_rec.total_paid_jan += amount
-            case 2:
-                con_b_rec.total_paid_feb += amount
-            case 3:
-                con_b_rec.total_paid_mar += amount
-            case 4:
-                con_b_rec.total_paid_apr += amount
-            case 5:
-                con_b_rec.total_paid_may += amount
-            case 6:
-                con_b_rec.total_paid_jun += amount
-            case 7:
-                con_b_rec.total_paid_jul += amount
-            case 8:
-                con_b_rec.total_paid_aug += amount
-            case 9:
-                con_b_rec.total_paid_sept += amount
-            case 10:
-                con_b_rec.total_paid_oct += amount
-            case 11:
-                con_b_rec.total_paid_nov += amount
-            case 12:
-                con_b_rec.total_paid_dec += amount
+        con_b_rec.__dict__[f"total_paid_{months[month]}"]+=amount
+
         con_b_rec.save()
 def bulkinputreading(consumer, year, reading, pb, d):
     
