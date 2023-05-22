@@ -14,7 +14,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.http import MediaFileUpload
-
+from google.oauth2 import service_account
 
 def n_int(var):
     if var is None:
@@ -553,7 +553,6 @@ def dump_database():
 
 
 
-from google.oauth2 import service_account
 
 
 def db_upload():
