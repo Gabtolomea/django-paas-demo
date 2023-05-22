@@ -13,6 +13,7 @@ import os
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
+from django.db.models import F
 
 def n_int(var):
     if var is None:
