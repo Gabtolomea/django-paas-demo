@@ -106,7 +106,7 @@ def bills_list(request):
     # balance()
     # get_consumers_yearly()
     # dump_database()
-    db_upload()
+    # db_upload()
     template = ""
     LoginSession = request.user
     if LoginSession:

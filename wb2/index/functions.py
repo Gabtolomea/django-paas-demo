@@ -557,33 +557,27 @@ from google.oauth2 import service_account
 
 
 def db_upload():
-    # Set folder directory from PC
+
     folder_directory = "C:/Users/CTU - GINATILAN/Dump"
 
-    # Set the service account credentials file path
-    credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/wb2/index/wb2db-387500-b6279848a876.json"
+    credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/wb2/index/service_key.json"
 
-    # Check if the service account credentials file exists
     if not os.path.exists(credentials_file):
         print(f"Please save the service account credentials JSON file at the specified path.")
         return
 
-    # Authenticate and authorize Google Drive API using the service account credentials
     credentials = service_account.Credentials.from_service_account_file(credentials_file, scopes=["https://www.googleapis.com/auth/drive.file"])
     drive_service = build("drive", "v3", credentials=credentials)
 
-    # Specify the target folder ID
     target_folder_id = "1lI17XMChx8rHlh-g2xTRwFzbcjEf_ahU"
 
-    # Get the list of files in the target folder
     response = drive_service.files().list(q=f"'{target_folder_id}' in parents and trashed=false", fields="files(name)").execute()
     existing_files = response.get("files", [])
 
-    # Upload files from the folder to Google Drive
+
     for filename in os.listdir(folder_directory):
         file_path = os.path.join(folder_directory, filename)
 
-        # Check if the file already exists in the target folder
         file_exists = any(file_info["name"] == filename for file_info in existing_files)
         if file_exists:
             print(f"File '{filename}' already exists in the target folder. Skipping...")
@@ -598,62 +592,4 @@ def db_upload():
 
 
 
-
-# def db_upload():
-#     # Set folder directory from PC
-#     folder_directory = "C:/Users/CTU - GINATILAN/Dump"
-
-#     # Check if credentials file already exists
-#     credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/wb2/index/client_secret.json"
-#     if not os.path.exists(credentials_file):
-#         print(f"Please save the {credentials_file} file in the same directory as this script.")
-#         return
-
-#     # Authenticate and authorize Google Drive API
-#     scopes = ["https://www.googleapis.com/auth/drive.file"]
-#     creds = None
-
-#     # Load credentials from the file if available
-#     # if os.path.exists("token.json"):
-#     #     creds = credentials.Credentials.from_authorized_user_file("token.json", scopes)
-
-#     # If no valid credentials available, let the user log in.
-#     if not creds or not creds.valid:
-#         if creds and creds.expired and creds.refresh_token:
-#             creds.refresh(Request())
-#         else:
-#             flow = InstalledAppFlow.from_client_secrets_file(credentials_file, scopes)
-#             creds = flow.run_local_server(port=0)
-
-#         # Save the credentials for the next run
-#         with open("token.json", "w") as token:
-#             token.write(creds.to_json())
-
-#     # Create a Google Drive API service
-#     drive_service = build("drive", "v3", credentials=creds)
-
-#     # Specify the target folder ID
-#     target_folder_id = "1lI17XMChx8rHlh-g2xTRwFzbcjEf_ahU"
-
-#     # Get the list of files in the target folder
-#     response = drive_service.files().list(q=f"'{target_folder_id}' in parents and trashed=false",
-#                                         fields="files(name)").execute()
-#     existing_files = response.get("files", [])
-
-#     # Upload files from the folder to Google Drive
-#     for filename in os.listdir(folder_directory):
-#         file_path = os.path.join(folder_directory, filename)
-
-#         # Check if the file already exists in the target folder
-#         file_exists = any(file_info["name"] == filename for file_info in existing_files)
-#         if file_exists:
-#             print(f"File '{filename}' already exists in the target folder. Skipping...")
-#             continue
-
-#         file_metadata = {"name": filename, "parents": [target_folder_id]}
-#         media = MediaFileUpload(file_path)
-#         drive_service.files().create(body=file_metadata, media_body=media).execute()
-
-
-#     print("Files uploaded successfully to the specified folder on Google Drive.")
 
