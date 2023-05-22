@@ -1,5 +1,3 @@
-
-
 import calendar
 import math
 import datetime
@@ -1510,7 +1508,6 @@ def view_barangay(request, id):
     return render(request, 'view_barangay.html', context)
 
 def usage_report_data(request, year):
-    dump_database()
     template = ""
     LoginSession = request.user
     if LoginSession:

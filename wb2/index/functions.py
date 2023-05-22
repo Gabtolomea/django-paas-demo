@@ -12,6 +12,8 @@ import math
 import datetime
 from datetime import datetime
 from .dataporter import *
+import time
+
 def n_int(var):
     if var is None:
         return 0
@@ -463,13 +465,13 @@ def dump_database():
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
 
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    timestamp = datetime.now().strftime("%Y.%m.%d-%H.%M")
+    print(timestamp)
     directory = 'C:/Users/CTU/Downloads/Dump/'
-    unique_identifier = uuid.uuid4().hex 
-    directory = f'{directory}{timestamp}_{unique_identifier}/'
+    directory = f'{directory}{timestamp}/'
     os.makedirs(directory, exist_ok=True) 
-    dump_file_path = f'{directory}data_dump.sql'
-    with open(dump_file_path, 'w', buffering=100000) as dump_file:
+    dump_file_path = f'{directory}wb2_data_dump.sql'
+    with open(dump_file_path, 'w', buffering=1000000) as dump_file:
         print("Dumping...")
 
         dump_file.write(f"DROP DATABASE IF EXISTS `wb2`;\n\n")
@@ -515,6 +517,3 @@ def dump_database():
 
     cursor.close()
     cnx.close()
-
-def updladtodrive(request):
-    pass
