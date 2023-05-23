@@ -421,7 +421,11 @@ class MonthYearPair:
         self.year = year
 
 def billing_errors_to_csv():
+<<<<<<< Updated upstream
     csv_file_path = "output.csv"
+=======
+    csv_file_path = "C:/Users/watersystem/Desktop/output.csv"
+>>>>>>> Stashed changes
     header = ["Year", "Month", "Consumer ID", "Consumer Name", "Meter Reading", "Next Previous", "Next Current"]
     program_output = [header]
 
@@ -430,8 +434,13 @@ def billing_errors_to_csv():
     for consumer in ConsumerInfo.objects.all():
         transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, transType='Billing').order_by('year', 'month')
         consumer_transactions[consumer.consumer_id] = list(transactions)
+<<<<<<< Updated upstream
 
     for consumer in consumer_transactions:
+=======
+    for consumer in consumer_transactions:
+        c = ConsumerInfo.objects.get(consumer_id=consumer)
+>>>>>>> Stashed changes
         transactions = consumer_transactions[consumer]
 
         for i in range(len(transactions) - 1):
@@ -445,8 +454,13 @@ def billing_errors_to_csv():
             nt_reading = nt.meterReading
 
             if t_reading > nt_prev_reading and t_reading <= nt_reading:
+<<<<<<< Updated upstream
                 consumer_name = f"{consumer.firstname} {consumer.lastname}"
                 program_output.append([t_year, t_month, consumer.consumer_id, consumer_name, t_reading, nt_prev_reading, nt_reading])
+=======
+                consumer_name = f"{c.firstname} {c.lastname}"
+                program_output.append([t_year, t_month, consumer, consumer_name, t_reading, nt_prev_reading, nt_reading])
+>>>>>>> Stashed changes
 
     with open(csv_file_path, "w", newline="") as f:
         writer = csv.writer(f)
@@ -519,10 +533,15 @@ def fix_billing_errors():
 
         consumer.current_bal += consumer_bal_delta
         consumer.save()
+<<<<<<< Updated upstream
 # def get_transaction_error():
 #     cons = ConsumerInfo.objects.all()
 #     for c in cons:
 #         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+=======
+
+
+>>>>>>> Stashed changes
 
 def dump_database():
 
@@ -605,7 +624,12 @@ def dump_database():
 
     cursor.close()
     cnx.close()
+<<<<<<< Updated upstream
     credentials_file = "wb2/index/service_key.json"
+=======
+    
+    credentials_file = "D:/waterbilling2.0/service_key.json"
+>>>>>>> Stashed changes
 
     if not os.path.exists(credentials_file):
         print(f"Please save the service account credentials JSON file at the specified path.")
@@ -614,7 +638,11 @@ def dump_database():
     credentials = service_account.Credentials.from_service_account_file(credentials_file, scopes=["https://www.googleapis.com/auth/drive.file"])
     drive_service = build("drive", "v3", credentials=credentials)
 
+<<<<<<< Updated upstream
     target_folder_id = "1lI17XMChx8rHlh-g2xTRwFzbcjEf_ahU"
+=======
+    target_folder_id = "1eYsQ3H3IsjKFBB-ka34sGUx2vzuSuHiY"
+>>>>>>> Stashed changes
 
     response = drive_service.files().list(q=f"'{target_folder_id}' in parents and trashed=false", fields="files(name)").execute()
     existing_files = response.get("files", [])

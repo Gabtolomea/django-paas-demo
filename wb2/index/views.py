@@ -47,7 +47,10 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
+<<<<<<< Updated upstream
     dump_database()
+=======
+>>>>>>> Stashed changes
     # !!!please ask previous developers before attempting to uncomment!!!
     # portfromcsv()
     sxz()
@@ -59,6 +62,7 @@ def lp(request):
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
+        dump_database()
         u = request.POST['username']
         password = request.POST['password']
         auth = authenticate(username=u, password=password)
@@ -2600,7 +2604,11 @@ def consumption(request, year):
     cons_len = len(cons)
     latest_bills = []
     count_ranges = {
+<<<<<<< Updated upstream
         '<=5': 0,
+=======
+        '<=5' : 0,
+>>>>>>> Stashed changes
         '<=10': 0,
         '<=15': 0,
         '<=20': 0,
@@ -2665,11 +2673,22 @@ def consumption(request, year):
         if i.stopmeterflag:
             stopped_meters += 1
     
+<<<<<<< Updated upstream
     condemntots = 0
     for i in cons:
         if i.deleteflag:
             condemntots += 1
  
+=======
+    # Total of Consumers
+    consumtots = 0
+    for i in cons:
+        if i.consumer_id:
+            consumtots += 1
+ 
+
+    # Year selection
+>>>>>>> Stashed changes
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -2679,12 +2698,19 @@ def consumption(request, year):
 
     context = {
         'condemn':condemn,
+<<<<<<< Updated upstream
+=======
+        'consumtots':consumtots,
+>>>>>>> Stashed changes
         'count_ranges':count_ranges,
         'top_10':top_10,
         'top_10_del_amount':top_10_del_amount,
         'top_10_del_month':top_10_del_month,
         'tsm':stopped_meters,
+<<<<<<< Updated upstream
         'condemntots':condemntots,
+=======
+>>>>>>> Stashed changes
         'cur_year': year,
         'years': years,
         'is_cc':True,
