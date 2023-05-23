@@ -519,10 +519,12 @@ def fix_billing_errors():
 
         consumer.current_bal += consumer_bal_delta
         consumer.save()
+
 # def get_transaction_error():
 #     cons = ConsumerInfo.objects.all()
 #     for c in cons:
 #         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+
 
 def dump_database():
 
@@ -605,7 +607,8 @@ def dump_database():
 
     cursor.close()
     cnx.close()
-    credentials_file = "wb2/index/service_key.json"
+    
+    credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/service_key.json"
 
     if not os.path.exists(credentials_file):
         print(f"Please save the service account credentials JSON file at the specified path.")
@@ -614,7 +617,7 @@ def dump_database():
     credentials = service_account.Credentials.from_service_account_file(credentials_file, scopes=["https://www.googleapis.com/auth/drive.file"])
     drive_service = build("drive", "v3", credentials=credentials)
 
-    target_folder_id = "1lI17XMChx8rHlh-g2xTRwFzbcjEf_ahU"
+    target_folder_id = "1eYsQ3H3IsjKFBB-ka34sGUx2vzuSuHiY"
 
     response = drive_service.files().list(q=f"'{target_folder_id}' in parents and trashed=false", fields="files(name)").execute()
     existing_files = response.get("files", [])

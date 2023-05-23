@@ -2665,12 +2665,14 @@ def consumption(request, year):
         if i.stopmeterflag:
             stopped_meters += 1
     
+    # Total of Consumers
     consumtots = 0
     for i in cons:
         if i.consumer_id:
             consumtots += 1
  
-    print(consumtots)
+
+    # Year selection
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:

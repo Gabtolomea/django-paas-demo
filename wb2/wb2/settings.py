@@ -153,3 +153,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
 mimetypes.add_type("image/svg+xml", ".svgz", True)
+
+
+
+
+
+# Google Account Info:
+# Gmail: ginatilancebuwaterworks@gmail.com
+# Pass :yjh434ctuG@-@
+
