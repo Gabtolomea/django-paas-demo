@@ -2665,11 +2665,12 @@ def consumption(request, year):
         if i.stopmeterflag:
             stopped_meters += 1
     
-    condemntots = 0
+    consumtots = 0
     for i in cons:
-        if i.deleteflag:
-            condemntots += 1
+        if i.consumer_id:
+            consumtots += 1
  
+    print(consumtots)
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -2679,12 +2680,12 @@ def consumption(request, year):
 
     context = {
         'condemn':condemn,
+        'consumtots':consumtots,
         'count_ranges':count_ranges,
         'top_10':top_10,
         'top_10_del_amount':top_10_del_amount,
         'top_10_del_month':top_10_del_month,
         'tsm':stopped_meters,
-        'condemntots':condemntots,
         'cur_year': year,
         'years': years,
         'is_cc':True,
