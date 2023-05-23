@@ -2600,7 +2600,7 @@ def consumption(request, year):
     cons_len = len(cons)
     latest_bills = []
     count_ranges = {
-        '<=5': 0,
+        '<=5' : 0,
         '<=10': 0,
         '<=15': 0,
         '<=20': 0,
