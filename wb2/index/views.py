@@ -28,15 +28,15 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
 def porter(request):
-    porter_in()
-    porter_out(sorted_tables)
-    print("balance")
-    balance()
-    print("cummulative")
-    cons = ConsumerInfo.objects.all()
-    for i in cons:
-        i.cummulative = get_cummulative(i.consumer_id)
-        i.save()
+    # porter_in()
+    # porter_out(sorted_tables)
+    # print("balance")
+    # balance()
+    # print("cummulative")
+    # cons = ConsumerInfo.objects.all()
+    # for i in cons:
+    #     i.cummulative = get_cummulative(i.consumer_id)
+    #     i.save()
     
     # for i in sorted_tables[6]:
     #     passAscii = base64.b64decode(i[1])
@@ -2094,7 +2094,7 @@ def bulkreading(request):
         else:
             template = redirect('bills_list')
             return template
-    months = []
+    months_s = []
     years = []
     class monthname():
         def __init__(self, name, num):
@@ -2102,7 +2102,7 @@ def bulkreading(request):
             self.num = num
     for i in range(1, 13):
         m = calendar.month_name[i]
-        months.append(monthname(m, i))
+        months_s.append(monthname(m, i))
     consumers_list = []
     my = BarangayRecord.objects.all()
     for i in my:
@@ -2370,7 +2370,7 @@ def bulkreading(request):
             'year':year,
             'month':mname,
             'years':years,
-            'months':months,
+            'months':months_s,
             'monthval':month,
             'consumers_list':consumers_list,
             'ub':ub,

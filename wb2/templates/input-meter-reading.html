@@ -337,7 +337,7 @@ Input Reading
 				data: {
 					labels: labels,
 					datasets: [{
-						data: [{%for i in table %}{% if i.usage %} '{{i.usage}}', {% endif %}{% endfor %}],
+						data: [{%for i in table %}'{{i.usage}}', {% endfor %}],
 							label: "Total Usage",
 							fill: false,
 							borderColor: '#20B2AA',
