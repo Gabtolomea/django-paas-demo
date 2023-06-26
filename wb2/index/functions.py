@@ -637,7 +637,7 @@ def dump_database():
 
 def update_from_csv():
     consumer_brec_updates = []
-    with open('C:/Users/CTU/Documents/GitHub/waterbilling2.0/wb2/output.csv', 'r') as file:
+    with open('D:/waterbilling2.0/wb2/output.csv', 'r') as file:
         reader = csv.reader(file)
         trans = [[row[0], row[1], row[4]] for row in reader]
     trans = trans[1:]
