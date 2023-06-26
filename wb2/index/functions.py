@@ -1,8 +1,8 @@
 
 import pandas as pd
+import csv
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.management import call_command
 import random
 import string
 import math
@@ -11,11 +11,9 @@ from .dataporter import *
 import mysql.connector
 import os
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
-#Daghan ni jazpeerrrrr
+from django.db.models import F
 
 def n_int(var):
     if var is None:
@@ -283,31 +281,7 @@ def bulkpayment(amount, or_num, dis_code, pb, id, month, year):
             rt.processedBy = pb.username
             rt.save()
         get_balance(id)
-        match month:
-            case 1:
-                con_b_rec.total_paid_jan += amount
-            case 2:
-                con_b_rec.total_paid_feb += amount
-            case 3:
-                con_b_rec.total_paid_mar += amount
-            case 4:
-                con_b_rec.total_paid_apr += amount
-            case 5:
-                con_b_rec.total_paid_may += amount
-            case 6:
-                con_b_rec.total_paid_jun += amount
-            case 7:
-                con_b_rec.total_paid_jul += amount
-            case 8:
-                con_b_rec.total_paid_aug += amount
-            case 9:
-                con_b_rec.total_paid_sept += amount
-            case 10:
-                con_b_rec.total_paid_oct += amount
-            case 11:
-                con_b_rec.total_paid_nov += amount
-            case 12:
-                con_b_rec.total_paid_dec += amount
+        con_b_rec.__dict__[f"total_paid_{months[month-1]}"] += amount
         con_b_rec.save()
 def bulkinputreading(consumer, year, reading, pb, d):
     
@@ -413,43 +387,9 @@ def bulkinputreading(consumer, year, reading, pb, d):
                     else:
                         consumer.save()
                         break
-    match d:
-        case 1:
-            con_b_rec.total_due_jan += bill
-            con_b_rec.total_usage_jan += usage
-        case 2:
-            con_b_rec.total_due_feb += bill
-            con_b_rec.total_usage_feb += usage
-        case 3:
-            con_b_rec.total_due_mar += bill
-            con_b_rec.total_usage_mar += usage
-        case 4:
-            con_b_rec.total_due_apr += bill
-            con_b_rec.total_usage_apr += usage
-        case 5:
-            con_b_rec.total_due_may += bill
-            con_b_rec.total_usage_may += usage
-        case 6:
-            con_b_rec.total_due_jun += bill
-            con_b_rec.total_usage_jun += usage
-        case 7:
-            con_b_rec.total_due_jul += bill
-            con_b_rec.total_usage_jul += usage
-        case 8:
-            con_b_rec.total_due_aug += bill
-            con_b_rec.total_usage_aug += usage
-        case 9:
-            con_b_rec.total_due_sept += bill
-            con_b_rec.total_usage_sept += usage
-        case 10:
-            con_b_rec.total_due_oct += bill
-            con_b_rec.total_usage_oct += usage
-        case 11:
-            con_b_rec.total_due_nov += bill
-            con_b_rec.total_usage_nov += usage
-        case 12:
-            con_b_rec.total_due_dec += bill
-            con_b_rec.total_usage_dec += usage
+                    
+    con_b_rec.__dict__[f"total_due_{months[d-1]}"] += bill
+    con_b_rec.__dict__[f"total_usage_{months[d-1]}"] += usage
     
     con_b_rec.save()
     get_balance(consumer.consumer_id)
@@ -474,16 +414,119 @@ def get_consumers_yearly():
     print(f"y2022 = {y2022}")
     print(f"y2023 = {y2023}")
 
-# def get_transaction_error():
-#     cons = ConsumerInfo.objects.all()
-#     for c in cons:
-#         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+
+class MonthYearPair:
+    def __init__(self, month, year):
+        self.month = month
+        self.year = year
+
+def billing_errors_to_csv():
+    csv_file_path = "C:/Users/watersystem/Desktop/output.csv"
+    header = ["Year", "Month", "Consumer ID", "Consumer Name", "Meter Reading", "Next Previous", "Next Current"]
+    program_output = [header]
+
+    consumer_transactions = {}
+
+    for consumer in ConsumerInfo.objects.all():
+        transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, transType='Billing').order_by('year', 'month')
+        consumer_transactions[consumer.consumer_id] = list(transactions)
+    for consumer in consumer_transactions:
+        c = ConsumerInfo.objects.get(consumer_id=consumer)
+        transactions = consumer_transactions[consumer]
+
+        for i in range(len(transactions) - 1):
+            t = transactions[i]
+            nt = transactions[i + 1]
+
+            t_year = t.year
+            t_month = t.month
+            t_reading = t.meterReading
+            nt_prev_reading = nt.prevReading
+            nt_reading = nt.meterReading
+
+            if t_reading > nt_prev_reading and t_reading <= nt_reading:
+                consumer_name = f"{c.firstname} {c.lastname}"
+                program_output.append([t_year, t_month, consumer, consumer_name, t_reading, nt_prev_reading, nt_reading])
+
+    with open(csv_file_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(program_output)
+
+def fix_billing_errors():
+    consumers = ConsumerInfo.objects.all().select_related('installation_address')
+    transactions = Transactions.objects.filter(acctID__in=consumers, transType='Billing').order_by('year', 'month')
+
+    for consumer in consumers:
+        consumer_bal_delta = 0
+        consumer_brec_updates = []
+
+        consumer_transactions = transactions.filter(acctID=consumer)
+        month_years = [MonthYearPair(t.month, t.year) for t in consumer_transactions]
+
+        for i in range(len(month_years) - 1):
+            current_transaction = consumer_transactions[i]
+            next_transaction = consumer_transactions[i + 1]
+            rate = ConsumerType.objects.get(contypeid=current_transaction.contypeid)
+
+            if current_transaction.meterReading > next_transaction.prevReading and current_transaction.meterReading <= next_transaction.meterReading:
+                rate_next = ConsumerType.objects.get(contypeid=next_transaction.contypeid)
+
+                next_transaction.prevReading = current_transaction.meterReading
+                next_transaction.usage = next_transaction.meterReading - next_transaction.prevReading
+                dif = next_transaction.bill
+                if next_transaction.bill == 0:
+                    next_transaction.is_billpaid = False
+                if next_transaction.usage <= rate_next.minReading or next_transaction.usage < 0:
+                    next_transaction.bill = rate_next.minReadingCharge
+                else:
+                    next_transaction.bill = ((next_transaction.usage - rate_next.minReading) * rate_next.rateAfterMin) + rate_next.minReadingCharge
+                next_transaction.processedBy = "System Adjustment"
+                dif = next_transaction.bill - dif
+                next_transaction.save()
+
+                consumer_bal_delta += dif
+
+                if dif:
+                    try:
+                        payment_transaction = Transactions.objects.get(acctID=consumer, year=next_transaction.year, month=next_transaction.month, transType="Payment")
+                        payment_transaction.payment += dif
+                        consumer.current_bal -= dif
+                        payment_transaction.save()
+                    except Transactions.DoesNotExist:
+                        pass
+
+                brec_key = f"{consumer.installation_address_id}-{next_transaction.year}"
+                brec_field_due = f"total_due_{months[next_transaction.month - 1]}"
+                brec_field_usage = f"total_usage_{months[next_transaction.month - 1]}"
+                consumer_brec_updates.append((brec_key, brec_field_due, brec_field_usage, next_transaction.bill, next_transaction.usage))
+
+            if current_transaction.bill == 0 and current_transaction.transType == "Billing":
+                current_transaction.bill = rate.minReadingCharge
+                current_transaction.is_billpaid = False
+                consumer_bal_delta += current_transaction.bill
+
+                brec_key = f"{consumer.installation_address_id}-{current_transaction.year}"
+                brec_field_due = f"total_due_{months[current_transaction.month - 1]}"
+                brec_field_usage = f"total_usage_{months[current_transaction.month - 1]}"
+                consumer_brec_updates.append((brec_key, brec_field_due, brec_field_usage, current_transaction.bill, current_transaction.usage))
+
+        Transactions.objects.bulk_update(consumer_transactions, ['prevReading', 'usage', 'bill', 'is_billpaid', 'processedBy'])
+
+        for brec_key, brec_field_due, brec_field_usage, bill_delta, usage_delta in consumer_brec_updates:
+            BarangayRecord.objects.filter(barangayrec_id=brec_key).update(
+                **{brec_field_due: F(brec_field_due) - bill_delta, brec_field_usage: F(brec_field_usage) - usage_delta}
+            )
+
+        consumer.current_bal += consumer_bal_delta
+        consumer.save()
+
+
 
 def dump_database():
 
     cnx = mysql.connector.connect(
         user='root',
-        password='jazfer',
+        password='pass',
         host='localhost',
         port=3307,
         database='wb2',
@@ -495,15 +538,24 @@ def dump_database():
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
 
-    timestamp = datetime.now().strftime("%Y.%m.%d-%H.%M")
-    print(timestamp)
-    directory = 'D:/Users/CTU - GINATILAN/Desktop/Dump/'
-    # directory = f'{directory}{timestamp}/'
-    # os.makedirs(directory, exist_ok=True) 
-    dump_file_path = f'{directory}{timestamp}wb2_data_dump.sql'
+    timestamp = datetime.now().strftime("%Y.%m.%d")
+    desktop_path = os.path.expanduser("~/Desktop")
+
+    folder_name = "Dump"
+
+    folder_path = os.path.join(desktop_path, folder_name)
+
+    if os.path.exists(folder_path):
+        print("Folder already exists!")
+    else:
+        os.makedirs(folder_path)
+        print("Folder created successfully!")
+    dump_directory = desktop_path + f'/{folder_name}/'
+    dump_file_path = f'{dump_directory}{timestamp}wb2_data_dump.sql'
     
     if os.path.exists(dump_file_path):
-        os.remove(dump_file_path)
+        print("already dumped today, balik lang ugma")
+        return
 
     with open(dump_file_path, 'w', buffering=1000000) as dump_file:
         print("Dumping...")
@@ -551,16 +603,8 @@ def dump_database():
 
     cursor.close()
     cnx.close()
-
-
-
-
-
-def db_upload():
-
-    folder_directory = "C:/Users/CTU - GINATILAN/Dump"
-
-    credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/wb2/index/service_key.json"
+    
+    credentials_file = "D:/waterbilling2.0/service_key.json"
 
     if not os.path.exists(credentials_file):
         print(f"Please save the service account credentials JSON file at the specified path.")
@@ -569,14 +613,14 @@ def db_upload():
     credentials = service_account.Credentials.from_service_account_file(credentials_file, scopes=["https://www.googleapis.com/auth/drive.file"])
     drive_service = build("drive", "v3", credentials=credentials)
 
-    target_folder_id = "1lI17XMChx8rHlh-g2xTRwFzbcjEf_ahU"
+    target_folder_id = "1eYsQ3H3IsjKFBB-ka34sGUx2vzuSuHiY"
 
     response = drive_service.files().list(q=f"'{target_folder_id}' in parents and trashed=false", fields="files(name)").execute()
     existing_files = response.get("files", [])
 
 
-    for filename in os.listdir(folder_directory):
-        file_path = os.path.join(folder_directory, filename)
+    for filename in os.listdir(dump_directory):
+        file_path = os.path.join(dump_directory, filename)
 
         file_exists = any(file_info["name"] == filename for file_info in existing_files)
         if file_exists:
@@ -588,8 +632,3 @@ def db_upload():
         drive_service.files().create(body=file_metadata, media_body=media).execute()
 
     print("Files uploaded successfully to the specified folder on Google Drive.")
-
-
-
-
-

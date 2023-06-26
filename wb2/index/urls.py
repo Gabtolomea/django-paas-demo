@@ -1,7 +1,5 @@
 from . import views
 from django.urls import path
-from django.views.generic.base import RedirectView
-from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -30,6 +28,7 @@ urlpatterns = [
     path('consumer_list/consumercreation', views.consumercreation,name='consumercreation'),
     path('consumer_list/<id>/', views.consumerupdate, name='consumerupdate'),
     path('deleteconsumer', views.deleteconsumer,name='deleteconsumer'),
+    path('undodelete', views.undodelete,name='undodelete'),
     path('disconnectconsumer/<id>', views.disconnectconsumer,name='disconnectconsumer'),
     path('reconnectconsumer/<id>', views.reconnectconsumer,name='reconnectconsumer'),
     path('sysuser/', views.sysuser,name='sysuser'),

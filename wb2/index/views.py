@@ -4,7 +4,6 @@ import calendar
 import math
 import datetime
 from .dataporter import *
-from .DBdb import *
 from .decorators import *
 from .forms import *
 from .functions import * 
@@ -13,7 +12,7 @@ from .tokens import generate_token
 from datetime import datetime, timedelta
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import EmailMultiAlternatives, send_mail, BadHeaderError, EmailMessage
+from django.core.mail import EmailMultiAlternatives, BadHeaderError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -22,29 +21,12 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F, Sum, Q
-from django.db.models.functions import Greatest
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.files.storage import FileSystemStorage
 
 
-
-months = [
-    'jan',
-    'feb',
-    'mar',
-    'apr',
-    'may',
-    'jun',
-    'jul',
-    'aug',
-    'sept',
-    'oct',
-    'nov',
-    'dec'
-]
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -76,6 +58,7 @@ def lp(request):
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
+        dump_database()
         u = request.POST['username']
         password = request.POST['password']
         auth = authenticate(username=u, password=password)
@@ -83,30 +66,28 @@ def signin(request):
             user = SystemUsers.objects.get(username=u)
             login_rec = LoginRec()
             request.user = user.username
-            request.session[ReqParams.auth] = True
+            request.session["auth"] = True
             request.session.modified = True
             login_rec.username = user.username
             login_rec.token = gen_token()
             login_rec.last_access = timezone.now()
-            login_rec.expiration = login_rec.last_access + timedelta(minutes=ReqParams.expiration_time)
+            login_rec.expiration = login_rec.last_access + timedelta(minutes=5)
             login_rec.save()
             login(request, auth)
             messages.success(request, "Logged In as " + user.username)
             return redirect('bills_list')
         else:
             messages.error(request, "Invalid Username or Password")
-    context = {
-        'ReqParams': ReqParams,
-    }
-    return render(request, 'login.html', context)
+    return render(request, 'login.html')
+
 
 
 @login_required(login_url='login')
 def bills_list(request):
     # balance()
     # get_consumers_yearly()
-    # dump_database()
-    # db_upload()
+    # billing_errors_to_csv()
+    # fix_billing_errors()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1415,8 +1396,10 @@ def payment(request, id):
                 case 12:
                     con_b_rec.total_paid_dec += amount
             con_b_rec.save()
-            
-    return redirect('ledger', id=id)
+
+    #this will return to the current page this function is being used        
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
 def editpayment(request, id):
     if request.method =='POST':
         ted = Transactions.objects.get(transactionid=id)
@@ -1761,6 +1744,14 @@ def deleteconsumer(request):
         con.deleteflag = True
         con.save()
     return redirect(f'/consumer_list/?page={page}&search={search}&p={p}')
+
+def undodelete(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        con = ConsumerInfo.objects.get(consumer_id=id)
+        con.deleteflag = False
+        con.save()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 
@@ -2338,9 +2329,9 @@ def bulkreading(request):
                         if pmonth == 1:
                             mo = 12
                             ye -= 1
-                        prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
+                        prev_bill = Transactions.objects.get(acctID=c.consumer_id, transType='Billing', year=ye, month=mo)
                         if not prev_bill.is_billpaid:
-                            consumer.penaltycounter += 1
+                            c.penaltycounter += 1
                     except ObjectDoesNotExist:
                         pass
                     if interest:
@@ -2355,43 +2346,9 @@ def bulkreading(request):
                         p.payment = 0
                         p.processedBy = request.user
                         p.save()
-                match pmonth:
-                    case 1:
-                        con_b_rec.total_due_jan += bill
-                        con_b_rec.total_usage_jan += usage
-                    case 2:
-                        con_b_rec.total_due_feb += bill
-                        con_b_rec.total_usage_feb += usage
-                    case 3:
-                        con_b_rec.total_due_mar += bill
-                        con_b_rec.total_usage_mar += usage
-                    case 4:
-                        con_b_rec.total_due_apr += bill
-                        con_b_rec.total_usage_apr += usage
-                    case 5:
-                        con_b_rec.total_due_may += bill
-                        con_b_rec.total_usage_may += usage
-                    case 6:
-                        con_b_rec.total_due_jun += bill
-                        con_b_rec.total_usage_jun += usage
-                    case 7:
-                        con_b_rec.total_due_jul += bill
-                        con_b_rec.total_usage_jul += usage
-                    case 8:
-                        con_b_rec.total_due_aug += bill
-                        con_b_rec.total_usage_aug += usage
-                    case 9:
-                        con_b_rec.total_due_sept += bill
-                        con_b_rec.total_usage_sept += usage
-                    case 10:
-                        con_b_rec.total_due_oct += bill
-                        con_b_rec.total_usage_oct += usage
-                    case 11:
-                        con_b_rec.total_due_nov += bill
-                        con_b_rec.total_usage_nov += usage
-                    case 12:
-                        con_b_rec.total_due_dec += bill
-                        con_b_rec.total_usage_dec += usage
+                con_b_rec.__dict__[f"total_due_{months[pmonth-1]}"] += bill
+                con_b_rec.__dict__[f"total_usage_{months[pmonth-1]}"] += usage
+                
                 con_b_rec.save()
                 if c.excess > 0:
                     unsettled = Transactions.objects.filter(acctID_id=c, transType="Billing", is_billpaid=False).order_by('-year', '-month')
@@ -2653,7 +2610,7 @@ def consumption(request, year):
     cons_len = len(cons)
     latest_bills = []
     count_ranges = {
-        '<=5': 0,
+        '<=5' : 0,
         '<=10': 0,
         '<=15': 0,
         '<=20': 0,
@@ -2718,11 +2675,14 @@ def consumption(request, year):
         if i.stopmeterflag:
             stopped_meters += 1
     
-    condemntots = 0
+    # Total of Consumers
+    consumtots = 0
     for i in cons:
-        if i.deleteflag:
-            condemntots += 1
+        if i.consumer_id:
+            consumtots += 1
  
+
+    # Year selection
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
@@ -2732,12 +2692,12 @@ def consumption(request, year):
 
     context = {
         'condemn':condemn,
+        'consumtots':consumtots,
         'count_ranges':count_ranges,
         'top_10':top_10,
         'top_10_del_amount':top_10_del_amount,
         'top_10_del_month':top_10_del_month,
         'tsm':stopped_meters,
-        'condemntots':condemntots,
         'cur_year': year,
         'years': years,
         'is_cc':True,

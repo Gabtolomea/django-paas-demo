@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89','172.28.20.129',' ']
+ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89','192.168.254.129']
 
 # Application definition
 
@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wb2',
         'USER': 'root',
-        'PASSWORD': 'jazfer',
+        'PASSWORD': 'pass',
         'HOST': 'localhost',
         'PORT': '3307'
     }
@@ -153,3 +153,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
 mimetypes.add_type("image/svg+xml", ".svgz", True)
+
+
+
+
+
+# Google Account Info:
+# Gmail: ginatilancebuwaterworks@gmail.com
+# Pass :yjh434ctuG@-@
+

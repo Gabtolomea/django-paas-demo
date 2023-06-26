@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load static %}
 {% block title %}
-Consumption
+More Reports...
 {% endblock title %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
@@ -176,7 +176,7 @@ Consumption
         font-size: 14px;
         border: none;
         outline: none;
-        background-color: #555;
+        background-color: #006c85;
         color: white;
         cursor: pointer;
         padding: 10px;
@@ -209,27 +209,96 @@ Consumption
 
 <!-- Year Selection -->
 <div>
-	<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
-	<form id="yearselection" action="">
-		<select class="form-select" id="selector" onchange="change()">
-			<option value="{{cur_year}}">{{cur_year}}</option>
-			{% for i in years reversed %}
-			<option value="{{i}}">{{i}}</option>
-			{% endfor %}
-		</select>
-	</form>
+    <label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
+    <form id="yearselection" action="">
+        <select class="form-select" id="selector" onchange="change()">
+            <option value="{{cur_year}}">{{cur_year}}</option>
+            {% for i in years reversed %}
+            <option value="{{i}}">{{i}}</option>
+            {% endfor %}
+        </select>
+    </form>
 
-	<script>
-		yearselection = document.getElementById("yearselection")
-		selector = document.getElementById("selector")
-		function change() {
-			yearselection.action = selector.value
-			yearselection.submit('')
-		}
-	</script>
+    <script>
+        yearselection = document.getElementById("yearselection")
+        selector = document.getElementById("selector")
+        function change() {
+            yearselection.action = selector.value
+            yearselection.submit('')
+        }
+    </script>
 </div>
-
 <div class="row table-responsive">
+    <div class="p-3">
+        <h3 style="text-align: center;">Total Data</h3>
+        <div>
+            <table class="table table-bordered table-hover table-striped table-sm ">
+                <thead class="wb_thead">
+                    <tr>
+
+                        <th scope="col" style="background-color: #006c85">Data Name</th>
+                        <th scope="col" style="background-color: #006c85">Total Number</th>
+
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    <tr>
+                        <td>Stop Meters</td>
+                        <td> {{tsm}}</td>
+                    </tr>
+                    <tr>
+                        <td> Number of Consumers </td>
+                        <td>{{consumtots}}</td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="p-3">
+        <h3 style="text-align: center;">Condemn Accounts</h3>
+
+        <div>
+            <table class="table table-bordered table-hover table-striped table-sm ">
+                <thead class="wb_thead">
+                    <tr>
+                        <th scope="col" style="background-color: #006c85">List</th>
+                        <th scope="col" style="background-color: #006c85">Meter Number</th>
+                        <th scope="col" style="background-color: #006c85">Name</th>
+                        <th scope="col" style="background-color: #006c85">Address</th>
+                        <th scope="col" style="background-color: #006c85">Balance</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    {% for i in condemn %}
+                    <tr>
+                        <td>{{ forloop.counter }}.</td>
+                        <td>{{i.meternumber}}</td>
+                        <td>{{i.firstname}}, {{i.lastname}}</td>
+                        <td>{{i.installation_address}}</td>
+                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} 
+                        <form action="{%url 'undodelete' %}" method="post" style="float: right;" >
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{i.consumer_id}}">
+                            <button class="btn btn-success btn-sm rounded-0" type="submit"
+                                onclick="return confirm('Are you sure you want to Uncodemn {{i.lastname}}, {{i.firstname}} {{i.middlename}}?')"
+                                data-placement="top" title="Uncondemn">
+                                <img style="width:20px;" src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            </button>
+                        
+                        </form>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
     <div class="p-3">
         <h3 style="text-align: center;">Total Number of Consumers in Consumption Range</h3>
 
@@ -244,7 +313,7 @@ Consumption
                 <tbody class="tbody">
                     {% for key, value in count_ranges.items %}
                     <tr>
-                        <td>{{key}}</td>
+                        <td>{{key}} &#13221</td>
                         <td>{{value}}</td>
                     </tr>
                     {% endfor %}
@@ -253,9 +322,6 @@ Consumption
         </div>
     </div>
     <br>
-    <div class="p-3">
-        <h3 style="text-align: center;">Total Stoped Meters = {{tsm}}</h3>
-    </div>
     <br>
     <div class="p-3">
         <h3 style="text-align: center;">Top 10 Consumer Consumption</h3>
@@ -327,36 +393,6 @@ Consumption
                 </tbody>
             </table>
             <br>
-        </div>
-    </div>
-    <div class="p-3">
-        <h3 style="text-align: center;">Condemn Accounts</h3>
-
-        <div>
-            <table class="table table-bordered table-hover table-striped table-sm ">
-                <thead class="wb_thead">
-                    <tr>
-                        <th scope="col" style="background-color: #006c85">List</th>
-                        <th scope="col" style="background-color: #006c85">Meter Number</th>
-                        <th scope="col" style="background-color: #006c85">Name</th>
-                        <th scope="col" style="background-color: #006c85">Address</th>
-                        <th scope="col" style="background-color: #006c85">Balance</th>
-                    </tr>
-                </thead>
-                <tbody class="tbody">
-                    {% for i in condemn %}
-                    <tr>
-                        <td>{{ forloop.counter }}.</td>
-                        <td>{{i.meternumber}}</td>
-                        <td>{{i.firstname}}, {{i.lastname}}</td>
-                        <td>{{i.installation_address}}</td>
-                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}}</td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-
-            </table>
         </div>
     </div>
     <br><br>
