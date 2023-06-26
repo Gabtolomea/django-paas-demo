@@ -150,6 +150,7 @@ class ConsumerInfo(models.Model):
     excess = models.IntegerField(default=0)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
     first_tran = models.IntegerField(null=True)
+    excep_accnt = models.BooleanField()
 
 class Transactions(models.Model):
     TRANS_TYPE = (
