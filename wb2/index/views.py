@@ -87,6 +87,7 @@ def bills_list(request):
     # balance()
     # get_consumers_yearly()
     # billing_errors_to_csv()
+    # update_from_csv()
     # fix_billing_errors()
     template = ""
     LoginSession = request.user
