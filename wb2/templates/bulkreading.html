@@ -368,27 +368,27 @@ Bulk Reading
 				</form>
 				<script>
 					post = document.getElementById('post')
-					// function check2(){
-					// 	unchanged = document.getElementsByClassName('unchanged')
-					// 	changed = document.getElementsByClassName('changed')
-					// 	go = true
-					// 	for(i=0;i<changed.length;i++){
-					// 		if (parseInt(changed[i].value)>=parseInt(changed[i].min)){
-					// 			changed[i].classList.remove("is-invalid")
-					// 			changed[i].classList.add('border-0')
-					// 			for(j=0;j<unchanged.length;j++){
-					// 				unchanged[j].disabled = true
-					// 			}
-					// 		}else{
-					// 			changed[i].classList.remove('border-0')
-					// 			changed[i].classList.add("is-invalid")
-					// 			go = false
-					// 		}
-					// 	}
-					// 	if (go){
-					// 		post.submit()
-					// 	}
-					// }
+					function check2(){
+						unchanged = document.getElementsByClassName('unchanged')
+						changed = document.getElementsByClassName('changed')
+						go = true
+						for(i=0;i<changed.length;i++){
+							if (parseInt(changed[i].value)>=parseInt(changed[i].min)){
+								changed[i].classList.remove("is-invalid")
+								changed[i].classList.add('border-0')
+								for(j=0;j<unchanged.length;j++){
+									unchanged[j].disabled = true
+								}
+							}else{
+								changed[i].classList.remove('border-0')
+								changed[i].classList.add("is-invalid")
+								go = false
+							}
+						}
+						if (go){
+							post.submit()
+						}
+					}
 					function foc_this(id){
 						document.getElementById(id).focus()
 					}
