@@ -1397,8 +1397,10 @@ def payment(request, id):
                 case 12:
                     con_b_rec.total_paid_dec += amount
             con_b_rec.save()
-            
-    return redirect('ledger', id=id)
+
+    #this will return to the current page this function is being used        
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
 def editpayment(request, id):
     if request.method =='POST':
         ted = Transactions.objects.get(transactionid=id)
@@ -1743,6 +1745,14 @@ def deleteconsumer(request):
         con.deleteflag = True
         con.save()
     return redirect(f'/consumer_list/?page={page}&search={search}&p={p}')
+
+def undodelete(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        con = ConsumerInfo.objects.get(consumer_id=id)
+        con.deleteflag = False
+        con.save()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 

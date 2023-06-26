@@ -476,8 +476,6 @@ def fix_billing_errors():
                 next_transaction.prevReading = current_transaction.meterReading
                 next_transaction.usage = next_transaction.meterReading - next_transaction.prevReading
                 dif = next_transaction.bill
-                if next_transaction.bill == 0:
-                    next_transaction.is_billpaid = next_transaction.is_billpaid
                 if next_transaction.usage <= rate_next.minReading or next_transaction.usage < 0:
                     next_transaction.bill = rate_next.minReadingCharge
                 else:

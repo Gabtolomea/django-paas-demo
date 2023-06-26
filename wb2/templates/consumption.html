@@ -307,10 +307,21 @@ More Reports...
                         <td>{{i.meternumber}}</td>
                         <td>{{i.firstname}}, {{i.lastname}}</td>
                         <td>{{i.installation_address}}</td>
-                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}}</td>
+                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} 
+                        <form action="{%url 'undodelete' %}" method="post" style="float: right;" >
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{i.consumer_id}}">
+                            <button class="btn btn-success btn-sm rounded-0" type="submit"
+                                onclick="return confirm('Are you sure you want to Uncodemn {{i.lastname}}, {{i.firstname}} {{i.middlename}}?')"
+                                data-placement="top" title="Uncondemn">
+                                <img style="width:20px;" src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            </button>
+                        
+                        </form>
+                        </td>
+                        
                     </tr>
                     {% endfor %}
-
                 </tbody>
 
             </table>
