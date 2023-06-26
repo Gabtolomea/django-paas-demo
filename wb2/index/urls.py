@@ -55,3 +55,4 @@ urlpatterns = [
     path('settings', views.viewprof, name='settings'),
     path('stopmeters', views.stopmeters, name='stopmeters'),
 ]
+

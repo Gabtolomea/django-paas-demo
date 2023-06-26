@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+import time
 import mimetypes
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89','192.168.254.129']
 
-# Application definition
+SCHEDULER_AUTOSTART = True
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -41,8 +43,10 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'crispy_forms',
+    'django_apscheduler',
 ]
 
+# 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 TEMPLATE_CONTEXT_PROCESSORS = [
@@ -79,6 +83,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'wb2.wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
