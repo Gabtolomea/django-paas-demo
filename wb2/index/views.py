@@ -2697,3 +2697,12 @@ def consumption(request, year):
     }
     return render(request,'consumption.html', context)
 
+def exemption(request):
+    pass
+
+    context = {
+        'is_exemption':True
+    }
+    return render(request,'exemption.html', context)
+
+    

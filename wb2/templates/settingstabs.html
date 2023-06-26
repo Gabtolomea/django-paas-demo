@@ -47,6 +47,13 @@
                 Discounts
             </button>
         </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_exemption %}active{% endif %}" id="exemptions_button" data-href="{% url 'exemptions' %}" type="button" role="tab">
+                Exemptions
+            </button>
+
+        </li>
     </ul>
 </div>
 <script src="{% static 'jquery/jquery.js' %}"></script>
