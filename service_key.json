@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "water-billing-system-387600",
+  "private_key_id": "fe1f14b500986596fae16b19eec2fc2e6e7d0023",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDWHtHKTI3LElRC\n9als8vQGMconboJjtC94i5/Y2SjSCIxYA2TgRLP3rwM/o3oADVn39dDWdW/Qc9cI\nkQA4dppqHD6hiUcRfqHqqZpD4QvGwG0XmKRDOkpN9onjgw573TDfEN6yejL56Kh7\n0jbNymCGobc5m1Kag1Bq6FV1RqEO25PVngrI3P80DzsJ5tZGUnKSwCyBaqS3FkeM\nHE8BSV2gh63hQsbf/SGKn/Uodqn8/vxJl8emqit12OT4wCeAY+rktMHKDP6L3mZV\nZgxxfiTwQQ5Ugj8cecyStlOid5xJFLbyR3LMN4vY+Ai8+bYDAyseehsjjM5twJBY\nhWZ3k4DFAgMBAAECggEAIMYoN8jZTfizlmmNJ19WDroBnAuEQHKiGYIgU3bZ6Abl\nmcswiPYQffGh6P8YJiM6XtlCFVwgY03NNO3M6iztRx9PpDYjqf/cv33Ps7giBKgL\nirhoht8d5H+/bL2bXUY8EXNpmElavXnpNXALHMYaBEGDOXlsKWO+zr5akPrgnX9N\nmarjg7gJfMwsrN6RhDsM+BxLViBgOjyWDIqyD//w8E5nmlUxPC1x4HoeNI6U+Ll1\nGM2hnKScU3TQKqMy+aPBmlYKo5ODJQFL6S82wseMnOrTZIfnMSCA9LObRsaLQiLq\nkF00vc4Ohzjxaybc4DPZKIZgKmGCvU5RDefeC3Xs+QKBgQDvL5WbLkpoDfBBA86o\n0ErTLXRnwr3RR+Otl7N7fWr4/sGqOuwNzgM2/aVUG3Ng65CgC6XmNlYuXdorCDGc\ncd9EnvT4s7DNdZUFnDHupg6HcfnxGQLE+ldrBBal1K35FlPhCs4KpG6C2zqPo3Vh\nDXyvq50zxZozinpquT04Ax9MhwKBgQDlLCdevrzJa0n3Qg1DHZ0oDSbLrPAArJy0\n11CMvSK2OL/xW8zKJpQ+NRaQjDOdikQai/du8uq8fgdyYOUrB2epOv0gt0TDUhgm\n3aJusX/t9F1kzpiuUjATIPmuHgtTQIvwr0A/bwRRc9OKPykJmMRb7jAHyspXACt1\n+Hn7F3oHUwKBgFYtweyosBxvsTnrokFG0z7laMSd8QB/s3Pvbba3yJwwRh0Mn9KV\ngKkGmNQGE/s+xNw1di/NMh4AqMPKbv2cNcKmt0MIk1Jj5C6iSYdgA2of0dthlJLe\nVDL1xSc4yvotZkl2OCizeDHjxWTNk1RFpMAyyDBIKTga0+KyHXGaBmPvAoGAPeBp\nFOTNFlk4lGEqMYfqaej7I50jBBuXCCDmp8ldePPjp2hQ5/f4qL8uw4KHYS726nAG\nM9e014Xzvsc4uSB7ta6ur8mr8EzXJo9LDzYvw3DqUpCRmueoAVIy9/c2uZjA8BBx\neW8hLFjosfgRvXyY7/Vk1IXFki4Cjgyz6r7Q/O8CgYBNVRqY0scYPehG5cAWXS4H\ntrW19pQTKDXtbfYpEnx97t8D4t1JUGZAhi+9Y8FOSw861imW5lrwcMqcs1jcio+u\ngt/VannCnnB69LWhJO0exZA9EWZ9E4TMFGJitbYxWq93FZbYSDGgLYXilvc3442p\nuHQkBUksDhun3ah5QUIMqA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "wb2drive@water-billing-system-387600.iam.gserviceaccount.com",
+  "client_id": "106450646453654516214",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/wb2drive%40water-billing-system-387600.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

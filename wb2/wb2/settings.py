@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+import time
 import mimetypes
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,9 +27,9 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89',]
+ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89','192.168.254.129', '192.168.254.115']
 
-# Application definitionsdfsdfs
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,6 +81,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'wb2.wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -154,3 +156,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
 mimetypes.add_type("image/svg+xml", ".svgz", True)
+
+
+
+
+
+# Google Account Info:
+# Gmail: ginatilancebuwaterworks@gmail.com
+# Pass :yjh434ctuG@-@
+

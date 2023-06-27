@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from PIL import Image
@@ -150,6 +150,7 @@ class ConsumerInfo(models.Model):
     excess = models.IntegerField(default=0)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
     first_tran = models.IntegerField(null=True)
+
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
