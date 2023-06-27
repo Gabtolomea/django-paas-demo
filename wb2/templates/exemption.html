@@ -72,58 +72,63 @@ Penalty Types
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
+
+<script>
+    function showSearchBar() {
+        var searchBarContainer = document.getElementById('searchBarContainer');
+        var tableContainer = document.getElementById('tableContainer');
+
+        if (searchBarContainer.style.display === 'none') {
+            searchBarContainer.style.display = 'block';
+            tableContainer.style.display = 'none';
+        } else {
+            searchBarContainer.style.display = 'none';
+            tableContainer.style.display = 'block';
+        }
+    }
+</script>
 {% endblock script %}
 
 {% block exemptions %}
 {% include 'settingstabs.html'%}
 <div class="pt-3 row">
     <div class="col-5 align-middle">
-        <button type="button" class="btn button3" data-bs-toggle="modal" data-bs-target="#ksgj">
+        <button type="button" class="btn button3" onclick="showSearchBar()">
             <img style="width: 20px;" src="{% static '/images/playlist_add_FILL1_wght700_GRAD0_opsz48.svg' %}" />
             Add Exempted Accounts
         </button>
     </div>
-    <div class="">
+    <div id="tableContainer" class="table">
         <h1 style="text-align:center;"> Exempted Accounts</h1>
     </div>
 </div>
 
-<!-- Search Modal -->
-<div class="modal fade" id="ksgj" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Search Modal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+<div id="searchBarContainer" style="display: none;">
+    <form method="GET" action="{% url 'exemptions' %}">
+        {% csrf_token %}
+        <div class="row form-group w-100 m-auto">
             <div class="modal-body">
-                <form method="GET" action="{% url 'exemptions' %}">
-                    {% csrf_token %}
-                    <div class="row form-group w-100 m-auto">
-                        <div class="modal-body">
-                            <label>Search*</label>
-                            <input type="text" name="search" class="form-control" placeholder="Search by name, meter number">
-                        </div>
-                        <div class="modal-footer">
-                            <input class="btn btn-primary2" name="btnform1" type="submit" value="Search">
-                        </div>
-                    </div>
-                </form>
-
-                <div class="modal-footer">
-                    {% if cons %}
-                    <ul>
-                        {% for con in cons %}
-                        <li>{{ con.firstname }} - {{ con.lastname }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p>No results found.</p>
-                    {% endif %}
-                </div>
+                <label>Search*</label>
+                <input type="text" name="search" class="form-control" placeholder="Search by name, meter number">
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-primary2" name="btnform1" type="submit" value="Search">
             </div>
         </div>
+    </form>
+
+    <div>
+        {% if cons %}
+        <ul>
+            {% for con in cons %}
+            <li>{{ con.firstname }} - {{ con.lastname }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No results found.</p>
+        {% endif %}
     </div>
 </div>
+
 
 {% endblock exemptions %}
