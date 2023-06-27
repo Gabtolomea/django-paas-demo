@@ -421,8 +421,8 @@ class MonthYearPair:
         self.year = year
 
 def billing_errors_to_csv():
-    csv_file_path = "C:/Users/watersystem/Desktop/output.csv"
-    header = ["Year", "Month", "Consumer ID", "Consumer Name", "Meter Reading", "Next Previous", "Next Current"]
+    csv_file_path = "output.csv"
+    header = ["Transaction ID", "is_paid", "Year", "Month", "Consumer ID", "Consumer Name", "Meter Reading", "Next Previous", "Next Current"]
     program_output = [header]
 
     consumer_transactions = {}
@@ -439,6 +439,8 @@ def billing_errors_to_csv():
             nt = transactions[i + 1]
 
             t_year = t.year
+            t_id = t.transactionid
+            t_ispaid = t.is_billpaid
             t_month = t.month
             t_reading = t.meterReading
             nt_prev_reading = nt.prevReading
@@ -446,7 +448,7 @@ def billing_errors_to_csv():
 
             if t_reading > nt_prev_reading and t_reading <= nt_reading:
                 consumer_name = f"{c.firstname} {c.lastname}"
-                program_output.append([t_year, t_month, consumer, consumer_name, t_reading, nt_prev_reading, nt_reading])
+                program_output.append([t_id, t_ispaid, t_year, t_month, consumer, consumer_name, t_reading, nt_prev_reading, nt_reading])
 
     with open(csv_file_path, "w", newline="") as f:
         writer = csv.writer(f)
@@ -474,8 +476,6 @@ def fix_billing_errors():
                 next_transaction.prevReading = current_transaction.meterReading
                 next_transaction.usage = next_transaction.meterReading - next_transaction.prevReading
                 dif = next_transaction.bill
-                if next_transaction.bill == 0:
-                    next_transaction.is_billpaid = False
                 if next_transaction.usage <= rate_next.minReading or next_transaction.usage < 0:
                     next_transaction.bill = rate_next.minReadingCharge
                 else:
@@ -502,7 +502,7 @@ def fix_billing_errors():
 
             if current_transaction.bill == 0 and current_transaction.transType == "Billing":
                 current_transaction.bill = rate.minReadingCharge
-                current_transaction.is_billpaid = False
+                
                 consumer_bal_delta += current_transaction.bill
 
                 brec_key = f"{consumer.installation_address_id}-{current_transaction.year}"
@@ -513,9 +513,10 @@ def fix_billing_errors():
         Transactions.objects.bulk_update(consumer_transactions, ['prevReading', 'usage', 'bill', 'is_billpaid', 'processedBy'])
 
         for brec_key, brec_field_due, brec_field_usage, bill_delta, usage_delta in consumer_brec_updates:
-            BarangayRecord.objects.filter(barangayrec_id=brec_key).update(
-                **{brec_field_due: F(brec_field_due) - bill_delta, brec_field_usage: F(brec_field_usage) - usage_delta}
-            )
+            BarangayRecord.objects.filter(barangayrec_id=brec_key).update(**{
+                brec_field_due: F(brec_field_due) - bill_delta,
+                brec_field_usage: F(brec_field_usage) - usage_delta
+            })
 
         consumer.current_bal += consumer_bal_delta
         consumer.save()
@@ -526,7 +527,7 @@ def dump_database():
 
     cnx = mysql.connector.connect(
         user='root',
-        password='pass',
+        password='jazfer',
         host='localhost',
         port=3307,
         database='wb2',
@@ -632,3 +633,29 @@ def dump_database():
         drive_service.files().create(body=file_metadata, media_body=media).execute()
 
     print("Files uploaded successfully to the specified folder on Google Drive.")
+
+
+def update_from_csv():
+    consumer_brec_updates = []
+    with open('D:/waterbilling2.0/wb2/output.csv', 'r') as file:
+        reader = csv.reader(file)
+        trans = [[row[0], row[1], row[4]] for row in reader]
+    trans = trans[1:]
+    for t in trans:
+        transaction = Transactions.objects.get(transactionid=t[0])
+        consumer = ConsumerInfo.objects.get(consumer_id=t[2])
+        if transaction.is_billpaid == False:
+            consumer.current_bal -= transaction.bill
+            transaction.is_billpaid = bool(t[1])
+            brec_key = f"{consumer.installation_address_id}-{transaction.year}"
+            brec_field_due = f"total_due_{months[transaction.month - 1]}"
+            brec_field_usage = f"total_usage_{months[transaction.month - 1]}"
+            consumer_brec_updates.append((brec_key, brec_field_due, brec_field_usage, transaction.bill, transaction.usage))
+            for brec_key, brec_field_due, brec_field_usage, bill_delta, usage_delta in consumer_brec_updates:
+                BarangayRecord.objects.filter(barangayrec_id=brec_key).update(**{
+                    brec_field_due: F(brec_field_due) - bill_delta,
+                    brec_field_usage: F(brec_field_usage) - usage_delta
+                })
+            transaction.save()
+            consumer.save()
+

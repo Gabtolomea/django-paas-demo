@@ -87,6 +87,7 @@ def bills_list(request):
     # balance()
     # get_consumers_yearly()
     # billing_errors_to_csv()
+    # update_from_csv()
     # fix_billing_errors()
     template = ""
     LoginSession = request.user
@@ -1897,8 +1898,11 @@ def view_unsettled_bills(request, id, year):
     pcount = len(payment)
     count = len(billing)
     j = 0
-    if billing[0].date.month == 1:
-        j = 1
+    try:
+        if billing[0].date.month == 1:
+          j = 1
+    except IndexError:
+        pass
     for i in alltran:
         if i.year not in years:
             if i.year is not None:

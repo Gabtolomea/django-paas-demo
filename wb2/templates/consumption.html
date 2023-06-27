@@ -7,7 +7,6 @@ More Reports...
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
-
 <style>
     table {
         border: 1px solid #ccc;
@@ -186,6 +185,28 @@ More Reports...
     #myBtn:hover {
         background-color: #777;
     }
+    .odd {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%; 
+		-webkit-tap-highlight-color: transparent;
+
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+	}
+
+	.dataTables_empty {
+		text-align: center;
+	}
+
 </style>
 
 {% endblock style %}
@@ -273,22 +294,31 @@ More Reports...
                 </thead>
                 <tbody class="tbody">
                     {% for i in condemn %}
-                    <tr>
+                    <script src="{% static 'jquery/jquery.js' %}"></script>
+                    <script>
+                    jQuery(document).ready(function ($) {
+                            $(".clickable-row").click(function () {
+                                window.location = $(this).data("href");
+                            });
+                        });
+                    </script>
+                    <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' i.consumer_id cur_year %}">
                         <td>{{ forloop.counter }}.</td>
                         <td>{{i.meternumber}}</td>
                         <td>{{i.firstname}}, {{i.lastname}}</td>
                         <td>{{i.installation_address}}</td>
                         <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} 
+                        {% if i.current_bal == 0 %}
                         <form action="{%url 'undodelete' %}" method="post" style="float: right;" >
                             {% csrf_token %}
                             <input type="hidden" name="id" value="{{i.consumer_id}}">
                             <button class="btn btn-success btn-sm rounded-0" type="submit"
-                                onclick="return confirm('Are you sure you want to Uncodemn {{i.lastname}}, {{i.firstname}} {{i.middlename}}?')"
-                                data-placement="top" title="Uncondemn">
-                                <img style="width:20px;" src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                                data-placement="top" title="Amend Account">
+                                <img style="width:22px;" src="{% static '/svgs/amend.svg' %}" />
                             </button>
                         
                         </form>
+                        {% endif %}
                         </td>
                         
                     </tr>

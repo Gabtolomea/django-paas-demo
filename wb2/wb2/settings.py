@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+import time
 import mimetypes
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,9 +27,9 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89','192.168.254.129']
+ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89','192.168.254.129', '192.168.254.115']
 
-# Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'crispy_forms',
 ]
 
+# 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 TEMPLATE_CONTEXT_PROCESSORS = [
@@ -80,6 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wb2.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -88,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wb2',
         'USER': 'root',
-        'PASSWORD': 'pass',
+        'PASSWORD': 'jazfer',
         'HOST': 'localhost',
         'PORT': '3307'
     }
