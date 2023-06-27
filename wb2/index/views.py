@@ -2698,11 +2698,18 @@ def consumption(request, year):
     return render(request,'consumption.html', context)
 
 def exemption(request):
-    pass
-
+    search = request.GET.get('search')
+    isnum = search.isnumeric
+    if search:
+        if isnum:
+            cons = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
+        else:
+            cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search),deleteflag=0).order_by('lastname', 'firstname', 'middlename')
+    else:
+        search = None  # Set search to None when there is no search query
     context = {
-        'is_exemption':True
+        'cons': cons,
+        'is_exemption': True,
+        'search': search,  # Pass the search query to the context
     }
-    return render(request,'exemption.html', context)
-
-    
+    return render(request, 'exemption.html', context)
