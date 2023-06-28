@@ -2674,10 +2674,8 @@ def consumption(request, year):
     condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by
 
     # find total stopped meters
-    stopped_meters = 0
-    for i in cons:
-        if i.stopmeterflag:
-            stopped_meters += 1
+    stopped_meters = ConsumerInfo.objects.filter(stopmeterflag=True).order_by
+
     
     # Total of Consumers
     consumtots = 0
@@ -2694,6 +2692,9 @@ def consumption(request, year):
     if int(year) in years:
         years.remove(int(year))
 
+    # Total Yearly Consumers 
+    tyc =len(cons.filter(first_tran__lt=year))
+
     context = {
         'condemn':condemn,
         'consumtots':consumtots,
@@ -2704,6 +2705,7 @@ def consumption(request, year):
         'tsm':stopped_meters,
         'cur_year': year,
         'years': years,
+        'tyc' : tyc,
         'is_cc':True,
     }
     return render(request,'consumption.html', context)
