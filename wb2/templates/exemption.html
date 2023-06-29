@@ -72,25 +72,40 @@ Penalty Types
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
-
 <script>
     function showSearchBar() {
         var searchBarContainer = document.getElementById('searchBarContainer');
         var tableContainer = document.getElementById('tableContainer');
+        var resultsList = document.getElementById('resultsList');
 
-        if (searchBarContainer.style.display === 'none') {
-            searchBarContainer.style.display = 'block';
-            tableContainer.style.display = 'none';
-        } else {
-            searchBarContainer.style.display = 'none';
-            tableContainer.style.display = 'block';
-        }
+        searchBarContainer.style.display = 'block';
+        tableContainer.style.display = 'none';
+        resultsList.style.display = 'none'; // hide results list initially
+    }
+
+    function showResultsList() {
+        var resultsList = document.getElementById('resultsList');
+        var tableContainer = document.getElementById('tableContainer');
+        var searchBarContainer = document.getElementById('searchBarContainer');
+
+        resultsList.style.display = 'block';
+        tableContainer.style.display = 'none';
+        searchBarContainer.style.display = 'none'; // hide search bar when showing results list
+    }
+
+    function closeResultsList() {
+        var resultsList = document.getElementById('resultsList');
+        var tableContainer = document.getElementById('tableContainer');
+        var searchBarContainer = document.getElementById('searchBarContainer');
+
+        resultsList.style.display = 'none';
+        tableContainer.style.display = 'block';
+        searchBarContainer.style.display = 'none'; // hide search bar initially
     }
 </script>
-{% endblock script %}
-
+{% endblock %}
 {% block exemptions %}
-{% include 'settingstabs.html'%}
+{% include 'settingstabs.html' %}
 <div class="pt-3 row">
     <div class="col-5 align-middle">
         <button type="button" class="btn button3" onclick="showSearchBar()">
@@ -104,7 +119,7 @@ Penalty Types
 </div>
 
 <div id="searchBarContainer" style="display: none;">
-    <form method="GET" action="{% url 'exemptions' %}">
+    <form id=""method="GET" action="{% url 'exemptions' %}">
         {% csrf_token %}
         <div class="row form-group w-100 m-auto">
             <div class="modal-body">
@@ -116,19 +131,18 @@ Penalty Types
             </div>
         </div>
     </form>
-
-    <div>
-        {% if cons %}
-        <ul>
-            {% for con in cons %}
-            <li>{{ con.firstname }} - {{ con.lastname }}</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No results found.</p>
-        {% endif %}
-    </div>
 </div>
 
-
+<div id="resultsList" style="display: block;">
+    {% if cons %}
+    <ul>
+        {% for con in cons %}
+        <li>{{ con.firstname }} {{ con.lastname }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No results found.</p>
+    {% endif %}
+    <button class="btn btn-primary2" onclick="closeResultsList();">Close</button>
+</div>
 {% endblock exemptions %}

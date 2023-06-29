@@ -25,7 +25,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-
+from django.http import JsonResponse
 
 def porter(request):
     porter_in()
@@ -2701,7 +2701,7 @@ def exemption(request):
     search = request.GET.get('search')
     isnum = search.isnumeric() if search else False
     cons = []
-    
+
     if search:
         if isnum:
             cons = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
@@ -2709,7 +2709,7 @@ def exemption(request):
             cons = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search) | Q(homeaddress__icontains=search), deleteflag=0).order_by('lastname', 'firstname', 'middlename')
     else:
         search = None  # Set search to None when there is no search query
-
+    print(cons)
     context = {
         'cons': cons,
         'is_exemption': True,
