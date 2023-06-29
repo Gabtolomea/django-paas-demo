@@ -2504,7 +2504,7 @@ def monthly_summary (request, id, year):
         table.append(a)
     context = {
         'table': table,
-        'consumer': consumer,
+        'u': consumer,
         'year' : year,
         'years': years
 
@@ -2598,7 +2598,7 @@ def payment_history (request, id, year):
         years.remove(int(year))
         
     context = {
-        'consumer' : consumer,
+        'u' : consumer,
         'alltrans' : alltran,
         'years'    : years,
         'year'     : year
@@ -2668,7 +2668,7 @@ def consumption(request, year):
         if i.penaltycounter > 0:
             top_10_del_month.append(delinquent_month(f"{i.firstname} {i.lastname}", i.penaltycounter))
     
-    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by
+    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by('-current_bal')
 
     # find total stopped meters
     sm_arr = cons.filter(stopmeterflag=True)
@@ -2686,6 +2686,9 @@ def consumption(request, year):
     if int(year) in years:
         years.remove(int(year))
 
+    # Total Yearly Consumers 
+    tyc =len(cons.filter(first_tran__lt=year))
+
     context = {
         'condemn':condemn,
         'consumtots':consumtots,
@@ -2696,6 +2699,7 @@ def consumption(request, year):
         'tsm':stopped_meters,
         'cur_year': year,
         'years': years,
+        'tyc' : tyc,
         'is_cc':True,
         'sm_arr':sm_arr,
     }
