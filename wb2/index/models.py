@@ -2,9 +2,6 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from PIL import Image
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-import sys
 # Create your models here.
 
 class LoginRec(models.Model):
@@ -176,8 +173,18 @@ class Transactions(models.Model):
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
+    is_issue = models.BooleanField(default = False)
     def __str__(self) -> str:
         return str(self.transactionid)
+
+class Issues(models.Model):
+    issueid = models.AutoField(primary_key=True)
+    transactionid = models.ForeignKey(Transactions, on_delete=models.CASCADE)
+    issue = models.CharField(max_length=100)
+    date = models.DateField(auto_now_add=True)
+    comments = models.CharField(max_length=100, null=True)
+    is_seen = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, default='Pending')
 
 class revenuecode(models.Model):
     application_fee = models.FloatField(default = 0)

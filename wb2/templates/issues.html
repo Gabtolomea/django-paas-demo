@@ -1,0 +1,40 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}
+Issues
+{% endblock title %} 
+
+{% block issues %}
+<div class="p-3">
+    <h3 style="text-align: center;">Issues</h3>
+
+    <div>
+        <table class="table table-bordered table-hover table-striped table-sm ">
+            <thead class="wb_thead">
+                <tr>
+                    <th scope="col" style="background-color: #006c85">ID</th>
+                    <th scope="col" style="background-color: #006c85">Date</th>
+                    <th scope="col" style="background-color: #006c85">Transaction ID</th>
+                    <th scope="col" style="background-color: #006c85">Previous Reading</th>
+                    <th scope="col" style="background-color: #006c85">Meter Reading</th>
+                    <th scope="col" style="background-color: #006c85">Status</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                {% for i in issues %}
+                <tr>
+                    <td>{{i.issueid}}</td>
+                    <td>{{i.date}}</td>
+                    <td>{{i.transactionid_id}}</td>
+                    <td>{{i.transactionid.prevReading}}</td>
+                    <td>{{i.transactionid.meterReading}}</td>
+                    <td>{{i.status}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock issues %}

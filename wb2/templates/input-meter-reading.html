@@ -201,14 +201,17 @@ Input Reading
 									class = "input form-control border-0 rounded-0 " 
 									name = "reading-{{t.month}}" 
 									id = "{{t.transid}}" 
-									onfocus = "this.select()" 
+									onfocus = "this.select()"
+									oninput="change(this)"
 									disabled 
 									type = "number"
+									data-prev = {{t.prev}}
+									data-next = {{t.next}}
 									{% comment %}
 									{% if t.prev %} min={{t.prev}} {% endif %} 
 									{% if t.next %} max="{{t.next}}" {%endif%} {% endcomment %}
 									{% if t.reading %} value="{{t.reading}}" {% endif %}>
-								
+								<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
 							</td>
 						</form>
 						{% if consumer.stopmeterflag %}
@@ -229,6 +232,21 @@ Input Reading
 				{% endfor %}
 			</tbody>
 			<script>
+				function change(input) {
+					id = input.id
+					form = document.getElementById('form-'+id)
+					prev = parseInt(input.getAttribute('data-prev'))
+					if (input.value<prev){
+						form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
+						input.classList.remove('border-0')
+						input.classList.add('is-invalid')
+					}
+					else{
+						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
+						input.classList.remove("is-invalid")
+						input.classList.add('border-0')
+					}
+				}
 				function submit_this(id, prev) {
 					form = document.getElementById('form-'+id)
 					// input = document.getElementById(id)
@@ -252,6 +270,7 @@ Input Reading
 					}
 				}
 				function toggle(id, prev, reading) {
+					form = document.getElementById('form-'+id)
 					input = document.getElementById(id)
 					edit = document.getElementById("edit-" + id)
 					submit = document.getElementById("submit-" + id)
@@ -263,13 +282,16 @@ Input Reading
 						}
 						submit.style.display = "none"
 						edit.innerHTML = "EDIT" 
+						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
 						edit.classList.remove("btn-danger")
 						edit.classList.add("btn-primary")
 					} else {
 						if (has_del){
 							del = document.getElementById("delete-" + id)
-							
-						del.style.display = "none"
+							del.style.display = "none"
+						}
+						if (input.value < prev){
+							form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
 						}
 						submit.style.display = "inline"
 						edit.innerHTML = "CANCEL"

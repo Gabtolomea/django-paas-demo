@@ -321,7 +321,7 @@ def balance():
 
 def get_cummulative(id):
     user = ConsumerInfo.objects.get(consumer_id = id)
-    trans = Transactions.objects.filter(acctID = id, year = date.today().year)
+    trans = Transactions.objects.filter(acctID = id, year = date.today().year, is_issue = False)
     asc_trans = trans.order_by('month','transactionid')
     cum = 0
     for i in range(len(asc_trans)):
