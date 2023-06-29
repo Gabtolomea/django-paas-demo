@@ -73,14 +73,24 @@ Penalty Types
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
 <script>
+    var searchBarVisible = false;
+
     function showSearchBar() {
         var searchBarContainer = document.getElementById('searchBarContainer');
         var tableContainer = document.getElementById('tableContainer');
         var resultsList = document.getElementById('resultsList');
 
-        searchBarContainer.style.display = 'block';
-        tableContainer.style.display = 'none';
-        resultsList.style.display = 'none'; // hide results list initially
+        if (searchBarVisible) {
+            searchBarContainer.style.display = 'none';
+            tableContainer.style.display = 'block';
+            resultsList.style.display = 'none';
+            searchBarVisible = false;
+        } else {
+            searchBarContainer.style.display = 'block';
+            tableContainer.style.display = 'none';
+            resultsList.style.display = 'none'; // hide results list initially
+            searchBarVisible = true;
+        }
     }
 
     function showResultsList() {
@@ -90,7 +100,7 @@ Penalty Types
 
         resultsList.style.display = 'block';
         tableContainer.style.display = 'none';
-        searchBarContainer.style.display = 'none'; // hide search bar when showing results list
+        searchBarContainer.style.display = 'block'; // show search bar when showing results list
     }
 
     function closeResultsList() {
@@ -101,6 +111,7 @@ Penalty Types
         resultsList.style.display = 'none';
         tableContainer.style.display = 'block';
         searchBarContainer.style.display = 'none'; // hide search bar initially
+        searchBarVisible = false;
     }
 </script>
 {% endblock %}
@@ -124,25 +135,23 @@ Penalty Types
         <div class="row form-group w-100 m-auto">
             <div class="modal-body">
                 <label>Search*</label>
-                <input type="text" name="search" class="form-control" placeholder="Search by name, meter number">
+                <div class="dropdown">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name, meter number" onclick="showResultsList()">
+                    <div id="resultsList" class="dropdown-content">
+                        {% if cons %}
+                            {% for con in cons %}
+                                <a>{{ con.firstname }} {{ con.lastname }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <a>No results found.</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <input class="btn btn-primary2" name="btnform1" type="submit" value="Search">
             </div>
         </div>
     </form>
-</div>
-
-<div id="resultsList" style="display: block;">
-    {% if cons %}
-    <ul>
-        {% for con in cons %}
-        <li>{{ con.firstname }} {{ con.lastname }}</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No results found.</p>
-    {% endif %}
-    <button class="btn btn-primary2" onclick="closeResultsList();">Close</button>
 </div>
 {% endblock exemptions %}
