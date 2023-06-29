@@ -186,6 +186,7 @@ Account Ledger
 		height: 600px;
 		overflow-y: scroll;
 	}
+
 </style>
 <!-- Header Info of Consumer -->
 <div class="container-fluid p-0">
@@ -231,6 +232,7 @@ Account Ledger
 					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
+				
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="id_amount">Amount</label>
@@ -239,11 +241,13 @@ Account Ledger
 						<input type="text" name="or_num" id="id_or_num" required class="input form-control">
 						<label for="id_dis_code">Discount Code</label>
 						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
+						
 					</div>
 				</div>
+
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
+					<button type="submit" class="btn btn-primary" name="btnform1">Submit</button>
 				</div>
 			</form>
 		</div>
@@ -253,14 +257,14 @@ Account Ledger
 
 <div class="row w-100 m-auto pt-2">
 
-	<!-- Buttons -->
-	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 
-		<button type="button" onclick="toggleVisibility('ledger');" class="btn button2" style="float: left; margin-right: 5px;">Ledger</button>
-		<a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Monthly</button></a>
-		<a href="{% url 'payment_history' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left;">Payment History</button></a>
-	</div>
+		{% include 'billingbuttons.html' %}
 
+
+
+
+  
+  
 	<!-- Sort for Billing, Payment, Penalty, Discount and Get copy buttom -->
 	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 		<button type="button" onclick="getpdf()" class="btn button2" style="float:right;">

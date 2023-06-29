@@ -1,0 +1,127 @@
+
+<!-- buttons -->
+<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top: 10px;">
+    <a href="{% url 'ledger' u.consumer_id %}"><button type="button" class="btn button2" style="float: left; margin-right: 5px;">Ledger</button></a>
+    <a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Monthly</button></a>
+    <a href="{% url 'payment_history' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Payment History</button></a>
+    <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment" style="float:left;">Installment Fees</button>
+</div>
+
+<!-- Installment Fee Modal -->
+<div class="modal fade" id="installment" tabindex="-1" role="dialog" aria-labelledby="installment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Installment Fees</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="meternum" class="form-label">Month Range</label>
+						<input type="number" name="monthfee" class="form-control" required id="monthfee">
+					</div>
+
+					<br>
+
+					<div class="form-group">
+						<button class="btn button2" type="button" id="flexSwitchCheckDefault" >Number of
+							Items</button>
+					</div>
+
+					<div class="additional-fees" style="display: none;">
+						<div class="form-group">
+							<label for="item-details" class="form-label">Item Details:</label>
+						</div>
+
+					</div>
+				</div>
+
+                <script>
+                    document.getElementById('flexSwitchCheckDefault').addEventListener('click', function () {
+                        var numInputs = prompt('How many Items?');
+                        addInputs(numInputs);
+                    });
+
+                    function addInputs(numInputs) {
+                        var additionalFeesDiv = document.querySelector('.additional-fees');
+                        additionalFeesDiv.style.display = 'block';
+
+                        var formGroup = additionalFeesDiv.querySelector('.form-group');
+
+                        // Store the current input values
+                        var inputs = formGroup.querySelectorAll('input');
+                        var inputValues = Array.from(inputs).map(function (input) {
+                            return input.value;
+                        });
+
+                        formGroup.innerHTML = '';
+
+                        var label = document.createElement('label');
+                        label.innerHTML = '<br> Item Details:';
+                        formGroup.appendChild(label);
+
+                        for (var i = 0; i < numInputs; i++) {
+                            var div = document.createElement('div');
+                            div.classList.add('row');
+
+                            var textDiv = document.createElement('div');
+                            textDiv.classList.add('col-md-6');
+
+                            var inputText = document.createElement('input');
+                            inputText.type = 'text';
+                            inputText.name = 'additionalfee' + i;
+                            inputText.placeholder = 'Item Name'; // Set the placeholder text
+                            inputText.value = inputValues[i] || ''; // Set the stored value if available
+                            textDiv.appendChild(inputText);
+
+                            var numberDiv = document.createElement('div');
+                            numberDiv.classList.add('col-md-6');
+
+                            var inputNumber = document.createElement('input');
+                            inputNumber.type = 'number';
+                            inputNumber.name = 'additionalfee' + i + '_number';
+                            inputNumber.classList.add('form-control');
+                            inputNumber.value = '0.00'; // Set the default value to '0.00'
+                            inputNumber.addEventListener('input', function () {
+                                updateTotalAmount();
+                            });
+                            numberDiv.appendChild(inputNumber);
+
+                            div.appendChild(textDiv);
+                            div.appendChild(numberDiv);
+                            formGroup.appendChild(div);
+                        }
+
+                        var totalAmountLabel = document.createElement('label');
+                        totalAmountLabel.id = 'total-amount-fees';
+                        totalAmountLabel.innerText = 'Total Amount Fees: ₱' + calculateTotalAmount().toFixed(2);
+                        formGroup.appendChild(totalAmountLabel);
+                    }
+
+                    function updateTotalAmount() {
+                        var totalAmountLabel = document.getElementById('total-amount-fees');
+                        totalAmountLabel.innerText = 'Total Amount Fees: ₱' + calculateTotalAmount().toFixed(2);
+                    }
+
+                    function calculateTotalAmount() {
+                        var totalAmount = 0;
+                        var numberInputs = document.querySelectorAll('input[type="number"]');
+                        numberInputs.forEach(function (el) {
+                            totalAmount += Number(parseFloat(el.value) || 0);
+                        });
+                        return totalAmount;
+                    }
+
+                </script>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" name="btnform1">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
