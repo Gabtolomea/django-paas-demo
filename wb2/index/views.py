@@ -2507,7 +2507,7 @@ def monthly_summary (request, id, year):
         table.append(a)
     context = {
         'table': table,
-        'consumer': consumer,
+        'u': consumer,
         'year' : year,
         'years': years
 
@@ -2601,7 +2601,7 @@ def payment_history (request, id, year):
         years.remove(int(year))
         
     context = {
-        'consumer' : consumer,
+        'u' : consumer,
         'alltrans' : alltran,
         'years'    : years,
         'year'     : year
@@ -2671,10 +2671,10 @@ def consumption(request, year):
         if i.penaltycounter > 0:
             top_10_del_month.append(delinquent_month(f"{i.firstname} {i.lastname}", i.penaltycounter))
     
-    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by
+    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by('-current_bal')
 
     # find total stopped meters
-    stopped_meters = ConsumerInfo.objects.filter(stopmeterflag=True).order_by
+    stopped_meters = ConsumerInfo.objects.filter(stopmeterflag=True)
 
     
     # Total of Consumers

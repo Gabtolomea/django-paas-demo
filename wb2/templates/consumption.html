@@ -405,7 +405,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10 %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>{{i.usage}} &#13221</td>
                     </tr>
@@ -432,7 +432,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10_del_amount %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>&#8369; {{i.balance|floatformat:2|intcomma}}</td>
                     </tr>
@@ -450,6 +450,7 @@ More Reports...
             <table class="table table-bordered table-hover table-striped table-sm ">
                 <thead class="wb_thead">
                     <tr>
+                        <th scope="col" style="background-color: #006c85">Top</th>
                         <th scope="col" style="background-color: #006c85">Name</th>
                         <th scope="col" style="background-color: #006c85">Months</th>
                     </tr>
@@ -457,6 +458,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10_del_month %}
                     <tr>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>{{i.months}}</td>
                     </tr>
