@@ -48,110 +48,27 @@ Penalty Types
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
     }
-
-    .btn.btn-primary2 {
-        background-color: #006c85;
-        color: white;
-        padding: 8px 30px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-    }
-
-    .btn.btn-primary2:hover {
-        background: #006c85;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
 </style>
 {% endblock style %}
+
 {% block script %}
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
-<script>
-    var searchBarVisible = false;
-
-    function showSearchBar() {
-        var searchBarContainer = document.getElementById('searchBarContainer');
-        var tableContainer = document.getElementById('tableContainer');
-        var resultsList = document.getElementById('resultsList');
-
-        if (searchBarVisible) {
-            searchBarContainer.style.display = 'none';
-            tableContainer.style.display = 'block';
-            resultsList.style.display = 'none';
-            searchBarVisible = false;
-        } else {
-            searchBarContainer.style.display = 'block';
-            tableContainer.style.display = 'none';
-            resultsList.style.display = 'none'; // hide results list initially
-            searchBarVisible = true;
-        }
-    }
-
-    function showResultsList() {
-        var resultsList = document.getElementById('resultsList');
-        var tableContainer = document.getElementById('tableContainer');
-        var searchBarContainer = document.getElementById('searchBarContainer');
-
-        resultsList.style.display = 'block';
-        tableContainer.style.display = 'none';
-        searchBarContainer.style.display = 'block'; // show search bar when showing results list
-    }
-
-    function closeResultsList() {
-        var resultsList = document.getElementById('resultsList');
-        var tableContainer = document.getElementById('tableContainer');
-        var searchBarContainer = document.getElementById('searchBarContainer');
-
-        resultsList.style.display = 'none';
-        tableContainer.style.display = 'block';
-        searchBarContainer.style.display = 'none'; // hide search bar initially
-        searchBarVisible = false;
-    }
-</script>
 {% endblock %}
+
 {% block exemptions %}
 {% include 'settingstabs.html' %}
 <div class="pt-3 row">
     <div class="col-5 align-middle">
-        <button type="button" class="btn button3" onclick="showSearchBar()">
+        <button type="button" class="btn button3" onclick="window.location.href='{% url 'bills_list' %}'">
             <img style="width: 20px;" src="{% static '/images/playlist_add_FILL1_wght700_GRAD0_opsz48.svg' %}" />
             Add Exempted Accounts
         </button>
     </div>
     <div id="tableContainer" class="table">
-        <h1 style="text-align:center;"> Exempted Accounts</h1>
+        <h1 style="text-align:center;">Exempted Accounts</h1>
+        <!-- Exemption table code goes here -->
     </div>
-</div>
-
-<div id="searchBarContainer" style="display: none;">
-    <form id=""method="GET" action="{% url 'exemptions' %}">
-        {% csrf_token %}
-        <div class="row form-group w-100 m-auto">
-            <div class="modal-body">
-                <label>Search*</label>
-                <div class="dropdown">
-                    <input type="text" name="search" class="form-control" placeholder="Search by name, meter number" onclick="showResultsList()">
-                    <div id="resultsList" class="dropdown-content">
-                        {% if cons %}
-                            {% for con in cons %}
-                                <a>{{ con.firstname }} {{ con.lastname }}</a>
-                            {% endfor %}
-                        {% else %}
-                            <a>No results found.</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <input class="btn btn-primary2" name="btnform1" type="submit" value="Search">
-            </div>
-        </div>
-    </form>
 </div>
 {% endblock exemptions %}
