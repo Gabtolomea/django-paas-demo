@@ -36,6 +36,9 @@
         .icons:hover circle {
             fill: #004757
         }
+        a{
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -153,12 +156,13 @@
             </div>
 
             <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
-
-
-
-                <a title="Sign out" href="{% url 'signout' %}">
-                    <img style="width: 4%; margin-right: 30px;"
-                        src="{% static '/images/logout.svg' %}" />
+                {% if not user.is_teller and not user.is_admin and not user.is_reader and not user.is_manager and user.is_supervisor %}    
+                <a class="me-5" style="cursor: pointer;" title="Notifiications" href="{% url 'issues' %}">
+                    <img src="{% static '/images/notifications_FILL0_wght500_GRAD200_opsz24.svg' %}" />
+                </a>
+                {% endif %}
+                <a class="me-5" style="cursor: pointer;" title="Sign out" href="{% url 'signout' %}">
+                    <img src="{% static '/images/logout_FILL0_wght500_GRAD200_opsz24.svg' %}" />
                 </a>
             </div>
         </div>
@@ -360,6 +364,8 @@
         {% endblock payment_history %}
         {% block consumption%}
         {% endblock consumption %}
+        {% block issues %}
+        {% endblock issues  %}
 
 
     </div>

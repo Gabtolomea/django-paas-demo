@@ -249,9 +249,6 @@ More Reports...
         }
     </script>
 </div>
-
-<!-- Total List lang  -->
-<div class="row table-responsive">
     <div class="p-3">
         <h3 style="text-align: center;">Total Data</h3>
         <div>
@@ -275,6 +272,8 @@ More Reports...
             </table>
         </div>
     </div>
+<div class="p-3">
+    <h3 style="text-align: center;">Consumers with Stopped Meters</h3>
 
 <!-- Stop Meter Accounts -->
 <div class="p-3">
@@ -283,35 +282,27 @@ More Reports...
         <table class="table table-bordered table-hover table-striped table-sm ">
             <thead class="wb_thead">
                 <tr>
-                    <th scope="col" style="background-color: #006c85">List</th>
+                    <th scope="col" style="background-color: #006c85">No.</th>
+                    <th scope="col" style="background-color: #006c85">Account ID</th>
                     <th scope="col" style="background-color: #006c85">Meter Number</th>
                     <th scope="col" style="background-color: #006c85">Name</th>
-                    <th scope="col" style="background-color: #006c85">Address</th>
                     <th scope="col" style="background-color: #006c85">Balance</th>
                 </tr>
             </thead>
             <tbody class="tbody">
-                {% for i in tsm%}
+                {% for sm in sm_arr %}
                 <tr>
-                    <td>{{ forloop.counter }}.</td>
-                    <td>{{i.meternumber}}</td>
-                    <td>{{i.firstname}}, {{i.lastname}}</td>
-                    <td>{{i.installation_address}}</td>
-                    <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} </td>
-                </tr>
-          
-
+                    <td>{{forloop.counter}}</td>
+                    <td>{{sm.consumer_id}}</td>
+                    <td>{{sm.meternumber}}</td>
+                    <td>{{sm.firstname}} {{sm.lastname}}</td>
+                    <td>{{sm.current_bal|floatformat:2|intcomma}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
-
         </table>
     </div>
 </div>
-
-
-
-<!-- Condemn Accounts -->
     <div class="p-3">
         <h3 style="text-align: center;">Condemn Accounts</h3>
 
@@ -339,7 +330,7 @@ More Reports...
                     <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' i.consumer_id cur_year %}">
                         <td>{{ forloop.counter }}.</td>
                         <td>{{i.meternumber}}</td>
-                        <td>{{i.firstname}}, {{i.lastname}}</td>
+                        <td>{{i.firstname}} {{i.lastname}}</td>
                         <td>{{i.installation_address}}</td>
                         <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} 
                         {% if i.current_bal == 0 %}
