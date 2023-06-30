@@ -88,6 +88,7 @@ def bills_list(request):
     # get_consumers_yearly()
     # billing_errors_to_csv()
     # fix_billing_errors()
+    exempt_accounts()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -475,6 +476,14 @@ def resetpassword(request, uidb64, token):
         'token':token,
     }
     return render(request, 'password_reset_form.html', context)
+
+def undodelete(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        con = ConsumerInfo.objects.get(consumer_id=id)
+        con.deleteflag = False
+        con.save()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required(login_url='login')
 def meterreading(request):
@@ -2694,13 +2703,6 @@ def consumption(request, year):
     }
     return render(request,'consumption.html', context)
 
-def exemption(request):
-    pass
-    context = {
-        
-    }
-    return render(request, 'exemption.html', context)
-
 def add_issue(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     if request.method == 'POST':
@@ -2739,3 +2741,29 @@ def issues_view(request):
         'issues': issues,
     }
     return render(request,'issues.html', context)
+
+def exemptiont(request):
+    exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
+    print(exempt_cons)
+    context = {
+    'cons':exempt_cons,
+    'is_exemption':True    
+    }
+    return render(request, 'exemption.html', context)
+
+def addexemption(request, id):
+    try:
+        # Retrieve the ConsumerInfo object
+        consumer_info = ConsumerInfo.objects.get(consumer_id=id)
+    except ConsumerInfo.DoesNotExist:
+        return HttpResponse("ConsumerInfo not found.", status=404)
+
+    # Toggle the value of excep_accnt
+    consumer_info.excep_accnt = not consumer_info.excep_accnt
+
+    # Save the updated object
+    consumer_info.save()
+    get_balance(consumer_info.consumer_id)
+
+    # Redirect to a different URL or render a template as needed
+    return redirect('ledger', id=id)  # Redirect to 'exemptiont' URL after toggling

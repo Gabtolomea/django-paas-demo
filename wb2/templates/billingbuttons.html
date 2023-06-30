@@ -4,7 +4,16 @@
     <a href="{% url 'ledger' u.consumer_id %}"><button type="button" class="btn button2" style="float: left; margin-right: 5px;">Ledger</button></a>
     <a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Monthly</button></a>
     <a href="{% url 'payment_history' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Payment History</button></a>
-    <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment" style="float:left;">Installment Fees</button>
+    <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment" style="float:left; margin-right: 5px">Installment Fees</button>
+    <a href="{% url 'addexemptions' id=u.consumer_id %}">
+        <button type="button" class="btn button2" style="float:left; margin-right: 5px; {% if u.excep_accnt %}background-color: red; color: white;{% else %}background-color: #006c85; color: white;{% endif %}">
+          {% if u.excep_accnt %}
+            Unexempt
+          {% else %}
+            Exempt
+          {% endif %}
+        </button>
+      </a>
 </div>
 
 <!-- Installment Fee Modal -->

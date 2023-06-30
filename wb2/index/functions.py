@@ -14,6 +14,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
 from django.db.models import F
+from django.db import transaction
 
 def n_int(var):
     if var is None:
@@ -632,3 +633,17 @@ def dump_database():
         drive_service.files().create(body=file_metadata, media_body=media).execute()
 
     print("Files uploaded successfully to the specified folder on Google Drive.")
+
+
+
+def exempt_accounts():
+    exempt_accts = ConsumerInfo.objects.filter(excep_accnt=True)
+    print(exempt_accts)
+    
+    for con in exempt_accts:
+        bills = Transactions.objects.filter(acctID=con, transType='Billing')
+        for bill in bills:
+            bill.bill = 0
+        Transactions.objects.bulk_update(bills, ['bill'])
+    
+    # You can perform other actions related to the ConsumerInfo model here if needed
