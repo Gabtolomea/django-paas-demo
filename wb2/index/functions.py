@@ -15,6 +15,7 @@ from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
 from django.db.models import F
 from django.db import transaction
+from django.db.models import F, Q
 
 def n_int(var):
     if var is None:
@@ -394,16 +395,17 @@ def bulkinputreading(consumer, year, reading, pb, d):
     
     con_b_rec.save()
     get_balance(consumer.consumer_id)
-
+def set_first_tran():
+    cons = ConsumerInfo.objects.all()
+    for c in cons:
+        trans = Transactions.objects.filter(acctID_id=c.consumer_id).order_by('year')
+        try:
+            c.first_tran = trans[0].year
+        except IndexError:
+            c.first_tran = 0
+        c.save()
 def get_consumers_yearly():
     cons = ConsumerInfo.objects.all()
-    # for c in cons:
-    #     trans = Transactions.objects.filter(acctID_id=c.consumer_id).order_by('year')
-    #     try:
-    #         c.first_tran = trans[0].year
-    #     except IndexError:
-    #         c.first_tran = 0
-    #     c.save()
     y2019 = len(cons.filter(first_tran__lt=2020))
     y2020 = len(cons.filter(first_tran__lt=2021))
     y2021 = len(cons.filter(first_tran__lt=2022))
@@ -647,3 +649,30 @@ def exempt_accounts():
         Transactions.objects.bulk_update(bills, ['bill'])
     
     # You can perform other actions related to the ConsumerInfo model here if needed
+def adjust_excess_only():
+    search = 'excess only'
+    excess_only_accts = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(lastname__icontains=search))
+    for acct in excess_only_accts:
+        adjust_from_contype(acct.meternumber, 'C003')
+
+
+
+def adjust_from_contype(meternumber, contype):
+    consumer = ConsumerInfo.objects.get(meternumber=meternumber)
+    consumer.contypeid = ConsumerType.objects.get(contypeid=contype)
+    transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, is_billpaid=False, transType='Billing').exclude(contypeid=contype).order_by('year', 'month')
+
+    for t in transactions:
+        brec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{t.year}") 
+        old_bill = t.bill
+        t.contypeid = consumer.contypeid.contypeid
+        if t.usage <= consumer.contypeid.minReading:
+            t.bill = consumer.contypeid.minReadingCharge
+        else:
+            t.bill = ((t.usage - consumer.contypeid.minReading)*consumer.contypeid.rateAfterMin) + consumer.contypeid.minReadingCharge
+        diff = t.bill - old_bill
+        brec.__dict__[f"total_due_{months[t.month - 1]}"] -= diff
+        brec.save()
+        t.save()
+    consumer.save()
+    get_balance(consumer.consumer_id)
