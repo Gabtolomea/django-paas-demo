@@ -262,11 +262,12 @@ More Reports...
                     </tr>
                 </thead>
                 <tbody class="tbody">
+                    {% for i in tyc %}
                     <tr>
-                        <td>{{cur_year}}</td>
-                        <td>{{tyc}}</td>
+                        <td>{{i.year}}</td>
+                        <td>{{i.total}}</td>
                     </tr>
-       
+                    {% endfor %}
                 </tbody>
 
             </table>

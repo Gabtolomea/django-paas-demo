@@ -148,6 +148,7 @@ class ConsumerInfo(models.Model):
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
     first_tran = models.IntegerField(null=True)
     excep_accnt = models.BooleanField(default=False)
+    has_additionalfees = models.BooleanField(default=False)
 
 class Transactions(models.Model):
     TRANS_TYPE = (
@@ -183,7 +184,8 @@ class Issues(models.Model):
     transactionid = models.ForeignKey(Transactions, on_delete=models.CASCADE)
     issue = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
-    comments = models.CharField(max_length=100, null=True)
+    last_comment = models.CharField(max_length=100, null=True)
+    issued_by = models.ForeignKey(SystemUsers, on_delete=models.CASCADE)
     is_seen = models.BooleanField(default=False)
     status = models.CharField(max_length=20, default='Pending')
 

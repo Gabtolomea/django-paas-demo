@@ -52,6 +52,7 @@ def lp(request):
     sxz()
     enye(ConsumerInfo.objects.all())
     camelize()
+    set_first_tran()
     # capitalize()
     return render(request, "landing.html")
 
@@ -89,6 +90,7 @@ def bills_list(request):
     # billing_errors_to_csv()
     # update_from_csv()
     # fix_billing_errors()
+    # adjust_excess_only()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -682,6 +684,22 @@ def inputreading(request, id, year):
         if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
             xy = con_penalty.penalty_rate * cummulative
             interest = xy/100
+
+        if consumer.has_additionalfees:
+            fees = AdditionalFees.objects.filter(consumer_id=consumer.consumer_id, amount__gt=0)
+            for i in fees:
+                aft = Transactions()
+                aft.transType = 'Additional Fees'
+                aft.acctID = consumer.consumer_id
+                aft.year = year
+                aft.month = d
+                aft.bill = i.amount
+                aft.save()
+                
+
+
+
+        
         try:
             billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
             last_reading = billtran.prevReading
@@ -2683,11 +2701,18 @@ def consumption(request, year):
     for i in my:
         if i.year not in years:
             years.append(i.year)
+    tyc = []
+    class yeartots:
+        def __init__(self, year, total) -> None:
+            self.year = year
+            self.total = total
+    years.sort(reverse=True)
+    for y in years:
+        tyc.append(yeartots(y, len(cons.filter(first_tran__lt=y))))
     if int(year) in years:
         years.remove(int(year))
 
     # Total Yearly Consumers 
-    tyc =len(cons.filter(first_tran__lt=year))
 
     context = {
         'condemn':condemn,
@@ -2727,13 +2752,14 @@ def add_issue(request, id, year):
         tran.transType = 'Billing'
         tran.is_issue = True
         tran.processedBy = request.user
-        tran.contypeid = consumer.contypeid
+        tran.contypeid = consumer.contypeid.contypeid
         tran.save()
 
         i = Issues()
         i.date = date.today()
         i.transactionid = tran
         i.issue = "Reading Issue"
+        i.issued_by = request.user
         i.save()
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
