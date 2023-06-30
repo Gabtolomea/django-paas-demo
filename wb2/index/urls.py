@@ -45,7 +45,6 @@ urlpatterns = [
     path('unsettled_bills',views.unsettled_bills, name='unsettled_bills'),
     path('unsettled_bills/<id>/<int:year>',views.view_unsettled_bills, name='view_unsettled_bills'),
     path('payment/<id>/', views.payment, name='payment'),
-    path('additional_fee/<id>/', views.additional_fee, name='additional_fee'),
     path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
     path('settings/new_consumertype/editcontype/<id>', views.editcontype, name='editcontype'),
     path('settings/discount',views.discount, name='discount'),
@@ -56,7 +55,5 @@ urlpatterns = [
     path('settings/userprof', views.userprof, name='userprof'),
     path('settings', views.viewprof, name='settings'),
     path('stopmeters', views.stopmeters, name='stopmeters'),
-    path('add_issue/<id>/<int:year>', views.add_issue, name='add_issue'),
-    path('issues', views.issues_view, name='issues'),
 ]
 
