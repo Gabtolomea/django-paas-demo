@@ -89,7 +89,6 @@ def bills_list(request):
     # get_consumers_yearly()
     # billing_errors_to_csv()
     # fix_billing_errors()
-    exempt_accounts()
     # adjust_excess_only()
     template = ""
     LoginSession = request.user
@@ -2778,7 +2777,7 @@ def exemptiont(request):
     return render(request, 'exemption.html', context)
 
 def addexemption(request, id):
-    try:
+    try:    
         # Retrieve the ConsumerInfo object
         consumer_info = ConsumerInfo.objects.get(consumer_id=id)
     except ConsumerInfo.DoesNotExist:
@@ -2789,6 +2788,7 @@ def addexemption(request, id):
 
     # Save the updated object
     consumer_info.save()
+    exempt_accounts()
     get_balance(consumer_info.consumer_id)
 
     # Redirect to a different URL or render a template as needed
