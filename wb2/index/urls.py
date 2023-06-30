@@ -55,4 +55,7 @@ urlpatterns = [
     path('settings/userprof', views.userprof, name='userprof'),
     path('settings', views.viewprof, name='settings'),
     path('stopmeters', views.stopmeters, name='stopmeters'),
+    path('add_issue/<id>/<int:year>', views.add_issue, name='add_issue'),
+    path('issues', views.issues_view, name='issues'),
 ]
+

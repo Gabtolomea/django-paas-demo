@@ -249,7 +249,6 @@ More Reports...
         }
     </script>
 </div>
-<div class="row table-responsive">
     <div class="p-3">
         <h3 style="text-align: center;">Total Data</h3>
         <div>
@@ -257,27 +256,53 @@ More Reports...
                 <thead class="wb_thead">
                     <tr>
 
-                        <th scope="col" style="background-color: #006c85">Data Name</th>
-                        <th scope="col" style="background-color: #006c85">Total Number</th>
+                        <th scope="col" style="background-color: #006c85">Year</th>
+                        <th scope="col" style="background-color: #006c85">Total Consumer</th>
 
                     </tr>
                 </thead>
                 <tbody class="tbody">
                     <tr>
-                        <td>Stop Meters</td>
-                        <td> {{tsm}}</td>
+                        <td>{{cur_year}}</td>
+                        <td>{{tyc}}</td>
                     </tr>
-                    <tr>
-                        <td> Number of Consumers </td>
-                        <td>{{consumtots}}</td>
-
-                    </tr>
+       
                 </tbody>
 
             </table>
         </div>
     </div>
+<div class="p-3">
+    <h3 style="text-align: center;">Consumers with Stopped Meters</h3>
 
+<!-- Stop Meter Accounts -->
+<div class="p-3">
+    <h3 style="text-align: center;">Stop Meter Accounts</h3>
+    <div>
+        <table class="table table-bordered table-hover table-striped table-sm ">
+            <thead class="wb_thead">
+                <tr>
+                    <th scope="col" style="background-color: #006c85">No.</th>
+                    <th scope="col" style="background-color: #006c85">Account ID</th>
+                    <th scope="col" style="background-color: #006c85">Meter Number</th>
+                    <th scope="col" style="background-color: #006c85">Name</th>
+                    <th scope="col" style="background-color: #006c85">Balance</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                {% for sm in sm_arr %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{sm.consumer_id}}</td>
+                    <td>{{sm.meternumber}}</td>
+                    <td>{{sm.firstname}} {{sm.lastname}}</td>
+                    <td>{{sm.current_bal|floatformat:2|intcomma}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
     <div class="p-3">
         <h3 style="text-align: center;">Condemn Accounts</h3>
 
@@ -305,9 +330,22 @@ More Reports...
                     <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' i.consumer_id cur_year %}">
                         <td>{{ forloop.counter }}.</td>
                         <td>{{i.meternumber}}</td>
-                        <td>{{i.firstname}}, {{i.lastname}}</td>
+                        <td>{{i.firstname}} {{i.lastname}}</td>
                         <td>{{i.installation_address}}</td>
-                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}}</td>
+                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} 
+                        {% if i.current_bal == 0 %}
+                        <form action="{%url 'undodelete' %}" method="post" style="float: right;" >
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{i.consumer_id}}">
+                            <button class="btn btn-success btn-sm rounded-0" type="submit"
+                                data-placement="top" title="Amend Account">
+                                <img style="width:22px;" src="{% static '/svgs/amend.svg' %}" />
+                            </button>
+                        
+                        </form>
+                        {% endif %}
+                        </td>
+                        
                     </tr>
                     {% endfor %}
 
@@ -317,6 +355,7 @@ More Reports...
         </div>
     </div>
 
+    <!-- Total Number of Consumers in Consumption Range -->
     <div class="p-3">
         <h3 style="text-align: center;">Total Number of Consumers in Consumption Range</h3>
 
@@ -341,6 +380,8 @@ More Reports...
     </div>
     <br>
     <br>
+
+    <!-- Top 10 Consumer Consumption -->
     <div class="p-3">
         <h3 style="text-align: center;">Top 10 Consumer Consumption</h3>
 
@@ -356,7 +397,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10 %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>{{i.usage}} &#13221</td>
                     </tr>
@@ -366,6 +407,8 @@ More Reports...
         </div>
     </div>
     <br>
+
+    <!-- Top 10 Delinquent Amount -->
     <div class="p-3">
         <h3 style="text-align: center;">Top 10 Delinquent Amount</h3>
 
@@ -381,7 +424,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10_del_amount %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>&#8369; {{i.balance|floatformat:2|intcomma}}</td>
                     </tr>
@@ -390,6 +433,8 @@ More Reports...
             </table>
         </div>
     </div>
+
+    <!-- Top 10 Delinquent Months -->
     <div class="p-3">
         <h3 style="text-align: center;">Top 10 Delinquent Months</h3>
 
@@ -397,6 +442,7 @@ More Reports...
             <table class="table table-bordered table-hover table-striped table-sm ">
                 <thead class="wb_thead">
                     <tr>
+                        <th scope="col" style="background-color: #006c85">Top</th>
                         <th scope="col" style="background-color: #006c85">Name</th>
                         <th scope="col" style="background-color: #006c85">Months</th>
                     </tr>
@@ -404,6 +450,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10_del_month %}
                     <tr>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>{{i.months}}</td>
                     </tr>
