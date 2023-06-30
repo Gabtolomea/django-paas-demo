@@ -147,7 +147,7 @@ class ConsumerInfo(models.Model):
     excess = models.IntegerField(default=0)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
     first_tran = models.IntegerField(null=True)
-    # excep_accnt = models.BooleanField()
+    excep_accnt = models.BooleanField(default=False)
 
 class Transactions(models.Model):
     TRANS_TYPE = (
@@ -174,7 +174,7 @@ class Transactions(models.Model):
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
-    is_issue = models.BooleanField(default = False)
+    is_issue = models.BooleanField(default=False)
     def __str__(self) -> str:
         return str(self.transactionid)
 
@@ -210,3 +210,18 @@ class revenuecode(models.Model):
     fix_amount_penalty = models.FloatField(default = 0)
     percentage_penalty = models.FloatField(default = 0)
 
+class Messages(models.Model):
+    message_id = models.AutoField(primary_key=True)
+    issue_id = models.ForeignKey(Issues, on_delete=models.CASCADE)
+    from_user = models.ForeignKey(SystemUsers, on_delete=models.CASCADE, related_name='from_user')
+    to_user = models.ForeignKey(SystemUsers, on_delete=models.CASCADE, related_name='to_user')
+    message = models.CharField(max_length=100)
+    date = models.DateField(auto_now_add=True)
+
+class AdditionalFees(models.Model):
+    feeid = models.AutoField(primary_key=True)
+    consumer_id = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
+    fee_name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    months = models.IntegerField()
+    date_added = models.DateField(auto_now_add=True)

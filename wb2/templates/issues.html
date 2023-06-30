@@ -6,34 +6,42 @@ Issues
 {% endblock title %} 
 
 {% block issues %}
+<style>
+    .rounded-top {
+        border-top-left-radius: 0.80rem !important;
+        border-top-right-radius: 0.80rem !important;
+    }
+    .rounded-bottom {
+        border-bottom-left-radius: 0.80rem !important;
+        border-bottom-right-radius: 0.80rem !important;
+    }
+
+    .table-hover>tbody>tr:hover {
+        --bs-table-accent-bg:var(--bs-table-bg)!important;
+        background-color: initial !important;
+        box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+        z-index: 2 !important;
+    }
+  </style>
 <div class="p-3">
     <h3 style="text-align: center;">Issues</h3>
 
     <div>
-        <table class="table table-bordered table-hover table-striped table-sm ">
-            <thead class="wb_thead">
-                <tr>
-                    <th scope="col" style="background-color: #006c85">ID</th>
-                    <th scope="col" style="background-color: #006c85">Date</th>
-                    <th scope="col" style="background-color: #006c85">Transaction ID</th>
-                    <th scope="col" style="background-color: #006c85">Previous Reading</th>
-                    <th scope="col" style="background-color: #006c85">Meter Reading</th>
-                    <th scope="col" style="background-color: #006c85">Status</th>
-                </tr>
-            </thead>
-            <tbody class="tbody">
+        <div class="rounded-top bg-light p-3"></div>
+        <table class="table table-hover table-sm rounded-top mb-0 " style="user-select: none; cursor: pointer;">
+            <thead></thead>
+            <tbody class="tbody ">
                 {% for i in issues %}
-                <tr>
-                    <td>{{i.issueid}}</td>
-                    <td>{{i.date}}</td>
-                    <td>{{i.transactionid_id}}</td>
-                    <td>{{i.transactionid.prevReading}}</td>
-                    <td>{{i.transactionid.meterReading}}</td>
-                    <td>{{i.status}}</td>
+                <tr class=" {% if not i.is_seen %}table-light {%endif%}" {% if not i.is_seen %} style="font-weight: 600;"{% else %} style="color: #202124;" {% endif %}>
+                    <td class="ps-3">{{i.status}}</td>
+                    <td><span style="font-weight: 300;">From </span>{{i.transactionid.prevReading}} <span style="font-weight: 300;"> to </span>{{i.transactionid.meterReading}}</td>
+                    <td style="font-weight: 300;">{{i.comments}}</td>
+                    <td class="text-end pe-3">{{i.date}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <div class="rounded-bottom bg-light p-3 z-n1"></div>
     </div>
 </div>
 
