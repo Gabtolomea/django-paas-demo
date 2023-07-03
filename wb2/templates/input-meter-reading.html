@@ -262,12 +262,30 @@ Input Reading
 				{% endfor %}
 			</tbody>
 			<script>
+				contextMenuTargets.forEach(function(target) {
+					target.addEventListener('contextmenu', function(e) {
+						// Remove previous highlight
+						table.classList.remove('table-hover')
+						if (highlightedRow) {
+							highlightedRow.classList.remove('highlight');
+						}
+						
+						highlightedRow = target;
+						highlightedRow.classList.add('highlight');
+						e.preventDefault();
+						const link = target.dataset.link;
+						customLink.innerHTML = `<a class="text-danger fw-bold" href="${link}">Report as Issue</a>`;
+						contextMenu.style.display = 'block';
+						contextMenu.style.left = e.pageX + 'px';
+						contextMenu.style.top = e.pageY + 'px';
+					});
+				});
 				function change(input) {
 					id = input.id
 					form = document.getElementById('form-'+id)
 					prev = parseInt(input.getAttribute('data-prev'))
 					if (input.value<prev){
-						form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
+						form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year %}"
 						input.classList.remove('border-0')
 						input.classList.add('is-invalid')
 					}
