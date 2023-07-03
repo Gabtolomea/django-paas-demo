@@ -290,6 +290,7 @@ def ledger(request, id):
     cur = 0
     pen = 0
     bill = 0
+    monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
     # get_balance(id)
     class ledgerclass():
         def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):
@@ -382,7 +383,7 @@ def ledger(request, id):
             bal = math.ceil(bal*100)/100
             ttype = asc_trans[i].transType
             if asc_trans[i].transType != 'Received Amount':
-                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style, dcode, ttype, m, y, ispaid)
+                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style, dcode, ttype, monthnames[m-1], y, ispaid)
                 table.append(new_row)
         
         # if bal > 0:

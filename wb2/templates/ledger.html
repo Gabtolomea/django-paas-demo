@@ -212,11 +212,11 @@ Account Ledger
 <!-- Header Info of Consumer -->
 <div class="container-fluid p-0">
 	
-    <div id="contextMenu" class="context-menu">
-        <div class="context-menu-item" style="text-decoration: none;" id="customLink"></div>
+    <div id="contextMenu" class="context-menu" style="text-decoration: none;">
+        <div class="context-menu-item" id="customLink"></div>
     </div>
 	<div class="table-responsive">
-		<table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+		<table id="dtBasicExample1" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr class="header">
 					<th scope="col" style="min-width:25px">Account ID</th>
@@ -452,10 +452,15 @@ Account Ledger
 						</thead>
 						<tbody class="wb_tbody" >
 							{% for t in table reversed %}
-							<tr class="context-menu-target {{t.style}}" data-link="{{t.transid}}">
+							<tr class="context-menu-target {{t.style}}" data-link="form-{{t.transid}}">
+								<form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
+									<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
+								</form>
 								<td>{{t.transid}}</td>
 								<td>{{t.date}}</td>
-								<td>{{t.month}}-{{t.year}}</td>
+								<td>{{t.month | slice:":3"}}-{{t.year}}</td>
 								<td>{{t.prev}}</td>
 								<td>{{t.reading}}</td>
 								<td>{{t.usage}}</td>
@@ -476,8 +481,11 @@ Account Ledger
 </div>	
 
 
-<!-- Script for PDF Get Copy -->
+<!-- Script for PDF Get Copy  and many more... -->
 <script type="text/javascript">
+	function submitForm(id) {
+		document.getElementById(id).submit();
+	}
 	const table = document.getElementById("dtBasicExample2");
 	// Get the context menu element
     const contextMenu = document.getElementById('contextMenu');
@@ -496,32 +504,13 @@ Account Ledger
 			highlightedRow = target;
         	highlightedRow.classList.add('highlight');
 			e.preventDefault();
-			const link = target.dataset.link;
-        	customLink.innerHTML = `<a class="text-danger fw-bold" href="${link}">Report as Issue</a>`;
+        	customLink.innerHTML = `<a class="text-danger fw-bold" onClick="submitForm('${target.dataset.link}')">Report as Issue</a>`;
 			contextMenu.style.display = 'block';
 			contextMenu.style.left = e.pageX + 'px';
 			contextMenu.style.top = e.pageY + 'px';
 		});
     });
 
-	customLink.addEventListener('mouseenter', function() {
-      if (highlightedRow) {
-        const link = highlightedRow.querySelector('a');
-        if (link) {
-          link.classList.add('bg-danger text-white');
-		  link.classList.remove('text-danger');
-        }
-      }
-    });
-	customLink.addEventListener('mouseleave', function() {
-	  if (highlightedRow) {
-		const link = highlightedRow.querySelector('a');
-		if (link) {
-		  link.classList.remove('bg-danger text-white');
-		  link.classList.add('text-danger');
-		}
-	  }
-	});
     // Hide the context menu when clicking outside of it
     document.addEventListener('click', function() {
 		if (highlightedRow) {
