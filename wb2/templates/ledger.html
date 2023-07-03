@@ -187,9 +187,34 @@ Account Ledger
 		overflow-y: scroll;
 	}
 
+	.context-menu {
+		display: none;
+		position: absolute;
+		background-color: #ffffff;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		padding: 5px;
+		z-index: 100;
+      	box-shadow: 0 3px 6px 1px rgba(0, 0, 0, 0.1);
+	}
+
+	.context-menu-item {
+		padding: 5px 10px;
+		cursor: pointer;
+	}
+
+	.highlight {
+		 --bs-table-accent-bg: var(--bs-table-hover-bg);
+    	color: var(--bs-table-hover-color);
+	}
+	
 </style>
 <!-- Header Info of Consumer -->
 <div class="container-fluid p-0">
+	
+    <div id="contextMenu" class="context-menu">
+        <div class="context-menu-item" style="text-decoration: none;" id="customLink"></div>
+    </div>
 	<div class="table-responsive">
 		<table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
@@ -427,20 +452,19 @@ Account Ledger
 						</thead>
 						<tbody class="wb_tbody" >
 							{% for t in table reversed %}
-							<tr>
-								<td class="{{t.style}}">{{t.transid}}</td>
-								<td class="{{t.style}}">{{t.date}}</td>
-								<td class="{{t.style}}">{{t.month}}-{{t.year}}</td>
-								<td class="{{t.style}}">{{t.prev}}</td>
-								<td class="{{t.style}}">{{t.reading}}</td>
-								<td class="{{t.style}}">{{t.usage}}</td>
-								<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
-								<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
-								<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
-								<td class="{{t.style}}">{{t.rateid}}</td>
-								</td>
-								<td class="{{t.style}}">{{t.pb}}</td>
-								<td style="text-align: center;" class="{{t.style}} text-center align-middle">{% if t.ispaid %} Paid {% endif %}</td>
+							<tr class="context-menu-target {{t.style}}" data-link="{{t.transid}}">
+								<td>{{t.transid}}</td>
+								<td>{{t.date}}</td>
+								<td>{{t.month}}-{{t.year}}</td>
+								<td>{{t.prev}}</td>
+								<td>{{t.reading}}</td>
+								<td>{{t.usage}}</td>
+								<td>{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+								<td>{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+								<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+								<td>{{t.rateid}}</td>
+								<td>{{t.pb}}</td>
+								<td style="text-align: center;" class="text-center align-middle">{% if t.ispaid %} Paid {% endif %}</td>
 							</tr>
 							{% endfor %}
 						</tbody>
@@ -454,6 +478,59 @@ Account Ledger
 
 <!-- Script for PDF Get Copy -->
 <script type="text/javascript">
+	const table = document.getElementById("dtBasicExample2");
+	// Get the context menu element
+    const contextMenu = document.getElementById('contextMenu');
+    const customLink = document.getElementById('customLink');
+	let highlightedRow = null;
+    // Show the custom context menu on right-click on .context-menu-target elements
+    const contextMenuTargets = document.querySelectorAll('.context-menu-target');
+    contextMenuTargets.forEach(function(target) {
+		target.addEventListener('contextmenu', function(e) {
+			 // Remove previous highlight
+			table.classList.remove('table-hover')
+			 if (highlightedRow) {
+				highlightedRow.classList.remove('highlight');
+			}
+			
+			highlightedRow = target;
+        	highlightedRow.classList.add('highlight');
+			e.preventDefault();
+			const link = target.dataset.link;
+        	customLink.innerHTML = `<a class="text-danger fw-bold" href="${link}">Report as Issue</a>`;
+			contextMenu.style.display = 'block';
+			contextMenu.style.left = e.pageX + 'px';
+			contextMenu.style.top = e.pageY + 'px';
+		});
+    });
+
+	customLink.addEventListener('mouseenter', function() {
+      if (highlightedRow) {
+        const link = highlightedRow.querySelector('a');
+        if (link) {
+          link.classList.add('bg-danger text-white');
+		  link.classList.remove('text-danger');
+        }
+      }
+    });
+	customLink.addEventListener('mouseleave', function() {
+	  if (highlightedRow) {
+		const link = highlightedRow.querySelector('a');
+		if (link) {
+		  link.classList.remove('bg-danger text-white');
+		  link.classList.add('text-danger');
+		}
+	  }
+	});
+    // Hide the context menu when clicking outside of it
+    document.addEventListener('click', function() {
+		if (highlightedRow) {
+			highlightedRow.classList.remove('highlight');
+			highlightedRow = null;
+			table.classList.add('table-hover')
+		}
+      contextMenu.style.display = 'none';
+    });
 
 	function getpdf() {
 		var doc = new jsPDF('landscape', 'pt', 'legal');
