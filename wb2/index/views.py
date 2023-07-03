@@ -2813,3 +2813,30 @@ def addexemption(request, id):
 
     # Redirect to a different URL or render a template as needed
     return redirect(request.META.get('HTTP_REFERER', '/'))
+def additional_fee(request, id):
+    if request.method == "POST":
+        num_inputs = int(request.POST.get('numInputs', 0))
+        total_amount = float(request.POST.get('totalAmount', 0.00))
+        months = int(request.POST['monthfee'])
+        consumer_id = ConsumerInfo.objects.get(consumer_id=id)
+        fee_names = []
+
+        for i in range(num_inputs):
+            fee_name = request.POST.get(f'additionalfee{i}', '')
+            if fee_name:  # Only process non-empty fee names
+                fee_names.append(fee_name)
+
+        if fee_names:
+            fee_names_str = ', '.join(fee_names)  # Join the fee names into a comma-separated string
+
+            addFee = AdditionalFees()
+            addFee.fee_name = fee_names_str
+            addFee.amount = total_amount/months
+            addFee.months = months
+            addFee.consumer_id = consumer_id
+            addFee.save()
+
+        print(total_amount)
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
