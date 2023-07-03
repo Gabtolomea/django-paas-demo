@@ -638,17 +638,36 @@ def dump_database():
 
 
 
+
+
+def get_bal_exempt(id):
+    user = ConsumerInfo.objects.get(consumer_id = id)
+    trans = Transactions.objects.filter(acctID = id)
+    asc_trans = trans.order_by('year', 'month','transactionid')
+    bal = 0
+    for i in range(len(asc_trans)):
+        if asc_trans[i].transType == 'Billing':
+            bal+=asc_trans[i].bill
+    try:
+        user.current_reading = trans.filter(transType='Billing').order_by('-year', '-month')[0].meterReading
+    except IndexError:
+        pass
+    user.current_bal = math.ceil(bal*100)/100
+    if user.current_bal < 0:
+        user.current_bal = 0
+    user.save()
+
+
 def exempt_accounts():
     exempt_accts = ConsumerInfo.objects.filter(excep_accnt=True)
-    print(exempt_accts)
     
     for con in exempt_accts:
         bills = Transactions.objects.filter(acctID=con, transType='Billing')
-        for bill in bills:
-            bill.bill = 0
+        for b in bills:
+            b.bill = 0
         Transactions.objects.bulk_update(bills, ['bill'])
+
     
-    # You can perform other actions related to the ConsumerInfo model here if needed
 def adjust_excess_only():
     search = 'excess only'
     excess_only_accts = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(lastname__icontains=search))

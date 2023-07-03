@@ -5,15 +5,7 @@
     <a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Monthly</button></a>
     <a href="{% url 'payment_history' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Payment History</button></a>
     <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment" style="float:left; margin-right: 5px">Installment Fees</button>
-    <a href="{% url 'addexemptions' id=u.consumer_id %}">
-        <button type="button" class="btn button2" style="float:left; margin-right: 5px; {% if u.excep_accnt %}background-color: red; color: white;{% else %}background-color: #006c85; color: white;{% endif %}">
-          {% if u.excep_accnt %}
-            Unexempt
-          {% else %}
-            Exempt
-          {% endif %}
-        </button>
-      </a>
+
 </div>
 
 <!-- Installment Fee Modal -->
@@ -47,7 +39,19 @@
 
 					</div>
 				</div>
-
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var isExempted = {% if u.excep_accnt %}true{% else %}false{% endif %};
+                        var btn = document.getElementById("exemption-btn");
+                
+                        if (isExempted) {
+                            btn.disabled = true;
+                            btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+                        }
+                    });
+                </script>
+                
                 <script>
                     document.getElementById('flexSwitchCheckDefault').addEventListener('click', function () {
                         var numInputs = prompt('How many Items?');

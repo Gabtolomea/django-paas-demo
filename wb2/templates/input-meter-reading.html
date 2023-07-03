@@ -52,6 +52,13 @@ Input Reading
 		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 		transition: all 0.1s;
 	}
+	.container2 {
+		position: absolute;
+		top: 178px;
+		left: 32rem;
+		right: 0;
+		z-index: 100;
+		}
 </style>
 <div class="container-fluid p-0">
 	<div class="table_responsive" style="max-height: 922px;">
@@ -157,6 +164,29 @@ Input Reading
 		</button>
 	</div>
 </div>
+
+<div class="container2">
+<a href="{% url 'addexemptions' consumer.consumer_id %}">
+	<button type="button" class="btn button2" id="exemption-btn" style="float:left; margin-right: 5px; background-color: #006c85; color: white;">
+		{% if consumer.excep_accnt %}
+			Exempted
+		{% else %}
+			Exempt
+		{% endif %}
+	</button>
+</a>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var isExempted = {% if consumer.excep_accnt %}true{% else %}false{% endif %};
+        var btn = document.getElementById("exemption-btn");
+
+        if (isExempted) {
+            btn.disabled = true;
+            btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+        }
+    });
+</script>
 <h1 class="mb-3 text-center">Input Reading</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">

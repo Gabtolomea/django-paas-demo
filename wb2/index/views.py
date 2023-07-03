@@ -688,209 +688,228 @@ def inputreading(request, id, year):
                 r = int(request.POST.get('reading-'+calendar.month_name[i+1]))
                 break
         bill = 0
-        if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
-            xy = con_penalty.penalty_rate * cummulative
-            interest = xy/100
+        if consumer.excep_accnt:
+            usage = r - consumer.current_reading
+            try:
+                tran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
+            except:
+                tran = Transactions()
+                tran.transType = 'Billing'
+                tran.meterReading = r
+                tran.usage = usage
+                tran.bill = 0
+                tran.processedBy = request.user
+                tran.year = year
+                tran.month = d
+                tran.contypeid = consumer.contypeid_id
+                tran.acctID = consumer
+                consumer.current_reading = r 
+                tran.save()
+                consumer.save()
+        else:    
+            if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
+                xy = con_penalty.penalty_rate * cummulative
+                interest = xy/100
 
-        if consumer.has_additionalfees:
-            fees = AdditionalFees.objects.filter(consumer_id=consumer.consumer_id, amount__gt=0)
-            for i in fees:
-                aft = Transactions()
-                aft.transType = 'Additional Fees'
-                aft.acctID = consumer.consumer_id
-                aft.year = year
-                aft.month = d
-                aft.bill = i.amount
-                aft.save()
-                
+            if consumer.has_additionalfees:
+                fees = AdditionalFees.objects.filter(consumer_id=consumer.consumer_id, amount__gt=0)
+                for i in fees:
+                    aft = Transactions()
+                    aft.transType = 'Additional Fees'
+                    aft.acctID = consumer.consumer_id
+                    aft.year = year
+                    aft.month = d
+                    aft.bill = i.amount
+                    aft.save()
+                    
 
 
 
-        
-        try:
-            billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-            last_reading = billtran.prevReading
-            # finding next billing
-            mm = d+1
-            has_next = False
-            for y in years_forward:
-                for x in range(mm, 13):
-                    try:
-                        next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
-                        next.prevReading = r
-                        next.usage = next.meterReading - r
-                        next.save()
-                        has_next = True
-                        break
-                    except ObjectDoesNotExist:
-                        pass
-                if has_next:
-                    break
-                mm = 1
             
-            # finding previous billing
-            if has_next:
-                mm = d-1
-                has_prev = False
-                for y in years_backward:
-                    for x in range(mm, 0, -1):
+            try:
+                billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
+                last_reading = billtran.prevReading
+                # finding next billing
+                mm = d+1
+                has_next = False
+                for y in years_forward:
+                    for x in range(mm, 13):
                         try:
-                            prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
-                            last_reading = prev.meterReading
-                            has_prev = True
+                            next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                            next.prevReading = r
+                            next.usage = next.meterReading - r
+                            next.save()
+                            has_next = True
                             break
                         except ObjectDoesNotExist:
                             pass
-                    if has_prev:
+                    if has_next:
                         break
-                    mm = 12
-            billtran.meterReading = r
-            billtran.date = datetime.today()
-            billtran.prevReading = last_reading
-            billtran.usage = r - last_reading
-            usage = billtran.usage
-            rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
-            dif = billtran.bill
-            if billtran.usage <= rate.minReading or billtran.usage < 0:
-                billtran.bill = rate.minReadingCharge
-            else:
-                billtran.bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-            billtran.processedBy = str(request.user)
-            billtran.save()
-            dif = billtran.bill - dif
-            if interest:
-                p = Transactions()
-                p.acctID = consumer
-                p.transType = 'Penalty'
-                p.date = datetime.today()
-                p.month = d
-                p.year = year
-                p.bill = interest
-                p.payment = 0
-                p.processedBy = request.user
-                p.save()
-            try:
-                paymentT = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=year, month=d)
-                if dif:
-                    paymentT.payment = paymentT.payment + dif
-                    consumer.excess = consumer.excess - dif
-                    consumer.current_bal = consumer.current_bal - dif
-                paymentT.save()
-                consumer.save()
-            except ObjectDoesNotExist:
-                pass
-        except ObjectDoesNotExist:
-            
-            # finding next billing
-            fm = d+1
-            has_next = False
-            for y in years_forward:
-                for x in range(fm, 13):
-                    try:
-                        next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
-                        
-                        # finding previous billing
-                        bm = d-1
-                        has_prev = False
-                        for y in years_backward:
-                            for x in range(bm, 0, -1):
-                                try:
-                                    prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
-                                    last_reading = prev.meterReading
-                                    break
-                                except ObjectDoesNotExist:
-                                    pass
-                            if has_prev:
-                                break
-                            bm = 12
-                        break
-                    except ObjectDoesNotExist:
-                        pass
+                    mm = 1
+                
+                # finding previous billing
                 if has_next:
-                    break
-                fm = 1
-            
-            bill = 0
-            billtran = Transactions()
-            billtran.acctID = consumer
-            billtran.transType = 'Billing'
-            billtran.date = datetime.today()
-            billtran.month = d
-            if billtran.month == 0:
-                billtran.month = 12
-            billtran.year = year
-            billtran.meterReading = r
-            billtran.prevReading = lastreading
-            billtran.usage = r - lastreading
-            usage = billtran.usage
-            billtran.contypeid = consumer.contypeid_id
-            rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
-            if billtran.usage <= rate.minReading:
-                billtran.bill = rate.minReadingCharge
-            else:
-                bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                billtran.bill = bill
-            billtran.payment = 0
-            billtran.processedBy = request.user
-            billtran.save()
-            if interest:
-                p = Transactions()
-                p.acctID = consumer
-                p.transType = 'Penalty'
-                p.date = datetime.today()
-                p.month = d
-                p.year = year
-                p.bill = interest
-                bill += interest
-                p.payment = 0
-                p.processedBy = request.user
-                p.save()
-            
+                    mm = d-1
+                    has_prev = False
+                    for y in years_backward:
+                        for x in range(mm, 0, -1):
+                            try:
+                                prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                last_reading = prev.meterReading
+                                has_prev = True
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_prev:
+                            break
+                        mm = 12
+                billtran.meterReading = r
+                billtran.date = datetime.today()
+                billtran.prevReading = last_reading
+                billtran.usage = r - last_reading
+                usage = billtran.usage
+                rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
+                dif = billtran.bill
+                if billtran.usage <= rate.minReading or billtran.usage < 0:
+                    billtran.bill = rate.minReadingCharge
+                else:
+                    billtran.bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                billtran.processedBy = str(request.user)
+                billtran.save()
+                dif = billtran.bill - dif
+                if interest:
+                    p = Transactions()
+                    p.acctID = consumer
+                    p.transType = 'Penalty'
+                    p.date = datetime.today()
+                    p.month = d
+                    p.year = year
+                    p.bill = interest
+                    p.payment = 0
+                    p.processedBy = request.user
+                    p.save()
+                try:
+                    paymentT = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=year, month=d)
+                    if dif:
+                        paymentT.payment = paymentT.payment + dif
+                        consumer.excess = consumer.excess - dif
+                        consumer.current_bal = consumer.current_bal - dif
+                    paymentT.save()
+                    consumer.save()
+                except ObjectDoesNotExist:
+                    pass
+            except ObjectDoesNotExist:
+                
+                # finding next billing
+                fm = d+1
+                has_next = False
+                for y in years_forward:
+                    for x in range(fm, 13):
+                        try:
+                            next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                            
+                            # finding previous billing
+                            bm = d-1
+                            has_prev = False
+                            for y in years_backward:
+                                for x in range(bm, 0, -1):
+                                    try:
+                                        prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                        last_reading = prev.meterReading
+                                        break
+                                    except ObjectDoesNotExist:
+                                        pass
+                                if has_prev:
+                                    break
+                                bm = 12
+                            break
+                        except ObjectDoesNotExist:
+                            pass
+                    if has_next:
+                        break
+                    fm = 1
+                
+                bill = 0
+                billtran = Transactions()
+                billtran.acctID = consumer
+                billtran.transType = 'Billing'
+                billtran.date = datetime.today()
+                billtran.month = d
+                if billtran.month == 0:
+                    billtran.month = 12
+                billtran.year = year
+                billtran.meterReading = r
+                billtran.prevReading = lastreading
+                billtran.usage = r - lastreading
+                usage = billtran.usage
+                billtran.contypeid = consumer.contypeid_id
+                rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
+                if billtran.usage <= rate.minReading:
+                    billtran.bill = rate.minReadingCharge
+                else:
+                    bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                    billtran.bill = bill
+                billtran.payment = 0
+                billtran.processedBy = request.user
+                billtran.save()
+                if interest:
+                    p = Transactions()
+                    p.acctID = consumer
+                    p.transType = 'Penalty'
+                    p.date = datetime.today()
+                    p.month = d
+                    p.year = year
+                    p.bill = interest
+                    bill += interest
+                    p.payment = 0
+                    p.processedBy = request.user
+                    p.save()
+                
+                try:
+                    mo = d + 1
+                    ye = year
+                    if d == 12:
+                        mo = 1
+                        ye += 1
+                    next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
+                    next.usage = next.meterReading - r
+                    next.save()
+                except ObjectDoesNotExist:
+                    pass
             try:
-                mo = d + 1
+                mo = d - 1
                 ye = year
-                if d == 12:
-                    mo = 1
-                    ye += 1
-                next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
-                next.usage = next.meterReading - r
-                next.save()
+                if d == 1:
+                    mo = 12
+                    ye -= 1
+                prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
+                if not prev_bill.is_billpaid:
+                    consumer.penaltycounter += 1
             except ObjectDoesNotExist:
                 pass
-        
-        try:
-            mo = d - 1
-            ye = year
-            if d == 1:
-                mo = 12
-                ye -= 1
-            prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=ye, month=mo)
-            if not prev_bill.is_billpaid:
-                consumer.penaltycounter += 1
-        except ObjectDoesNotExist:
-            pass
 
-        if consumer.excess > 0:
-            unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('-year', '-month')
-            if unsettled:
-                for u in unsettled:
-                    if consumer.excess>=u.bill:
-                        ex = consumer.excess - u.bill
-                        pt = Transactions()
-                        pt.acctID = consumer
-                        pt.transType = "Payment"
-                        pt.date = datetime.today()
-                        pt.year = u.year
-                        pt.month = u.month
-                        pt.payment = u.bill
-                        pt.save()
-                        u.is_billpaid = True
-                        u.save()
-                        consumer.excess = ex
-                        consumer.save()
-                    else:
-                        consumer.save()
-                        break
+            if consumer.excess > 0:
+                unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('-year', '-month')
+                if unsettled:
+                    for u in unsettled:
+                        if consumer.excess>=u.bill:
+                            ex = consumer.excess - u.bill
+                            pt = Transactions()
+                            pt.acctID = consumer
+                            pt.transType = "Payment"
+                            pt.date = datetime.today()
+                            pt.year = u.year
+                            pt.month = u.month
+                            pt.payment = u.bill
+                            pt.save()
+                            u.is_billpaid = True
+                            u.save()
+                            consumer.excess = ex
+                            consumer.save()
+                        else:
+                            consumer.save()
+                            break
+
         match d:
             case 1:
                 con_b_rec.total_due_jan += bill
@@ -2777,6 +2796,7 @@ def exemptiont(request):
     return render(request, 'exemption.html', context)
 
 def addexemption(request, id):
+
     try:    
         # Retrieve the ConsumerInfo object
         consumer_info = ConsumerInfo.objects.get(consumer_id=id)
@@ -2789,7 +2809,7 @@ def addexemption(request, id):
     # Save the updated object
     consumer_info.save()
     exempt_accounts()
-    get_balance(consumer_info.consumer_id)
+    get_bal_exempt(consumer_info.consumer_id)
 
     # Redirect to a different URL or render a template as needed
-    return redirect('ledger', id=id)  # Redirect to 'exemptiont' URL after toggling
+    return redirect(request.META.get('HTTP_REFERER', '/'))

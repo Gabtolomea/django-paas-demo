@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'crispy_forms',
-    'django_apscheduler',
 ]
 
 # 
