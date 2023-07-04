@@ -292,7 +292,7 @@ def ledger(request, id):
     monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
     # get_balance(id)
     class ledgerclass():
-        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, previous_due, rateid, style, disc_code, transtype, month, year, ispaid):
             self.transid = transid
             self.date = date
             self.prev = prev
@@ -310,6 +310,7 @@ def ledger(request, id):
             self.month = month
             self.year = year
             self.ispaid = ispaid
+            self.previous_due = previous_due
 
         def id(self):
             return self.transid
@@ -333,7 +334,10 @@ def ledger(request, id):
             prev = ''
             cur = ''
             ispaid = ''
+            previous_due = 0
+
             if asc_trans[i].transType == 'Billing':
+                previous_due = bal - asc_trans[i].payment
                 usage = asc_trans[i].usage
                 pre = asc_trans[i].meterReading - usage
                 bill = asc_trans[i].bill
@@ -349,6 +353,7 @@ def ledger(request, id):
                 if asc_trans[i].is_billpaid:
                     ispaid = 'yeah'
             elif asc_trans[i].transType == 'Payment':
+                previous_due = bal + asc_trans[i].payment
                 style = 'table-success'
                 ornum = asc_trans[i].or_number
                 pb = ''
@@ -369,6 +374,7 @@ def ledger(request, id):
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
             elif asc_trans[i].transType == 'Reset Meter':
+                previous_due = bal
                 bill = 0
                 cur = asc_trans[i].meterReading
                 style = 'table-warning'
@@ -382,7 +388,7 @@ def ledger(request, id):
             bal = math.ceil(bal*100)/100
             ttype = asc_trans[i].transType
             if asc_trans[i].transType != 'Received Amount':
-                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style, dcode, ttype, monthnames[m-1], y, ispaid)
+                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,previous_due,dcode, ttype, monthnames[m-1], y, ispaid)
                 table.append(new_row)
         
         # if bal > 0:
@@ -409,7 +415,8 @@ def ledger(request, id):
         'bill': bill,
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
-        'ispaid':ispaid
+        'ispaid':ispaid,
+        'prev_due':previous_due
     }
     return render(request, 'ledger.html', context)
 
@@ -583,6 +590,7 @@ def deletereading(request, id):
 def inputreading(request, id, year):
     table = []
     years = []
+    print(years)
     class meterreaderclass():
         def __init__(self, transid, month, monthval, usage, prev, reading, next, style):
             self.transid = transid
@@ -610,9 +618,12 @@ def inputreading(request, id, year):
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing', is_issue=False) | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter', is_issue=False)
     trans = alltrans.filter(year=year)
     brec = BarangayRecord.objects.all().order_by('-year')
+    print("years before loop:", years)
     for i in brec:
         if i.year not in years:
             years.append(i.year)
+            print("Added year:", i.year)
+    print("years after loop:", years)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
     if not trans:
@@ -760,9 +771,6 @@ def inputreading(request, id, year):
                     aft.bill = i.amount
                     aft.save()
                     
-
-
-
             
             try:
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
@@ -985,7 +993,7 @@ def inputreading(request, id, year):
             case 12:
                 con_b_rec.total_due_dec += bill
                 con_b_rec.total_usage_dec += usage
-        
+
         bill = 0
         usage = 0
         con_b_rec.save()
@@ -993,6 +1001,7 @@ def inputreading(request, id, year):
             get_bal_exempt(id)
         else:
             get_balance(id)
+
         return redirect('inputreading', id=id , year=year)
     context = {
         'consumer': consumer,
