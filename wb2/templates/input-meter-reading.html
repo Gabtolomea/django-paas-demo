@@ -161,19 +161,16 @@ Input Reading
             <img style="width: 25px;" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
             Get a Copy
         </button>
-        <a href="{% url 'addexemptions' consumer.consumer_id %}">
-            <button type="button" class="btn button2" id="exemption-btn" style="background-color: #006c85; color: white;">
-                {% if consumer.excep_accnt %}
-                Exempted
-                {% else %}
-                Exempt
-                {% endif %}
-            </button>
-        </a>
+        <button type="button" class="btn button2" id="exemption-btn" style="background-color: #006c85; color: white;"
+            {% if consumer.excep_accnt %}disabled{% endif %}>
+            {% if consumer.excep_accnt %}
+            Exempted
+            {% else %}
+            Exempt
+            {% endif %}
+        </button>
     </div>
 </div>
-
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -181,8 +178,27 @@ Input Reading
         var btn = document.getElementById("exemption-btn");
 
         if (isExempted) {
+            btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+            btn.textContent = "Exempted";
+        } else {
+            btn.addEventListener("click", handleExemptionClick);
+        }
+
+        function handleExemptionClick() {
+            // Add your logic here to perform the "Add Exemptions" action.
+            // For example, you can make an AJAX request to the server to update the exemption status.
+
+            // After successful processing, disable the button, change its color and text, and perform the redirection.
             btn.disabled = true;
             btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+            btn.textContent = "Exempted";
+
+            // Update the isExempted variable to prevent further clicks.
+            isExempted = true;
+
+            // Perform the redirection to the specified URL.
+            var consumerId = '{{ consumer.consumer_id }}';
+            window.location.href = '{% url "addexemptions" consumer.consumer_id %}';
         }
     });
 </script>

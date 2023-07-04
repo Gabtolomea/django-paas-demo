@@ -590,7 +590,6 @@ def deletereading(request, id):
 def inputreading(request, id, year):
     table = []
     years = []
-    print(years)
     class meterreaderclass():
         def __init__(self, transid, month, monthval, usage, prev, reading, next, style):
             self.transid = transid
@@ -622,8 +621,6 @@ def inputreading(request, id, year):
     for i in brec:
         if i.year not in years:
             years.append(i.year)
-            print("Added year:", i.year)
-    print("years after loop:", years)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
     if not trans:
