@@ -156,26 +156,25 @@ Input Reading
 </div>
 
 <div class="row w-100 m-auto">
-	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-		<button type="button" class="btn button2" style="float: left;" onclick="print()">
-			<img style="width: 25px;"
-			src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
-			Get a Copy
-		</button>
-	</div>
+    <div class="col-12">
+        <button type="button" class="btn button2" style="margin-right: 5px;" onclick="print()">
+            <img style="width: 25px;" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
+            Get a Copy
+        </button>
+        <a href="{% url 'addexemptions' consumer.consumer_id %}">
+            <button type="button" class="btn button2" id="exemption-btn" style="background-color: #006c85; color: white;">
+                {% if consumer.excep_accnt %}
+                Exempted
+                {% else %}
+                Exempt
+                {% endif %}
+            </button>
+        </a>
+    </div>
 </div>
 
-<div class="container2">
-<a href="{% url 'addexemptions' consumer.consumer_id %}">
-	<button type="button" class="btn button2" id="exemption-btn" style="float:left; margin-right: 5px; background-color: #006c85; color: white;">
-		{% if consumer.excep_accnt %}
-			Exempted
-		{% else %}
-			Exempt
-		{% endif %}
-	</button>
-</a>
-</div>
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var isExempted = {% if consumer.excep_accnt %}true{% else %}false{% endif %};
