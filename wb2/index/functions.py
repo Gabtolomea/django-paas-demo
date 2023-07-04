@@ -658,14 +658,14 @@ def get_bal_exempt(id):
     user.save()
 
 
-def exempt_accounts():
-    exempt_accts = ConsumerInfo.objects.filter(excep_accnt=True)
-    
-    for con in exempt_accts:
-        bills = Transactions.objects.filter(acctID=con, transType='Billing')
-        for b in bills:
-            b.bill = 0
-        Transactions.objects.bulk_update(bills, ['bill'])
+def exempt_accounts(consumer):
+    bills = Transactions.objects.filter(acctID=consumer, transType='Billing')
+    for b in bills:
+        con_b_rec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{b.year}")
+        con_b_rec.__dict__[f"total_due_{months[b.month - 1]}"] -= b.bill
+        con_b_rec.save()
+        b.bill = 0
+    Transactions.objects.bulk_update(bills, ['bill'])
 
     
 def adjust_excess_only():

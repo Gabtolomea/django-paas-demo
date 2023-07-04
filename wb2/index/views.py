@@ -690,10 +690,47 @@ def inputreading(request, id, year):
                 break
         bill = 0
         if consumer.excep_accnt:
-            usage = r - consumer.current_reading
             try:
                 tran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
+                mm = d+1
+                has_next = False
+                for y in years_forward:
+                    for x in range(mm, 13):
+                        try:
+                            next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                            next.prevReading = r
+                            next.usage = next.meterReading - r
+                            next.save()
+                            has_next = True
+                            break
+                        except ObjectDoesNotExist:
+                            pass
+                    if has_next:
+                        break
+                    mm = 1
+                if has_next:
+                    mm = d-1
+                    has_prev = False
+                    for y in years_backward:
+                        for x in range(mm, 0, -1):
+                            try:
+                                prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                last_reading = prev.meterReading
+                                has_prev = True
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if has_prev:
+                            break
+                        mm = 12
+                tran.usage = r - last_reading
+                tran.meterReading = r
+                tran.bill = 0
+                tran.processedBy = request.user
+                tran.save()
+                
             except:
+                usage = r - consumer.current_reading
                 tran = Transactions()
                 tran.transType = 'Billing'
                 tran.meterReading = r
@@ -952,7 +989,10 @@ def inputreading(request, id, year):
         bill = 0
         usage = 0
         con_b_rec.save()
-        get_balance(id)
+        if consumer.excep_accnt:
+            get_bal_exempt(id)
+        else:
+            get_balance(id)
         return redirect('inputreading', id=id , year=year)
     context = {
         'consumer': consumer,
@@ -2792,7 +2832,7 @@ def exemptiont(request):
     print(exempt_cons)
     context = {
     'cons':exempt_cons,
-    'is_exemption':True    
+    'is_exemption':True
     }
     return render(request, 'exemption.html', context)
 
@@ -2809,7 +2849,7 @@ def addexemption(request, id):
 
     # Save the updated object
     consumer_info.save()
-    exempt_accounts()
+    exempt_accounts(consumer_info)
     get_bal_exempt(consumer_info.consumer_id)
 
     # Redirect to a different URL or render a template as needed
