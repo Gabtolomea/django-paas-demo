@@ -617,7 +617,6 @@ def inputreading(request, id, year):
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing', is_issue=False) | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter', is_issue=False)
     trans = alltrans.filter(year=year)
     brec = BarangayRecord.objects.all().order_by('-year')
-    print("years before loop:", years)
     for i in brec:
         if i.year not in years:
             years.append(i.year)
@@ -678,6 +677,7 @@ def inputreading(request, id, year):
 
             m = meterreaderclass(transid, month, i, usage, prev, reading, next, style)
             table.append(m)
+            
     if consumer.penaltycode is None:
         con_penalty = Penalty.objects.get(penaltycode='P001')
     else:
@@ -998,8 +998,8 @@ def inputreading(request, id, year):
             get_bal_exempt(id)
         else:
             get_balance(id)
-
         return redirect('inputreading', id=id , year=year)
+    
     context = {
         'consumer': consumer,
         'table': table,
@@ -2835,7 +2835,6 @@ def issues_view(request):
 
 def exemptiont(request):
     exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
-    print(exempt_cons)
     context = {
     'cons':exempt_cons,
     'is_exemption':True
