@@ -135,7 +135,26 @@ Account Ledger
 
 		{% include 'billingbuttons.html' %}
 		{% include 'billcopy.html' %}
+	<!-- Sort for Billing, Payment, Penalty, Discount and Get copy buttom -->
+	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
+		<button type="button" onclick="getpdf()" class="btn button2" style="float:right;">
+			<img style="width: 15px" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
+			Get a Copy
+		</button>
 
+
+		<form id="displayselection" action="" method="GET">
+			<label class="d-flex" style="float: right; align-items: center;">Show
+				<select id="selector" name="show" class="form-select form-select ms-1 me-3" onchange="this.form.submit()">
+					<option value="" {% if disp == ""%}selected{% endif %}>All</option>
+					<option value="Billing" {% if disp == "Billing"%}selected{% endif %}>Billing</option>
+					<option value="Payment" {% if disp == "Payment"%}selected{% endif %}>Payment</option>
+					<option value="Penalty" {% if disp == "Penalty"%}selected{% endif %}>Penalty</option>
+					<option value="Discount" {% if disp == "Discount"%}selected{% endif %}>Discount</option>
+				</select>
+			</label>
+		</form>
+	</div>
 </div>
 
 <!-- Ledger -->

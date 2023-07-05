@@ -292,7 +292,7 @@ def ledger(request, id):
     monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
     # get_balance(id)
     class ledgerclass():
-        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, previous_due, rateid, style, disc_code, transtype, month, year, ispaid):
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid, previous_due):
             self.transid = transid
             self.date = date
             self.prev = prev
@@ -335,51 +335,57 @@ def ledger(request, id):
             cur = ''
             ispaid = ''
             previous_due = 0
-
-            if asc_trans[i].transType == 'Billing':
-                previous_due = bal - asc_trans[i].payment
-                usage = asc_trans[i].usage
-                pre = asc_trans[i].meterReading - usage
-                bill = asc_trans[i].bill
-                try:
-                    connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
-                except ObjectDoesNotExist:
-                    pass
-                cur = asc_trans[i].meterReading
-                prev = asc_trans[i].prevReading
-                if asc_trans[i].processedBy is not None:
+            try:
+                if asc_trans[i].transType == 'Billing':
+                    previous_due = bal - asc_trans[i].payment
+                    usage = asc_trans[i].usage
+                    pre = asc_trans[i].meterReading - usage
+                    bill = asc_trans[i].bill
+                    try:
+                        connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
+                    except ObjectDoesNotExist:
+                        pass
+                    cur = asc_trans[i].meterReading
+                    prev = asc_trans[i].prevReading
+                    if asc_trans[i].processedBy is not None:
+                        pb = asc_trans[i].processedBy
+                    bal += bill
+                    if asc_trans[i].is_billpaid:
+                        ispaid = 'yeah'
+                elif asc_trans[i].transType == 'Payment':
+                    previous_due = bal + asc_trans[i].payment
+                    style = 'table-success'
+                    ornum = asc_trans[i].or_number
+                    pb = ''
+                    bal = bal-asc_trans[i].payment
+                    try:
+                        discount = Transactions.objects.get(transactionid=asc_trans[i].discountcode)
+                        dcode = discount.discountcode
+                    except ObjectDoesNotExist:
+                        pass
+                elif asc_trans[i].transType == 'Penalty':
+                    bill = asc_trans[i].bill
+                    pen = asc_trans[i].penaltyCode
+                    style = 'table-danger'
                     pb = asc_trans[i].processedBy
-                bal += bill
-                if asc_trans[i].is_billpaid:
-                    ispaid = 'yeah'
-            elif asc_trans[i].transType == 'Payment':
-                previous_due = bal + asc_trans[i].payment
-                style = 'table-success'
-                ornum = asc_trans[i].or_number
-                pb = ''
-                bal = bal-asc_trans[i].payment
-                try:
-                    discount = Transactions.objects.get(transactionid=asc_trans[i].discountcode)
-                    dcode = discount.discountcode
-                except ObjectDoesNotExist:
-                    pass
-            elif asc_trans[i].transType == 'Penalty':
-                bill = asc_trans[i].bill
-                pen = asc_trans[i].penaltyCode
-                style = 'table-danger'
-                pb = asc_trans[i].processedBy
-                bal += bill
-            elif asc_trans[i].transType == 'Discount':
-                style = 'table-primary'
-                pb = asc_trans[i].processedBy
-                bal = bal-asc_trans[i].payment
-            elif asc_trans[i].transType == 'Reset Meter':
-                previous_due = bal
-                bill = 0
-                cur = asc_trans[i].meterReading
-                style = 'table-warning'
-                pb = asc_trans[i].processedBy
-                bal += bill
+                    bal += bill
+                    previous_due = bal
+
+                elif asc_trans[i].transType == 'Discount':
+                    style = 'table-primary'
+                    pb = asc_trans[i].processedBy
+                    bal = bal-asc_trans[i].payment
+                    previous_due = bal
+
+                elif asc_trans[i].transType == 'Reset Meter':
+                    previous_due = bal
+                    bill = 0
+                    cur = asc_trans[i].meterReading
+                    style = 'table-warning'
+                    pb = asc_trans[i].processedBy
+                    bal += bill
+            except NameError:
+                pass
             date = asc_trans[i].date
             payment = asc_trans[i].payment
             transid = asc_trans[i].transactionid
@@ -388,9 +394,9 @@ def ledger(request, id):
             bal = math.ceil(bal*100)/100
             ttype = asc_trans[i].transType
             if asc_trans[i].transType != 'Received Amount':
-                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,previous_due,dcode, ttype, monthnames[m-1], y, ispaid)
+                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid, previous_due)
                 table.append(new_row)
-        
+            print(previous_due)
         # if bal > 0:
         #     ispaid = False
         # else:
@@ -416,7 +422,6 @@ def ledger(request, id):
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
         'ispaid':ispaid,
-        'prev_due':previous_due
     }
     return render(request, 'ledger.html', context)
 
