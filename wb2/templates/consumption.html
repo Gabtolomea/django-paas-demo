@@ -4,6 +4,19 @@
 {% block title %}
 More Reports...
 {% endblock title %}
+{% block script %}
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="static/DataTables/js/jquery3.5.1.js"></script>
+<!-- Bootstrap 5 JS (popper.js is required) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#datatables').DataTable();
+    });
+</script>
+{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
@@ -307,7 +320,7 @@ More Reports...
         <h3 style="text-align: center;">Condemn Accounts</h3>
 
         <div>
-            <table class="table table-bordered table-hover table-striped table-sm ">
+            <table id="datatables" class="table table-bordered table-hover table-striped table-sm ">
                 <thead class="wb_thead">
                     <tr>
                         <th scope="col" style="background-color: #006c85">List</th>
