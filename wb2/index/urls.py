@@ -47,7 +47,6 @@ urlpatterns = [
     path('payment/<id>/', views.payment, name='payment'),
     path('additional_fee/<id>/', views.additional_fee, name='additional_fee'),
     path('settings/new_consumertype', views.new_consumertype, name='new_consumertype'),
-    path('settings/new_consumertype/editcontype/<id>', views.editcontype, name='editcontype'),
     path('settings/discount',views.discount, name='discount'),
     path('settings/discount/editdiscount/<id>', views.editdiscount, name='editdiscount'),
     path('settings/deletediscount/<id>', views.deletediscount, name='deletediscount'),
@@ -58,5 +57,8 @@ urlpatterns = [
     path('stopmeters', views.stopmeters, name='stopmeters'),
     path('add_issue/<id>/<int:year>', views.add_issue, name='add_issue'),
     path('issues', views.issues_view, name='issues'),
+    path('issue_details/<id>', views.issue_details, name='issue_details'),
+    path('submit_comment/<id>', views.submit_comment, name='submit_comment'),
+    path('resolve_issue', views.resolve_issue,name='resolve_issue'),
 ]
 
