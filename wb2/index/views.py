@@ -2782,14 +2782,15 @@ def issue_details(request, id):
     issue = Issues.objects.get(issueid=id)
     issue.is_seen = True
     issue.save()
-
+    comments = Messages.objects.filter(issue_id =issue)
+    
     tran = issue.transactionid
     month = tran.month
     monthval = calendar.month_name[month]
     con = tran.acctID
     
 
-    comments = Messages.objects.all()
+    
     context = {
         'isdel': issue,
         'con': con,
@@ -2810,11 +2811,11 @@ def additional_fee(request, id):
 
         for i in range(num_inputs):
             fee_name = request.POST.get(f'additionalfee{i}', '')
-            if fee_name:  
+            if fee_name:  # Only process non-empty fee names
                 fee_names.append(fee_name)
 
         if fee_names:
-            fee_names_str = ', '.join(fee_names) 
+            fee_names_str = ', '.join(fee_names)  # Join the fee names into a comma-separated string
 
             addFee = AdditionalFees()
             addFee.fee_name = fee_names_str
