@@ -2768,7 +2768,7 @@ def add_issue(request, id, year):
 def issues_view(request):
     issues = Issues.objects.all()
     for issue in issues:
-        last_message = Messages.objects.filter(issue_id=issue).order_by('-date').first()
+        last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
         if last_message:
             issue.last_comment = last_message.message
             issue.save()
@@ -2810,11 +2810,11 @@ def additional_fee(request, id):
 
         for i in range(num_inputs):
             fee_name = request.POST.get(f'additionalfee{i}', '')
-            if fee_name:  # Only process non-empty fee names
+            if fee_name:  
                 fee_names.append(fee_name)
 
         if fee_names:
-            fee_names_str = ', '.join(fee_names)  # Join the fee names into a comma-separated string
+            fee_names_str = ', '.join(fee_names) 
 
             addFee = AdditionalFees()
             addFee.fee_name = fee_names_str

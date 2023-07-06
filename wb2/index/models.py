@@ -219,6 +219,7 @@ class Messages(models.Model):
     to_user = models.ForeignKey(SystemUsers, on_delete=models.CASCADE, related_name='to_user')
     message = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
 
 class AdditionalFees(models.Model):
     feeid = models.AutoField(primary_key=True)
