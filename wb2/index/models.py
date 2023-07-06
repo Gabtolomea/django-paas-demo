@@ -182,11 +182,11 @@ class Transactions(models.Model):
 class Issues(models.Model):
     issueid = models.AutoField(primary_key=True)
     transactionid = models.ForeignKey(Transactions, on_delete=models.CASCADE)
-    issue_title = models.CharField(max_length=100)
-    issue_type = models.CharField(max_length=100)
-    issue_description = models.CharField(max_length=100)
+    issue = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
+    last_comment = models.CharField(max_length=100, null=True)
     issued_by = models.ForeignKey(SystemUsers, on_delete=models.CASCADE)
+    is_seen = models.BooleanField(default=False)
     status = models.CharField(max_length=20, default='Pending')
 
 class revenuecode(models.Model):
@@ -219,6 +219,7 @@ class Messages(models.Model):
     to_user = models.ForeignKey(SystemUsers, on_delete=models.CASCADE, related_name='to_user')
     message = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
 
 class AdditionalFees(models.Model):
     feeid = models.AutoField(primary_key=True)
