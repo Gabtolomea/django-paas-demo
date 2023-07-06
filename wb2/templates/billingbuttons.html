@@ -122,29 +122,29 @@
                     }
 
                     function updateTotalAmount() {
-    var totalAmountLabel = document.getElementById('total-amount-fees');
-    var totalAmountInput = document.querySelector('input[name="totalAmount"]');
-    totalAmountInput.value = calculateTotalAmount().toFixed(2);
-    totalAmountLabel.innerText = 'Total Amount Fees: ₱' + totalAmountInput.value;
+                        var totalAmountLabel = document.getElementById('total-amount-fees');
+                        var totalAmountInput = document.querySelector('input[name="totalAmount"]');
+                        totalAmountInput.value = calculateTotalAmount().toFixed(2);
+                        totalAmountLabel.innerText = 'Total Amount Fees: ₱' + totalAmountInput.value;
 
-    // Concatenate additional fees
-    var feeInputs = document.querySelectorAll('.additional-fees input[type="text"]');
-    var feeNames = [];
-    feeInputs.forEach(function (input) {
-        if (input.value.trim() !== '') {
-            feeNames.push(input.value.trim());
-        }
-    });
-    document.querySelector('input[name="additionalfee_names"]').value = feeNames.join(', ');
+                        // Concatenate additional fees
+                        var feeInputs = document.querySelectorAll('.additional-fees input[type="text"]');
+                        var feeNames = [];
+                        feeInputs.forEach(function (input) {
+                            if (input.value.trim() !== '') {
+                                feeNames.push(input.value.trim());
+                            }
+                        });
+                        document.querySelector('input[name="additionalfee_names"]').value = feeNames.join(', ');
 
-    // Concatenate amounts
-    var amountInputs = document.querySelectorAll('.additional-fees input[type="number"]');
-    var amounts = [];
-    amountInputs.forEach(function (input) {
-        amounts.push(parseFloat(input.value).toFixed(2));
-    });
-    document.querySelector('input[name="additionalfee_amounts"]').value = amounts.join(', ');
-}
+                        // Concatenate amounts
+                        var amountInputs = document.querySelectorAll('.additional-fees input[type="number"]');
+                        var amounts = [];
+                        amountInputs.forEach(function (input) {
+                            amounts.push(parseFloat(input.value).toFixed(2));
+                        });
+                        document.querySelector('input[name="additionalfee_amounts"]').value = amounts.join(', ');
+                    }
 
 
                     function calculateTotalAmount() {
