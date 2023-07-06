@@ -229,7 +229,7 @@ Issues Details
         {% for i in comments reversed %}
         <div class="comment rounded">
             <div class="comment-meta">
-                <span class="comment-author">{{i.from_user}}</span> | <span class="comment-time">{{ i.date }}</span>
+                <span class="comment-author">{{i.from_user}}</span> | <span class="comment-time">{{ i.date }} {{ i.time|time:"h:i:s A" }}</span>
             </div>
             <div class="comment-content">
                 {{i.message}}

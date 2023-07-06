@@ -2768,7 +2768,7 @@ def add_issue(request, id, year):
 def issues_view(request):
     issues = Issues.objects.all()
     for issue in issues:
-        last_message = Messages.objects.filter(issue_id=issue).order_by('-date').first()
+        last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
         if last_message:
             issue.last_comment = last_message.message
             issue.save()
