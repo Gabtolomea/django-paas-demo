@@ -1,0 +1,291 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+Issues Details
+{% endblock title %}
+{% load humanize %}
+{% block issue_details %}
+<style>
+    .rounded {
+        border-top-left-radius: 0.80rem !important;
+        border-top-right-radius: 0.80rem !important;
+        border-bottom-left-radius: 0.80rem !important;
+        border-bottom-right-radius: 0.80rem !important;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: baseline;
+    }
+
+    .issue-meta {
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 10px;
+    }
+
+    .issue-description {
+        margin-bottom: 10px;
+    }
+
+    .comment {
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .comment-meta {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 5px;
+    }
+
+    .comment-content {
+        margin-bottom: 5px;
+    }
+
+    .comment-author {
+        font-weight: bold;
+    }
+
+    .comment-time {
+        font-style: italic;
+    }
+
+    .comment-input-container {
+        position: relative;
+        display: inline-block;
+        width: -webkit-fill-available;
+    }
+
+    .comment-input-container textarea {
+        width: 100%;
+        height: 100%;
+        padding-right: 50px;
+        resize: none;
+    }
+
+    .comment-input-container .btn-submit {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 50px;
+        padding: 10px;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.3s ease;
+    }
+
+    .comment-input-container .btn-submit:hover {
+        opacity: 1;
+    }
+
+    .comment-input-container .btn-submit[disabled] {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    #comment-input {
+        max-height: 200px;
+        height: 60px;
+    }
+
+    .btn-mark-complete {
+        background: var(--main-color);
+        margin-top: 10px;
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+
+    .btn-mark-complete:hover {
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn-mark-complete:focus {
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+    .chat-input-container {
+        position: fixed;
+        bottom: 0;
+        width: -webkit-fill-available;
+        background-color: #e5ebec;
+        padding: 10px;
+        z-index: 9999;
+    }
+
+    .chat-input-container .btn-submit {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        height: 100%;
+        width: 50px;
+        padding: 10px;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.3s ease;
+    }
+
+</style>
+
+<!-- If Reading Backwards -->
+<div class="p-3">
+    <!-- Header Consumer Info -->
+    <h3 style="text-align: center;">{{isdel.issue}}</h3>
+    <div class="rounded bg-light p-3">
+        <div class="input-container">
+            <div class="issue-meta">Created by {{isdel.issued_by_id}} | Created on {{isdel.date}}</div>
+            <form action="{%url 'resolve_issue' %}"  style="margin-left: auto;" method="post" >
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{isdel.issueid}}">
+                <button class="btn btn-primary btn-mark-complete" type="submit">Mark Done</button>
+            </form>
+        </div>
+
+        <div class="issue-description">Description</div>
+        <div class="container-fluid p-0">
+            <div class="table-responsive">
+                <table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+                    <thead class="wb_thead">
+                        <tr class="header">
+                            <th scope="col" style="min-width:25px">Transaction ID</th>
+                            <th scope="col" style="min-width:25px">Name</th>
+                            <th scope="col" style="min-width:25px">Meter Number</th>
+                            <th scope="col" style="min-width:25px">Address</th>
+                        </tr>
+                    </thead>
+                    <tbody class="wb_tbody">
+                        <tr class="showOnHover">
+                            <td class="table-light text-center">{{isdel.transactionid}}</td>
+                            <td class="table-light text-center">{{con.firstname}} {{con.middlename}} {{con.lastname}}
+                            </td>
+                            <td class="table-light text-center">{{con.meternumber}}</td>
+                            <td class="table-light text-center">{{con.homeaddress}}</td>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Input Reading Notification -->
+        <div class="bg-light p-3">
+            <h3 style="text-align: center;">{{monthval}} Reading</h3>
+            <div class="table-responsive">
+                <table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+                    <thead class="wb_thead">
+                        <tr class="header">
+                            <th scope="col" style="min-width:25px">Month</th>
+                            <th scope="col" style="min-width:25px">Previous Reading</th>
+                            <th scope="col" style="min-width:25px">Meter Reading</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="wb_tbody">
+                        <tr class="showOnHover">
+                            <td class="table-light text-center">{{monthval}}</td>
+                            <td class="table-light text-center">{{tran.prevReading}}</td>
+                            <td class="table-light text-center">{{tran.meterReading}}</td>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="rounded-bottom bg-light p-3 z-n1"></div>
+
+    </div>
+
+
+
+</div>
+
+<!-- Commenting/Messaging Section -->
+
+<div class="p-3">
+    <div class="comments rounded bg-light p-3" style="margin-bottom: 100px;">
+        <h3 style="text-align: center;">Comment</h3>
+        {% if comments %}
+        {% for i in comments reversed %}
+        <div class="comment rounded">
+            <div class="comment-meta">
+                <span class="comment-author">{{i.from_user}}</span> | <span class="comment-time">{{ i.date }} {{ i.time|time:"h:i:s A" }}</span>
+            </div>
+            <div class="comment-content">
+                {{i.message}}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="text-center" style="font-style: italic;">
+            There are no comments
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+
+
+<!-- Input yo comment -->
+<div class="p-3 chat-input-container" >
+    <form id="comment-form" method="POST" action="{% url 'submit_comment' isdel.issueid %}">
+        {% csrf_token %}
+        <div class="comment-input-container">
+            <textarea class="rounded p-3" name="message" id="comment-input" rows="4"
+                placeholder="Ask a question or post an update..." oninput="toggleSubmitButton()" onkeydown="handleKeyDown(event)"></textarea>
+            <button type="submit" class="btn-submit btn btn-sm rounded-0" id="submit-button" disabled title="Send">
+                <img style="width: 25px;" src="{% static '/svgs/send_icon.svg' %}" />
+            </button>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    function toggleSubmitButton() {
+        var commentInput = document.getElementById("comment-input");
+        var submitButton = document.getElementById("submit-button");
+        submitButton.disabled = commentInput.value.trim() === "";
+    }
+
+    function handleKeyDown(event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault(); // Prevent the default Enter key behavior (new line)
+            submitComment(); // Call the submitComment function when Enter is pressed
+        }
+    }
+
+    function submitComment() {
+        var commentInput = document.getElementById("comment-input").value;
+        console.log("Comment:", commentInput);
+
+        // Add your code to handle the comment submission here
+        document.getElementById("comment-form").submit(); // Submit the form
+    }
+</script>
+
+
+
+
+{% endblock issue_details %}

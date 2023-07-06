@@ -3,6 +3,7 @@
 import calendar
 import math
 import datetime
+import datetime
 from .dataporter import *
 from .decorators import *
 from .forms import *
@@ -2105,22 +2106,22 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
-def editcontype(request, id):
-    con = ConsumerType.objects.get(contypeid=id)
-    if request.method == 'POST':
-        contype = request.POST['contype']
-        minReading = request.POST['minReading']
-        minReadingCharge = request.POST['minReadingCharge']
-        rateAfterMin = request.POST['rateAfterMin']
+# def editcontype(request, id):
+#     con = ConsumerType.objects.get(contypeid=id)
+#     if request.method == 'POST':
+#         contype = request.POST['contype']
+#         minReading = request.POST['minReading']
+#         minReadingCharge = request.POST['minReadingCharge']
+#         rateAfterMin = request.POST['rateAfterMin']
         
-        con.contype = contype
-        con.minReading = minReading
-        con.minReadingCharge = minReadingCharge
-        con.rateAfterMin = rateAfterMin
-        con.save()
-        messages.success(request, 'Code has been updated')
+#         con.contype = contype
+#         con.minReading = minReading
+#         con.minReadingCharge = minReadingCharge
+#         con.rateAfterMin = rateAfterMin
+#         con.save()
+#         messages.success(request, 'Code has been updated')
         
-    return redirect('new_consumertype')
+#     return redirect('new_consumertype')
 
 
 @login_required(login_url='login')
@@ -2827,8 +2828,16 @@ def add_issue(request, id, year):
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
+
+
 def issues_view(request):
     issues = Issues.objects.all()
+    for issue in issues:
+        last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
+        if last_message:
+            issue.last_comment = last_message.message
+            issue.save()
+
     context = {
         'issues': issues,
     }
@@ -2860,6 +2869,29 @@ def addexemption(request, id):
 
     # Redirect to a different URL or render a template as needed
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def issue_details(request, id):
+    issue = Issues.objects.get(issueid=id)
+    issue.is_seen = True
+    issue.save()
+
+    tran = issue.transactionid
+    month = tran.month
+    monthval = calendar.month_name[month]
+    con = tran.acctID
+    
+
+    comments = Messages.objects.all()
+    context = {
+        'isdel': issue,
+        'con': con,
+        'tran': tran,
+        'monthval': monthval,
+        'comments':comments
+    }
+    return render(request, 'issue_details.html', context)
+
+
 def additional_fee(request, id):
     if request.method == "POST":
         num_inputs = int(request.POST.get('numInputs', 0))
@@ -2870,11 +2902,11 @@ def additional_fee(request, id):
 
         for i in range(num_inputs):
             fee_name = request.POST.get(f'additionalfee{i}', '')
-            if fee_name:  # Only process non-empty fee names
+            if fee_name:  
                 fee_names.append(fee_name)
 
         if fee_names:
-            fee_names_str = ', '.join(fee_names)  # Join the fee names into a comma-separated string
+            fee_names_str = ', '.join(fee_names) 
 
             addFee = AdditionalFees()
             addFee.fee_name = fee_names_str
@@ -2886,4 +2918,30 @@ def additional_fee(request, id):
         print(total_amount)
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def submit_comment(request,id):
+    hotissue = Issues.objects.get(issueid = id)
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+
+        mc = Messages()
+        mc.message = message
+        mc.from_user = request.user
+        mc.to_user = hotissue.issued_by
+        mc.issue_id = hotissue
+        mc.save()
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def resolve_issue(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        issue = Issues.objects.get(issueid=id)
+        issue.status = "Resolved"
+        issue.save()
+        tran = issue.transactionid
+        tran.is_issue = False
+        tran.save()
+        return redirect('issues')
 
