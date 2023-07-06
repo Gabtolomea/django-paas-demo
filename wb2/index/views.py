@@ -2765,8 +2765,6 @@ def add_issue(request, id, year):
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
-
-
 def issues_view(request):
     issues = Issues.objects.all()
     for issue in issues:
@@ -2774,11 +2772,10 @@ def issues_view(request):
         if last_message:
             issue.last_comment = last_message.message
             issue.save()
-
     context = {
         'issues': issues,
     }
-    return render(request,'issues.html', context)
+    return render(request, 'issues.html', context)
 
 
 def issue_details(request, id):
