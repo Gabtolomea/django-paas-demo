@@ -41,9 +41,9 @@ def camelize():
         c.lastname = c.lastname.title()
         c.middlename = c.middlename.title()
         c.save()
-def enye(cons):
+def enye_cons(cons):
     for c in cons:
-        chars = ["ã‘","ã±"]
+        chars = ["ã‘","ã±","Ã±"]
         for char in chars:
             if char in c.firstname:
                 c.firstname = c.firstname.replace(char, "ñ")
@@ -52,6 +52,14 @@ def enye(cons):
             if char in c.middlename:
                 c.middlename = c.middlename.replace(char, "ñ")
             c.save()
+def enye_bars():
+    bars = Barangays.objects.all()
+    for b in bars:
+        chars = ["ã‘","ã±","Ã±","ÃƒÂ±"]
+        for char in chars:
+            if char in b.barangay:
+                b.barangay = b.barangay.replace(char, "ñ")
+            b.save()
 def capitalize():
     cons = ConsumerInfo.objects.all()
     for c in cons:
