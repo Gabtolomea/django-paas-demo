@@ -50,7 +50,7 @@ def lp(request):
     # !!!please ask previous developers before attempting to uncomment!!!
     # portfromcsv()
     sxz()
-    enye_cons(ConsumerInfo.objects.all())
+    enye_cons()
     enye_bars()
     camelize()
     set_first_tran()
