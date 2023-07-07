@@ -59,10 +59,9 @@ Revenue Report
 	<h1 style="text-align: center;">Revenue Reports</h1>
 	<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
 	<form id="yearselection" action="GET" style="margin-right: 1370px;">
-		<select class="form-select" id="selector" onchange="change()">
-			<option value="{{cur_year}}">{{cur_year}}</option>
+		<select class="form-select mb-3" id="selector" onchange="change()">
 			{% for i in years reversed %}
-			<option value="{{i}}">{{i}}</option>
+			<option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
 			{% endfor %}
 		</select>
 	</form>

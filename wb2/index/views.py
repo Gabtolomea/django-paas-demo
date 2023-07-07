@@ -1750,8 +1750,7 @@ def revenue_report(request, year):
     for i in my:
         if i.year not in years:
             years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
+    years.sort()
     # Total Collection\-
     if BarangayRecord.objects.filter(year=year):
         rev_col = BarangayRecord.objects.filter(year=year).aggregate(
@@ -1979,8 +1978,9 @@ def view_unsettled_bills(request, id, year):
         pass
     for i in alltran:
         if i.year not in years:
-            if i.year is not None:
-                years.append(i.year)
+            years.append(i.year)
+
+    years.sort()
     # --------------------------#
     j = 0
     c = 0
@@ -2761,11 +2761,10 @@ def consumption(request, year):
         def __init__(self, year, total) -> None:
             self.year = year
             self.total = total
-    years.sort(reverse=True)
+    years.sort()
     for y in years:
         tyc.append(yeartots(y, len(cons.filter(first_tran__lt=y))))
-    if int(year) in years:
-        years.remove(int(year))
+
 
     # Total Yearly Consumers 
 
