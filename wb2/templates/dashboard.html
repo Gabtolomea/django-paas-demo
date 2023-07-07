@@ -159,7 +159,7 @@
                 {% if not user.is_teller and not user.is_admin and not user.is_reader and not user.is_manager and user.is_supervisor %}
                     {% if is_seen %}
                         <a class="me-5" style="cursor: pointer;" title="Notifications" href="{% url 'issues' %}">
-                             <img src="{% static '/images/notifications_active_FILL0_wght700_GRAD200_opsz48.svg' %}" />
+                            <img src="{% static '/images/notifications_active_FILL0_wght700_GRAD200_opsz48.svg' %}" />
                         </a>
                     {% else %}
                         <a class="me-5" style="cursor: pointer;" title="Notifications" href="{% url 'issues' %}">
@@ -167,8 +167,7 @@
                         </a>
                     {% endif %}
                 {% endif %}
-            
-            
+
                 <a class="me-5" style="cursor: pointer;" title="Sign out" href="{% url 'signout' %}">
                     <img src="{% static '/images/logout_FILL0_wght500_GRAD200_opsz24.svg' %}" />
                 </a>

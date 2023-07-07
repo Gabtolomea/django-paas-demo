@@ -220,6 +220,7 @@ class Messages(models.Model):
     message = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
     time = models.TimeField(auto_now_add=True)
+    is_seensms = models.BooleanField(default=False)
 
 class AdditionalFees(models.Model):
     feeid = models.AutoField(primary_key=True)

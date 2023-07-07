@@ -2804,7 +2804,7 @@ def issues_view(request):
             issue.save()
     context = {
         'issues': issues,
-        'is_seen':is_seen
+        'is_seen':is_seen,
     }
     return render(request, 'issues.html', context)
 
@@ -2820,6 +2820,12 @@ def issue_details(request, id):
     con = tran.acctID
 
     comments = Messages.objects.filter(issue_id=issue)
+    for comment in comments:
+        if comment.from_user != request.user:
+            comment.is_seensms = True
+
+        comment.save()
+
     context = {
         'isdel': issue,
         'con': con,
@@ -2828,6 +2834,7 @@ def issue_details(request, id):
         'comments': comments
     }
     return render(request, 'issue_details.html', context)
+
 
 
 def additional_fee(request, id):
@@ -2857,8 +2864,8 @@ def additional_fee(request, id):
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-def submit_comment(request,id):
-    hotissue = Issues.objects.get(issueid = id)
+def submit_comment(request, id):
+    hotissue = Issues.objects.get(issueid=id)
 
     if request.method == 'POST':
         message = request.POST.get('message')
@@ -2866,11 +2873,19 @@ def submit_comment(request,id):
         mc = Messages()
         mc.message = message
         mc.from_user = request.user
-        mc.to_user = hotissue.issued_by
+
+        if hotissue.issued_by == request.user:
+            last_message = Messages.objects.filter(issue_id=hotissue).order_by('-message_id').first()
+            if last_message:
+                mc.to_user = last_message.from_user
+        else:
+            mc.to_user = hotissue.issued_by
+
         mc.issue_id = hotissue
         mc.save()
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def resolve_issue(request):
     if request.method == 'POST':
