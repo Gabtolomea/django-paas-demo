@@ -3,7 +3,6 @@
 import calendar
 import math
 import datetime
-import datetime
 from .dataporter import *
 from .decorators import *
 from .forms import *
@@ -293,7 +292,7 @@ def ledger(request, id):
     monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
     # get_balance(id)
     class ledgerclass():
-        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid, previous_due):
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):
             self.transid = transid
             self.date = date
             self.prev = prev
@@ -311,7 +310,6 @@ def ledger(request, id):
             self.month = month
             self.year = year
             self.ispaid = ispaid
-            self.previous_due = previous_due
 
         def id(self):
             return self.transid
@@ -335,9 +333,8 @@ def ledger(request, id):
             prev = ''
             cur = ''
             ispaid = ''
-            previous_due = 0
+
             if asc_trans[i].transType == 'Billing':
-                previous_due = bal - asc_trans[i].payment
                 usage = asc_trans[i].usage
                 pre = asc_trans[i].meterReading - usage
                 bill = asc_trans[i].bill
@@ -353,7 +350,6 @@ def ledger(request, id):
                 if asc_trans[i].is_billpaid:
                     ispaid = 'yeah'
             elif asc_trans[i].transType == 'Payment':
-                previous_due = bal + asc_trans[i].payment
                 style = 'table-success'
                 ornum = asc_trans[i].or_number
                 pb = ''
@@ -369,16 +365,13 @@ def ledger(request, id):
                 style = 'table-danger'
                 pb = asc_trans[i].processedBy
                 bal += bill
-                previous_due = bal
 
             elif asc_trans[i].transType == 'Discount':
                 style = 'table-primary'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
-                previous_due = bal
 
             elif asc_trans[i].transType == 'Reset Meter':
-                previous_due = bal
                 bill = 0
                 cur = asc_trans[i].meterReading
                 style = 'table-warning'
@@ -392,7 +385,7 @@ def ledger(request, id):
             bal = math.ceil(bal*100)/100
             ttype = asc_trans[i].transType
             if asc_trans[i].transType != 'Received Amount':
-                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid, previous_due)
+                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid)
                 table.append(new_row)
         # if bal > 0:
         #     ispaid = False
@@ -2106,22 +2099,22 @@ def new_consumertype(request):
     }
     return render(request, 'new_consumertype.html', context)
 
-# def editcontype(request, id):
-#     con = ConsumerType.objects.get(contypeid=id)
-#     if request.method == 'POST':
-#         contype = request.POST['contype']
-#         minReading = request.POST['minReading']
-#         minReadingCharge = request.POST['minReadingCharge']
-#         rateAfterMin = request.POST['rateAfterMin']
+def editcontype(request, id):
+    con = ConsumerType.objects.get(contypeid=id)
+    if request.method == 'POST':
+        contype = request.POST['contype']
+        minReading = request.POST['minReading']
+        minReadingCharge = request.POST['minReadingCharge']
+        rateAfterMin = request.POST['rateAfterMin']
         
-#         con.contype = contype
-#         con.minReading = minReading
-#         con.minReadingCharge = minReadingCharge
-#         con.rateAfterMin = rateAfterMin
-#         con.save()
-#         messages.success(request, 'Code has been updated')
+        con.contype = contype
+        con.minReading = minReading
+        con.minReadingCharge = minReadingCharge
+        con.rateAfterMin = rateAfterMin
+        con.save()
+        messages.success(request, 'Code has been updated')
         
-#     return redirect('new_consumertype')
+    return redirect('new_consumertype')
 
 
 @login_required(login_url='login')
@@ -2795,6 +2788,35 @@ def consumption(request, year):
     }
     return render(request,'consumption.html', context)
 
+
+def exemptiont(request):
+    exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
+    context = {
+    'cons':exempt_cons,
+    'is_exemption':True
+    }
+    return render(request, 'exemption.html', context)
+
+def addexemption(request, id):
+
+    try:    
+        # Retrieve the ConsumerInfo object
+        consumer_info = ConsumerInfo.objects.get(consumer_id=id)
+    except ConsumerInfo.DoesNotExist:
+        return HttpResponse("ConsumerInfo not found.", status=404)
+
+    # Toggle the value of excep_accnt
+    consumer_info.excep_accnt = not consumer_info.excep_accnt
+
+    # Save the updated object
+    consumer_info.save()
+    exempt_accounts(consumer_info)
+    get_bal_exempt(consumer_info.consumer_id)
+
+    # Redirect to a different URL or render a template as needed
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
 def add_issue(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     if request.method == 'POST':
@@ -2828,8 +2850,6 @@ def add_issue(request, id, year):
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
-
-
 def issues_view(request):
     issues = Issues.objects.all()
     for issue in issues:
@@ -2837,51 +2857,25 @@ def issues_view(request):
         if last_message:
             issue.last_comment = last_message.message
             issue.save()
-
     context = {
         'issues': issues,
     }
-    return render(request,'issues.html', context)
+    return render(request, 'issues.html', context)
 
-def exemptiont(request):
-    exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
-    context = {
-    'cons':exempt_cons,
-    'is_exemption':True
-    }
-    return render(request, 'exemption.html', context)
-
-def addexemption(request, id):
-
-    try:    
-        # Retrieve the ConsumerInfo object
-        consumer_info = ConsumerInfo.objects.get(consumer_id=id)
-    except ConsumerInfo.DoesNotExist:
-        return HttpResponse("ConsumerInfo not found.", status=404)
-
-    # Toggle the value of excep_accnt
-    consumer_info.excep_accnt = not consumer_info.excep_accnt
-
-    # Save the updated object
-    consumer_info.save()
-    exempt_accounts(consumer_info)
-    get_bal_exempt(consumer_info.consumer_id)
-
-    # Redirect to a different URL or render a template as needed
-    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def issue_details(request, id):
     issue = Issues.objects.get(issueid=id)
     issue.is_seen = True
     issue.save()
-
+    comments = Messages.objects.filter(issue_id =issue)
+    
     tran = issue.transactionid
     month = tran.month
     monthval = calendar.month_name[month]
     con = tran.acctID
     
 
-    comments = Messages.objects.all()
+    
     context = {
         'isdel': issue,
         'con': con,
@@ -2902,11 +2896,11 @@ def additional_fee(request, id):
 
         for i in range(num_inputs):
             fee_name = request.POST.get(f'additionalfee{i}', '')
-            if fee_name:  
+            if fee_name:  # Only process non-empty fee names
                 fee_names.append(fee_name)
 
         if fee_names:
-            fee_names_str = ', '.join(fee_names) 
+            fee_names_str = ', '.join(fee_names)  # Join the fee names into a comma-separated string
 
             addFee = AdditionalFees()
             addFee.fee_name = fee_names_str
@@ -2944,4 +2938,3 @@ def resolve_issue(request):
         tran.is_issue = False
         tran.save()
         return redirect('issues')
-
