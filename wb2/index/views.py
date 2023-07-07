@@ -27,6 +27,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.http import JsonResponse
 
+is_seen = Issues.objects.filter(is_seen=False)
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -2818,6 +2819,7 @@ def addexemption(request, id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
+
 def add_issue(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     if request.method == 'POST':
@@ -2851,38 +2853,39 @@ def add_issue(request, id, year):
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
+
 def issues_view(request):
     issues = Issues.objects.all()
     for issue in issues:
+    
         last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
         if last_message:
             issue.last_comment = last_message.message
             issue.save()
     context = {
         'issues': issues,
+        'is_seen':is_seen
     }
     return render(request, 'issues.html', context)
 
-
 def issue_details(request, id):
     issue = Issues.objects.get(issueid=id)
-    issue.is_seen = True
-    issue.save()
-    comments = Messages.objects.filter(issue_id =issue)
-    
+    if not issue.is_seen:
+        issue.is_seen = True
+        issue.save()
     tran = issue.transactionid
     month = tran.month
     monthval = calendar.month_name[month]
     con = tran.acctID
-    
 
-    
+    comments = Messages.objects.filter(issue_id=issue)
     context = {
         'isdel': issue,
         'con': con,
         'tran': tran,
         'monthval': monthval,
-        'comments':comments
+        'comments': comments,
+        'is_resolved': issue.status == "Resolved"
     }
     return render(request, 'issue_details.html', context)
 
@@ -2897,11 +2900,11 @@ def additional_fee(request, id):
 
         for i in range(num_inputs):
             fee_name = request.POST.get(f'additionalfee{i}', '')
-            if fee_name:  # Only process non-empty fee names
+            if fee_name:  
                 fee_names.append(fee_name)
 
         if fee_names:
-            fee_names_str = ', '.join(fee_names)  # Join the fee names into a comma-separated string
+            fee_names_str = ', '.join(fee_names) 
 
             addFee = AdditionalFees()
             addFee.fee_name = fee_names_str
