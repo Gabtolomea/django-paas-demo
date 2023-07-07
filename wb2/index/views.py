@@ -28,6 +28,9 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
+
+
+
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -144,6 +147,7 @@ def bills_list(request):
         'bills_list': bills_list,
         'user': user,
         'hipos':hipos,
+        'is_seen': is_seen
     }
     return render(request, 'billslist.html', context)
 
@@ -266,7 +270,8 @@ def user_creation(request):
             messages.error(request, 'User creation failed')
     context = {
         'form': form,
-        'user': request.user
+        'user': request.user,
+        'is_seen':is_seen
     }
     return render(request, 'registration.html', context)
 
@@ -410,7 +415,8 @@ def ledger(request, id):
         'bill': bill,
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
-        'ispaid':ispaid
+        'ispaid':ispaid,
+        'is_seen': is_seen
     }
     return render(request, 'ledger.html', context)
 
@@ -550,7 +556,8 @@ def meterreading(request):
         'count':count,
         'year': datetime.today().year,
         'months': months,
-        'years': years
+        'years': years,
+        'is_seen': is_seen
     }
     return render(request, 'meterreading.html', context)
 
@@ -933,7 +940,8 @@ def inputreading(request, id, year):
         'table': table,
         'cur_year': year,
         'years': years,
-        'user': request.user
+        'user': request.user,
+        'is_seen': is_seen
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -988,6 +996,7 @@ def consumer_list(request):
         'count':count,
         'consumer_list': cons_list,
         'user': user,
+        'is_seen': is_seen
     }
     return render(request, 'conlist.html', context)
 
@@ -1295,7 +1304,8 @@ def user_edit(request, id):
     context = {
         'sys': sys,
         'form': form,
-        'user': request.user
+        'user': request.user,
+        'is_seen': is_seen
     }
     return render(request, 'user_edit.html', context)
 
@@ -2039,6 +2049,7 @@ def new_consumertype(request):
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
+        'is_seen': is_seen,
     }
     return render(request, 'new_consumertype.html', context)
 
@@ -2090,6 +2101,7 @@ def penalty(request):
         'errors': form.errors,
         'user': request.user,
         'is_penalty':True,
+        'is_seen': is_seen
     }
 
     return render(request, 'penalty.html', context)
@@ -2408,7 +2420,8 @@ def bulkreading(request):
             'paginate_by': paginate_by,
             'last' : range(paginator.num_pages-3, paginator.num_pages),
             'five' : range(1,6),
-            'user':request.user
+            'user':request.user,
+            'is_seen': is_seen
         }
         return render(request,'bulkreading.html', context)
 
@@ -2432,6 +2445,7 @@ def viewprof(request):
         'user':user,
         'role':role,
         'is_profile':True,
+        'is_seen': is_seen
     }
     return render(request, 'viewprof.html', context)
 
@@ -2454,6 +2468,7 @@ def userprof(request):
     context= {
         'user':user,
         'form':form,
+        'is_seen': is_seen
     }
     return render(request, 'userprof.html', context)
 
@@ -2525,7 +2540,9 @@ def monthly_summary (request, id, year):
         'table': table,
         'u': consumer,
         'year' : year,
-        'years': years
+        'years': years,
+        'is_seen': is_seen
+        
 
     }
     return render(request,'conmon_summary.html', context)
@@ -2765,38 +2782,39 @@ def add_issue(request, id, year):
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
+is_seen = Issues.objects.filter(is_seen=False)
 def issues_view(request):
     issues = Issues.objects.all()
     for issue in issues:
+    
         last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
         if last_message:
             issue.last_comment = last_message.message
             issue.save()
     context = {
         'issues': issues,
+        'is_seen':is_seen
     }
     return render(request, 'issues.html', context)
 
-
 def issue_details(request, id):
     issue = Issues.objects.get(issueid=id)
-    issue.is_seen = True
-    issue.save()
-    comments = Messages.objects.filter(issue_id =issue)
-    
+    if not issue.is_seen:
+        issue.is_seen = True
+        issue.save()
+
     tran = issue.transactionid
     month = tran.month
     monthval = calendar.month_name[month]
     con = tran.acctID
-    
 
-    
+    comments = Messages.objects.filter(issue_id=issue)
     context = {
         'isdel': issue,
         'con': con,
         'tran': tran,
         'monthval': monthval,
-        'comments':comments
+        'comments': comments
     }
     return render(request, 'issue_details.html', context)
 
@@ -2811,11 +2829,11 @@ def additional_fee(request, id):
 
         for i in range(num_inputs):
             fee_name = request.POST.get(f'additionalfee{i}', '')
-            if fee_name:  # Only process non-empty fee names
+            if fee_name:  
                 fee_names.append(fee_name)
 
         if fee_names:
-            fee_names_str = ', '.join(fee_names)  # Join the fee names into a comma-separated string
+            fee_names_str = ', '.join(fee_names) 
 
             addFee = AdditionalFees()
             addFee.fee_name = fee_names_str
