@@ -50,7 +50,7 @@ def lp(request):
     # !!!please ask previous developers before attempting to uncomment!!!
     # portfromcsv()
     sxz()
-    enye(ConsumerInfo.objects.all())
+    # enye(ConsumerInfo.objects.all())
     camelize()
     set_first_tran()
     # capitalize()
