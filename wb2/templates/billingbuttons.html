@@ -23,15 +23,14 @@
 
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="meternum" class="form-label">Month Range</label>
+                        <label for="meternum" class="form-label">Month Range <span class="text-danger">*</span> </label>
                         <input type="number" name="monthfee" class="form-control" required id="monthfee">
                         <input type="hidden" name="numInputs" id="numInputs" value="0">
                     </div>
 
-                    <br>
-
-                    <div class="form-group">
-                        <button class="btn button2" type="button" id="flexSwitchCheckDefault"> Quantity of Fees</button>
+                    <div class="form-group mt-2">
+                        <label for="meternum" class="form-label">No. of Items <span class="text-danger">*</span></label>
+                        <input class="form-control" type="number" id="inputs_num" oninput="addInputs(this.value)">
                     </div>
 
                     <div class="additional-fees" style="display: none;">
@@ -42,11 +41,6 @@
                 </div>
 
                 <script>
-                    document.getElementById('flexSwitchCheckDefault').addEventListener('click', function () {
-                        var numInputs = prompt('How many Inputs?');
-                        addInputs(numInputs);
-                    });
-
                     function addInputs(numInputs) {
                         var additionalFeesDiv = document.querySelector('.additional-fees');
                         additionalFeesDiv.style.display = 'block';
@@ -62,12 +56,20 @@
                         formGroup.innerHTML = '';
 
                         var label = document.createElement('label');
-                        label.innerHTML = '<br> Item Details:';
+                        label.innerHTML = '<label for="item-details" class="form-label mt-3 mb-1">Item Details:</label>';
                         formGroup.appendChild(label);
 
                         var numInputsField = document.getElementById('numInputs');
                         numInputsField.value = numInputs;  // Update the value of the numInputs field
-
+                        const submitBtn = document.getElementById('submit-btn');
+                        if (numInputs <= 0) {
+                            submitBtn.classList.add('disabled');
+                            submitBtn.disabled = true;
+                        }
+                        else {
+                            submitBtn.classList.remove('disabled');
+                            submitBtn.disabled = false;
+                        }
                         for (var i = 0; i < numInputs; i++) {
                             var div = document.createElement('div');
                             div.classList.add('row');
@@ -78,8 +80,9 @@
                             var inputText = document.createElement('input');
                             inputText.type = 'text';
                             inputText.name = 'additionalfee' + i;
+                            inputText.classList.add('form-control');
+                            inputText.classList.add('mb-1');
                             inputText.placeholder = 'Item Name'; // Set the placeholder text
-                            inputText.value = inputValues[i] || ''; // Set the stored value if available
                             textDiv.appendChild(inputText);
 
                             var numberDiv = document.createElement('div');
@@ -89,6 +92,7 @@
                             inputNumber.type = 'number';
                             inputNumber.name = 'additionalfee' + i + '_number';
                             inputNumber.classList.add('form-control');
+                            inputNumber.classList.add('mb-1');
                             inputNumber.value = '0.00'; // Set the default value to '0.00'
                             inputNumber.addEventListener('input', function () {
                                 updateTotalAmount();
@@ -122,29 +126,29 @@
                     }
 
                     function updateTotalAmount() {
-    var totalAmountLabel = document.getElementById('total-amount-fees');
-    var totalAmountInput = document.querySelector('input[name="totalAmount"]');
-    totalAmountInput.value = calculateTotalAmount().toFixed(2);
-    totalAmountLabel.innerText = 'Total Amount Fees: ₱' + totalAmountInput.value;
+                        var totalAmountLabel = document.getElementById('total-amount-fees');
+                        var totalAmountInput = document.querySelector('input[name="totalAmount"]');
+                        totalAmountInput.value = calculateTotalAmount().toFixed(2);
+                        totalAmountLabel.innerText = 'Total Amount Fees: ₱' + totalAmountInput.value;
 
-    // Concatenate additional fees
-    var feeInputs = document.querySelectorAll('.additional-fees input[type="text"]');
-    var feeNames = [];
-    feeInputs.forEach(function (input) {
-        if (input.value.trim() !== '') {
-            feeNames.push(input.value.trim());
-        }
-    });
-    document.querySelector('input[name="additionalfee_names"]').value = feeNames.join(', ');
+                        // Concatenate additional fees
+                        var feeInputs = document.querySelectorAll('.additional-fees input[type="text"]');
+                        var feeNames = [];
+                        feeInputs.forEach(function (input) {
+                            if (input.value.trim() !== '') {
+                                feeNames.push(input.value.trim());
+                            }
+                        });
+                        document.querySelector('input[name="additionalfee_names"]').value = feeNames.join(', ');
 
-    // Concatenate amounts
-    var amountInputs = document.querySelectorAll('.additional-fees input[type="number"]');
-    var amounts = [];
-    amountInputs.forEach(function (input) {
-        amounts.push(parseFloat(input.value).toFixed(2));
-    });
-    document.querySelector('input[name="additionalfee_amounts"]').value = amounts.join(', ');
-}
+                        // Concatenate amounts
+                        var amountInputs = document.querySelectorAll('.additional-fees input[type="number"]');
+                        var amounts = [];
+                        amountInputs.forEach(function (input) {
+                            amounts.push(parseFloat(input.value).toFixed(2));
+                        });
+                        document.querySelector('input[name="additionalfee_amounts"]').value = amounts.join(', ');
+                    }
 
 
                     function calculateTotalAmount() {
@@ -159,7 +163,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" name="btnform1">Submit</button>
+                    <button id="submit-btn" type="submit" class="btn btn-primary" name="btnform1">Submit</button>
                 </div>
 
                 <!-- Add the hidden input field for concatenated fee names -->

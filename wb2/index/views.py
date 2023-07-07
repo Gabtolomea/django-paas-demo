@@ -766,7 +766,7 @@ def inputreading(request, id, year):
             
             try:
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                last_reading = billtran.prevReading
+                last_reading = billtranF.prevReading
                 # finding next billing
                 mm = d+1
                 has_next = False
@@ -1552,7 +1552,7 @@ def editpayment(request, id):
             con.current_bal += (con.excess*-1)
             con.excess = 0
             con.save()
-        return redirect('payment_history',ted.acctID.consumer_id,ted.year)
+        return redirect('payment_history', ted.acctID.consumer_id,ted.year)
 
 def reports(request):
     cur_year =  datetime.today().year
