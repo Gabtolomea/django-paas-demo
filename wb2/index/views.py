@@ -768,7 +768,7 @@ def inputreading(request, id, year):
             
             try:
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
-                last_reading = billtranF.prevReading
+                last_reading = billtran.prevReading
                 # finding next billing
                 mm = d+1
                 has_next = False
@@ -1579,9 +1579,9 @@ def barangayreport(request, year):
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
-            years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
+            years.append(i.year)  
+            print(years)
+    years.sort(reverse=True)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -1658,8 +1658,7 @@ def usage_report_data(request, year):
     for i in my:
         if i.year not in years:
             years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
+    years.sort()
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -1982,8 +1981,6 @@ def view_unsettled_bills(request, id, year):
         if i.year not in years:
             if i.year is not None:
                 years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
     # --------------------------#
     j = 0
     c = 0
@@ -2548,10 +2545,9 @@ def monthly_summary (request, id, year):
     for i in alltran:
         if i.year not in years:
             years.append(i.year)
+            print(years)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
-    if int(year) in years:
-        years.remove(int(year))
 
     # --------------------------#
 
@@ -2584,8 +2580,7 @@ def monthly_summary (request, id, year):
         'table': table,
         'u': consumer,
         'year' : year,
-        'years': years
-
+        'years': years,
     }
     return render(request,'conmon_summary.html', context)
 

@@ -27,10 +27,9 @@
 	</table>
 	<label for="years"	style="font-size: 18px; font-weight: normal;">SelectYear:</label>
 	<form id="yearselection" action="">
-		<select style="width: 100px;" class="form-select mb-3" id="selector" onchange="change()">
-			<option value="{{current}}">{{current}}</option>
-			{% for i in years reversed %}
-			<option value="{{i}}">{{i}}</option>
+		<select class="form-select mb-3" id="selector" onchange="change()">
+			{% for i in years %}
+			<option value="{{i}}" {% if i == current %} selected{% endif %}>{{i}}</option>
 			{% endfor %}
 		</select>
 	</form>
