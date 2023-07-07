@@ -30,7 +30,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
 
-
+is_seen = Issues.objects.filter(is_seen=False)
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -147,7 +147,7 @@ def bills_list(request):
         'bills_list': bills_list,
         'user': user,
         'hipos':hipos,
-        'is_seen': is_seen
+        'is_seen': is_seen,
     }
     return render(request, 'billslist.html', context)
 
@@ -1075,6 +1075,7 @@ def consumercreation(request):
         'errors': form.errors,
         'user': request.user,
         'create':True,
+        'is_seen': is_seen,
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1097,7 +1098,8 @@ def consumerupdate(request, id):
         'conid':id,
         'isUpdate':True,
         'form': form,
-        'user': request.user
+        'user': request.user,
+        'is_seen': is_seen,
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1559,7 +1561,8 @@ def barangayreport(request, year):
         'years': years,
         'fr': fr,
         'user': request.user,
-        'is_br':True
+        'is_br':True,
+        'is_seen': is_seen,
     }
     return render(request, 'waterusage.html', context)
 
@@ -1578,6 +1581,7 @@ def view_barangay(request, id):
 
     context = {
         'bang': bang,
+        'is_seen': is_seen,
     }
     return render(request, 'view_barangay.html', context)
 
@@ -1675,6 +1679,7 @@ def usage_report_data(request, year):
         'user': request.user,
         'is_ur':True,
         'total_unb':total_unb,
+        'is_seen': is_seen,
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1749,6 +1754,7 @@ def revenue_report(request, year):
         'col': col,
         'rec': rec,
         'is_rr':True,
+        'is_seen': is_seen,
     }
     return render(request, 'revenue_report.html',  context)
 
@@ -1888,6 +1894,7 @@ def unsettled_bills(request):
         'user': request.user,
         'sort_field' : sort_field,
         'sort_order' : sort_order,
+        'is_seen': is_seen,
    
      
     }
@@ -1964,6 +1971,7 @@ def view_unsettled_bills(request, id, year):
         'years': years,
         'current': year,
         'table': table, 
+        'is_seen': is_seen,
     }
     return render(request, 'view_unsettled_bills.html', context)
 
@@ -1993,6 +2001,7 @@ def discount(request):
         'dc': dc,
         'user': user,
         'is_discount':True,
+        'is_seen': is_seen,
     }
     return render(request, 'discount.html', context)
 
@@ -2637,7 +2646,8 @@ def payment_history (request, id, year):
         'u' : consumer,
         'alltrans' : alltran,
         'years'    : years,
-        'year'     : year
+        'year'     : year,
+        'is_seen': is_seen,
     }
 
     return render(request,'payment_history.html', context)
@@ -2745,6 +2755,7 @@ def consumption(request, year):
         'tyc' : tyc,
         'is_cc':True,
         'sm_arr':sm_arr,
+        'is_seen': is_seen,
     }
     return render(request,'consumption.html', context)
 
@@ -2782,7 +2793,7 @@ def add_issue(request, id, year):
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
-is_seen = Issues.objects.filter(is_seen=False)
+
 def issues_view(request):
     issues = Issues.objects.all()
     for issue in issues:

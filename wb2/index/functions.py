@@ -636,6 +636,116 @@ def dump_database():
     print("Files uploaded successfully to the specified folder on Google Drive.")
 
 
+    cnx = mysql.connector.connect(
+        user='root',
+        password='jazfer',
+        host='localhost',
+        port=3307,
+        database='wb2',
+        charset='latin1'
+    )
+
+    cursor = cnx.cursor()
+
+    cursor.execute("SHOW TABLES")
+    tables = cursor.fetchall()
+
+    timestamp = datetime.now().strftime("%Y.%m.%d")
+    desktop_path = os.path.expanduser("~/Desktop")
+
+    folder_name = "Dump"
+
+    folder_path = os.path.join(desktop_path, folder_name)
+
+    if os.path.exists(folder_path):
+        print("Folder already exists!")
+    else:
+        os.makedirs(folder_path)
+        print("Folder created successfully!")
+    dump_directory = desktop_path + f'/{folder_name}/'
+    dump_file_path = f'{dump_directory}{timestamp}wb2_data_dump.sql'
+    
+    if os.path.exists(dump_file_path):
+        print("already dumped today, balik lang ugma")
+        return
+
+    with open(dump_file_path, 'w', buffering=1000000) as dump_file:
+        print("Dumping...")
+
+        dump_file.write(f"DROP DATABASE IF EXISTS `wb2`;\n\n")
+        dump_file.write(f"CREATE DATABASE IF NOT EXISTS `wb2`;\n\n")
+        dump_file.write(f"USE `wb2`;\n\n")
+        dump_file.write(f"SET FOREIGN_KEY_CHECKS=0;\n\n")
+
+        for table in tables:
+            table_name = table[0]
+            dump_file.write(f"DROP TABLE IF EXISTS `{table_name}`;\n")
+            cursor.execute(f"SHOW CREATE TABLE `{table_name}`")
+            create_table_result = cursor.fetchone()
+            create_table_statement = create_table_result[1]
+            create_table_statement = create_table_statement.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
+            dump_file.write(create_table_statement + ';\n\n')
+            query = f"SELECT * FROM `{table_name}`"
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+            if len(rows) > 0:
+                batch_size = 1000
+                num_rows = len(rows)
+                num_batches = (num_rows // batch_size) + (num_rows % batch_size > 0)
+
+                for batch_index in range(num_batches):
+                    start_index = batch_index * batch_size
+                    end_index = min((batch_index + 1) * batch_size, num_rows)
+                    dump_file.write(f"INSERT INTO `{table_name}` VALUES\n")
+                    for i in range(start_index, end_index):
+                        row = rows[i]
+                        values = [f"'{str(value)}'" if value is not None else 'NULL' for value in row]
+                        row_data = f"({', '.join(values)})"
+                        if i < end_index - 1:
+                            row_data += ','
+                        dump_file.write(row_data + '\n')
+
+                    dump_file.write(';\n\n')
+            else:
+                dump_file.write(f"DELETE FROM `{table_name}`;\n\n")
+        dump_file.write(f"SET FOREIGN_KEY_CHECKS=1;\n\n")
+
+        print("Success...")
+
+    cursor.close()
+    cnx.close()
+    
+    credentials_file = "D:/waterbilling2.0/service_key.json"
+
+    if not os.path.exists(credentials_file):
+        print(f"Please save the service account credentials JSON file at the specified path.")
+        return
+
+    credentials = service_account.Credentials.from_service_account_file(credentials_file, scopes=["https://www.googleapis.com/auth/drive.file"])
+    drive_service = build("drive", "v3", credentials=credentials)
+
+    target_folder_id = "1eYsQ3H3IsjKFBB-ka34sGUx2vzuSuHiY"
+
+    response = drive_service.files().list(q=f"'{target_folder_id}' in parents and trashed=false", fields="files(name)").execute()
+    existing_files = response.get("files", [])
+
+
+    for filename in os.listdir(dump_directory):
+        file_path = os.path.join(dump_directory, filename)
+
+        file_exists = any(file_info["name"] == filename for file_info in existing_files)
+        if file_exists:
+            print(f"File '{filename}' already exists in the target folder. Skipping...")
+            continue
+
+        file_metadata = {"name": filename, "parents": [target_folder_id]}
+        media = MediaFileUpload(file_path)
+        drive_service.files().create(body=file_metadata, media_body=media).execute()
+
+    print("Files uploaded successfully to the specified folder on Google Drive.")
+
+
 def update_from_csv():
     consumer_brec_updates = []
     with open('D:/waterbilling2.0/wb2/output.csv', 'r') as file:
