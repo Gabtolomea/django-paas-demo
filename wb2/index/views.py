@@ -333,6 +333,7 @@ def ledger(request, id):
             prev = ''
             cur = ''
             ispaid = ''
+
             if asc_trans[i].transType == 'Billing':
                 usage = asc_trans[i].usage
                 pre = asc_trans[i].meterReading - usage
@@ -364,10 +365,12 @@ def ledger(request, id):
                 style = 'table-danger'
                 pb = asc_trans[i].processedBy
                 bal += bill
+
             elif asc_trans[i].transType == 'Discount':
                 style = 'table-primary'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
+
             elif asc_trans[i].transType == 'Reset Meter':
                 bill = 0
                 cur = asc_trans[i].meterReading
@@ -382,9 +385,8 @@ def ledger(request, id):
             bal = math.ceil(bal*100)/100
             ttype = asc_trans[i].transType
             if asc_trans[i].transType != 'Received Amount':
-                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style, dcode, ttype, monthnames[m-1], y, ispaid)
+                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid)
                 table.append(new_row)
-        
         # if bal > 0:
         #     ispaid = False
         # else:
@@ -409,7 +411,7 @@ def ledger(request, id):
         'bill': bill,
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
-        'ispaid':ispaid
+        'ispaid':ispaid,
     }
     return render(request, 'ledger.html', context)
 
@@ -670,6 +672,7 @@ def inputreading(request, id, year):
 
             m = meterreaderclass(transid, month, i, usage, prev, reading, next, style)
             table.append(m)
+            
     if consumer.penaltycode is None:
         con_penalty = Penalty.objects.get(penaltycode='P001')
     else:
@@ -760,9 +763,6 @@ def inputreading(request, id, year):
                     aft.bill = i.amount
                     aft.save()
                     
-
-
-
             
             try:
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
@@ -985,7 +985,7 @@ def inputreading(request, id, year):
             case 12:
                 con_b_rec.total_due_dec += bill
                 con_b_rec.total_usage_dec += usage
-        
+
         bill = 0
         usage = 0
         con_b_rec.save()
@@ -994,6 +994,7 @@ def inputreading(request, id, year):
         else:
             get_balance(id)
         return redirect('inputreading', id=id , year=year)
+    
     context = {
         'consumer': consumer,
         'table': table,
@@ -2787,6 +2788,35 @@ def consumption(request, year):
     }
     return render(request,'consumption.html', context)
 
+
+def exemptiont(request):
+    exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
+    context = {
+    'cons':exempt_cons,
+    'is_exemption':True
+    }
+    return render(request, 'exemption.html', context)
+
+def addexemption(request, id):
+
+    try:    
+        # Retrieve the ConsumerInfo object
+        consumer_info = ConsumerInfo.objects.get(consumer_id=id)
+    except ConsumerInfo.DoesNotExist:
+        return HttpResponse("ConsumerInfo not found.", status=404)
+
+    # Toggle the value of excep_accnt
+    consumer_info.excep_accnt = not consumer_info.excep_accnt
+
+    # Save the updated object
+    consumer_info.save()
+    exempt_accounts(consumer_info)
+    get_bal_exempt(consumer_info.consumer_id)
+
+    # Redirect to a different URL or render a template as needed
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
 def add_issue(request, id, year):
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     if request.method == 'POST':
@@ -2822,38 +2852,40 @@ def add_issue(request, id, year):
 
 def issues_view(request):
     issues = Issues.objects.all()
+    for issue in issues:
+        last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
+        if last_message:
+            issue.last_comment = last_message.message
+            issue.save()
     context = {
         'issues': issues,
     }
-    return render(request,'issues.html', context)
+    return render(request, 'issues.html', context)
 
-def exemptiont(request):
-    exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
-    print(exempt_cons)
+
+def issue_details(request, id):
+    issue = Issues.objects.get(issueid=id)
+    issue.is_seen = True
+    issue.save()
+    comments = Messages.objects.filter(issue_id =issue)
+    
+    tran = issue.transactionid
+    month = tran.month
+    monthval = calendar.month_name[month]
+    con = tran.acctID
+    
+
+    
     context = {
-    'cons':exempt_cons,
-    'is_exemption':True
+        'isdel': issue,
+        'con': con,
+        'tran': tran,
+        'monthval': monthval,
+        'comments':comments
     }
-    return render(request, 'exemption.html', context)
+    return render(request, 'issue_details.html', context)
 
-def addexemption(request, id):
 
-    try:    
-        # Retrieve the ConsumerInfo object
-        consumer_info = ConsumerInfo.objects.get(consumer_id=id)
-    except ConsumerInfo.DoesNotExist:
-        return HttpResponse("ConsumerInfo not found.", status=404)
-
-    # Toggle the value of excep_accnt
-    consumer_info.excep_accnt = not consumer_info.excep_accnt
-
-    # Save the updated object
-    consumer_info.save()
-    exempt_accounts(consumer_info)
-    get_bal_exempt(consumer_info.consumer_id)
-
-    # Redirect to a different URL or render a template as needed
-    return redirect(request.META.get('HTTP_REFERER', '/'))
 def additional_fee(request, id):
     if request.method == "POST":
         num_inputs = int(request.POST.get('numInputs', 0))
@@ -2881,3 +2913,28 @@ def additional_fee(request, id):
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
+def submit_comment(request,id):
+    hotissue = Issues.objects.get(issueid = id)
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+
+        mc = Messages()
+        mc.message = message
+        mc.from_user = request.user
+        mc.to_user = hotissue.issued_by
+        mc.issue_id = hotissue
+        mc.save()
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def resolve_issue(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        issue = Issues.objects.get(issueid=id)
+        issue.status = "Resolved"
+        issue.save()
+        tran = issue.transactionid
+        tran.is_issue = False
+        tran.save()
+        return redirect('issues')

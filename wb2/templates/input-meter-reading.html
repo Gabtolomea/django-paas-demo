@@ -52,13 +52,6 @@ Input Reading
 		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
 		transition: all 0.1s;
 	}
-	.container2 {
-		position: absolute;
-		top: 178px;
-		left: 32rem;
-		right: 0;
-		z-index: 100;
-		}
 </style>
 <div class="container-fluid p-0">
 	<div class="table_responsive" style="max-height: 922px;">
@@ -161,31 +154,16 @@ Input Reading
             <img style="width: 25px;" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
             Get a Copy
         </button>
-        <a href="{% url 'addexemptions' consumer.consumer_id %}">
-            <button type="button" class="btn button2" id="exemption-btn" style="background-color: #006c85; color: white;">
-                {% if consumer.excep_accnt %}
-                Exempted
-                {% else %}
-                Exempt
-                {% endif %}
-            </button>
-        </a>
+        <button type="button" class="btn button2" id="exemption-btn" style="background-color: #006c85; color: white;"
+            {% if consumer.excep_accnt %}disabled{% endif %}>
+            {% if consumer.excep_accnt %}
+            Exempted
+            {% else %}
+            Exempt
+            {% endif %}
+        </button>
     </div>
 </div>
-
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var isExempted = {% if consumer.excep_accnt %}true{% else %}false{% endif %};
-        var btn = document.getElementById("exemption-btn");
-
-        if (isExempted) {
-            btn.disabled = true;
-            btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
-        }
-    });
-</script>
 <h1 class="mb-3 text-center">Input Reading</h1>
 <div class="container-fluid p-0">
 	<div class="table-responsive" style="max-height: 700px;">
@@ -203,6 +181,27 @@ Input Reading
 				yearselection.action = selector.value
 				yearselection.submit()
 			}
+
+			document.addEventListener("DOMContentLoaded", function () {
+			var isExempted = {% if consumer.excep_accnt %}true{% else %}false{% endif %};
+			var btn = document.getElementById("exemption-btn");
+
+			if (isExempted) {
+				btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+				btn.textContent = "Exempted";
+			} else {
+				btn.addEventListener("click", handleExemptionClick);
+			}
+
+			function handleExemptionClick() {
+				btn.disabled = true;
+				btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+				btn.textContent = "Exempted";
+				isExempted = true;
+				var consumerId = '{{ consumer.consumer_id }}';
+				window.location.href = '{% url "addexemptions" consumer.consumer_id %}';
+			}
+		});
 		</script>
 		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
 			<thead class="wb_thead" >
@@ -230,17 +229,14 @@ Input Reading
 									class = "input form-control border-0 rounded-0 " 
 									name = "reading-{{t.month}}" 
 									id = "{{t.transid}}" 
-									onfocus = "this.select()"
-									oninput="change(this)"
+									onfocus = "this.select()" 
 									disabled 
 									type = "number"
-									data-prev = {{t.prev}}
-									data-next = {{t.next}}
 									{% comment %}
 									{% if t.prev %} min={{t.prev}} {% endif %} 
 									{% if t.next %} max="{{t.next}}" {%endif%} {% endcomment %}
 									{% if t.reading %} value="{{t.reading}}" {% endif %}>
-								<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
+								
 							</td>
 						</form>
 						{% if consumer.stopmeterflag %}
@@ -261,39 +257,6 @@ Input Reading
 				{% endfor %}
 			</tbody>
 			<script>
-				contextMenuTargets.forEach(function(target) {
-					target.addEventListener('contextmenu', function(e) {
-						// Remove previous highlight
-						table.classList.remove('table-hover')
-						if (highlightedRow) {
-							highlightedRow.classList.remove('highlight');
-						}
-						
-						highlightedRow = target;
-						highlightedRow.classList.add('highlight');
-						e.preventDefault();
-						const link = target.dataset.link;
-						customLink.innerHTML = `<a class="text-danger fw-bold" href="${link}">Report as Issue</a>`;
-						contextMenu.style.display = 'block';
-						contextMenu.style.left = e.pageX + 'px';
-						contextMenu.style.top = e.pageY + 'px';
-					});
-				});
-				function change(input) {
-					id = input.id
-					form = document.getElementById('form-'+id)
-					prev = parseInt(input.getAttribute('data-prev'))
-					if (input.value<prev){
-						form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year %}"
-						input.classList.remove('border-0')
-						input.classList.add('is-invalid')
-					}
-					else{
-						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
-						input.classList.remove("is-invalid")
-						input.classList.add('border-0')
-					}
-				}
 				function submit_this(id, prev) {
 					form = document.getElementById('form-'+id)
 					// input = document.getElementById(id)
@@ -317,7 +280,6 @@ Input Reading
 					}
 				}
 				function toggle(id, prev, reading) {
-					form = document.getElementById('form-'+id)
 					input = document.getElementById(id)
 					edit = document.getElementById("edit-" + id)
 					submit = document.getElementById("submit-" + id)
@@ -329,16 +291,13 @@ Input Reading
 						}
 						submit.style.display = "none"
 						edit.innerHTML = "EDIT" 
-						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
 						edit.classList.remove("btn-danger")
 						edit.classList.add("btn-primary")
 					} else {
 						if (has_del){
 							del = document.getElementById("delete-" + id)
-							del.style.display = "none"
-						}
-						if (input.value < prev){
-							form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
+							
+						del.style.display = "none"
 						}
 						submit.style.display = "inline"
 						edit.innerHTML = "CANCEL"
@@ -504,7 +463,7 @@ Input Reading
 			y = 20
 		}
 		console.log("testing")
-		doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
+		doc.save('{{consumer.firstname}} {{consumer.lastname}}- Meter Reading.pdf');
 	}				
 		</script>
 	</div>
