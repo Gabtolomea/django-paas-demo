@@ -31,7 +31,6 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
 is_seen = Issues.objects.filter(is_seen=False)
-issued_by = Issues.objects.all()
 
 
 def porter(request):
@@ -2809,11 +2808,11 @@ def issues_view(request):
     except NameError:
         pass
 
+    
     context = {
         'issues': issues,
         'is_seen': is_seen,
         'last_message': last_message,
-        'issued_by' : issued_by, 
     }
     return render(request, 'issues.html', context)
 
