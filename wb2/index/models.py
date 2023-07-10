@@ -220,6 +220,7 @@ class Messages(models.Model):
     message = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
     time = models.TimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
 
 class AdditionalFees(models.Model):
     feeid = models.AutoField(primary_key=True)
@@ -227,4 +228,6 @@ class AdditionalFees(models.Model):
     fee_name = models.CharField(max_length=100)
     amount = models.FloatField()
     months = models.IntegerField()
+    remainder = models.IntegerField()
+    current_tran = models.IntegerField(null=True)
     date_added = models.DateField(auto_now_add=True)

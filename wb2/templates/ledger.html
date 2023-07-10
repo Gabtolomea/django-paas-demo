@@ -148,6 +148,7 @@ Account Ledger
 				<select id="selector" name="show" class="form-select form-select ms-1 me-3" onchange="this.form.submit()">
 					<option value="" {% if disp == ""%}selected{% endif %}>All</option>
 					<option value="Billing" {% if disp == "Billing"%}selected{% endif %}>Billing</option>
+					<option value="Additional Fees" {% if disp == "Additional Fees"%}selected{% endif %}>Additional Fees</option>
 					<option value="Payment" {% if disp == "Payment"%}selected{% endif %}>Payment</option>
 					<option value="Penalty" {% if disp == "Penalty"%}selected{% endif %}>Penalty</option>
 					<option value="Discount" {% if disp == "Discount"%}selected{% endif %}>Discount</option>
