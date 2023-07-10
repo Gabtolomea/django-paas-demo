@@ -2,6 +2,7 @@
 
 import calendar
 import math
+from django.core.exceptions import *
 import datetime
 from .dataporter import *
 from .decorators import *
@@ -1117,6 +1118,8 @@ def consumercreation(request):
             c.mobilenum = mobilenum
             c.email = email
             c.birthdate = birthdate
+            if c.birthdate == '':
+                c.birthdate = datetime.today()
             c.sex = sex
             c.penaltycode = Penalty.objects.get(penaltycode=penaltycode) 
             c.sitio = sitio
@@ -1148,10 +1151,12 @@ def consumerupdate(request, id):
         else:
             template = redirect('bills_list')
             return template 
-
-    con = ConsumerInfo.objects.get(consumer_id=id)
-    form = ConsumerForm(instance=con)
-    penaltyc = con.penaltycounter
+    try:
+        con = ConsumerInfo.objects.get(consumer_id=id)
+        form = ConsumerForm(instance=con) 
+        penaltyc = con.penaltycounter
+    except ValidationError:
+        pass
     context = {
         'pc':penaltyc,
         'conid':id,

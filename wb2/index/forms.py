@@ -107,7 +107,7 @@ class ConsumerForm(ModelForm):
     installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Barangays.objects.all())
     contypeid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=ConsumerType.objects.all())
     penaltycode = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Penalty.objects.all(),required=False)
-    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),required=True)
+    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),required=False)
         
     class Meta():
         model = ConsumerInfo
