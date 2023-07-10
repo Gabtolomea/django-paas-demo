@@ -646,7 +646,29 @@ def dump_database():
     print("Files uploaded successfully to the specified folder on Google Drive.")
 
 
-
+def update_from_csv():
+    consumer_brec_updates = []
+    with open('D:/waterbilling2.0/wb2/output.csv', 'r') as file:
+        reader = csv.reader(file)
+        trans = [[row[0], row[1], row[4]] for row in reader]
+    trans = trans[1:]
+    for t in trans:
+        transaction = Transactions.objects.get(transactionid=t[0])
+        consumer = ConsumerInfo.objects.get(consumer_id=t[2])
+        if transaction.is_billpaid == False:
+            consumer.current_bal -= transaction.bill
+            transaction.is_billpaid = bool(t[1])
+            brec_key = f"{consumer.installation_address_id}-{transaction.year}"
+            brec_field_due = f"total_due_{months[transaction.month - 1]}"
+            brec_field_usage = f"total_usage_{months[transaction.month - 1]}"
+            consumer_brec_updates.append((brec_key, brec_field_due, brec_field_usage, transaction.bill, transaction.usage))
+            for brec_key, brec_field_due, brec_field_usage, bill_delta, usage_delta in consumer_brec_updates:
+                BarangayRecord.objects.filter(barangayrec_id=brec_key).update(**{
+                    brec_field_due: F(brec_field_due) - bill_delta,
+                    brec_field_usage: F(brec_field_usage) - usage_delta
+                })
+            transaction.save()
+            consumer.save()
 
 
 def get_bal_exempt(id):

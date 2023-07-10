@@ -27,6 +27,12 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.http import JsonResponse
 
+
+
+is_seen = Issues.objects.filter(is_seen=False)
+issued_by = Issues.objects.all()
+
+
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -143,6 +149,7 @@ def bills_list(request):
         'bills_list': bills_list,
         'user': user,
         'hipos':hipos,
+        'is_seen': is_seen,
     }
     return render(request, 'billslist.html', context)
 
@@ -265,7 +272,8 @@ def user_creation(request):
             messages.error(request, 'User creation failed')
     context = {
         'form': form,
-        'user': request.user
+        'user': request.user,
+        'is_seen':is_seen
     }
     return render(request, 'registration.html', context)
 
@@ -422,6 +430,7 @@ def ledger(request, id):
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
         'ispaid':ispaid,
+        'is_seen': is_seen
     }
     return render(request, 'ledger.html', context)
 
@@ -569,7 +578,8 @@ def meterreading(request):
         'count':count,
         'year': datetime.today().year,
         'months': months,
-        'years': years
+        'years': years,
+        'is_seen': is_seen
     }
     return render(request, 'meterreading.html', context)
 
@@ -999,7 +1009,8 @@ def inputreading(request, id, year):
         'table': table,
         'cur_year': year,
         'years': years,
-        'user': request.user
+        'user': request.user,
+        'is_seen': is_seen
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -1054,6 +1065,7 @@ def consumer_list(request):
         'count':count,
         'consumer_list': cons_list,
         'user': user,
+        'is_seen': is_seen
     }
     return render(request, 'conlist.html', context)
 
@@ -1132,6 +1144,7 @@ def consumercreation(request):
         'errors': form.errors,
         'user': request.user,
         'create':True,
+        'is_seen': is_seen,
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1154,7 +1167,8 @@ def consumerupdate(request, id):
         'conid':id,
         'isUpdate':True,
         'form': form,
-        'user': request.user
+        'user': request.user,
+        'is_seen': is_seen,
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1361,7 +1375,8 @@ def user_edit(request, id):
     context = {
         'sys': sys,
         'form': form,
-        'user': request.user
+        'user': request.user,
+        'is_seen': is_seen
     }
     return render(request, 'user_edit.html', context)
 
@@ -1661,7 +1676,8 @@ def barangayreport(request, year):
         'years': years,
         'fr': fr,
         'user': request.user,
-        'is_br':True
+        'is_br':True,
+        'is_seen': is_seen,
     }
     return render(request, 'waterusage.html', context)
 
@@ -1680,6 +1696,7 @@ def view_barangay(request, id):
 
     context = {
         'bang': bang,
+        'is_seen': is_seen,
     }
     return render(request, 'view_barangay.html', context)
 
@@ -1777,6 +1794,7 @@ def usage_report_data(request, year):
         'user': request.user,
         'is_ur':True,
         'total_unb':total_unb,
+        'is_seen': is_seen,
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1851,6 +1869,7 @@ def revenue_report(request, year):
         'col': col,
         'rec': rec,
         'is_rr':True,
+        'is_seen': is_seen,
     }
     return render(request, 'revenue_report.html',  context)
 
@@ -1982,6 +2001,7 @@ def unsettled_bills(request):
         'user': request.user,
         'sort_field' : sort_field,
         'sort_order' : sort_order,
+        'is_seen': is_seen,
    
      
     }
@@ -2058,6 +2078,7 @@ def view_unsettled_bills(request, id, year):
         'years': years,
         'current': year,
         'table': table, 
+        'is_seen': is_seen,
     }
     return render(request, 'view_unsettled_bills.html', context)
 
@@ -2087,6 +2108,7 @@ def discount(request):
         'dc': dc,
         'user': user,
         'is_discount':True,
+        'is_seen': is_seen,
     }
     return render(request, 'discount.html', context)
 
@@ -2143,6 +2165,7 @@ def new_consumertype(request):
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
+        'is_seen': is_seen,
     }
     return render(request, 'new_consumertype.html', context)
 
@@ -2194,6 +2217,7 @@ def penalty(request):
         'errors': form.errors,
         'user': request.user,
         'is_penalty':True,
+        'is_seen': is_seen
     }
 
     return render(request, 'penalty.html', context)
@@ -2512,7 +2536,8 @@ def bulkreading(request):
             'paginate_by': paginate_by,
             'last' : range(paginator.num_pages-3, paginator.num_pages),
             'five' : range(1,6),
-            'user':request.user
+            'user':request.user,
+            'is_seen': is_seen
         }
         return render(request,'bulkreading.html', context)
 
@@ -2536,6 +2561,7 @@ def viewprof(request):
         'user':user,
         'role':role,
         'is_profile':True,
+        'is_seen': is_seen
     }
     return render(request, 'viewprof.html', context)
 
@@ -2558,6 +2584,7 @@ def userprof(request):
     context= {
         'user':user,
         'form':form,
+        'is_seen': is_seen
     }
     return render(request, 'userprof.html', context)
 
@@ -2629,7 +2656,9 @@ def monthly_summary (request, id, year):
         'table': table,
         'u': consumer,
         'year' : year,
-        'years': years
+        'years': years,
+        'is_seen': is_seen
+        
 
     }
     return render(request,'conmon_summary.html', context)
@@ -2724,7 +2753,8 @@ def payment_history (request, id, year):
         'u' : consumer,
         'alltrans' : alltran,
         'years'    : years,
-        'year'     : year
+        'year'     : year,
+        'is_seen': is_seen,
     }
 
     return render(request,'payment_history.html', context)
@@ -2832,6 +2862,7 @@ def consumption(request, year):
         'tyc' : tyc,
         'is_cc':True,
         'sm_arr':sm_arr,
+        'is_seen': is_seen,
     }
     return render(request,'consumption.html', context)
 
@@ -2897,40 +2928,54 @@ def add_issue(request, id, year):
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
+
 def issues_view(request):
     issues = Issues.objects.all()
-    for issue in issues:
-        last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
-        if last_message:
-            issue.last_comment = last_message.message
-            issue.save()
+    last_message = None
+    try:
+        for issue in issues:
+            last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
+            if last_message:
+                issue.last_comment = last_message.message
+                issue.save()
+    except NameError:
+        pass
+
     context = {
         'issues': issues,
+        'is_seen': is_seen,
+        'last_message': last_message,
+        'issued_by' : issued_by, 
     }
     return render(request, 'issues.html', context)
 
-
 def issue_details(request, id):
     issue = Issues.objects.get(issueid=id)
-    issue.is_seen = True
-    issue.save()
-    comments = Messages.objects.filter(issue_id =issue)
-    
+    if not issue.is_seen:
+        issue.is_seen = True
+        issue.save()
+
     tran = issue.transactionid
     month = tran.month
     monthval = calendar.month_name[month]
     con = tran.acctID
-    
 
-    
+    comments = Messages.objects.filter(issue_id=issue)
+    for comment in comments:
+        if comment.from_user != request.user:
+            comment.is_read = True
+
+        comment.save()
+
     context = {
         'isdel': issue,
         'con': con,
         'tran': tran,
         'monthval': monthval,
-        'comments':comments
+        'comments': comments
     }
     return render(request, 'issue_details.html', context)
+
 
 
 def additional_fee(request, id):
@@ -2962,8 +3007,8 @@ def additional_fee(request, id):
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-def submit_comment(request,id):
-    hotissue = Issues.objects.get(issueid = id)
+def submit_comment(request, id):
+    hotissue = Issues.objects.get(issueid=id)
 
     if request.method == 'POST':
         message = request.POST.get('message')
@@ -2971,11 +3016,19 @@ def submit_comment(request,id):
         mc = Messages()
         mc.message = message
         mc.from_user = request.user
-        mc.to_user = hotissue.issued_by
+
+        if hotissue.issued_by == request.user:
+            last_message = Messages.objects.filter(issue_id=hotissue).order_by('-message_id').first()
+            if last_message:
+                mc.to_user = last_message.from_user
+        else:
+            mc.to_user = hotissue.issued_by
+
         mc.issue_id = hotissue
         mc.save()
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def resolve_issue(request):
     if request.method == 'POST':
