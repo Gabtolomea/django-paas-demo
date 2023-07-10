@@ -31,6 +31,9 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
 is_seen = Issues.objects.filter(is_seen=False)
+issued_by = Issues.objects.all()
+
+
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -2796,15 +2799,21 @@ def add_issue(request, id, year):
 
 def issues_view(request):
     issues = Issues.objects.all()
-    for issue in issues:
-    
-        last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
-        if last_message:
-            issue.last_comment = last_message.message
-            issue.save()
+    last_message = None
+    try:
+        for issue in issues:
+            last_message = Messages.objects.filter(issue_id=issue).order_by('-time').first()
+            if last_message:
+                issue.last_comment = last_message.message
+                issue.save()
+    except NameError:
+        pass
+
     context = {
         'issues': issues,
-        'is_seen':is_seen,
+        'is_seen': is_seen,
+        'last_message': last_message,
+        'issued_by' : issued_by, 
     }
     return render(request, 'issues.html', context)
 
@@ -2822,7 +2831,7 @@ def issue_details(request, id):
     comments = Messages.objects.filter(issue_id=issue)
     for comment in comments:
         if comment.from_user != request.user:
-            comment.is_seensms = True
+            comment.is_read = True
 
         comment.save()
 
