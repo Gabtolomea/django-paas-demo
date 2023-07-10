@@ -142,6 +142,8 @@ def get_balance(id):
     for i in range(len(asc_trans)):
         if asc_trans[i].transType == 'Billing':
             bal+=asc_trans[i].bill
+        if asc_trans[i].transType == 'Additional Fees':
+            bal+=asc_trans[i].bill
         elif asc_trans[i].transType == 'Payment':
             bal-=asc_trans[i].payment
         elif asc_trans[i].transType == 'Penalty':
