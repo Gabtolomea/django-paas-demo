@@ -2943,6 +2943,7 @@ def add_issue(request, id, year):
 def issues_view(request):
     global notif_viewers
     issues = Issues.objects.all()
+    print(len(issues))
     last_message = None
     try:
         for issue in issues:
@@ -2990,8 +2991,7 @@ def issue_details(request, id):
         'tran': tran,
         'monthval': monthval,
         'comments': comments,
-        'is_resolved':issue.status == "Resolved"
-
+        
     }
     return render(request, 'issue_details.html', context)
 

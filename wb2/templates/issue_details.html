@@ -162,7 +162,6 @@ Issues Details
             </div>
         </div>
         <div class="input-container">
-            {% if not is_resolved %}
             <form action="{% url 'resolve_issue' %}" style="margin-left: auto;" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="id" value="{{isdel.issueid}}">
@@ -170,7 +169,6 @@ Issues Details
                     Mark as Done
                 </button>
             </form>
-            {% endif %}
 
         </div>
 
