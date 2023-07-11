@@ -30,8 +30,8 @@ from django.http import JsonResponse
 
 
 
-is_seen = Issues.objects.filter(is_seen=False)
-issued_by = Issues.objects.all()
+is_seen_issues = Issues.objects.filter(is_seen=False)
+
 
 
 def porter(request):
@@ -150,7 +150,7 @@ def bills_list(request):
         'bills_list': bills_list,
         'user': user,
         'hipos':hipos,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'billslist.html', context)
 
@@ -431,7 +431,7 @@ def ledger(request, id):
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
         'ispaid':ispaid,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
     return render(request, 'ledger.html', context)
 
@@ -580,7 +580,7 @@ def meterreading(request):
         'year': datetime.today().year,
         'months': months,
         'years': years,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
     return render(request, 'meterreading.html', context)
 
@@ -1011,7 +1011,7 @@ def inputreading(request, id, year):
         'cur_year': year,
         'years': years,
         'user': request.user,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -1066,7 +1066,7 @@ def consumer_list(request):
         'count':count,
         'consumer_list': cons_list,
         'user': user,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
     return render(request, 'conlist.html', context)
 
@@ -1147,7 +1147,7 @@ def consumercreation(request):
         'errors': form.errors,
         'user': request.user,
         'create':True,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1173,7 +1173,7 @@ def consumerupdate(request, id):
         'isUpdate':True,
         'form': form,
         'user': request.user,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1381,7 +1381,7 @@ def user_edit(request, id):
         'sys': sys,
         'form': form,
         'user': request.user,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
     return render(request, 'user_edit.html', context)
 
@@ -1682,7 +1682,7 @@ def barangayreport(request, year):
         'fr': fr,
         'user': request.user,
         'is_br':True,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'waterusage.html', context)
 
@@ -1701,7 +1701,7 @@ def view_barangay(request, id):
 
     context = {
         'bang': bang,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'view_barangay.html', context)
 
@@ -1798,7 +1798,7 @@ def usage_report_data(request, year):
         'user': request.user,
         'is_ur':True,
         'total_unb':total_unb,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1872,7 +1872,7 @@ def revenue_report(request, year):
         'col': col,
         'rec': rec,
         'is_rr':True,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'revenue_report.html',  context)
 
@@ -2004,7 +2004,7 @@ def unsettled_bills(request):
         'user': request.user,
         'sort_field' : sort_field,
         'sort_order' : sort_order,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
    
      
     }
@@ -2080,7 +2080,7 @@ def view_unsettled_bills(request, id, year):
         'years': years,
         'current': year,
         'table': table, 
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'view_unsettled_bills.html', context)
 
@@ -2110,7 +2110,7 @@ def discount(request):
         'dc': dc,
         'user': user,
         'is_discount':True,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'discount.html', context)
 
@@ -2167,7 +2167,7 @@ def new_consumertype(request):
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request, 'new_consumertype.html', context)
 
@@ -2219,7 +2219,7 @@ def penalty(request):
         'errors': form.errors,
         'user': request.user,
         'is_penalty':True,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
 
     return render(request, 'penalty.html', context)
@@ -2539,7 +2539,7 @@ def bulkreading(request):
             'last' : range(paginator.num_pages-3, paginator.num_pages),
             'five' : range(1,6),
             'user':request.user,
-            'is_seen': is_seen
+            'is_seen_issues': is_seen_issues
         }
         return render(request,'bulkreading.html', context)
 
@@ -2563,7 +2563,7 @@ def viewprof(request):
         'user':user,
         'role':role,
         'is_profile':True,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
     return render(request, 'viewprof.html', context)
 
@@ -2586,7 +2586,7 @@ def userprof(request):
     context= {
         'user':user,
         'form':form,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
     }
     return render(request, 'userprof.html', context)
 
@@ -2658,7 +2658,9 @@ def monthly_summary (request, id, year):
         'u': consumer,
         'year' : year,
         'years': years,
-        'is_seen': is_seen
+        'is_seen_issues': is_seen_issues
+        
+
     }
     return render(request,'conmon_summary.html', context)
 
@@ -2753,7 +2755,7 @@ def payment_history (request, id, year):
         'alltrans' : alltran,
         'years'    : years,
         'year'     : year,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
 
     return render(request,'payment_history.html', context)
@@ -2860,7 +2862,7 @@ def consumption(request, year):
         'tyc' : tyc,
         'is_cc':True,
         'sm_arr':sm_arr,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
     }
     return render(request,'consumption.html', context)
 
@@ -2940,11 +2942,11 @@ def issues_view(request):
     except NameError:
         pass
 
+    
     context = {
         'issues': issues,
-        'is_seen': is_seen,
+        'is_seen_issues': is_seen_issues,
         'last_message': last_message,
-        'issued_by' : issued_by, 
     }
     return render(request, 'issues.html', context)
 
