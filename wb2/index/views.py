@@ -2966,6 +2966,7 @@ def issue_details(request, id):
         comment.save()
 
     context = {
+        'is_seen':is_seen,
         'isdel': issue,
         'con': con,
         'tran': tran,
