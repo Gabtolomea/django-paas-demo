@@ -158,58 +158,6 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 @login_required(login_url='login')
-def stopmeters(request):
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = redirect('stopmeters')
-        else:
-            if LoginSession.is_admin:
-                template = redirect('sysuser')
-            else:
-                if LoginSession.is_reader:
-                    template = redirect('meterreading')
-            return template
-
-    search = request.GET.get("search", "")
-    page = request.GET.get('page')
-    isnum = search.isnumeric()
-    if search:
-        if isnum:
-            bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search),deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
-        else:
-            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search),deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
-    else:
-        bills = ConsumerInfo.objects.filter(deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
-    pages = int(request.GET.get('p', 10))
-    user = request.user
-    count = bills.count()
-    if pages == 0:
-        paginate_by = request.GET.get('paginate_by', count)
-    else:
-        paginate_by = request.GET.get('paginate_by', pages)
-
-    paginator = Paginator(bills, paginate_by)
-    try:
-        stopmeters = paginator.page(page)
-    except PageNotAnInteger:
-        stopmeters = paginator.page(1)
-    except EmptyPage:
-        stopmeters = paginator.page(paginator.num_pages)
-
-    context = {
-        'search': search,
-        'last': range(paginator.num_pages - 3, paginator.num_pages),
-        'five': range(1, 6),
-        'paginate_by': paginate_by,
-        'count':count,
-        'stopmeters': stopmeters,
-        'user': user,
-    }
-    return render(request, 'stopmeter.html', context)
-
-@login_required(login_url='login')
 def signout(request):
     try:
         lr = LoginRec.objects.get(username=request.user)
