@@ -274,7 +274,7 @@ def user_creation(request):
     context = {
         'form': form,
         'user': request.user,
-        'is_seen':is_seen
+        'is_seen_issues':is_seen_issues
     }
     return render(request, 'registration.html', context)
 
@@ -2968,7 +2968,7 @@ def issue_details(request, id):
         comment.save()
 
     context = {
-        'is_seen':is_seen,
+        'is_seen_issues':is_seen_issues,
         'isdel': issue,
         'con': con,
         'tran': tran,
