@@ -2982,7 +2982,9 @@ def issue_details(request, id):
         'con': con,
         'tran': tran,
         'monthval': monthval,
-        'comments': comments
+        'comments': comments,
+        'is_resolved':issue.status == "Resolved"
+
     }
     return render(request, 'issue_details.html', context)
 
