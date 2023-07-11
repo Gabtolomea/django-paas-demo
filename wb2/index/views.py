@@ -60,6 +60,9 @@ def lp(request):
     enye_bars()
     camelize()
     set_first_tran()
+    set_months_unpaid()
+    if datetime.now().day == 1:
+        set_overdue_months()
     # capitalize()
     return render(request, "landing.html")
 
@@ -767,15 +770,15 @@ def inputreading(request, id, year):
                 consumer.current_reading = r 
                 tran.save()
                 consumer.save()
-        else:    
+        else:
             if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
                 xy = con_penalty.penalty_rate * cummulative
                 interest = xy/100
-                    
             
             try:
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                 last_reading = billtran.prevReading
+
                 # finding next billing
                 mm = d+1
                 has_next = False
@@ -804,6 +807,9 @@ def inputreading(request, id, year):
                                 prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
                                 last_reading = prev.meterReading
                                 has_prev = True
+                                # if not prev.is_billpaid:
+                                #     prev.months_not_paid += 1
+                                #     prev.save()
                                 break
                             except ObjectDoesNotExist:
                                 pass
@@ -863,6 +869,9 @@ def inputreading(request, id, year):
                                     try:
                                         prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
                                         last_reading = prev.meterReading
+                                        # if not prev.is_billpaid:
+                                        #     prev.months_not_paid += 1
+                                        #     prev.save()
                                         break
                                     except ObjectDoesNotExist:
                                         pass
@@ -2915,7 +2924,7 @@ def add_issue(request, id, year):
         tran.year = year
         tran.transType = 'Billing'
         tran.is_issue = True
-        tran.processedBy = request.user
+        tran.processedBy = request.user.username
         tran.contypeid = consumer.contypeid.contypeid
         tran.save()
 
