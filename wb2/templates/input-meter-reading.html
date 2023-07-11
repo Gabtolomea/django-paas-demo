@@ -218,14 +218,11 @@ Input Reading
 			<tbody class="wb_tbody">
 				{% for t in table %}
 					<tr class="showOnHover text-center">
-						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
-							{{t.month}}</td>
-						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
-							{{t.usage}}</td>
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.month}}</td>
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
 						<form id="form-{{t.transid}}" class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
 							{% csrf_token %}
 							<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-								
 								<input 
 									class = "input form-control border-0 rounded-0 " 
 									name = "reading-{{t.month}}" 

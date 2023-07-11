@@ -176,6 +176,7 @@ class Transactions(models.Model):
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
     is_issue = models.BooleanField(default=False)
+    months_not_paid = models.IntegerField(default=0)
     def __str__(self) -> str:
         return str(self.transactionid)
 
@@ -185,7 +186,7 @@ class Issues(models.Model):
     issue = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
     last_comment = models.CharField(max_length=100, null=True)
-    issued_by = models.ForeignKey(SystemUsers, on_delete=models.CASCADE)
+    issued_by = models.CharField(max_length=100, null=True)
     is_seen = models.BooleanField(default=False)
     status = models.CharField(max_length=20, default='Pending')
 

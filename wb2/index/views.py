@@ -61,6 +61,9 @@ def lp(request):
     enye_bars()
     camelize()
     set_first_tran()
+    set_months_unpaid()
+    if datetime.now().day == 1:
+        set_overdue_months()
     # capitalize()
     return render(request, "landing.html")
 
@@ -768,15 +771,15 @@ def inputreading(request, id, year):
                 consumer.current_reading = r 
                 tran.save()
                 consumer.save()
-        else:    
+        else:
             if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
                 xy = con_penalty.penalty_rate * cummulative
                 interest = xy/100
-                    
             
             try:
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                 last_reading = billtran.prevReading
+
                 # finding next billing
                 mm = d+1
                 has_next = False
@@ -805,6 +808,9 @@ def inputreading(request, id, year):
                                 prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
                                 last_reading = prev.meterReading
                                 has_prev = True
+                                # if not prev.is_billpaid:
+                                #     prev.months_not_paid += 1
+                                #     prev.save()
                                 break
                             except ObjectDoesNotExist:
                                 pass
@@ -864,6 +870,9 @@ def inputreading(request, id, year):
                                     try:
                                         prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
                                         last_reading = prev.meterReading
+                                        # if not prev.is_billpaid:
+                                        #     prev.months_not_paid += 1
+                                        #     prev.save()
                                         break
                                     except ObjectDoesNotExist:
                                         pass
@@ -1455,52 +1464,52 @@ def payment(request, id):
                         else:
                             break
                     consumer.save()
-            add_fees = AdditionalFees.objects.filter(consumer_id=consumer)
-            for af in add_fees:
-                aftran = Transactions.objects.get(transactionid=af.current_tran)
-                
-                if af.months == 0:
-                    af_amount = af.remainder
-                else:
-                    af_amount = af.amount
-                if not aftran.is_billpaid and amount >= af_amount:
-                    aftran.is_billpaid = True
-                    aftran.save()
-                    p_aftran = Transactions()
-                    p_aftran.payment = af_amount
-                    amount-=af_amount
-                    p_aftran.acctID = consumer
-                    p_aftran.transType = "Payment"
-                    p_aftran.date = datetime.today()
-                    p_aftran.year = aftran.year
-                    p_aftran.month = aftran.month
-                    p_aftran.processedBy = request.user
-                    p_aftran.save()
-                    af.months -= 1
-
-
-                    # libog pa kaayo ni tarunga nya ni
-                    new_aftran = Transactions()
-                    new_aftran.acctID = consumer
-                    new_aftran.transType = "Additional Fees"
-                    new_aftran.date = datetime.today()
-                    if aftran.month == 12:
-                        new_aftran.month = 1
-                        new_aftran.year = aftran.year+1
+                add_fees = AdditionalFees.objects.filter(consumer_id=consumer)
+                for af in add_fees:
+                    aftran = Transactions.objects.get(transactionid=af.current_tran)
+                    
+                    if af.months == 0:
+                        af_amount = af.remainder
                     else:
-                        new_aftran.month = aftran.month+1
-                        new_aftran.year = aftran.year
-                    new_aftran.processedBy = request.user
-                    if af.months == 1:
-                        new_aftran.bill = af.remainder
-                    else:
-                        consumer.current_bal += af.amount
-                        new_aftran.bill = af.amount
-                    new_aftran.save()
-                    consumer.current_bal += new_aftran.bill
-                    af.current_tran = new_aftran.transactionid
-                    af.save()
+                        af_amount = af.amount
+                    if not aftran.is_billpaid and amount >= af_amount:
+                        aftran.is_billpaid = True
+                        aftran.save()
+                        p_aftran = Transactions()
+                        p_aftran.payment = af_amount
+                        consumer.excess-=af_amount
+                        p_aftran.acctID = consumer
+                        p_aftran.transType = "Payment"
+                        p_aftran.date = datetime.today()
+                        p_aftran.year = aftran.year
+                        p_aftran.month = aftran.month
+                        p_aftran.processedBy = request.user
+                        p_aftran.save()
+                        af.months -= 1
 
+                        # libog pa kaayo ni tarunga nya ni
+                        if af.months > 0:
+                            new_aftran = Transactions()
+                            new_aftran.acctID = consumer
+                            new_aftran.transType = "Additional Fees"
+                            new_aftran.date = datetime.today()
+                            if aftran.month == 12:
+                                new_aftran.month = 1
+                                new_aftran.year = aftran.year+1
+                            else:
+                                new_aftran.month = aftran.month+1
+                                new_aftran.year = aftran.year
+                            new_aftran.processedBy = request.user
+                            if af.months == 1 and af.remainder != 0:
+                                new_aftran.bill = af.remainder
+                            else:
+                                consumer.current_bal += af.amount
+                                new_aftran.bill = af.amount
+                            new_aftran.save()
+                            consumer.current_bal += new_aftran.bill
+                            af.current_tran = new_aftran.transactionid
+                        af.save()
+                        consumer.save()
             try:
                 discount = Discount.objects.get(discountcode=dis_code)
             except ObjectDoesNotExist:
@@ -2916,7 +2925,7 @@ def add_issue(request, id, year):
         tran.year = year
         tran.transType = 'Billing'
         tran.is_issue = True
-        tran.processedBy = request.user
+        tran.processedBy = request.user.username
         tran.contypeid = consumer.contypeid.contypeid
         tran.save()
 
