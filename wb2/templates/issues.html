@@ -37,7 +37,11 @@ Issues
                 <tr class=" {% if not i.is_seen and not last_message.is_read  %}table-light {%endif%}  clickable-row" data-href="{% url 'issue_details' i.issueid %}" {% if not i.is_seen %} style="font-weight: 600;"{% else %} style="color: #202124;"  {% endif %}>
                     <td class="ps-3">{{i.issued_by}}</td>
                     <td >{{i.status}}</td>
+                    {% if i.issue == 'Reading' %}
                     <td><span style="font-weight: 300;">From </span>{{i.transactionid.prevReading}} <span style="font-weight: 300;"> to </span>{{i.transactionid.meterReading}}</td>
+                    {% elif i.issue == 'Overdue' %}
+                    <td><span style="font-weight: 300;">Overdue for </span> {{i.transactionid.months_not_paid}}<span style="font-weight: 300;"> months </span></td>
+                    {% endif %}
                     <td  style="font-weight: 300;font-style: italic; ">{{i.last_comment}}</td>
                     <td class="text-end pe-3">{{i.date}}</td>
                 </tr>

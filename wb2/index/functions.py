@@ -767,5 +767,5 @@ def set_months_unpaid():
                     issue.consumer_id = c
                     issue.transaction_id = t
                     issue.issued_by = "System"
-                issue.issue = f"Overdue for {t.months_not_paid} months"
+                issue.issue = "Overdue"
                 issue.save()

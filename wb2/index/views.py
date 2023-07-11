@@ -2933,7 +2933,7 @@ def add_issue(request, id, year):
         i = Issues()
         i.date = date.today()
         i.transactionid = tran
-        i.issue = "Reading Issue"
+        i.issue = "Reading"
         i.issued_by = request.user
         notif_viewers.append(request.user.username)
         i.save()
