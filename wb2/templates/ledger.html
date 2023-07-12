@@ -202,7 +202,7 @@ Account Ledger
 								<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>
 								<td>{{t.rateid}}</td>
 								<td>{{t.pb}}</td>
-								<td style="text-align: center;" class="text-center align-middle">{% if t.ispaid %} Paid {% endif %}</td>
+								<td style="text-align: center;" class="text-center align-middle">{{ t.ispaid }}</td>
 							</tr>
 							{% endfor %}
 						</tbody>

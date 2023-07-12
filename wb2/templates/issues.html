@@ -29,8 +29,17 @@ Issues
     <div>
         <div class="rounded-top bg-light p-3"></div>
         <table class="table table-hover table-sm rounded-top mb-0" style="user-select: none; cursor: pointer;">
+            {% if issues %}
             <thead >
+                <tr>
+                    <th class="ps-3">Issued By</th>
+                    <th>Status</th>
+                    <th>Transaction</th>
+                    <th>Comment</th>
+                    <th class="text-end pe-3">Date</th>
+                </tr>
             </thead>
+            {% endif %}
             <tbody class="tbody">
                 {% if issues %}
                     {% for i in issues %}
