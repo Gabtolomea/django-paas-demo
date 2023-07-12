@@ -95,7 +95,7 @@ def signin(request):
 
 @login_required(login_url='login')
 def bills_list(request):
-    global notif_viewers
+    
     # balance()
     # get_consumers_yearly()
     # billing_errors_to_csv()
@@ -211,7 +211,7 @@ def bills_list(request):
 
 @login_required(login_url='login')
 def signout(request):
-    global notif_viewers
+    
     try:
         lr = LoginRec.objects.get(username=request.user)
         lr.delete()
@@ -223,7 +223,7 @@ def signout(request):
 
 @login_required(login_url='login')
 def user_creation(request):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -286,7 +286,7 @@ def user_creation(request):
 
 @login_required(login_url='login')
 def ledger(request, id):
-    global notif_viewers
+    
     disp = request.GET.get('show','')
     template = ""
     LoginSession = request.user
@@ -448,7 +448,7 @@ def ledger(request, id):
 
 @unauthenticated_user
 def forgetpassword(request):
-    global notif_viewers
+    
     if request.method == "POST":
         u_email = request.POST['email']
         if SystemUsers.objects.filter(email=u_email).exists():
@@ -523,7 +523,7 @@ def undodelete(request):
 
 @login_required(login_url='login')
 def meterreading(request):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -619,7 +619,7 @@ def deletereading(request, id):
 
 @login_required(login_url='login')
 def inputreading(request, id, year):
-    global notif_viewers
+    
     table = []
     years = []
     class meterreaderclass():
@@ -1042,7 +1042,7 @@ def inputreading(request, id, year):
 
 @login_required(login_url='login')
 def consumer_list(request):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1099,7 +1099,7 @@ def consumer_list(request):
 
 @login_required(login_url='login')
 def consumercreation(request):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1183,7 +1183,7 @@ def consumercreation(request):
 
 @login_required(login_url='login')
 def consumerupdate(request, id):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1370,7 +1370,7 @@ def sysuser(request):
 
 @login_required(login_url='login')
 def user_edit(request, id):
-    global notif_viewers
+    
     sys = SystemUsers.objects.get(username=id)
     form = sysup(instance=sys)
     if request.method == 'POST':
@@ -1673,7 +1673,7 @@ def reports(request):
 
 @login_required(login_url='login')
 def barangayreport(request, year):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1734,7 +1734,7 @@ def barangayreport(request, year):
 
 
 def view_barangay(request, id):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1757,7 +1757,7 @@ def view_barangay(request, id):
     return render(request, 'view_barangay.html', context)
 
 def usage_report_data(request, year):
-    global notif_viewers
+    
 
     template = ""
     LoginSession = request.user
@@ -1860,7 +1860,7 @@ def usage_report_data(request, year):
 
 
 def revenue_report(request, year):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1992,7 +1992,7 @@ def reconnectconsumer(request, id):
 
 
 def unsettled_bills(request):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -2075,7 +2075,7 @@ def unsettled_bills(request):
 
 
 def view_unsettled_bills(request, id, year):
-    global notif_viewers
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -2154,7 +2154,7 @@ def view_unsettled_bills(request, id, year):
 
 
 def discount(request):
-    global notif_viewers
+    
     dc = Discount.objects.all()
     try:
         lastdisc_id = int(Discount.objects.all().order_by('-discountcode')[0].discountcode.split('D')[::-1][0])
@@ -2211,7 +2211,7 @@ def deletediscount(request,id):
 
 @login_required(login_url='login')
 def new_consumertype(request):
-    global notif_viewers
+    
     cont = ConsumerType.objects.all().order_by
     form = ConscumertypecreationForm()
     contypecount = int(ConsumerType.objects.all().order_by('-contypeid')[0].contypeid.split('C')[::-1][0])
@@ -2244,7 +2244,7 @@ def new_consumertype(request):
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
-        'is_see_issues' : is_seen_issues
+        'is_issues' : is_issues
         
     }
     return render(request, 'new_consumertype.html', context)
@@ -2269,7 +2269,7 @@ def editcontype(request, id):
 
 @login_required(login_url='login')
 def penalty(request):
-    global notif_viewers
+    
     penalty = Penalty.objects.all()
     form = addPenalty
     penaltycounter = int(Penalty.objects.all().order_by('-penaltycode')[0].penaltycode.split('P')[::-1][0])
@@ -2325,7 +2325,7 @@ def editpenalty(request, id):
         return redirect('penalty')
 
 def bulkreading(request):
-    global notif_viewers
+    
     template = ""
     year = int(request.GET.get('fyear', datetime.today().year))
     month = int(request.GET.get('fmonth', datetime.today().month))
@@ -2657,7 +2657,7 @@ def viewprof(request):
 
 @login_required(login_url='login')
 def userprof(request):
-    global notif_viewers
+    
     user = SystemUsers.objects.get(username=str(request.user))
     form = ProfileForm(instance=user)
     if request.method == 'POST':
@@ -2684,7 +2684,7 @@ def userprof(request):
     return render(request, 'userprof.html', context)
 
 def monthly_summary (request, id, year):
-    global notif_viewers
+    
     table = []
     years = []
     class montly_sum():
@@ -2763,7 +2763,7 @@ def monthly_summary (request, id, year):
     return render(request,'conmon_summary.html', context)
 
 def monthlypayment(request):
-    global notif_viewers
+    
     if request.method == "POST":
         month = int(request.POST.get(f'month', 0))
         year = int(request.POST.get(f'year', 0))
@@ -2834,7 +2834,7 @@ def monthlypayment(request):
     return redirect('monthly_summary', id=conid, year=year)
 
 def payment_history (request, id, year):
-    global notif_viewers
+    
     years = []
     
     consumer = ConsumerInfo.objects.get(consumer_id = id)
@@ -2865,7 +2865,7 @@ def payment_history (request, id, year):
     return render(request,'payment_history.html', context)
 
 def consumption(request, year):
-    global notif_viewers
+    
     cons = ConsumerInfo.objects.all()
     cons_len = len(cons)
     latest_bills = []
@@ -2975,7 +2975,7 @@ def consumption(request, year):
 
 
 def exemptiont(request):
-    global notif_viewers
+    
     exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
     context = {
     'cons':exempt_cons,
@@ -3003,10 +3003,10 @@ def addexemption(request, id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
-notif_viewers = ["Klabuh"]
+
 
 def add_issue(request, id, year):
-    global notif_viewers
+    
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     if request.method == 'POST':
         for i in range(12):
@@ -3035,14 +3035,13 @@ def add_issue(request, id, year):
         i.transactionid = tran
         i.issue = "Reading"
         i.issued_by = request.user
-        notif_viewers.append(request.user.username)
         i.save()
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
 
 def issues_view(request):
-    global notif_viewers
+    
     issues = Issues.objects.all()
     last_message = None
     try:
@@ -3064,7 +3063,7 @@ def issues_view(request):
     return render(request, 'issues.html', context)
 
 def issue_details(request, id):
-    global notif_viewers
+    
     issue = Issues.objects.get(issueid=id)
     if not issue.is_seen:
         issue.is_seen = True
@@ -3100,7 +3099,7 @@ def issue_details(request, id):
 
 
 def additional_fee(request, id):
-    global notif_viewers
+    
     if request.method == "POST":
         total_amount = float(request.POST.get('totalAmount', 0.00))
         months = int(request.POST['monthfee'])
@@ -3144,7 +3143,7 @@ def submit_comment(request, id):
             if last_message:
                 mc.to_user = last_message.from_user
         else:
-            mc.to_user = hotissue.issued_by
+            mc.to_user = SystemUsers.objects.get(username = hotissue.issued_by)
 
         mc.issue_id = hotissue
         mc.save()
@@ -3152,7 +3151,7 @@ def submit_comment(request, id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def resolve_issue(request):
-    global notif_viewers
+    
     if request.method == 'POST':
         id = request.POST.get('id')
         issue = Issues.objects.get(issueid=id)
@@ -3171,7 +3170,7 @@ def get_is_seen_issues(request):
     if is_supervisor:
         issues = Issues.objects.filter(status__in=['Pending'])
     else:
-        issues = Issues.objects.filter(issued_by=user)
+        issues = Issues.objects.filter(issued_by=user.username)
     
     is_issues = issues.exists()
     
