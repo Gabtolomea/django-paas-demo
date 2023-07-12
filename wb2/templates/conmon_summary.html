@@ -226,9 +226,8 @@ Monthly Summary
             <form id="yearselection" action="">
                 <label class="d-flex" style="float: right; align-items: center;">Year
                         <select style="width: 100px; margin: 0 5px;" class="form-select" id="selector" onchange="change()">
-                        <option value="{{year}}">{{year}}</option>
                         {% for i in years reversed %}
-                        <option value="{{i}}">{{i}}</option>
+                        <option value="{{i}}" {% if i == year %} selected{% endif %}>{{i}}</option>
                         {% endfor %}
                     </select>
                 </label>

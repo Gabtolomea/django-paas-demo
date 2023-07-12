@@ -27,19 +27,19 @@
 	</table>
 	<label for="years"	style="font-size: 18px; font-weight: normal;">SelectYear:</label>
 	<form id="yearselection" action="">
-		<select style="width: 100px;" class="form-select mb-3" id="selector" onchange="change()">
-			<option value="{{current}}">{{current}}</option>
+		<select class="form-select mb-3" id="selector" onchange="change()">
 			{% for i in years reversed %}
-			<option value="{{i}}">{{i}}</option>
+			<option value="{{i}}" {% if i == current %} selected{% endif %}>{{i}}</option>
 			{% endfor %}
 		</select>
 	</form>
+
 	<script>
 		yearselection = document.getElementById("yearselection")
 		selector = document.getElementById("selector")
 		function change() {
 			yearselection.action = selector.value
-			yearselection.submit('')
+			yearselection.submit()
 		}
 	</script>
 	<table id="table" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>

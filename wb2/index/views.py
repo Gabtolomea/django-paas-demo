@@ -2,6 +2,7 @@
 
 import calendar
 import math
+from django.core.exceptions import *
 import datetime
 from .dataporter import *
 from .decorators import *
@@ -29,8 +30,8 @@ from django.http import JsonResponse
 
 
 
-is_seen = Issues.objects.filter(is_seen=False)
-issued_by = Issues.objects.all()
+
+
 
 def porter(request):
     porter_in()
@@ -142,6 +143,7 @@ def bills_list(request):
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
+    is_issues = get_is_seen_issues(request)
     context = {
         'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
@@ -151,11 +153,60 @@ def bills_list(request):
         'bills_list': bills_list,
         'user': user,
         'hipos':hipos,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
     }
     return render(request, 'billslist.html', context)
 
+
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
+            template = redirect('stopmeters')
+        else:
+            if LoginSession.is_admin:
+                template = redirect('sysuser')
+            else:
+                if LoginSession.is_reader:
+                    template = redirect('meterreading')
+            return template
+
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    isnum = search.isnumeric()
+    if search:
+        if isnum:
+            bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search),deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
+        else:
+            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search),deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
+    else:
+        bills = ConsumerInfo.objects.filter(deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
+    pages = int(request.GET.get('p', 10))
+    user = request.user
+    count = bills.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+
+    paginator = Paginator(bills, paginate_by)
+    try:
+        stopmeters = paginator.page(page)
+    except PageNotAnInteger:
+        stopmeters = paginator.page(1)
+    except EmptyPage:
+        stopmeters = paginator.page(paginator.num_pages)
+
+    context = {
+        'search': search,
+        'last': range(paginator.num_pages - 3, paginator.num_pages),
+        'five': range(1, 6),
+        'paginate_by': paginate_by,
+        'count':count,
+        'stopmeters': stopmeters,
+        'user': user,
+    }
+    return render(request, 'stopmeter.html', context)
 
 @login_required(login_url='login')
 def signout(request):
@@ -222,10 +273,11 @@ def user_creation(request):
                 item = form.fields[i]
                 item.widget.attrs['class'] += ' is-invalid'
             messages.error(request, 'User creation failed')
+    is_issues = get_is_seen_issues(request)
     context = {
         'form': form,
         'user': request.user,
-        'is_seen':is_seen
+        'is_issues':is_issues
     }
     return render(request, 'registration.html', context)
 
@@ -364,6 +416,9 @@ def ledger(request, id):
         ispaid = False
     except ObjectDoesNotExist:
         u = False
+    
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'disp':disp,
         'month': calendar.month_name[datetime.today().month-1],
@@ -382,8 +437,8 @@ def ledger(request, id):
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
         'ispaid':ispaid,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'ledger.html', context)
 
@@ -521,6 +576,7 @@ def meterreading(request):
     except EmptyPage:
         m = paginator.page(paginator.num_pages)
 
+    is_issues = get_is_seen_issues(request)
     context = {
         'search':search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
@@ -532,8 +588,8 @@ def meterreading(request):
         'year': datetime.today().year,
         'months': months,
         'years': years,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues 
+        
     }
     return render(request, 'meterreading.html', context)
 
@@ -967,14 +1023,15 @@ def inputreading(request, id, year):
             get_balance(id)
         return redirect('inputreading', id=id , year=year)
     
+    is_issues = get_is_seen_issues(request)
     context = {
         'consumer': consumer,
         'table': table,
         'cur_year': year,
         'years': years,
         'user': request.user,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'input-meter-reading.html', context)
 
@@ -1021,6 +1078,7 @@ def consumer_list(request):
     except EmptyPage:
         cons_list = paginator.page(paginator.num_pages)
 
+    is_issues = get_is_seen_issues(request)
     context = {
         'search' :search,
         'last':range(paginator.num_pages - 3, paginator.num_pages),
@@ -1029,8 +1087,8 @@ def consumer_list(request):
         'count':count,
         'consumer_list': cons_list,
         'user': user,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'conlist.html', context)
 
@@ -1091,6 +1149,8 @@ def consumercreation(request):
             c.mobilenum = mobilenum
             c.email = email
             c.birthdate = birthdate
+            if c.birthdate == '':
+                c.birthdate = datetime.today()
             c.sex = sex
             c.penaltycode = Penalty.objects.get(penaltycode=penaltycode) 
             c.sitio = sitio
@@ -1103,14 +1163,15 @@ def consumercreation(request):
             c.date_added = datetime.today()
             c.save()
             return redirect('consumer_list')
+
+    is_issues = get_is_seen_issues(request)
     context = {
         'conid':id,
         'form': form,
         'errors': form.errors,
         'user': request.user,
         'create':True,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1128,14 +1189,17 @@ def consumerupdate(request, id):
     con = ConsumerInfo.objects.get(consumer_id=id)
     form = ConsumerForm(instance=con)
     penaltyc = con.penaltycounter
+
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'pc':penaltyc,
         'conid':id,
         'isUpdate':True,
         'form': form,
         'user': request.user,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'consumercreation.html', context)
 
@@ -1280,6 +1344,9 @@ def sysuser(request):
 
         su = sysuserclass(firstname, lastname, midname, username, email, role)
         table.append(su)
+
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'search':search,
         'sys_list':sys_list,
@@ -1288,7 +1355,8 @@ def sysuser(request):
         'paginate_by': paginate_by,
         'count': count,
         'table': table,
-        'user': request.user
+        'user': request.user,
+        'is_issues' : is_issues
     }
     return render(request, 'sysuser.html', context)
 
@@ -1339,12 +1407,15 @@ def user_edit(request, id):
                 item.widget.attrs['class'] += ' is-invalid'
             messages.error(request, 'User creation failed')
         return redirect('sysuser')
+    
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'sys': sys,
         'form': form,
         'user': request.user,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'user_edit.html', context)
 
@@ -1607,9 +1678,9 @@ def barangayreport(request, year):
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
-            years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
+            years.append(i.year)  
+            print(years)
+    years.sort(reverse=True)
     br = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -1638,6 +1709,8 @@ def barangayreport(request, year):
         tp=Sum('total_paid'),
         tr=Sum('total_due')
     )
+
+    is_issues = get_is_seen_issues(request)
     context = {
         'br': br,
         'cur_year': year,
@@ -1645,8 +1718,8 @@ def barangayreport(request, year):
         'fr': fr,
         'user': request.user,
         'is_br':True,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'waterusage.html', context)
 
@@ -1663,10 +1736,13 @@ def view_barangay(request, id):
 
     bang = BarangayRecord.objects.get(barangayrec_id=id)
 
+
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'bang': bang,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'view_barangay.html', context)
 
@@ -1690,8 +1766,7 @@ def usage_report_data(request, year):
     for i in my:
         if i.year not in years:
             years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
+    years.sort()
     # Monthly total usage
     tu_mon = BarangayRecord.objects.filter(year=year).aggregate(
         jan=Sum('total_usage_jan'),
@@ -1754,6 +1829,9 @@ def usage_report_data(request, year):
             self.bill = bill
     for i, m in enumerate(months):
         total_unb.append(total_usages_and_billing(m,tu_mon[m],tu_bills[m]))
+    
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'mybars':mybars,
         'tu_mon': tu_mon,
@@ -1764,8 +1842,8 @@ def usage_report_data(request, year):
         'user': request.user,
         'is_ur':True,
         'total_unb':total_unb,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'usage_report_data.html', context)
 
@@ -1785,8 +1863,7 @@ def revenue_report(request, year):
     for i in my:
         if i.year not in years:
             years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
+    years.sort()
     # Total Collection\-
     if BarangayRecord.objects.filter(year=year):
         rev_col = BarangayRecord.objects.filter(year=year).aggregate(
@@ -1831,6 +1908,8 @@ def revenue_report(request, year):
         rec = 0
     # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
 
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'my': my,
         'rev_col': rev_col,
@@ -1840,8 +1919,8 @@ def revenue_report(request, year):
         'col': col,
         'rec': rec,
         'is_rr':True,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'revenue_report.html',  context)
 
@@ -1960,7 +2039,8 @@ def unsettled_bills(request):
         yeah = ub_year(a,j)
         table.append(yeah)  
     
-  
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'search': search,
         'ub': ub,
@@ -1973,8 +2053,8 @@ def unsettled_bills(request):
         'user': request.user,
         'sort_field' : sort_field,
         'sort_order' : sort_order,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
    
      
     }
@@ -2018,10 +2098,9 @@ def view_unsettled_bills(request, id, year):
         pass
     for i in alltran:
         if i.year not in years:
-            if i.year is not None:
-                years.append(i.year)
-    if int(year) in years:
-        years.remove(int(year))
+            years.append(i.year)
+
+    years.sort()
     # --------------------------#
     j = 0
     c = 0
@@ -2046,13 +2125,16 @@ def view_unsettled_bills(request, id, year):
                 j += 1
                 a = view_utang(month, reading, reading_date, usage,total_bill, total_amount_paid)
                 table.append(a)
+    
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'uv': uv,
         'years': years,
         'current': year,
         'table': table, 
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'view_unsettled_bills.html', context)
 
@@ -2078,12 +2160,15 @@ def discount(request):
         addD.save()
         messages.success(request, 'Discount has been added')
         return redirect('discount')
+    
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'dc': dc,
         'user': user,
         'is_discount':True,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues 
+        
     }
     return render(request, 'discount.html', context)
 
@@ -2134,14 +2219,17 @@ def new_consumertype(request):
         ct.save()
         messages.success(request, 'Consumer Type has been added')
         return redirect('new_consumertype')
+
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'cont': cont,
         'form': form,
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_see_issues' : is_seen_issues
+        
     }
     return render(request, 'new_consumertype.html', context)
 
@@ -2187,14 +2275,17 @@ def penalty(request):
         pen.save()
         messages.success(request, 'Penalty has been added')
         return redirect('penalty')
+    
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'penalty': penalty,
         'form1': form,
         'errors': form.errors,
         'user': request.user,
         'is_penalty':True,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
 
     return render(request, 'penalty.html', context)
@@ -2499,6 +2590,7 @@ def bulkreading(request):
                 get_balance(c.consumer_id)
         return redirect(f'/meterreading/bulkreading?page={page}&fyear={pyear}&fmonth={pmonth}&search={psearch}&p={pp}')
     else:
+
         context = {
             'bulky':True,
             'search':search,
@@ -2515,8 +2607,6 @@ def bulkreading(request):
             'five' : range(1,6),
             'user':request.user,
             
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
         }
         return render(request,'bulkreading.html', context)
 
@@ -2536,12 +2626,14 @@ def viewprof(request):
         role = role + "Manager "
     if user.is_reader:
         role = role + "Reader "
+
+    is_issues = get_is_seen_issues(request)
     context= {
         'user':user,
         'role':role,
         'is_profile':True,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues 
+        
     }
     return render(request, 'viewprof.html', context)
 
@@ -2561,11 +2653,14 @@ def userprof(request):
             messages.success(
                     request, 'Your Profile Updated Successfully')
             return redirect('settings')
+    
+    is_issues = get_is_seen_issues(request)
+
     context= {
         'user':user,
         'form':form,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request, 'userprof.html', context)
 
@@ -2601,10 +2696,9 @@ def monthly_summary (request, id, year):
     for i in alltran:
         if i.year not in years:
             years.append(i.year)
+            print(years)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
-    if int(year) in years:
-        years.remove(int(year))
 
     # --------------------------#
 
@@ -2633,13 +2727,16 @@ def monthly_summary (request, id, year):
                 j += 1
         a = montly_sum(month, i, reading, reading_date, usage, total_bill, total_amount_paid, payid)
         table.append(a)
+    
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'table': table,
         'u': consumer,
         'year' : year,
         'years': years,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
         
 
     }
@@ -2730,14 +2827,17 @@ def payment_history (request, id, year):
         years.append(datetime.today().year)
     if int(year) in years:
         years.remove(int(year))
-        
+
+
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'u' : consumer,
         'alltrans' : alltran,
         'years'    : years,
         'year'     : year,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
 
     return render(request,'payment_history.html', context)
@@ -2824,13 +2924,13 @@ def consumption(request, year):
         def __init__(self, year, total) -> None:
             self.year = year
             self.total = total
-    years.sort(reverse=True)
+    years.sort()
     for y in years:
         tyc.append(yeartots(y, len(cons.filter(first_tran__lt=y))))
-    if int(year) in years:
-        years.remove(int(year))
+
 
     # Total Yearly Consumers 
+    is_issues = get_is_seen_issues(request)
 
     context = {
         'condemn':condemn,
@@ -2845,8 +2945,8 @@ def consumption(request, year):
         'tyc' : tyc,
         'is_cc':True,
         'sm_arr':sm_arr,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues
+        
     }
     return render(request,'consumption.html', context)
 
@@ -2928,12 +3028,12 @@ def issues_view(request):
     except NameError:
         pass
 
+    is_issues = get_is_seen_issues(request)
+
     context = {
         'issues': issues,
-        'is_seen': is_seen,
-        'notif_viewers': notif_viewers,
+        'is_issues' : is_issues,
         'last_message': last_message,
-        'issued_by' : issued_by, 
     }
     return render(request, 'issues.html', context)
 
@@ -2957,12 +3057,16 @@ def issue_details(request, id):
 
         comment.save()
 
+    is_issues = get_is_seen_issues(request)
+
     context = {
+        
         'isdel': issue,
         'con': con,
         'tran': tran,
         'monthval': monthval,
-        'comments': comments
+        'comments': comments,
+        'is_issues' : is_issues
     }
     return render(request, 'issue_details.html', context)
 
@@ -3012,13 +3116,12 @@ def submit_comment(request, id):
             if last_message:
                 mc.to_user = last_message.from_user
         else:
-            mc.to_user = hotissue.issued_by
+            mc.to_user = SystemUsers.objects.get(username=hotissue.issued_by)
 
         mc.issue_id = hotissue
         mc.save()
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
-
 
 def resolve_issue(request):
     if request.method == 'POST':
@@ -3028,3 +3131,20 @@ def resolve_issue(request):
         tran.delete()
         issue.delete()
         return redirect('issues')
+
+
+
+def get_is_seen_issues(request):
+    user = request.user
+    
+   
+    is_supervisor = user.is_supervisor 
+    if is_supervisor:
+        issues = Issues.objects.filter(status__in=['Pending'])
+    else:
+        issues = Issues.objects.filter(issued_by=user.username)
+    
+    is_issues = issues.exists()
+    
+    
+    return is_issues

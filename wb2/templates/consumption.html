@@ -33,7 +33,13 @@ More Reports...
 		width: 13%;
 		margin-left: 30px;
 	}
-
+    .page-link{
+        z-index:0 !important;
+        color: #006c85;
+    }
+    .page-link:hover {
+        color: #006c85;
+    }
 
     table tr {
         background-color: #f8f8f8;
@@ -246,10 +252,9 @@ More Reports...
 <div>
     <label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
     <form id="yearselection" action="">
-        <select class="form-select" id="selector" onchange="change()">
-            <option value="{{cur_year}}">{{cur_year}}</option>
+        <select class="form-select mb-3" id="selector" onchange="change()">
             {% for i in years reversed %}
-            <option value="{{i}}">{{i}}</option>
+            <option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
             {% endfor %}
         </select>
     </form>

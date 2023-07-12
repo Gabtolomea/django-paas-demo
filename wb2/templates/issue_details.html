@@ -5,6 +5,8 @@
 Issues Details
 {% endblock title %}
 {% load humanize %}
+{% block script %}
+{% endblock script %}
 {% block issue_details %}
 <style>
     .rounded {
@@ -150,16 +152,27 @@ Issues Details
     <!-- Header Consumer Info -->
     <h3 style="text-align: center;">{{isdel.issue}}</h3>
     <div class="rounded bg-light p-3">
+        <div style="display: flex; justify-content: space-between;">
+            <a href="{% url 'issues' %}" class="btn btn-primary btn-mark-complete mg-5" style="margin-left: 5px;">
+                <img style="width: 20px;" src="{% static 'images/arrow_back_FILL1_wght600_GRAD200_opsz48.svg' %}" alt="Django Icon" class="django-icon">
+                Go Back
+            </a>
+            <div class="issue-meta mt-4" style="margin-right: 5px; text-align: right;">
+                Created by {{isdel.issued_by_id}} | Created on {{isdel.date}}
+            </div>
+        </div>
         <div class="input-container">
-            <div class="issue-meta">Created by {{isdel.issued_by_id}} | Created on {{isdel.date}}</div>
-            <form action="{%url 'resolve_issue' %}"  style="margin-left: auto;" method="post" >
+            <form action="{% url 'resolve_issue' %}" style="margin-left: auto;" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="id" value="{{isdel.issueid}}">
-                <button class="btn btn-primary btn-mark-complete" type="submit">Mark Done</button>
+                <button id="resolve-btn" class="btn btn-primary btn-mark-complete" type="submit">
+                    Mark as Done
+                </button>
             </form>
+
         </div>
 
-        <div class="issue-description">Description</div>
+        <div class="issue-description mt-4">Account Info</div>
         <div class="container-fluid p-0">
             <div class="table-responsive">
                 <table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">

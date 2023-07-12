@@ -537,7 +537,7 @@ def fix_billing_errors():
 
 
 def dump_database():
-
+    
     cnx = mysql.connector.connect(
         user='root',
         password='jazfer',
@@ -568,7 +568,7 @@ def dump_database():
     dump_file_path = f'{dump_directory}{timestamp}wb2_data_dump.sql'
     
     if os.path.exists(dump_file_path):
-        print("already dumped today, balik lang ugma")
+        print("Already dumped today, returning")
         return
 
     with open(dump_file_path, 'w', buffering=1000000) as dump_file:
@@ -602,7 +602,7 @@ def dump_database():
                     dump_file.write(f"INSERT INTO `{table_name}` VALUES\n")
                     for i in range(start_index, end_index):
                         row = rows[i]
-                        values = [f"'{str(value)}'" if value is not None else 'NULL' for value in row]
+                        values = [f"'{str(value).encode('ascii', 'ignore').decode()}'" if value is not None else 'NULL' for value in row]
                         row_data = f"({', '.join(values)})"
                         if i < end_index - 1:
                             row_data += ','

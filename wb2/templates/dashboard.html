@@ -80,6 +80,7 @@
                                 <span class="sidenav_text">Meter Reading</span>
                             </a>
                         </li>
+   
                         <li class="modal_side_nav_li">
                             <a class="modal_side_nav_li_text" href="{% url 'consumer_list' %}"
                                 style="color: white; text-decoration: none">
@@ -149,16 +150,10 @@
             </div>
 
             <div class="mobile_header_nav col-sm-4 col-md-4 col-lg-4" style="text-align: right;" id="mobile_header_nav">
-                {% if user.is_supervisor %}
-                    {% if is_seen %}
+                {% if is_issues %}
                         <a class="me-5" style="cursor: pointer;" title="Notifications" href="{% url 'issues' %}">
-                            <img src="{% static '/images/notifications_active_FILL0_wght700_GRAD200_opsz48.svg' %}" />
+                            <img src="{% static 'images/issue_icon.svg' %}"/>
                         </a>
-                    {% else %}
-                        <a class="me-5" style="cursor: pointer;" title="Notifications" href="{% url 'issues' %}">
-                            <img src="{% static '/images/notifications_FILL0_wght500_GRAD200_opsz24.svg' %}" />
-                        </a>
-                    {% endif %}
                 {% endif %}
 
                 <a class="me-5" style="cursor: pointer;" title="Sign out" href="{% url 'signout' %}">
@@ -204,6 +199,7 @@
                 </li>
             </a>
             {% endif %}
+           
             {% if request.user.is_teller or request.user.is_supervisor %}
             <a class="icons" href="{% url 'consumer_list' %}" style="color: white; text-decoration: none" title="Connection Status">
                 <li class="side_nav_li {% active_link 'consumer_list' 'active' %}">
