@@ -60,7 +60,7 @@ def lp(request):
     enye_bars()
     camelize()
     set_first_tran()
-    set_months_unpaid()
+    # set_months_unpaid()
     if datetime.now().day == 1:
         set_overdue_months()
     # capitalize()
@@ -280,7 +280,7 @@ def user_creation(request):
     context = {
         'form': form,
         'user': request.user,
-        'is_seen_issues' :is_seen_issues
+        'is_issues':is_issues
     }
     return render(request, 'registration.html', context)
 
@@ -3130,7 +3130,6 @@ def additional_fee(request, id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def submit_comment(request, id):
-    global notif_viewers
     hotissue = Issues.objects.get(issueid=id)
 
     if request.method == 'POST':
@@ -3161,6 +3160,7 @@ def resolve_issue(request):
         tran.delete()
         issue.delete()
         return redirect('issues')
+
 
 
 def get_is_seen_issues(request):
