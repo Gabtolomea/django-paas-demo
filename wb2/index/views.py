@@ -3050,7 +3050,6 @@ def submit_comment(request, id):
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-
 def resolve_issue(request):
     global notif_viewers
     if request.method == 'POST':

@@ -4,8 +4,22 @@
 {% block title %}
 Issues
 {% endblock title %} 
-
+{% block script %}
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="static/DataTables/js/jquery3.5.1.js"></script>
+<!-- Bootstrap 5 JS (popper.js is required) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#datatables').DataTable();
+    });
+</script>
+{% endblock %}
 {% block issues %}
+<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
 <style>
     .rounded-top {
         border-top-left-radius: 0.80rem !important;
@@ -28,13 +42,21 @@ Issues
 
     <div>
         <div class="rounded-top bg-light p-3"></div>
-        <table class="table table-hover table-sm rounded-top mb-0" style="user-select: none; cursor: pointer;">
-            <thead >
+
+        <table id="datatables" class="table table-hover table-sm rounded-top mb-0" style="user-select: none; cursor: pointer;">
+            <thead class="wb_thead">
+                <tr>
+                    <th scope="col" style="background-color: #006c85">Issued By</th>
+                    <th scope="col" style="background-color: #006c85">Status</th>
+                    <th scope="col" style="background-color: #006c85">Details</th>
+                    <th scope="col" style="background-color: #006c85">Comments</th>
+                    <th scope="col" style="background-color: #006c85">Date Issued</th>
+                </tr>
             </thead>
             <tbody class="tbody">
                 {% if issues %}
                 {% for i in issues %}
-                <tr class=" {% if not i.is_seen or not last_message.is_read %}table-light {%endif%}  clickable-row" data-href="{% url 'issue_details' i.issueid %}" {% if not i.is_seen %} style="font-weight: 600;"{% else %} style="color: #202124;"  {% endif %}>
+                <tr class="text-center {% if not i.is_seen or not last_message.is_read %}table-light {%endif%}  clickable-row" data-href="{% url 'issue_details' i.issueid %}" {% if not i.is_seen %} style="font-weight: 600;"{% else %} style="color: #202124;"  {% endif %}>
                     <td class="ps-3">{{i.issued_by}}</td>
                     <td >{{i.status}}</td>
                     {% if i.issue == 'Reading' %}
@@ -43,7 +65,7 @@ Issues
                     <td><span style="font-weight: 300;">Overdue for </span> {{i.transactionid.months_not_paid}}<span style="font-weight: 300;"> months </span></td>
                     {% endif %}
                     <td  style="font-weight: 300;font-style: italic; ">{{i.last_comment}}</td>
-                    <td class="text-end pe-3">{{i.date}}</td>
+                    <td class="pe-3">{{i.date}}</td>
                 </tr>
                 {% endfor %}
                 {% else %}
