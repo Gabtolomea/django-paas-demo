@@ -95,6 +95,7 @@ def signin(request):
 
 @login_required(login_url='login')
 def bills_list(request):
+    
     # balance()
     # get_consumers_yearly()
     # billing_errors_to_csv()
@@ -210,6 +211,7 @@ def bills_list(request):
 
 @login_required(login_url='login')
 def signout(request):
+    
     try:
         lr = LoginRec.objects.get(username=request.user)
         lr.delete()
@@ -221,6 +223,7 @@ def signout(request):
 
 @login_required(login_url='login')
 def user_creation(request):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -283,6 +286,7 @@ def user_creation(request):
 
 @login_required(login_url='login')
 def ledger(request, id):
+    
     disp = request.GET.get('show','')
     template = ""
     LoginSession = request.user
@@ -444,6 +448,7 @@ def ledger(request, id):
 
 @unauthenticated_user
 def forgetpassword(request):
+    
     if request.method == "POST":
         u_email = request.POST['email']
         if SystemUsers.objects.filter(email=u_email).exists():
@@ -518,6 +523,7 @@ def undodelete(request):
 
 @login_required(login_url='login')
 def meterreading(request):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -613,6 +619,7 @@ def deletereading(request, id):
 
 @login_required(login_url='login')
 def inputreading(request, id, year):
+    
     table = []
     years = []
     class meterreaderclass():
@@ -1038,6 +1045,7 @@ def inputreading(request, id, year):
 
 @login_required(login_url='login')
 def consumer_list(request):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1094,6 +1102,7 @@ def consumer_list(request):
 
 @login_required(login_url='login')
 def consumercreation(request):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1177,6 +1186,7 @@ def consumercreation(request):
 
 @login_required(login_url='login')
 def consumerupdate(request, id):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1363,6 +1373,7 @@ def sysuser(request):
 
 @login_required(login_url='login')
 def user_edit(request, id):
+    
     sys = SystemUsers.objects.get(username=id)
     form = sysup(instance=sys)
     if request.method == 'POST':
@@ -1665,6 +1676,7 @@ def reports(request):
 
 @login_required(login_url='login')
 def barangayreport(request, year):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1725,6 +1737,7 @@ def barangayreport(request, year):
 
 
 def view_barangay(request, id):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1747,6 +1760,7 @@ def view_barangay(request, id):
     return render(request, 'view_barangay.html', context)
 
 def usage_report_data(request, year):
+    
 
     template = ""
     LoginSession = request.user
@@ -1849,6 +1863,7 @@ def usage_report_data(request, year):
 
 
 def revenue_report(request, year):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -1980,6 +1995,7 @@ def reconnectconsumer(request, id):
 
 
 def unsettled_bills(request):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -2062,6 +2078,7 @@ def unsettled_bills(request):
 
 
 def view_unsettled_bills(request, id, year):
+    
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -2140,6 +2157,7 @@ def view_unsettled_bills(request, id, year):
 
 
 def discount(request):
+    
     dc = Discount.objects.all()
     try:
         lastdisc_id = int(Discount.objects.all().order_by('-discountcode')[0].discountcode.split('D')[::-1][0])
@@ -2196,6 +2214,7 @@ def deletediscount(request,id):
 
 @login_required(login_url='login')
 def new_consumertype(request):
+    
     cont = ConsumerType.objects.all().order_by
     form = ConscumertypecreationForm()
     contypecount = int(ConsumerType.objects.all().order_by('-contypeid')[0].contypeid.split('C')[::-1][0])
@@ -2228,7 +2247,7 @@ def new_consumertype(request):
         'errors': form.errors,
         'user': request.user,
         'is_contype':True,
-        'is_see_issues' : is_seen_issues
+        'is_issues' : is_issues
         
     }
     return render(request, 'new_consumertype.html', context)
@@ -2253,6 +2272,7 @@ def editcontype(request, id):
 
 @login_required(login_url='login')
 def penalty(request):
+    
     penalty = Penalty.objects.all()
     form = addPenalty
     penaltycounter = int(Penalty.objects.all().order_by('-penaltycode')[0].penaltycode.split('P')[::-1][0])
@@ -2308,6 +2328,7 @@ def editpenalty(request, id):
         return redirect('penalty')
 
 def bulkreading(request):
+    
     template = ""
     year = int(request.GET.get('fyear', datetime.today().year))
     month = int(request.GET.get('fmonth', datetime.today().month))
@@ -2639,6 +2660,7 @@ def viewprof(request):
 
 @login_required(login_url='login')
 def userprof(request):
+    
     user = SystemUsers.objects.get(username=str(request.user))
     form = ProfileForm(instance=user)
     if request.method == 'POST':
@@ -2665,6 +2687,7 @@ def userprof(request):
     return render(request, 'userprof.html', context)
 
 def monthly_summary (request, id, year):
+    
     table = []
     years = []
     class montly_sum():
@@ -2743,6 +2766,7 @@ def monthly_summary (request, id, year):
     return render(request,'conmon_summary.html', context)
 
 def monthlypayment(request):
+    
     if request.method == "POST":
         month = int(request.POST.get(f'month', 0))
         year = int(request.POST.get(f'year', 0))
@@ -2813,6 +2837,7 @@ def monthlypayment(request):
     return redirect('monthly_summary', id=conid, year=year)
 
 def payment_history (request, id, year):
+    
     years = []
     
     consumer = ConsumerInfo.objects.get(consumer_id = id)
@@ -2843,6 +2868,7 @@ def payment_history (request, id, year):
     return render(request,'payment_history.html', context)
 
 def consumption(request, year):
+    
     cons = ConsumerInfo.objects.all()
     cons_len = len(cons)
     latest_bills = []
@@ -2952,6 +2978,7 @@ def consumption(request, year):
 
 
 def exemptiont(request):
+    
     exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
     context = {
     'cons':exempt_cons,
@@ -2979,9 +3006,10 @@ def addexemption(request, id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
-notif_viewers = ["Klabuh"]
+
 
 def add_issue(request, id, year):
+    
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     if request.method == 'POST':
         for i in range(12):
@@ -3010,7 +3038,6 @@ def add_issue(request, id, year):
         i.transactionid = tran
         i.issue = "Reading"
         i.issued_by = request.user
-        notif_viewers.append(request.user.username)
         i.save()
         
         messages.error(request, 'Issue has been added.')
@@ -3019,6 +3046,7 @@ def add_issue(request, id, year):
 
 
 def issues_view(request):
+    
     issues = Issues.objects.all()
     last_message = None
     try:
@@ -3040,6 +3068,7 @@ def issues_view(request):
     return render(request, 'issues.html', context)
 
 def issue_details(request, id):
+    
     issue = Issues.objects.get(issueid=id)
     if not issue.is_seen:
         issue.is_seen = True
@@ -3075,6 +3104,7 @@ def issue_details(request, id):
 
 
 def additional_fee(request, id):
+    
     if request.method == "POST":
         total_amount = float(request.POST.get('totalAmount', 0.00))
         months = int(request.POST['monthfee'])
@@ -3118,7 +3148,7 @@ def submit_comment(request, id):
             if last_message:
                 mc.to_user = last_message.from_user
         else:
-            mc.to_user = SystemUsers.objects.get(username=hotissue.issued_by)
+            mc.to_user = SystemUsers.objects.get(username = hotissue.issued_by)
 
         mc.issue_id = hotissue
         mc.save()
@@ -3126,6 +3156,7 @@ def submit_comment(request, id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def resolve_issue(request):
+    
     if request.method == 'POST':
         id = request.POST.get('id')
         issue = Issues.objects.get(issueid=id)
