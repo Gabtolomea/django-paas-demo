@@ -199,7 +199,7 @@ Barangay {{bang.barangaycode}} Monthly Usage
 	.button2 {
 		background-color: var(--main-color); 
 		color: white;
-		padding: 8px 30px;
+		padding: 8px 20px;
 		border: none;
 		border-radius: 15px;
 		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
@@ -235,6 +235,8 @@ Barangay {{bang.barangaycode}} Monthly Usage
 
 	<div class="col-sm-12 col-md-6">
 		<button type="button" class="btn button2" onclick="history.back()">
+			<img style="width: 20px;" src="{% static 'images/arrow_back_FILL1_wght600_GRAD200_opsz48.svg' %}"
+				alt="Django Icon" class="django-icon">
 			<i class="fa fa-rotate-left"></i>
 			Return
 		</button>

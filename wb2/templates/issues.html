@@ -1,0 +1,67 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}
+Issues
+{% endblock title %} 
+
+{% block issues %}
+<style>
+    .rounded-top {
+        border-top-left-radius: 0.80rem !important;
+        border-top-right-radius: 0.80rem !important;
+    }
+    .rounded-bottom {
+        border-bottom-left-radius: 0.80rem !important;
+        border-bottom-right-radius: 0.80rem !important;
+    }
+
+    .table-hover>tbody>tr:hover {
+        --bs-table-accent-bg:var(--bs-table-bg)!important;
+        background-color: initial !important;
+        box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+        z-index: 2 !important;
+    }
+  </style>
+<div class="p-3">
+    <h3 style="text-align: center;">Issues</h3>
+
+    <div>
+        <div class="rounded-top bg-light p-3"></div>
+        <table class="table table-hover table-sm rounded-top mb-0" style="user-select: none; cursor: pointer;">
+            <thead >
+            </thead>
+            <tbody class="tbody">
+                {% if issues %}
+                    {% for i in issues %}
+                        {% if user.is_supervisor or i.issued_by == user.username and last_message %}
+                            <tr class="{% if not i.is_seen or not last_message.is_read %}table-light{% endif %} clickable-row" data-href="{% url 'issue_details' i.issueid %}" {% if not i.is_seen %}style="font-weight: 600;"{% else %}style="color: #202124;"{% endif %}>
+                                <td class="ps-3">{{ i.issued_by }}</td>
+                                <td>{{ i.status }}</td>
+                                <td><span style="font-weight: 300;">From </span>{{ i.transactionid.prevReading }} <span style="font-weight: 300;"> to </span>{{ i.transactionid.meterReading }}</td>
+                                <td style="font-weight: 300; font-style: italic;">{{ i.last_comment }}</td>
+                                <td class="text-end pe-3">{{ i.date }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="table-light" style="text-align: center;">No issues found</td>
+                    </tr>
+                {% endif %}
+            
+                <script src="{% static 'jquery/jquery.js' %}"></script>
+                <script>
+                    jQuery(document).ready(function ($) {
+                        $(".clickable-row").click(function () {
+                            window.location = $(this).data("href");
+                        });
+                    });
+                </script>
+            </tbody>
+        </table>
+        <div class="rounded-bottom bg-light p-3 z-n1"></div>
+    </div>
+</div>
+
+{% endblock issues %}

@@ -2,6 +2,7 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from datetime import date
 
 
 from .models import *
@@ -98,7 +99,6 @@ class ConsumerForm(ModelForm):
     lastname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'09XXXXXXXXX','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}),required=False)
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=False)
-    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}),required=False)
     sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}), choices=CHOICES)
     sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
     homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -107,7 +107,8 @@ class ConsumerForm(ModelForm):
     installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Barangays.objects.all())
     contypeid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=ConsumerType.objects.all())
     penaltycode = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Penalty.objects.all(),required=False)
-    
+    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),required=False)
+        
     class Meta():
         model = ConsumerInfo
         fields = (

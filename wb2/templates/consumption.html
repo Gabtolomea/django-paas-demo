@@ -4,6 +4,19 @@
 {% block title %}
 More Reports...
 {% endblock title %}
+{% block script %}
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="static/DataTables/js/jquery3.5.1.js"></script>
+<!-- Bootstrap 5 JS (popper.js is required) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#datatables').DataTable();
+    });
+</script>
+{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
@@ -16,9 +29,16 @@ More Reports...
         width: 100%;
     }
 
-    .form-select {
-        width: 10%;
-        margin-left: 30px;
+	.form-select {
+		width: 13%;
+		margin-left: 30px;
+	}
+    .page-link{
+        z-index:0 !important;
+        color: #006c85;
+    }
+    .page-link:hover {
+        color: #006c85;
     }
 
     table tr {
@@ -232,10 +252,9 @@ More Reports...
 <div>
     <label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
     <form id="yearselection" action="">
-        <select class="form-select" id="selector" onchange="change()">
-            <option value="{{cur_year}}">{{cur_year}}</option>
+        <select class="form-select mb-3" id="selector" onchange="change()">
             {% for i in years reversed %}
-            <option value="{{i}}">{{i}}</option>
+            <option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
             {% endfor %}
         </select>
     </form>
@@ -249,9 +268,6 @@ More Reports...
         }
     </script>
 </div>
-
-<!-- Total List lang  -->
-<div class="row table-responsive">
     <div class="p-3">
         <h3 style="text-align: center;">Total Data</h3>
         <div>
@@ -265,17 +281,18 @@ More Reports...
                     </tr>
                 </thead>
                 <tbody class="tbody">
+                    {% for i in tyc %}
                     <tr>
-                        <td>{{cur_year}}</td>
-                        <td>{{tyc}}</td>
+                        <td>{{i.year}}</td>
+                        <td>{{i.total}}</td>
                     </tr>
-       
+                    {% endfor %}
                 </tbody>
 
             </table>
         </div>
     </div>
-
+    
 <!-- Stop Meter Accounts -->
 <div class="p-3">
     <h3 style="text-align: center;">Stop Meter Accounts</h3>
@@ -283,40 +300,32 @@ More Reports...
         <table class="table table-bordered table-hover table-striped table-sm ">
             <thead class="wb_thead">
                 <tr>
-                    <th scope="col" style="background-color: #006c85">List</th>
+                    <th scope="col" style="background-color: #006c85">No.</th>
+                    <th scope="col" style="background-color: #006c85">Account ID</th>
                     <th scope="col" style="background-color: #006c85">Meter Number</th>
                     <th scope="col" style="background-color: #006c85">Name</th>
-                    <th scope="col" style="background-color: #006c85">Address</th>
                     <th scope="col" style="background-color: #006c85">Balance</th>
                 </tr>
             </thead>
             <tbody class="tbody">
-                {% for i in tsm%}
+                {% for sm in sm_arr %}
                 <tr>
-                    <td>{{ forloop.counter }}.</td>
-                    <td>{{i.meternumber}}</td>
-                    <td>{{i.firstname}}, {{i.lastname}}</td>
-                    <td>{{i.installation_address}}</td>
-                    <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} </td>
-                </tr>
-          
-
+                    <td>{{forloop.counter}}</td>
+                    <td>{{sm.consumer_id}}</td>
+                    <td>{{sm.meternumber}}</td>
+                    <td>{{sm.firstname}} {{sm.lastname}}</td>
+                    <td>{{sm.current_bal|floatformat:2|intcomma}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
-
         </table>
     </div>
 </div>
-
-
-
-<!-- Condemn Accounts -->
     <div class="p-3">
         <h3 style="text-align: center;">Condemn Accounts</h3>
 
         <div>
-            <table class="table table-bordered table-hover table-striped table-sm ">
+            <table id="datatables" class="table table-bordered table-hover table-striped table-sm ">
                 <thead class="wb_thead">
                     <tr>
                         <th scope="col" style="background-color: #006c85">List</th>
@@ -339,7 +348,7 @@ More Reports...
                     <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' i.consumer_id cur_year %}">
                         <td>{{ forloop.counter }}.</td>
                         <td>{{i.meternumber}}</td>
-                        <td>{{i.firstname}}, {{i.lastname}}</td>
+                        <td>{{i.firstname}} {{i.lastname}}</td>
                         <td>{{i.installation_address}}</td>
                         <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} 
                         {% if i.current_bal == 0 %}

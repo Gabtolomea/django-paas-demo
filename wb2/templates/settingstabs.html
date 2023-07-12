@@ -47,6 +47,15 @@
                 Discounts
             </button>
         </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_exemption %}active{% endif %}" id="exemptions_button" data-href="{% url 'exemptiont' %}" type="button" role="tab">
+                <img style="width: 20px"
+                src="{% static '/images/credit_card_off_FILL1_wght600_GRAD200_opsz48.svg' %}" />
+                Exemptions
+            </button>
+
+        </li>
     </ul>
 </div>
 <script src="{% static 'jquery/jquery.js' %}"></script>
