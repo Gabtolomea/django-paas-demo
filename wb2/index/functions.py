@@ -739,6 +739,7 @@ def set_overdue_months():
                     issue = Issues.objects.get(transactionid_id=t.transactionid)
                 except ObjectDoesNotExist:
                     issue = Issues()
+                    issue.consumer_id = c
                     issue.transactionid = t
                     issue.issued_by = "System"
                 issue.issue = f"Overdue for {t.months_not_paid} months"
@@ -763,6 +764,7 @@ def set_months_unpaid():
                     issue = Issues.objects.get(transactionid_id=t.transactionid)
                 except ObjectDoesNotExist:
                     issue = Issues()
+                    issue.consumer_id = c
                     issue.transactionid = t
                     issue.issued_by = "System"
                 issue.issue = "Overdue"

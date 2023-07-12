@@ -243,14 +243,16 @@ Input Reading
 						{% if consumer.stopmeterflag %}
 						{% else %}
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<button id="submit-{{t.transid}}" type="button" style="display: none;" class="btn btn-success" onclick="submit_this('{{t.transid}}',{{t.prev}})">
-								SAVE
-							</button>
-							<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}},{{t.prev}},{{t.reading}})">
-								EDIT
-							</button>
-							{% if t.reading %}
-							<button id="delete-{{t.transid}}" class="hide btn btn-danger" onclick="window.location.href='{% url 'deletereading' t.transid %}'">DELETE</button>
+							{% if not t.is_issue %}
+								<button id="submit-{{t.transid}}" type="button" style="display: none;" class="btn btn-success" onclick="submit_this('{{t.transid}}',{{t.prev}})">
+									SAVE
+								</button>
+								<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}},{{t.prev}},{{t.reading}})">
+									EDIT
+								</button>
+								{% if t.reading %}
+								<button id="delete-{{t.transid}}" class="hide btn btn-danger" onclick="window.location.href='{% url 'deletereading' t.transid %}'">DELETE</button>
+								{% endif %}
 							{% endif %}
 						{% endif %}
 						</td>
