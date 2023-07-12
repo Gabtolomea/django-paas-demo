@@ -736,11 +736,11 @@ def set_overdue_months():
         for t in unpaid_trans:
             if t.months_not_paid >= 6:
                 try:
-                    issue = Issues.objects.get(consumer_id=c.consumer_id, transaction_id=t.transactionid)
+                    issue = Issues.objects.get(transactionid_id=t.transactionid)
                 except ObjectDoesNotExist:
                     issue = Issues()
                     issue.consumer_id = c
-                    issue.transaction_id = t
+                    issue.transactionid = t
                     issue.issued_by = "System"
                 issue.issue = f"Overdue for {t.months_not_paid} months"
                 issue.save()
@@ -761,11 +761,11 @@ def set_months_unpaid():
             t.save()
             if t.months_not_paid >= 6:
                 try:
-                    issue = Issues.objects.get(consumer_id=c.consumer_id, transaction_id=t.transactionid)
+                    issue = Issues.objects.get(transactionid_id=t.transactionid)
                 except ObjectDoesNotExist:
                     issue = Issues()
                     issue.consumer_id = c
-                    issue.transaction_id = t
+                    issue.transactionid = t
                     issue.issued_by = "System"
                 issue.issue = "Overdue"
                 issue.save()
