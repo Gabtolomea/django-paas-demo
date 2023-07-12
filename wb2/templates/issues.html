@@ -55,25 +55,23 @@ Issues
             </thead>
             <tbody class="tbody">
                 {% if issues %}
-                {% for i in issues %}
-                <tr class="text-center {% if not i.is_seen or not last_message.is_read %}table-light {%endif%}  clickable-row" data-href="{% url 'issue_details' i.issueid %}" {% if not i.is_seen %} style="font-weight: 600;"{% else %} style="color: #202124;"  {% endif %}>
-                    <td class="ps-3">{{i.issued_by}}</td>
-                    <td >{{i.status}}</td>
-                    {% if i.issue == 'Reading' %}
-                    <td><span style="font-weight: 300;">From </span>{{i.transactionid.prevReading}} <span style="font-weight: 300;"> to </span>{{i.transactionid.meterReading}}</td>
-                    {% elif i.issue == 'Overdue' %}
-                    <td><span style="font-weight: 300;">Overdue for </span> {{i.transactionid.months_not_paid}}<span style="font-weight: 300;"> months </span></td>
-                    {% endif %}
-                    <td  style="font-weight: 300;font-style: italic; ">{{i.last_comment}}</td>
-                    <td class="pe-3">{{i.date}}</td>
-                </tr>
-                {% endfor %}
+                    {% for i in issues %}
+                        {% if user.is_supervisor or i.issued_by == user and last_message %}
+                            <tr class="{% if not i.is_seen or not last_message.is_read %}table-light{% endif %} clickable-row" data-href="{% url 'issue_details' i.issueid %}" {% if not i.is_seen %}style="font-weight: 600;"{% else %}style="color: #202124;"{% endif %}>
+                                <td class="ps-3">{{ i.issued_by }}</td>
+                                <td>{{ i.status }}</td>
+                                <td><span style="font-weight: 300;">From </span>{{ i.transactionid.prevReading }} <span style="font-weight: 300;"> to </span>{{ i.transactionid.meterReading }}</td>
+                                <td style="font-weight: 300; font-style: italic;">{{ i.last_comment }}</td>
+                                <td class="text-end pe-3">{{ i.date }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
                 {% else %}
-               
-                <tr>
-                    <td colspan="5" class="table-light" style="text-align: center;">No issues found</td>
-                </tr>
-                {% endif %} 
+                    <tr>
+                        <td colspan="5" class="table-light" style="text-align: center;">No issues found</td>
+                    </tr>
+                {% endif %}
+            
                 <script src="{% static 'jquery/jquery.js' %}"></script>
                 <script>
                     jQuery(document).ready(function ($) {
