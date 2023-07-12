@@ -3144,7 +3144,7 @@ def submit_comment(request, id):
             if last_message:
                 mc.to_user = last_message.from_user
         else:
-            mc.to_user = hotissue.issued_by
+            mc.to_user = SystemUsers.objects.get(username=hotissue.issued_by)
 
         mc.issue_id = hotissue
         mc.save()
@@ -3171,8 +3171,9 @@ def get_is_seen_issues(request):
     if is_supervisor:
         issues = Issues.objects.filter(status__in=['Pending'])
     else:
-        issues = Issues.objects.filter(issued_by=user)
+        issues = Issues.objects.filter(issued_by=user.username)
     
     is_issues = issues.exists()
+    
     
     return is_issues
