@@ -3012,6 +3012,8 @@ def add_issue(request, id, year):
         i.issued_by = request.user
         notif_viewers.append(request.user.username)
         i.save()
+        
+        messages.error(request, 'Issue has been added.')
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
