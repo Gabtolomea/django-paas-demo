@@ -1480,7 +1480,7 @@ def payment(request, id):
             consumer.excess += amount
             consumer.save()
             if consumer.excess > 0:
-                unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('-year', '-month')
+                unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('year', 'month')
                 if unsettled:
                     for i in unsettled:
                         if consumer.excess>=i.bill:
