@@ -367,7 +367,7 @@ def ledger(request, id):
                 if asc_trans[i].is_billpaid:
                     ispaid = 'Paid'
             elif asc_trans[i].transType == 'Payment':
-                style = 'table-success'
+                style = 'table-orange'
                 ornum = asc_trans[i].or_number
                 pb = ''
                 bal = bal-asc_trans[i].payment
@@ -379,24 +379,24 @@ def ledger(request, id):
             elif asc_trans[i].transType == 'Penalty':
                 bill = asc_trans[i].bill
                 pen = asc_trans[i].penaltyCode
-                style = 'table-danger'
+                style = 'table-red'
                 pb = asc_trans[i].processedBy
                 bal += bill
 
             elif asc_trans[i].transType == 'Discount':
-                style = 'table-primary'
+                style = 'table-blue'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
 
             elif asc_trans[i].transType == 'Reset Meter':
                 bill = 0
                 cur = asc_trans[i].meterReading
-                style = 'table-warning'
+                style = 'table-yellow'
                 pb = asc_trans[i].processedBy
                 bal += bill
             elif asc_trans[i].transType == 'Additional Fees':
                 bill = asc_trans[i].bill
-                style = 'table-info'
+                style = 'table-lightblue'
                 bal += bill
                 
                 if asc_trans[i].processedBy is not None:
@@ -1483,7 +1483,7 @@ def payment(request, id):
             consumer.excess += amount
             consumer.save()
             if consumer.excess > 0:
-                unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('-year', '-month')
+                unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('year', 'month')
                 if unsettled:
                     for i in unsettled:
                         if consumer.excess>=i.bill:
