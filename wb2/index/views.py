@@ -365,9 +365,9 @@ def ledger(request, id):
                     pb = asc_trans[i].processedBy
                 bal += bill
                 if asc_trans[i].is_billpaid:
-                    ispaid = 'yeah'
+                    ispaid = 'Paid'
             elif asc_trans[i].transType == 'Payment':
-                style = 'table-success'
+                style = 'table-orange'
                 ornum = asc_trans[i].or_number
                 pb = ''
                 bal = bal-asc_trans[i].payment
@@ -379,30 +379,33 @@ def ledger(request, id):
             elif asc_trans[i].transType == 'Penalty':
                 bill = asc_trans[i].bill
                 pen = asc_trans[i].penaltyCode
-                style = 'table-danger'
+                style = 'table-red'
                 pb = asc_trans[i].processedBy
                 bal += bill
 
             elif asc_trans[i].transType == 'Discount':
-                style = 'table-primary'
+                style = 'table-blue'
                 pb = asc_trans[i].processedBy
                 bal = bal-asc_trans[i].payment
 
             elif asc_trans[i].transType == 'Reset Meter':
                 bill = 0
                 cur = asc_trans[i].meterReading
-                style = 'table-warning'
+                style = 'table-yellow'
                 pb = asc_trans[i].processedBy
                 bal += bill
             elif asc_trans[i].transType == 'Additional Fees':
                 bill = asc_trans[i].bill
-                style = 'table-info'
+                style = 'table-lightblue'
                 bal += bill
                 
                 if asc_trans[i].processedBy is not None:
                     pb = asc_trans[i].processedBy
                 if asc_trans[i].is_billpaid:
-                    ispaid = 'yeah'
+                    ispaid = 'Paid'
+                else:
+                    af = AdditionalFees.objects.get(current_tran=asc_trans[i].transactionid)
+                    ispaid = f"{af.month_counter}/{af.months}"
             date = asc_trans[i].date
             payment = asc_trans[i].payment
             transid = asc_trans[i].transactionid
@@ -660,7 +663,7 @@ def inputreading(request, id, year):
             month = calendar.month_name[i]
             lastid+=1
             transid = lastid
-            m = meterreaderclass(transid, month, i, '', lastreading, '', '', '', True)
+            m = meterreaderclass(transid, month, i, '', lastreading, '', '', '', False)
             table.append(m)
     else:
         asc_trans = trans.order_by('month')
@@ -674,6 +677,7 @@ def inputreading(request, id, year):
             prev = lastreading
             reading = 0
             style = ''
+            is_issue = False
             try:
                 next = asc_trans[j].meterReading
             except IndexError:
@@ -698,7 +702,6 @@ def inputreading(request, id, year):
                             transid = asc_trans[j+1].transactionid
                             usage = asc_trans[j+1].usage
                             reading = asc_trans[j+1].meterReading
-                            
                             try:
                                 next = asc_trans[j+2].meterReading
                             except IndexError:
@@ -3039,6 +3042,8 @@ def add_issue(request, id, year):
         i.issue = "Reading"
         i.issued_by = request.user
         i.save()
+        
+        messages.error(request, 'Issue has been added.')
 
     return redirect(request.META.get('HTTP_REFERER', '/')) 
 
