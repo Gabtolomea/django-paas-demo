@@ -63,6 +63,7 @@ def lp(request):
     # set_months_unpaid()
     if datetime.now().day == 1:
         set_overdue_months()
+        remove_duplicate_od_months()
     # capitalize()
     return render(request, "landing.html")
 

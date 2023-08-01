@@ -737,13 +737,17 @@ def set_overdue_months():
             if t.months_not_paid >= 6:
                 try:
                     issue = Issues.objects.get(transactionid_id=t.transactionid)
+                    issue.issue = f"Overdue"
+                    issue.save()
                 except ObjectDoesNotExist:
                     issue = Issues()
                     issue.consumer_id = c
                     issue.transactionid = t
                     issue.issued_by = "System"
-                issue.issue = f"Overdue"
-                issue.save()
+                    issue.issue = f"Overdue"
+                    issue.save()
+                except MultipleObjectsReturned:
+                    pass
             else:
                 t.months_not_paid += 1
                 t.save()
@@ -751,6 +755,14 @@ def set_overdue_months():
 def get_month_diff(month1, year1, month2, year2):
     return (year1 - year2) * 12 + (month1 - month2)
 
+def remove_duplicate_od_months():
+    issues = Issues.objects.all().order_by('transactionid_id')
+    current_id = 0
+    for i in issues:
+        if i.transactionid == current_id:
+            i.delete()
+        else:
+            current_id = i.transactionid
 
 def set_months_unpaid():
     consumers = ConsumerInfo.objects.filter(current_bal__gt=0, excep_accnt = False)
