@@ -1,0 +1,59 @@
+
+{% load static %}
+<style>
+    .nav-link{
+        height: 65px;
+        color: var(--dark-color)!important;
+        border: 0!important;
+        border-radius: 0 !important;
+    }
+    
+    .nav-link.active{
+        font-weight: bold;
+        background-color: #e5ebec!important;
+    }
+    .nav{
+        border: 0;
+        margin: 0;
+    }
+</style>
+<div id="myTab" class="row">
+    <ul class="nav nav-tabs" style="opacity: 1; height: 65px;" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_br %}active{% endif %}" id="barangayreport_button" data-href="{% url 'reports' %}" type="button" role="tab">
+                <img style="width: 20px"
+			src="{% static '/images/summarize_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                Barangay Reports
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_ur %}active{% endif %}" id="usagereport_button" data-href="{% url 'usage_report_data' cur_year %}" type="button" role="tab">
+                <img style="width: 20px"
+                src="{% static '/images/show_chart_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                Usage Report Data
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_rr %}active{% endif %}" id="revenuereport_button" data-href="{% url 'revenue_report' cur_year %}" type="button" role="tab">
+                <img style="width: 20px"
+                src="{% static '/images/grouped_bar_chart_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                Revenue Reports
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_cc %}active{% endif %}" id="consumption_button" data-href="{% url 'consumption' cur_year %}" type="button" role="tab">
+                <img style="width: 20px"
+                src="{% static '/images/read_more_FILL0_wght700_GRAD200_opsz48.svg' %}" />
+                More...
+            </button>
+        </li>
+    </ul>
+</div>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script>
+    jQuery(document).ready(function ($) {
+        $(".nav-link").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>

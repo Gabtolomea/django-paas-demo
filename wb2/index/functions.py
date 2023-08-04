@@ -735,6 +735,7 @@ def set_overdue_months():
         unpaid_trans = Transactions.objects.filter(acctID=c.consumer_id, is_billpaid=False, transType='Billing').order_by('year', 'month')
         for t in unpaid_trans:
             if t.months_not_paid >= 6:
+                print(t.month)
                 try:
                     issue = Issues.objects.get(transactionid_id=t.transactionid)
                 except ObjectDoesNotExist:

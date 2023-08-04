@@ -1,0 +1,341 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block title %}
+Monthly Summary
+{% endblock title %}
+{% load humanize %}
+{% block conmon_sumary %}
+<script src="{% static 'jspdf.min.js'%}"> </script>
+<script src="{% static 'jquery.min.js'%}"> </script>
+<script src="{% static 'html2pdf.bundle.min.js'%}"> </script>
+<script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
+
+<style>
+    /* .table-scrolls{
+		width: 100%;
+		display: table-caption;
+		height: 500px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	} */
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
+    }
+
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+    }
+
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+
+    /* ============================================================================================= */
+
+    .invoice-box {
+        max-width: 1044px;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #000;
+        box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+        font-size: 17px;
+        line-height: 16px;
+        font-family: monospace;
+        color: #000;
+    }
+
+    .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+    }
+
+    .invoice-box table td {
+        padding: 11px;
+        vertical-align: top;
+    }
+
+    .invoice-box table tr td:nth-child(2) {
+        text-align: right;
+    }
+
+    .invoice-box table tr.top table td {
+        padding-bottom: 0px;
+    }
+
+    .invoice-box table tr.top table td.title {
+        font-size: 45px;
+        line-height: 45px;
+        color: rgb(0, 0, 0);
+    }
+
+    .invoice-box table tr.information table td {
+        padding-top: 0;
+    }
+
+    .invoice-box table tr.heading td {
+        background: #eee;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .invoice-box table tr.details td {
+        padding-bottom: 0px;
+    }
+
+    .invoice-box table tr.item td {
+        border-bottom: 1px solid #eee;
+    }
+
+    .invoice-box table tr.item.last td {
+        border-bottom: none;
+    }
+
+    .invoice-box table tr.total td:nth-child(2) {
+        border-top: 2px solid #eee;
+        font-weight: bold;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+
+        .invoice-box table tr.information table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+    }
+
+    /** RTL **/
+    .rtl {
+        direction: rtl;
+        font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    }
+
+    .rtl table {
+        text-align: right;
+    }
+
+    .rtl table tr td:nth-child(2) {
+        text-align: left;
+    }
+
+    #logo {
+        vertical-align: middle;
+        border-style: none;
+        height: 90px;
+    }
+
+    .total {
+        font-weight: bold;
+        color: blue;
+        border-width: 1px;
+        border-style: solid;
+        border-color: black;
+    }
+
+    .mun {
+        font-family: monospace;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .mun-header {
+        font-size: 38px;
+        font-family: monospace;
+        font-weight: bold;
+    }
+
+    .st {
+        font-size: 21px;
+        font-weight: bold;
+        font-family: emoji;
+    }
+</style>
+<!-- Header Info of Consumer -->
+<div class="container-fluid p-0">
+    <div class="table-responsive">
+        <table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+            <thead class="wb_thead">
+                <tr class="header">
+                    <th scope="col" style="min-width:25px">Account ID</th>
+                    <th scope="col" style="min-width:25px">Name</th>
+                    <th scope="col" style="min-width:25px">Meter Number</th>
+                    <th scope="col" style="min-width:25px">Excess Payment</th>
+                    <th scope="col" style="min-width:25px">Current Balance</th>
+                </tr>
+            </thead>
+            <tbody class="wb_tbody">
+                <tr class="showOnHover">
+                    <td class="table-light text-center">{{u.consumer_id}}</td>
+                    <td class="table-light text-center">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+                    <td class="table-light text-center">{{u.meternumber}}</td>
+                    <td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
+                    <td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+
+
+
+<div class="row w-100 m-auto pt-2">
+
+    <!-- Buttons -->
+
+
+        {% include 'billingbuttons.html' %}
+
+
+
+    <!--Year Selection -->
+    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
+        <div class="table-responsive" style="max-height: 700px;">
+            <form id="yearselection" action="">
+                <label class="d-flex" style="float: right; align-items: center;">Year
+                        <select style="width: 100px; margin: 0 5px;" class="form-select" id="selector" onchange="change()">
+                        {% for i in years reversed %}
+                        <option value="{{i}}" {% if i == year %} selected{% endif %}>{{i}}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+            </form>
+            <script>
+                yearselection = document.getElementById("yearselection")
+                selector = document.getElementById("selector")
+                function change() {
+                    yearselection.action = selector.value
+                    yearselection.submit()
+                }
+            </script>
+    </div>
+
+
+</div>
+
+
+<!-- Monthly View -->
+<div id="monthly">
+    <div class="">
+        <form></form>
+        <h1 class="mb-3 text-center">Monthly Summary</h1>
+        <div class="container-fluid p-0">
+            <div class="table-responsive">
+                <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
+                    width="100%">
+                    <thead class="wb_thead">
+                        <tr>
+                            <th style="min-width: 100px;">Month</th>
+                            <th style="min-width: 100px;">Reading</th>
+                            <th style="min-width: 100px;">Usage</th>
+                            <th style="min-width: 100px;">Bill</th>
+                            <th style="min-width: 110px;">Amount Paid</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="wb_tbody">
+                        {% for t in table %}
+                        <tr>
+                            <td class="text-center">{{t.month}}</td>
+                            <td class="text-center">{{t.reading}}</td>
+                            <td class="text-center">{{t.usage}}</td>
+                            <td class="text-center">{% if t.total_bill %} &#8369; {{t.total_bill}} {% endif %}</td>
+                            <td class="text-center">
+
+                                {% if t.total_bill %} 
+                                {% if t.total_amount_paid %}
+                                    &#8369; {{t.total_amount_paid}}
+                                {% else %}
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#pay-{{t.monthval}}"> PAY </button> 
+                                {% endif %}
+                                {% endif %}
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        </form>
+    </div>
+</div>
+
+{% for t in table %}
+
+{% if t.total_bill %} 
+{% if t.total_amount_paid %}
+{% else %}
+<div class="modal fade" id="pay-{{t.monthval}}" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'monthlypayment' %}" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+                        
+                        <input type="hidden" name="conid" value="{{u.consumer_id}}">
+                        <input type="hidden" name="month" value="{{t.monthval}}">
+                        <input type="hidden" name="year" value="{{year}}">
+                        <input type="hidden" name="payment" value="{{t.total_bill}}">
+						<label for="id_or_num">OR Number</label>
+						<input type="text" name="or_num" id="id_or_num" required class="input form-control">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endif %}
+{% endif %}
+{% endfor %}
+
+
+
+
+
+{% endblock conmon_sumary %}

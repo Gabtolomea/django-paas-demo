@@ -1,0 +1,495 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}
+Input Reading
+{% endblock title %} 
+
+{% block ledger %}
+<style>
+	canvas {
+		border: 10px outset #63CDD7;
+		padding: 20px;
+		background: rgb(255, 255, 255);
+	}
+	.hide{
+       opacity: 0;
+	   transition: 0.3s all ease-in-out;
+
+	}
+	.showOnHover:hover .hide{
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+	td,th{
+		text-align: center;
+	}
+	.inputid{
+		text-align: center;
+	}
+	.button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 20px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
+</style>
+<div class="container-fluid p-0">
+	<div class="table_responsive" style="max-height: 922px;">
+		<table id="dtBasicExample" class="table table-bordered" cellspacing="0" width="100%">
+			<thead class="wb_thead">
+				<tr class="header">					
+					<th scope="col" style="min-width:110px">Account ID</th>
+					<th scope="col" style="min-width:120px">Name</th>
+					<th scope="col" style="min-width:100px">Meter Number</th>
+					<th scope="col" style="min-width:100px">Address</th>
+					<th scope="col" style="min-width:100px;">
+						{% if consumer.stopmeterflag %}
+						Enable
+						{% else %}
+						Stop
+						{% endif %}Meter
+					</th>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				<tr>
+					<td>{{consumer.consumer_id}}</td>
+					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
+					<td style="text-align:center;">{{consumer.meternumber}}</td>
+					<td>{{consumer.homeaddress}}</td>
+					<td>
+						<form action="{% if consumer.stopmeterflag %}{% else %}{% url 'stopmeter' consumer.consumer_id %}{% endif %}" method="post">
+							{% csrf_token %}
+							{% if consumer.stopmeterflag %}
+							<button class="btn btn-success btn-sm rounded-3"  type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal" title="Enable">
+								<i class="fa fa-play"></i> ENABLE
+							</button>
+							{% else %}
+							<button class="btn btn-danger btn-sm rounded-3" type="submit"
+								onclick="return confirm('Stop {{consumer.firstname}}\'s Meter?')" title="Stop" style="text-align-last: right;">
+								<i class="fa fa-stop"></i> STOP
+							</button>
+							{% endif %}
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'enablemeter' consumer.consumer_id %}" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Enable Meter</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<div class="form-check form-switch">
+							<input class="form-check-input" name="newmeter" type="checkbox" id="flexSwitchCheckDefault">
+							<label class="form-check-label" for="flexSwitchCheckDefault">Replaced with New Meter</label>
+						</div>
+						<label for="meternum" class="form-label">New Meter Number</label>
+						<input type="text" disabled name="meternum" class="form-control" required id="meternum">
+						<label for="initialreading" class="form-label">Initial Meter Reading</label>
+						<input type="number" disabled name="initialreading" class="form-control" required id="initialreading">
+						<label for="month_id" class="form-label">Month</label>
+						<select name="month" disabled id="month_id" class="form-select input-group">
+							<option value=""></option>
+							{% for t in table %}
+							<option value="{{t.monthval}}">{{t.month}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<script>
+					meternum = document.getElementById('meternum')
+					initialreading = document.getElementById('initialreading')
+					month = document.getElementById('month_id')
+					document.getElementById('flexSwitchCheckDefault').onchange = function() {
+						meternum.disabled = !this.checked;
+						initialreading.disabled = !this.checked;
+						month.disabled = !this.checked;
+					};
+				</script>
+				<div class="modal-footer">
+					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Close</button>
+					<button type="submit" class="btn btn-primary">Enable</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="row w-100 m-auto">
+    <div class="col-12">
+        <button type="button" class="btn button2" style="margin-right: 5px;" onclick="print()">
+            <img style="width: 25px;" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
+            Get a Copy
+        </button>
+        <button type="button" class="btn button2" id="exemption-btn" style="background-color: #006c85; color: white;"
+            {% if consumer.excep_accnt %}disabled{% endif %}>
+            {% if consumer.excep_accnt %}
+            Exempted
+            {% else %}
+            Exempt
+            {% endif %}
+        </button>
+    </div>
+</div>
+<h1 class="mb-3 text-center">Input Reading</h1>
+<div class="container-fluid p-0">
+	<div class="table-responsive" style="max-height: 700px;">
+		<form id="yearselection" action="">
+			<select class="form-select mb-3" id="selector" onchange="change()">
+				{% for i in years %}
+				<option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
+				{% endfor %}
+			</select>
+		</form>
+		<script>
+			yearselection = document.getElementById("yearselection")
+			selector = document.getElementById("selector")
+			function change() {
+				yearselection.action = selector.value
+				yearselection.submit()
+			}
+
+			document.addEventListener("DOMContentLoaded", function () {
+			var isExempted = {% if consumer.excep_accnt %}true{% else %}false{% endif %};
+			var btn = document.getElementById("exemption-btn");
+
+			if (isExempted) {
+				btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+				btn.textContent = "Exempted";
+			} else {
+				btn.addEventListener("click", handleExemptionClick);
+			}
+
+			function handleExemptionClick() {
+				btn.disabled = true;
+				btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+				btn.textContent = "Exempted";
+				isExempted = true;
+				var consumerId = '{{ consumer.consumer_id }}';
+				window.location.href = '{% url "addexemptions" consumer.consumer_id %}';
+			}
+		});
+		</script>
+		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
+			<thead class="wb_thead" >
+				<tr class="header ">
+					<th style="width: 25% !important;">Month</th>
+					<th style="width: 25% !important;">Consumption</th>
+					<th style="width: 25% !important;">Meter Reading</th>
+					{% if consumer.stopmeterflag %}
+					{% else %}
+					<th style="width: 25% !important;">Actions</th>
+					{% endif %}
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				{% for t in table %}
+					<tr class="showOnHover text-center">
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.month}}</td>
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
+						<form id="form-{{t.transid}}" class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
+							{% csrf_token %}
+							<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+								<input 
+									class = "input form-control border-0 rounded-0 " 
+									name = "reading-{{t.month}}" 
+									id = "{{t.transid}}" 
+									onfocus = "this.select()"
+									oninput="change_url(this)"
+									disabled 
+									type = "number"
+									data-prev = {{t.prev}}
+									data-next = {{t.next}}
+									{% comment %}
+									{% if t.prev %} min={{t.prev}} {% endif %} 
+									{% if t.next %} max="{{t.next}}" {%endif%} {% endcomment %}
+									{% if t.reading %} value="{{t.reading}}" {% endif %}>
+								<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
+							</td>
+						</form>
+						{% if consumer.stopmeterflag %}
+						{% else %}
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
+							{% if not t.is_issue %}
+								<button id="submit-{{t.transid}}" type="button" style="display: none;" class="btn btn-success" onclick="submit_this('{{t.transid}}',{{t.prev}})">
+									SAVE
+								</button>
+								<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}},{{t.prev}},{{t.reading}})">
+									EDIT
+								</button>
+								{% if t.reading %}
+								<button id="delete-{{t.transid}}" class="hide btn btn-danger" onclick="window.location.href='{% url 'deletereading' t.transid %}'">DELETE</button>
+								{% endif %}
+							{% endif %}
+						{% endif %}
+						</td>
+					</tr>
+					
+				{% endfor %}
+			</tbody>
+			<script>
+				function change_url(input) {
+					id = input.id
+					form = document.getElementById('form-'+id)
+					prev = parseInt(input.getAttribute('data-prev'))
+					if (input.value<prev){
+						form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
+						input.classList.remove('border-0')
+						input.classList.add('is-invalid')
+					}
+					else{
+						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
+						input.classList.remove("is-invalid")
+						input.classList.add('border-0')
+					}
+				}
+				function submit_this(id, prev) {
+					form = document.getElementById('form-'+id)
+					// input = document.getElementById(id)
+					// if (input.value<prev || input.value == ''){
+					// 	console.log('object');
+					// 	input.classList.remove('border-0')
+					// 	input.classList.add('is-invalid')
+					
+					// }
+					// else{
+						enableAll()
+						form.submit()
+					// }
+				}
+				function enableAll() {
+					inputs = document.getElementsByClassName('input')
+					for (let i = 0; i < inputs.length; i++) {
+						if (inputs[i].disabled) {
+							inputs[i].disabled = !inputs[i].disabled
+						}
+					}
+				}
+				function toggle(id, prev, reading) {
+					form = document.getElementById('form-'+id)
+					input = document.getElementById(id)
+					edit = document.getElementById("edit-" + id)
+					submit = document.getElementById("submit-" + id)
+					has_del = {% if t.reading %}true{% else %}false{% endif %}
+					if (!input.disabled) {
+						if (has_del){
+							del = document.getElementById("delete-" + id)
+							del.style.display = "inline"
+						}
+						submit.style.display = "none"
+						edit.innerHTML = "EDIT" 
+						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
+						edit.classList.remove("btn-danger")
+						edit.classList.add("btn-primary")
+					} else {
+						if (has_del){
+							del = document.getElementById("delete-" + id)
+							del.style.display = "none"
+						}
+						if (input.value < prev){
+							form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
+						}
+						submit.style.display = "inline"
+						edit.innerHTML = "CANCEL"
+						edit.classList.remove("btn-primary")
+						edit.classList.add("btn-danger")
+					}
+					if (input.value>=prev){
+						input.classList.remove("is-invalid")
+						input.classList.add('border-0')
+					}else{
+						input.classList.remove('border-0')
+						input.classList.add("is-invalid")
+					}
+					input.disabled = !input.disabled
+					input.focus()
+				}
+				function blurry(n, id){
+					input = document.getElementById(id)
+					if (input.value == ''){
+						input.value = n
+					}
+				}
+			</script>
+		</table>
+		<table id="newtable" style="display: none;" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>Month</th>
+					<th>Consumption</th>
+					<th>Meter Reading</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for t in table %}
+					<tr>
+						<td>
+							{{t.month}}
+						</td>
+						<td>
+							{{t.usage}}
+						</td>
+						<td>
+							{{t.reading}}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<center>
+			<h1>Usage Reports</h1>
+		</center>
+		<!-- Chart -->
+	</div>
+	<div class="container align-items-center">
+		<script src="{% static 'Chart.min.js'%}"></script>
+		
+		<canvas id="myChart"  width="800" height="250"></canvas>
+		<br>
+		<br>
+		<br>
+		<script>
+			var labels = [{%for i in table %} '{{i.month}}', {% endfor %}];
+			var chart = new Chart("myChart", {
+				type: "line",
+				data: {
+					labels: labels,
+					datasets: [{
+						data: [{%for i in table %}{% if i.usage %} '{{i.usage}}', {% endif %}{% endfor %}],
+							label: "Total Usage",
+							fill: false,
+							borderColor: '#20B2AA',
+							tension: 0.1,
+							backgroundColor: "#3090C7",
+					}]
+				},
+				options: {
+					title: {
+						display: true,
+							text: 'Monthly Usage for {{consumer.firstname}} {{consumer.lastname}}',
+					    },
+					scales: {
+						xAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			})
+		</script>
+	
+
+		<script
+			src="{% static 'jspdf.plugin.autotable.js'%}"></script>
+		<script type="text/javascript">
+			
+	function print() {
+		var doc = new jsPDF('landscape', 'pt', 'legal');
+		var htmlstring = '';
+		var tempVarToCheckPageHeight = 0;
+		var pageHeight = 0;
+		canvas = document.getElementById("myChart")
+   		canvasImg = canvas.toDataURL("image/png", 1.0);
+	
+
+   
+		pageHeight = doc.internal.pageSize.height;
+		specialElementHandlers = {
+			// element with id of "bypass" - jQuery style selector
+			'#bypassme': function (element, renderer) {
+				// true = "handled elsewhere, bypass text extraction"
+				return true
+			}
+		};
+		margins = {
+			top: 150,
+			bottom: 60,
+			left: 40,
+			right: 40,
+			width: 600
+		};
+		const formatter = new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: 'Php',
+			minimumFractionDigits: 2
+		})
+
+		var y = 10;
+		var x = 20;
+		doc.text(420, y = y + 30, "Copy of Consumer's Meter Reading ");
+		doc.setLineWidth(2);
+		doc.setFontSize(15);
+		doc.autoTable({
+			html: '#dtBasicExample',
+			theme: 'striped',
+			startY: y = y + 20,
+		})
+		y = y + 40
+		doc.setLineWidth(2);
+		doc.setFontSize(14);
+
+		doc.autoTable({
+			html: '#newtable',
+			startY: y = y + 15,
+			theme: 'striped',
+			pageBreak: 'auto',
+			columnStyles: {
+				0: {
+					cellWidth: 75,
+				},					
+			},
+			styles: {
+				minCellHeight: 20
+			},
+		})
+		y = doc.lastAutoTable.finalY
+		doc.setFillColor(255, 255,255);
+		doc.rect(x, y, 400, 200, "F");
+		doc.addImage(canvasImg, 'JPEG', x+100, y, 800, 200)
+		console.log(y);
+		if (y > 600) {
+			doc.addPage()
+			y = 20
+		}
+		console.log("testing")
+		doc.save('{{consumer.firstname}} {{consumer.lastname}}- Meter Reading.pdf');
+	}				
+		</script>
+	</div>
+</div>
+
+{% endblock ledger %}

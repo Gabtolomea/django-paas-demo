@@ -1,0 +1,360 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% static "images" as images %}
+
+{% block title %}
+System User
+{% endblock title %}
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+<style>
+    
+	.odd {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%; 
+		-webkit-tap-highlight-color: transparent;
+
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+	}
+
+	.dataTables_empty {
+		text-align: center;
+	}
+
+
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
+    }
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+
+    }
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+</style>
+{% endblock style %}
+{% block script %}
+<script src="{% static 'jquery.js' %}"></script>
+<script src="{% static 'jspdf.min.js' %}"></script>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+{% endblock script %}
+{% block sysuser %}
+<div class="pt-3 row">
+    <div class="col-4 align-middle">
+        <a href="{% url 'user_creation' %}">
+            <button class="btn button2"><img style="width: 23px;" src="{% static '/images/person_add_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                <span style="padding: 10px; font-family: Arial;">Add System User</span>
+            </button>
+        </a>
+    </div>
+    <div class="col-4">
+        <h1 class="text-center">System Users</h1>
+    </div>
+    <div class="col-4">
+    </div>
+</div>
+{% include 'search.html' %}
+<section id="main-content">
+    <section class="wrapper">
+        <div class="table-responsive ">
+
+            <table id="table" class="table table-bordered table-hover table-striped bg-white" cellspacing="0"
+                width="100%">
+                <thead>
+                    <tr style="background-color:#006c85; color: white;">
+                        <th class="align-middle text-center" scope="col">ID</th>
+                        <th class="align-middle text-center" scope="col">Name</th>
+                        <th class="align-middle text-center" scope="col">Email</th>
+                        <th class="align-middle text-center" scope="col">Role</th>
+                        <th class="align-middle text-center" scope="col">Update</th>
+                        <th class="align-middle text-center" scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if table %}
+                    {%for t in table%}
+                    <tr class="showOnHover">
+                        <td class="align-middle text-center"> {{t.username }}</td>
+                        <td>{{t.last_name }}, {{t.first_name }} {{t.mid_name}} </td>
+                        <td class="align-middle text-center">{{t.email }}</td>
+                        <td class="align-middle text-center">{{t.role}}</td>
+                        <td class="align-middle text-center p-0">
+                            <a href="{% url 'user_edit' t.username %}">
+                                <button class="btn hide btn-success btn-sm " data-toggle="modal" type="button"
+                                    data-placement="top" title="Edit">
+                                    <img style="width:20px;" src="{% static '/images/edit_white_36dp.svg' %}" />
+                                </button>
+                            </a>
+                        </td>
+                        <td class="align-middle text-center p-0">
+                            <a href="{%url 'deleteUser' t.username%}">
+                                <button class="btn hide btn-danger btn-sm" type="button"
+                                    onclick="return confirm('Are you sure you want to delete this System User( {{ t.username }} )?')"
+                                    data-placement="top" title="Delete">
+                                    <img style="width:20px;"
+                                        src="{% static '/images/delete_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                                </button>
+                            </a>
+                        </td>
+
+                    </tr>
+                    {%endfor%}
+                    {% else %}
+                    <tr class="odd">
+                        <td valign="top" colspan="6" class="dataTables_empty">No matching records found</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+
+<div class="row">
+    <div class="d-flex justify-content-center">
+        <div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
+            <ul style="display: flex; padding-left: 0; list-style: none;">
+                {% if sys_list.paginator.num_pages > 5 %}
+                {% if sys_list.number < 5 %} {% if sys_list.has_previous %} <a
+                    href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                    <li class="paginate_button page-item previous">Previous</li>
+                    </a>
+                    {% else %}
+                    <li class="paginate_button disabled page-item previous">Previous</li>
+                    {% endif %}
+                    {% for i in five %}
+                    {% if i == sys_list.number %}
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item active">{{i}}</li>
+                    </a>
+                    {% else %}
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item">{{i}}</li>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                    <li class="paginate_button disabled page-item">...</li>
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}</li>
+                    </a>
+                    {% if sys_list.has_next %}
+                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item next">Next</li>
+                    </a>
+                    {% else %}
+                    <li class="paginate_button disabled page-item next">Next</li>
+                    {% endif %}
+                    {% else %}
+                    {% if sys_list.number > sys_list.paginator.num_pages|add:'-3'%}
+                    {% if sys_list.has_previous %}
+                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item previous">Previous</li>
+                    </a>
+                    {% else %}
+                    <li class="paginate_button disabled page-item previous">Previous</li>
+                    {% endif %}
+                    <a href="?page=1&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item">1</li>
+                    </a>
+                    <li class="paginate_button disabled page-item">...</li>
+                    {% for i in last %}
+                    {% if i == sys_list.number %}
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item active">{{i}}</li>
+                    </a>
+                    {% else %}
+                    <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item">{{i}}</li>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                    {% if sys_list.number == sys_list.paginator.num_pages %}
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item active">{{ sys_list.paginator.num_pages }}
+                        </li>
+                    </a>
+                    {% else %}
+                    <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}</li>
+                    </a>
+                    {% endif %}
+                    {% if sys_list.has_next %}
+                    <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item next">Next</li>
+                    </a>
+                    {% else %}
+                    <li class="paginate_button disabled page-item next">Next</li>
+                    {% endif %}
+                    {% else %}
+                    {% if sys_list.has_previous %}
+                    <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item previous">Previous</li>
+                    </a>
+                    {% else %}
+                    <li class="paginate_button disabled page-item previous">Previous</li>
+                    {% endif %}
+                    {% if sys_list.number > 2 %}
+                    <a href="?page=1&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item">1</li>
+                    </a>
+                    {% if sys_list.number > 3 %}
+                    <li class="paginate_button disabled page-item">...</li>
+                    {% endif %}
+                    {% endif %}
+
+                    {% for num in sys_list.paginator.page_range %}
+                    {% if sys_list.number == num %}<a href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item active">
+                            {{ num }}
+                        </li>
+                    </a>
+                    {% elif num > sys_list.number|add:'-2' and num < sys_list.number|add:'2' %} <a
+                        href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
+                        <li class="paginate_button page-item">{{ num }}</li>
+                        </a>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if sys_list.number < sys_list.paginator.num_pages|add:'-2' %} <li
+                            class="paginate_button disabled page-item">...</li>
+                            <a href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                                <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}
+                                </li>
+                            </a>
+                            {% elif sys_list.number < sys_list.paginator.num_pages|add:'-1' %} <a
+                                href="?page={{ sys_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                                <li class="paginate_button page-item">{{ sys_list.paginator.num_pages }}
+                                </li>
+                                </a>
+                                {% endif %}
+                                {% if sys_list.has_next %}
+                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item next">Next</li>
+                                </a>
+                                {% else %}
+                                <li class="paginate_button page-item disabled next">Next</li>
+                                {% endif %}
+                                {% endif %}
+                                {% endif %}
+                                {% else %}
+                                {% if sys_list.has_previous %}
+                                <a href="?page={{ sys_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item previous">Previous</li>
+                                </a>
+                                {% else %}
+                                <li class="paginate_button disabled page-item previous">Previous</li>
+                                {% endif %}
+                                {% for i in sys_list.paginator.page_range %}
+                                {% if i == sys_list.number %}
+                                <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item active">{{i}}</li>
+                                </a>
+                                {% else %}
+                                <a href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item">{{i}}</li>
+                                </a>
+                                {% endif %}
+                                {% endfor %}
+                                {% if sys_list.has_next %}
+                                <a href="?page={{ sys_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item next">Next</li>
+                                </a>
+                                {% else %}
+                                <li class="paginate_button disabled page-item next">Next</li>
+                                {% endif %}
+                                {% endif %}
+            </ul>
+            <style>
+                a {
+                    -webkit-touch-callout: none;
+                    -webkit-user-select: none;
+                    -khtml-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    cursor: default;
+                    text-decoration: none;
+                }
+
+                .paginate_button {
+                    cursor: pointer;
+                    position: relative;
+                    display: block;
+                    padding: 0.375rem 0.75rem;
+                    font-size: 1rem;
+                    color: var(--main-color);
+                    text-decoration: none;
+                    background-color: white;
+                    border: 1px solid #dee2e6;
+                    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+                }
+
+                .active>.paginate_button,
+                .paginate_button.active {
+                    z-index: 3;
+                    color: white !important;
+                    background-color: var(--main-color);
+                    border-color: #dee2e6;
+                }
+
+                .previous {
+                    border-top-left-radius: .375rem;
+                    border-bottom-left-radius: .375rem;
+                }
+
+                .next {
+                    border-top-right-radius: .375rem;
+                    border-bottom-right-radius: .375rem;
+                }
+
+                .disabled {
+                    -webkit-touch-callout: none;
+                    -webkit-user-select: none;
+                    -khtml-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    cursor: default;
+                    color: #6c757d;
+                }
+            </style>
+        </div>
+    </div>
+</div>
+{% endblock sysuser %}

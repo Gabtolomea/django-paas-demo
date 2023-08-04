@@ -1,0 +1,103 @@
+{% extends 'dashboard.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+{{uv.lastname}} {{uv.firstname}} {{uv.middlename}} 's Unsettled Bills
+{% endblock title %}
+
+{% block view_unsettled_bills %}
+<div class="table-responsive">
+	<table id="dtBasicExample" class="table table-bordered mt-3" cellspacing="0" width="100%">
+		<thead class="header">
+			<tr style="background-color: #006c85; color: white; text-align: center;">
+				<th scope="col" style="min-width: 25px">Account ID</th>
+				<th scope="col" style="min-width: 25px">Meter Number</th>
+				<th scope="col" style="min-width: 25px">Name</th>
+				<th scope="col" style="min-width: 25px">Address</th>
+			</tr>
+		</thead>
+		<tbody class="wb_tbody">
+			<tr class="text-center">
+				<td>{{uv.consumer_id}}</td>
+				<td>{{uv.meternumber}}</td>
+				<td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
+				<td>{{uv.installation_address}} <button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button></td>
+				
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- Payment form/Modal -->
+<div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'payment' uv.consumer_id %}" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="id_amount">Amount</label>
+						<input type="number" name="amount" min="1" id="id_amount" required class="input form-control">
+						<label for="id_or_num">OR Number</label>
+						<input type="text" name="or_num" id="id_or_num" required class="input form-control">
+						<label for="id_dis_code">Discount Code</label>
+						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+	<label for="years"	style="font-size: 18px; font-weight: normal;">SelectYear:</label>
+	<form id="yearselection" action="">
+		<select style="width: 100px;" class="form-select mb-3" id="selector" onchange="change()">
+			<option value="{{current}}">{{current}}</option>
+			{% for i in years reversed %}
+			<option value="{{i}}">{{i}}</option>
+			{% endfor %}
+		</select>
+	</form>
+	<script>
+		yearselection = document.getElementById("yearselection")
+		selector = document.getElementById("selector")
+		function change() {
+			yearselection.action = selector.value
+			yearselection.submit('')
+		}
+	</script>
+	<table id="table" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
+		<thead class="wb_thead">
+			<tr class="header ">
+				<th style="width: 25% !important;">Month</th>
+				<th style="width: 25% !important;">Reading</th>
+				<th style="width: 25% !important;">Reading Date</th>
+				<th style="width: 25% !important;">Consumption</th>
+				<th style="width: 25% !important;">Total Bill</th>
+				<th style="width: 25% !important;">Total Amount Paid</th>
+
+			</tr>
+		</thead>
+		<tbody class="wb_tbody">
+			{% for t in table %}
+			<tr>
+				<td>{{t.month}}</td>
+				<td>{{t.reading}}</td>
+				<td>{{t.reading_date}}</td>
+				<td>{{t.consumption}}</td>
+				<td>&#8369; {{t.total_bill}}</td>
+				<td>&#8369; {{t.total_amount_paid|floatformat:2|intcomma}}</td>
+				
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+	{% endblock view_unsettled_bills %}
