@@ -63,6 +63,7 @@ def lp(request):
     # set_months_unpaid()
     if datetime.now().day == 1:
         set_overdue_months()
+        remove_duplicate_od_months()
     # capitalize()
     return render(request, "landing.html")
 
@@ -3063,10 +3064,43 @@ def issues_view(request):
 
     is_issues = get_is_seen_issues(request)
 
+    #paginate and search all issues code
+    search = request.GET.get("search", "")
+    page = request.GET.get('page')
+    if search:
+        issues = issues.filter(
+            Q(issue__icontains=search) |
+            Q(transactionid__acctID__consumer_id__icontains=search) |
+            Q(transactionid__acctID__firstname__icontains=search) |
+            Q(transactionid__acctID__middlename__icontains=search) |
+            Q(transactionid__acctID__lastname__icontains=search) |
+            Q(transactionid__acctID__meternumber__icontains=search)
+        )
+    
+
+    pages = int(request.GET.get('p', 10))
+    count = issues.count()
+    if pages == 0:
+        paginate_by = request.GET.get('paginate_by', count)
+    else:
+        paginate_by = request.GET.get('paginate_by', pages)
+    
+    paginator = Paginator(issues,paginate_by)
+    
+    try:
+        issue_list = paginator.page(page)
+    except PageNotAnInteger:
+        issue_list = paginator.page(1)
+    except EmptyPage:
+        issue_list = paginator.page(paginator.num_pages)
+           
+
     context = {
-        'issues': issues,
+        'issue_list': issue_list,
         'is_issues' : is_issues,
         'last_message': last_message,
+        'search' : search,
+        'paginate_by': paginate_by,
     }
     return render(request, 'issues.html', context)
 
