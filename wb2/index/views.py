@@ -2987,7 +2987,6 @@ def add_issue(request, id, year):
 
 def issues_view(request):
     
-    issues = Issues.objects.all().order_by('-date')
     last_message = None
     try:
         for issue in issues:
@@ -3003,16 +3002,20 @@ def issues_view(request):
     #paginate and search all issues code
     search = request.GET.get("search", "")
     page = request.GET.get('page')
-    if search:
-        issues = issues.filter(
-            Q(issue__icontains=search) |
+    isnum = search.isnumeric()
+
+    if isnum:
+        issues = Issues.objects.filter(
             Q(transactionid__acctID__consumer_id__icontains=search) |
+            Q(transactionid__acctID__meternumber__icontains=search)
+        ).order_by('-date')
+    else:
+        issues = Issues.objects.filter(
+            Q(issue__icontains=search)  |
             Q(transactionid__acctID__firstname__icontains=search) |
             Q(transactionid__acctID__middlename__icontains=search) |
-            Q(transactionid__acctID__lastname__icontains=search) |
-            Q(transactionid__acctID__meternumber__icontains=search)
-        )
-    
+            Q(transactionid__acctID__lastname__icontains=search)
+        ).order_by('-date')
 
     pages = int(request.GET.get('p', 10))
     count = issues.count()
