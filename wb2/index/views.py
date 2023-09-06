@@ -160,56 +160,6 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = redirect('stopmeters')
-        else:
-            if LoginSession.is_admin:
-                template = redirect('sysuser')
-            else:
-                if LoginSession.is_reader:
-                    template = redirect('meterreading')
-            return template
-
-    search = request.GET.get("search", "")
-    page = request.GET.get('page')
-    isnum = search.isnumeric()
-    if search:
-        if isnum:
-            bills = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search),deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
-        else:
-            bills = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search),deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
-    else:
-        bills = ConsumerInfo.objects.filter(deleteflag=0, stopmeterflag = 1).order_by('lastname', 'firstname', 'middlename')
-    pages = int(request.GET.get('p', 10))
-    user = request.user
-    count = bills.count()
-    if pages == 0:
-        paginate_by = request.GET.get('paginate_by', count)
-    else:
-        paginate_by = request.GET.get('paginate_by', pages)
-
-    paginator = Paginator(bills, paginate_by)
-    try:
-        stopmeters = paginator.page(page)
-    except PageNotAnInteger:
-        stopmeters = paginator.page(1)
-    except EmptyPage:
-        stopmeters = paginator.page(paginator.num_pages)
-
-    context = {
-        'search': search,
-        'last': range(paginator.num_pages - 3, paginator.num_pages),
-        'five': range(1, 6),
-        'paginate_by': paginate_by,
-        'count':count,
-        'stopmeters': stopmeters,
-        'user': user,
-    }
-    return render(request, 'stopmeter.html', context)
-
 @login_required(login_url='login')
 def signout(request):
     
@@ -605,6 +555,7 @@ def meterreading(request):
 
 @login_required(login_url='login')
 def deletereading(request, id):
+
     reading = Transactions.objects.get(transactionid = id)
     con = reading.acctID
     con.current_bal -= reading.bill
@@ -619,6 +570,9 @@ def deletereading(request, id):
         pass
     con.save()
     reading.delete()
+    latesttrans = Transactions.objects.filter(acctID=con.consumer_id).order_by('-year', '-month')[0]
+    con.current_reading = latesttrans.meterReading
+    con.save()
     return redirect('inputreading', con.consumer_id, date.today().year)
 
 @login_required(login_url='login')
@@ -667,7 +621,7 @@ def inputreading(request, id, year):
             m = meterreaderclass(transid, month, i, '', lastreading, '', '', '', False)
             table.append(m)
     else:
-        asc_trans = trans.order_by('month')
+        asc_trans = trans.filter(transType="Billing").order_by('month')
         count = len(asc_trans)
         j = 0
         for i in range(1, 13):
@@ -694,7 +648,6 @@ def inputreading(request, id, year):
                             next = asc_trans[j+1].meterReading
                         except IndexError:
                             next = False
-                        lastreading = reading
                         style = 'table-success'
                         is_issue = asc_trans[j].is_issue
                     else:
@@ -873,7 +826,6 @@ def inputreading(request, id, year):
                 except ObjectDoesNotExist:
                     pass
             except ObjectDoesNotExist:
-                
                 # finding next billing
                 fm = d+1
                 has_next = False
@@ -883,29 +835,13 @@ def inputreading(request, id, year):
                             next = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
                             
                             # finding previous billing
-                            bm = d-1
-                            has_prev = False
-                            for y in years_backward:
-                                for x in range(bm, 0, -1):
-                                    try:
-                                        prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
-                                        last_reading = prev.meterReading
-                                        # if not prev.is_billpaid:
-                                        #     prev.months_not_paid += 1
-                                        #     prev.save()
-                                        break
-                                    except ObjectDoesNotExist:
-                                        pass
-                                if has_prev:
-                                    break
-                                bm = 12
-                            break
                         except ObjectDoesNotExist:
                             pass
                     if has_next:
                         break
                     fm = 1
                 
+                last_reading = consumer.current_reading
                 bill = 0
                 billtran = Transactions()
                 billtran.acctID = consumer
@@ -3051,7 +2987,7 @@ def add_issue(request, id, year):
 
 def issues_view(request):
     
-    issues = Issues.objects.all()
+    issues = Issues.objects.all().order_by('-date')
     last_message = None
     try:
         for issue in issues:
@@ -3098,9 +3034,12 @@ def issues_view(request):
     context = {
         'issue_list': issue_list,
         'is_issues' : is_issues,
+        'last': range(paginator.num_pages - 3, paginator.num_pages),
+        'five': range(1, 6),
+        'paginate_by': paginate_by,
+        'count':count,
         'last_message': last_message,
         'search' : search,
-        'paginate_by': paginate_by,
     }
     return render(request, 'issues.html', context)
 
@@ -3198,6 +3137,25 @@ def resolve_issue(request):
         id = request.POST.get('id')
         issue = Issues.objects.get(issueid=id)
         tran = issue.transactionid
+        consumer = ConsumerInfo.objects.get(consumer_id=tran.acctID_id)
+        alltrans = Transactions.objects.filter(acctID_id=consumer.consumer_id ).order_by('-year', '-month')
+        try:
+            index_of_tran = list(alltrans).index(tran)
+            
+            # Get the transaction after `tran`
+            if index_of_tran < len(alltrans) - 1:
+                prev_tran = alltrans[index_of_tran + 1]
+                # Now, `prev_tran` contains the transaction after `tran`
+            else:
+                # `tran` is the last transaction in the queryset, so there is no transaction after it
+                prev_tran = None
+        except ValueError:
+            # `tran` was not found in the queryset
+            prev_tran = None
+        if prev_tran:
+            consumer.current_reading = prev_tran.meterReading
+
+        
         tran.delete()
         issue.delete()
         return redirect('issues')
