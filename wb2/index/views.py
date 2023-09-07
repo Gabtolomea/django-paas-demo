@@ -910,6 +910,7 @@ def inputreading(request, id, year):
                             pt = Transactions()
                             pt.acctID = consumer
                             pt.transType = "Payment"
+                            pt.processedBy = request.user
                             pt.date = datetime.today()
                             pt.year = u.year
                             pt.month = u.month
@@ -1428,6 +1429,7 @@ def payment(request, id):
                             pt = Transactions()
                             pt.acctID = consumer
                             pt.transType = "Payment"
+                            pt.processedBy = request.user
                             pt.date = datetime.today()
                             pt.year = i.year
                             pt.month = i.month
@@ -2540,6 +2542,7 @@ def bulkreading(request):
                                 pt.year = u.year
                                 pt.month = u.month
                                 pt.payment = u.bill
+                                pt.processedBy = request.user
                                 pt.save()
                                 u.is_billpaid = True
                                 u.save()
