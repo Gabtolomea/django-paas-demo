@@ -62,6 +62,8 @@ Input Reading
 					<th scope="col" style="min-width:120px">Name</th>
 					<th scope="col" style="min-width:100px">Meter Number</th>
 					<th scope="col" style="min-width:100px">Address</th>
+					
+					{% if user.is_supervisor %}
 					<th scope="col" style="min-width:100px;">
 						{% if consumer.stopmeterflag %}
 						Enable
@@ -69,6 +71,7 @@ Input Reading
 						Stop
 						{% endif %}Meter
 					</th>
+					{% endif %}
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
@@ -77,10 +80,11 @@ Input Reading
 					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
 					<td style="text-align:center;">{{consumer.meternumber}}</td>
 					<td>{{consumer.homeaddress}}</td>
+					{% if user.is_supervisor %}
 					<td>
 						<form action="{% if consumer.stopmeterflag %}{% else %}{% url 'stopmeter' consumer.consumer_id %}{% endif %}" method="post">
 							{% csrf_token %}
-							{% if consumer.stopmeterflag %}
+							{% if consumer.stopmeterflag%}
 							<button class="btn btn-success btn-sm rounded-3"  type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal" title="Enable">
 								<i class="fa fa-play"></i> ENABLE
 							</button>
@@ -92,6 +96,7 @@ Input Reading
 							{% endif %}
 						</form>
 					</td>
+					{% endif %}
 				</tr>
 			</tbody>
 		</table>
