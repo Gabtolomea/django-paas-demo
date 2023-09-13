@@ -317,7 +317,7 @@ def ledger(request, id):
                 bal += bill
                 if asc_trans[i].is_billpaid:
                     ispaid = 'Paid'
-            elif asc_trans[i].transType == 'Payment':
+            elif asc_trans[i].transType == 'Payment' or asc_trans[i].transType == 'Additional Fee Payment':
                 style = 'table-orange'
                 ornum = asc_trans[i].or_number
                 pb = ''
@@ -373,8 +373,7 @@ def ledger(request, id):
         #     ispaid = True
         ispaid = False
     except ObjectDoesNotExist:
-        u = False
-    
+        pass
     is_issues = get_is_seen_issues(request)
 
     context = {
@@ -570,7 +569,7 @@ def deletereading(request, id):
         pass
     con.save()
     reading.delete()
-    latesttrans = Transactions.objects.filter(acctID=con.consumer_id).order_by('-year', '-month')[0]
+    latesttrans = Transactions.objects.filter(acctID=con.consumer_id, transType = "Billing").order_by('-year', '-month')[0]
     con.current_reading = latesttrans.meterReading
     con.save()
     return redirect('inputreading', con.consumer_id, date.today().year)
@@ -1457,13 +1456,14 @@ def payment(request, id):
                         p_aftran.payment = af_amount
                         consumer.excess-=af_amount
                         p_aftran.acctID = consumer
-                        p_aftran.transType = "Payment"
+                        p_aftran.transType = "Additional Fee Payment"
                         p_aftran.date = datetime.today()
                         p_aftran.year = aftran.year
                         p_aftran.month = aftran.month
                         p_aftran.processedBy = request.user
                         p_aftran.save()
                         af.months -= 1
+                        af.month_counter += 1
 
                         # libog pa kaayo ni tarunga nya ni
                         if af.months > 0:
