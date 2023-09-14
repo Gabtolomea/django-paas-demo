@@ -320,7 +320,10 @@ def ledger(request, id):
             elif asc_trans[i].transType == 'Payment' or asc_trans[i].transType == 'Additional Fee Payment':
                 style = 'table-orange'
                 ornum = asc_trans[i].or_number
-                pb = ''
+                if asc_trans[i].processedBy:
+                    pb = asc_trans[i].processedBy
+                else:
+                    pb = ''
                 bal = bal-asc_trans[i].payment
                 try:
                     discount = Transactions.objects.get(transactionid=asc_trans[i].discountcode)
