@@ -28,4 +28,6 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
+        ls
+        cd wb2
         python manage.py test
