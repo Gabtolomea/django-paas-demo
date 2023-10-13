@@ -782,3 +782,28 @@ def set_months_unpaid():
                     issue.issued_by = "System"
                 issue.issue = "Overdue"
                 issue.save()
+
+def set_currentreadings():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        try:
+            t = Transactions.objects.filter(acctID=c.consumer_id, transType='Billing').order_by('-year', '-month')[0]
+            c.current_reading = t.meterReading
+            c.save()
+        except IndexError:
+            pass
+
+def pay_saall():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        trans = Transactions.objects.filter(acctID=c.consumer_id, transType='Billing', is_billpaid=False).order_by('year', 'month')
+        for t in trans:
+            try:
+                Transactions.objects.get(acctID_id=c.consumer_id, transType='Payment', year=t.year, month=t.month)
+                t.is_billpaid = True
+                t.save()
+            except MultipleObjectsReturned:
+                trans = Transactions.objects.filter(acctID=c.consumer_id, transType='Payment', year=t.year, month=t.month).order_by('-transactionid')
+                trans[0].delete()
+            except ObjectDoesNotExist:
+                pass

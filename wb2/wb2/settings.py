@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['waterbilling.test',
                 '172.28.52.214',
                 '192.168.254.133',
                 '192.168.254.110',
+                '192.168.254.118',
                 ]
 
 SCHEDULER_AUTOSTART = True

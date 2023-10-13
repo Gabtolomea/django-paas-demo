@@ -289,7 +289,6 @@ Input Reading
 						{% endif %}
 						</td>
 					</tr>
-					
 				{% endfor %}
 			</tbody>
 			<script>
@@ -362,9 +361,6 @@ Input Reading
 						if (has_del){
 							del = document.getElementById("delete-" + id)
 							del.style.display = "none"
-						}
-						if (input.value < prev){
-							form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
 						}
 						submit.style.display = "inline"
 						edit.innerHTML = "CANCEL"
