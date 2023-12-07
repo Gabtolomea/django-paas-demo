@@ -231,5 +231,5 @@ class AdditionalFees(models.Model):
     months = models.IntegerField()
     month_counter = models.IntegerField(default=1)
     remainder = models.IntegerField()
-    current_tran = models.IntegerField(null=True)
+    transactions = models.ManyToManyField(Transactions)
     date_added = models.DateField(auto_now_add=True)

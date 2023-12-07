@@ -29,6 +29,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.http import JsonResponse
 
 
+addfee_isdone = False
 
 
 
@@ -53,6 +54,7 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
+    global addfee_isdone
     # !!!please ask previous developers before attempting to uncomment!!!
     # portfromcsv()
     sxz()
@@ -62,8 +64,10 @@ def lp(request):
     camelize()
     set_first_tran()
     # set_months_unpaid()
-    if datetime.now().day == 1:
+    if datetime.now().day == 1 and not addfee_isdone:
         set_currentreadings()
+        add_additionalFees()
+        addfee_isdone = True
     #     set_overdue_months()
     #     remove_duplicate_od_months()
     # capitalize()
@@ -281,104 +285,106 @@ def ledger(request, id):
             self.year = year
             self.ispaid = ispaid
 
-        def id(self):
-            return self.transid
+        def __str__(self) -> str:
+            return self.transtype
     try:
         u = ConsumerInfo.objects.get(pk=id)
-        if disp == '':
-            trans = Transactions.objects.filter(acctID=u.consumer_id, is_issue=False)
-        else:
-            trans = Transactions.objects.filter(acctID=u.consumer_id, transType = disp, is_issue=False)
-        asc_trans = trans.order_by('year', 'month','transType')
-        bal = 0
-        for i in range(len(asc_trans)):
-            prev = 0
-            ornum = ''
-            connectionType = ''
-            style = ''
-            pb = ''
-            dcode = ''
-            usage = ''
-            bill = ''
-            prev = ''
-            cur = ''
-            ispaid = ''
-
-            if asc_trans[i].transType == 'Billing':
-                usage = asc_trans[i].usage
-                pre = asc_trans[i].meterReading - usage
-                bill = asc_trans[i].bill
-                try:
-                    connectionType = ConsumerType.objects.get(contypeid=asc_trans[i].contypeid).contype
-                except ObjectDoesNotExist:
-                    pass
-                cur = asc_trans[i].meterReading
-                prev = asc_trans[i].prevReading
-                if asc_trans[i].processedBy is not None:
-                    pb = asc_trans[i].processedBy
-                bal += bill
-                if asc_trans[i].is_billpaid:
-                    ispaid = 'Paid'
-            elif asc_trans[i].transType == 'Payment' or asc_trans[i].transType == 'Additional Fee Payment':
-                style = 'table-orange'
-                ornum = asc_trans[i].or_number
-                if asc_trans[i].processedBy:
-                    pb = asc_trans[i].processedBy
-                else:
-                    pb = ''
-                bal = bal-asc_trans[i].payment
-                try:
-                    discount = Transactions.objects.get(transactionid=asc_trans[i].discountcode)
-                    dcode = discount.discountcode
-                except ObjectDoesNotExist:
-                    pass
-            elif asc_trans[i].transType == 'Penalty':
-                bill = asc_trans[i].bill
-                pen = asc_trans[i].penaltyCode
-                style = 'table-red'
-                pb = asc_trans[i].processedBy
-                bal += bill
-
-            elif asc_trans[i].transType == 'Discount':
-                style = 'table-blue'
-                pb = asc_trans[i].processedBy
-                bal = bal-asc_trans[i].payment
-
-            elif asc_trans[i].transType == 'Reset Meter':
-                bill = 0
-                cur = asc_trans[i].meterReading
-                style = 'table-yellow'
-                pb = asc_trans[i].processedBy
-                bal += bill
-            elif asc_trans[i].transType == 'Additional Fees':
-                bill = asc_trans[i].bill
-                style = 'table-lightblue'
-                bal += bill
-                
-                if asc_trans[i].processedBy is not None:
-                    pb = asc_trans[i].processedBy
-                if asc_trans[i].is_billpaid:
-                    ispaid = 'Paid'
-                else:
-                    af = AdditionalFees.objects.get(current_tran=asc_trans[i].transactionid)
-                    ispaid = f"{af.month_counter}/{af.months}"
-            date = asc_trans[i].date
-            payment = asc_trans[i].payment
-            transid = asc_trans[i].transactionid
-            m = asc_trans[i].month
-            y = asc_trans[i].year
-            bal = math.ceil(bal*100)/100
-            ttype = asc_trans[i].transType
-            if asc_trans[i].transType != 'Received Amount':
-                new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid)
-                table.append(new_row)
-        # if bal > 0:
-        #     ispaid = False
-        # else:
-        #     ispaid = True
-        ispaid = False
+        
     except ObjectDoesNotExist:
         pass
+    if disp == '':
+        trans = Transactions.objects.filter(acctID=u.consumer_id, is_issue=False)
+    else:
+        trans = Transactions.objects.filter(acctID=u.consumer_id, transType = disp, is_issue=False)
+    asc_trans = trans.order_by('year', 'month','transactionid')
+    bal = 0
+    
+    currentaddfeecount = 1
+    for tran in asc_trans:
+        prev = 0
+        ornum = ''
+        connectionType = ''
+        style = ''
+        pb = ''
+        dcode = ''
+        usage = ''
+        bill = ''
+        prev = ''
+        cur = ''
+        ispaid = ''
+
+        if tran.transType == 'Billing':
+            usage = tran.usage
+            pre = tran.meterReading - usage
+            bill = tran.bill
+            try:
+                connectionType = ConsumerType.objects.get(contypeid=tran.contypeid).contype
+            except ObjectDoesNotExist:
+                pass
+            cur = tran.meterReading
+            prev = tran.prevReading
+            if tran.processedBy is not None:
+                pb = tran.processedBy
+            bal += bill
+            if tran.is_billpaid:
+                ispaid = 'Paid'
+        elif tran.transType == 'Payment':
+            style = 'table-orange'
+            ornum = tran.or_number
+            if tran.processedBy:
+                pb = tran.processedBy
+            else:
+                pb = ''
+            bal = bal-tran.payment
+            try:
+                discount = Transactions.objects.get(transactionid=tran.discountcode)
+                dcode = discount.discountcode
+            except ObjectDoesNotExist:
+                pass
+        elif tran.transType == 'Penalty':
+            bill = tran.bill
+            pen = tran.penaltyCode
+            style = 'table-red'
+            pb = tran.processedBy
+            bal += bill
+
+        elif tran.transType == 'Discount':
+            style = 'table-blue'
+            pb = tran.processedBy
+            bal = bal-tran.payment
+
+        elif tran.transType == 'Reset Meter':
+            bill = 0
+            cur = tran.meterReading
+            style = 'table-yellow'
+            pb = tran.processedBy
+            bal += bill
+        elif tran.transType == 'Additional Fees':
+            bill = tran.bill
+            style = 'table-lightblue'
+            bal += bill
+            if tran.processedBy is not None:
+                pb = tran.processedBy
+            
+            if tran.is_billpaid:
+                ispaid = 'Paid'
+            else:
+                addfee = AdditionalFees.objects.get(transactions=tran.transactionid)
+                ispaid = f'{currentaddfeecount}/{addfee.months}'
+            
+            currentaddfeecount += 1
+        date = tran.date
+        payment = tran.payment
+        transid = tran.transactionid
+        m = tran.month
+        y = tran.year
+        bal = math.ceil(bal*100)/100
+        ttype = tran.transType
+        if tran.transType != 'Received Amount':
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid)
+            table.append(new_row)
+
+    ispaid = False
     is_issues = get_is_seen_issues(request)
 
     context = {
@@ -559,8 +565,9 @@ def meterreading(request):
 
 @login_required(login_url='login')
 def deletereading(request, id):
-
     reading = Transactions.objects.get(transactionid = id)
+    consumer = ConsumerInfo.objects.get(consumer_id=reading.acctID_id)
+    latest_reset = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter').order_by('-year', '-month')[0]
     con = reading.acctID
     con.current_bal -= reading.bill
     if con.current_bal < 0:
@@ -572,11 +579,13 @@ def deletereading(request, id):
         payment.delete()
     except ObjectDoesNotExist:
         pass
+    if latest_reset.month == reading.month and latest_reset.year == reading.year:
+        con.current_reading = latest_reset.meterReading
+    else:
+        latesttrans = Transactions.objects.filter(acctID=con.consumer_id, transType = "Billing").order_by('-year', '-month')[0]
+        con.current_reading = latesttrans.meterReading
     con.save()
     reading.delete()
-    latesttrans = Transactions.objects.filter(acctID=con.consumer_id, transType = "Billing").order_by('-year', '-month')[0]
-    con.current_reading = latesttrans.meterReading
-    con.save()
     return redirect('inputreading', con.consumer_id, date.today().year)
 
 @login_required(login_url='login')
@@ -610,8 +619,10 @@ def inputreading(request, id, year):
     lastreading = consumer.current_reading
     lastid = Transactions.objects.latest('transactionid').transactionid
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
+    # print([i.transType for i in alltrans])
     trans = alltrans.filter(year=year)
     brec = BarangayRecord.objects.all().order_by('-year')
+    latest_reset = alltrans.filter(transType='Reset Meter').order_by('-year', '-month')[0]
     for i in brec:
         if i.year not in years:
             years.append(i.year)
@@ -644,17 +655,19 @@ def inputreading(request, id, year):
                         break
                 m = meterreaderclass(bill.transactionid, calendar.month_name[i], i, usage, lastreading, cur_reading, next_reading, style, False)
             except ObjectDoesNotExist:
-                
-                for y in years_backward:
-                    for x in range(i, 0, -1):
-                        try:
-                            prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
-                            lastreading = prev_bill.meterReading
+                if latest_reset.month == i and latest_reset.year == year:
+                    lastreading = latest_reset.meterReading
+                else:
+                    for y in years_backward:
+                        for x in range(i, 0, -1):
+                            try:
+                                prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                lastreading = prev_bill.meterReading
+                                break
+                            except ObjectDoesNotExist:
+                                pass
+                        if lastreading:
                             break
-                        except ObjectDoesNotExist:
-                            pass
-                    if lastreading:
-                        break
                 lastid+=1
                 transid = lastid
                 month = calendar.month_name[i]
@@ -707,7 +720,7 @@ def inputreading(request, id, year):
                     for y in years_backward:
                         for x in range(mm, 0, -1):
                             try:
-                                prev = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                                prev = Transactions.objects.filter(acctID=consumer.consumer_id, transType__in=['Billing','Reset Meter'], year=y, month=x).order_by('-transactionid')[0]
                                 lastreading = prev.meterReading
                                 has_prev = True
                                 break
@@ -1430,7 +1443,6 @@ def payment(request, id):
             consumer.save()
             if consumer.excess > 0:
                 unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('year', 'month')
-                print(unsettled)
                 if unsettled:
                     for i in unsettled:
                         if consumer.excess>=i.bill:
@@ -1450,54 +1462,33 @@ def payment(request, id):
                             consumer.excess = ex
                         else:
                             break
-                    consumer.save()
-                add_fees = AdditionalFees.objects.filter(consumer_id=consumer)
-                for af in add_fees:
-                    aftran = Transactions.objects.get(transactionid=af.current_tran)
-                    
-                    if af.months == 0:
-                        af_amount = af.remainder
-                    else:
-                        af_amount = af.amount
-                    if not aftran.is_billpaid and amount >= af_amount:
-                        aftran.is_billpaid = True
-                        aftran.save()
-                        p_aftran = Transactions()
-                        p_aftran.payment = af_amount
-                        consumer.excess-=af_amount
-                        p_aftran.acctID = consumer
-                        p_aftran.transType = "Additional Fee Payment"
-                        p_aftran.date = datetime.today()
-                        p_aftran.year = aftran.year
-                        p_aftran.month = aftran.month
-                        p_aftran.processedBy = request.user
-                        p_aftran.save()
-                        af.months -= 1
-                        af.month_counter += 1
+                aftrans = Transactions.objects.filter(transType="Additional Fees", acctID_id=consumer)
+                
+                for af in aftrans:
+                    if not af.is_billpaid:
+                        addfee = AdditionalFees.objects.get(transactions__transactionid=af.transactionid)
+                        if consumer.excess>=af.bill:
+                            ex = consumer.excess - af.bill
+                            pt = Transactions()
+                            pt.acctID = consumer
+                            pt.transType = "Payment"
+                            pt.processedBy = request.user
+                            pt.date = datetime.today()
+                            pt.year = af.year
+                            pt.month = af.month
+                            pt.payment = af.bill
+                            amount -= af.bill
+                            pt.save()
+                            af.is_billpaid = True
+                            af.save()
+                            consumer.excess = ex
+                            addfee.month_counter += 1
+                            addfee.save()
+                        else:
+                            break
+                consumer.save()
 
-                        # libog pa kaayo ni tarunga nya ni
-                        if af.months > 0:
-                            new_aftran = Transactions()
-                            new_aftran.acctID = consumer
-                            new_aftran.transType = "Additional Fees"
-                            new_aftran.date = datetime.today()
-                            if aftran.month == 12:
-                                new_aftran.month = 1
-                                new_aftran.year = aftran.year+1
-                            else:
-                                new_aftran.month = aftran.month+1
-                                new_aftran.year = aftran.year
-                            new_aftran.processedBy = request.user
-                            if af.months == 1 and af.remainder != 0:
-                                new_aftran.bill = af.remainder
-                            else:
-                                consumer.current_bal += af.amount
-                                new_aftran.bill = af.amount
-                            new_aftran.save()
-                            consumer.current_bal += new_aftran.bill
-                            af.current_tran = new_aftran.transactionid
-                        af.save()
-                        consumer.save()
+
             try:
                 discount = Discount.objects.get(discountcode=dis_code)
             except ObjectDoesNotExist:
@@ -3115,7 +3106,8 @@ def additional_fee(request, id):
         tran.processedBy = request.user
         tran.bill = addFee.amount
         tran.save()
-        addFee.current_tran = tran.transactionid
+        addFee.save()
+        addFee.transactions.add(tran)
         addFee.save()
         consumer_id.current_bal += addFee.amount
         consumer_id.save()

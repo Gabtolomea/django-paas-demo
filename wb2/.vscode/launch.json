@@ -9,9 +9,10 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}\\wb2\\manage.py",
+            "program": "${workspaceFolder}\\manage.py",
             "args": [
-                "runserver"
+                "runserver",
+                "8080"
             ],
             "django": true,
             "justMyCode": true

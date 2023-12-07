@@ -304,7 +304,7 @@ def balance():
         asc_trans = trans.order_by('year', 'month')
         bal = 0
         for i in range(len(asc_trans)):
-            if asc_trans[i].transType == 'Billing':
+            if asc_trans[i].transType == 'Billing' or asc_trans[i].transType == 'Additional Fees':
                 user.current_reading = asc_trans[i].meterReading
                 bal+=asc_trans[i].bill
             elif asc_trans[i].transType == 'Payment':
