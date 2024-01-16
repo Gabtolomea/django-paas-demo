@@ -112,7 +112,9 @@ Account Ledger
 					<td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
 					<td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
+
 					 	{% if not ispaid %}<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button> {% endif %}
+
 					</td>
 				</tr>
 			</tbody>
