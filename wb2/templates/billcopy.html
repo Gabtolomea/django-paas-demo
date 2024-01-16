@@ -157,6 +157,11 @@
         cursor: pointer;
     }
 
+    .underThick{
+        text-decoration: none;
+        border-bottom: 2px solid #000;
+    }
+
     .highlight {
         --bs-table-accent-bg: var(--bs-table-hover-bg);
         color: var(--bs-table-hover-color);
@@ -164,7 +169,8 @@
 </style>
 
 <!-- Water Billing Layout -->
-<div class="billing" style="display: none;">
+<!-- for content to hide in the ledger style="display: none;" -->
+<div class="billing">
     <div id="invoice">
         <div class="invoice-box">
             <table cellpadding="0" cellspacing="0">
@@ -191,13 +197,14 @@
                                 <tr>
                                     <td style="line-height: 0px;">
                                         <h4 class="st">Consumer Info</h4>
-                                        <h6 class="sk"><b>Name: </b>{{u.firstname}} {{u.middlename}} {{u.lastname}}
-                                        </h6><br>
-                                        <h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
-                                        <h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
-                                        <h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
-                                        <h6 class="sk"><b>Connection Type: </b>{{u.contypeid.contype}}</h6><br>
-                                        <h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
+                                        <div class="container-fluid">
+                                            <h6 class="sk"><b>Name: </b><u class="underThick">{{u.firstname}} {{u.middlename}} {{u.lastname}}</u>
+                                            </h6><br>
+                                            <h6 class="sk"><b>Account ID: </b><u class="underThick">{{u.consumer_id}}</h6><br></u>
+                                            <h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
+                                            <h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
+                                        </div>
+
                                     </td>
                                 </tr>
                             </table>
