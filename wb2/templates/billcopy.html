@@ -157,7 +157,7 @@
         cursor: pointer;
     }
 
-    .underThick{
+    .underThick {
         text-decoration: none;
         border-bottom: 2px solid #000;
     }
@@ -196,70 +196,45 @@
                             <table>
                                 <tr>
                                     <td style="line-height: 0px;">
-                                        <h4 class="st">Consumer Info</h4>
-                                        <div class="container-fluid">
-                                            <h6 class="sk"><b>Name: </b><u class="underThick">{{u.firstname}} {{u.middlename}} {{u.lastname}}</u>
-                                            </h6><br>
-                                            <h6 class="sk"><b>Account ID: </b><u class="underThick">{{u.consumer_id}}</h6><br></u>
-                                            <h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
-                                            <h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
+                                        <div class="container">
+                                            <h4 class="st">Consumer Info</h4>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="sk "><b>Name:</b> <u class="underThick">{{u.firstname}}
+                                                            {{u.middlename}} {{u.lastname}}</u></h6>
+                                                    <h6 class="sk"><b>Account ID:</b> <u class="underThick">{{u.consumer_id}}</u></h6>
+                                                </div>
+                                                <div class="col-md-9">
+                                
+                                                    <h6 class="sk"><b>Meter Number:</b> {{u.meternumber}}</h6>
+                                                    <h6 class="sk"><b>Address:</b> {{u.installation_address}}</h6>
+                                                </div>
+                                            </div>
                                         </div>
-
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
-
-                    <tr class="heading">
-                        <td>
-                            BILL INFO
-                        </td>
-
-                        <td>
-
-                        </td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>
-                            <strong>Current Reading</strong>
-                        </td>
-
-                        <td>
-                            <b>{{cur}}</b>
-                        </td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>
-                            <strong>Previous Reading</strong>
-                        </td>
-
-                        <td>
-                            <b>{{pre}}</b>
-                        </td>
-                    </tr>
-
-                    <tr class="item last">
-                        <td>
-                            <strong>Usage</strong>
-                        </td>
-
-                        <td>
-                            <b>{{usage}}</b>
-                        </td>
-                    </tr>
-
-                    <tr class="total">
-                        <td>
-                            <strong>Penalty: <b>{{pen}}</b></strong><br>
-                            <strong>Previous Due: <b>{{prev_due}}</b></strong><br>
-                            <strong>Total Balance: <b>&#8369;{{bal}}</b></strong><br>
-                            <strong>Total Bill: <b>&#8369;{{bill}}</b></strong>
-                        </td>
-                    </tr>
                 </tbody>
+
+                <table class="table ">
+                    <tr>
+                        <th>No.</th>
+                        <th>Unpaid Month</th>
+                        <th>Usage per Cubic</th>
+                        <th>Charges</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>December</td>
+                        <td>30</td>
+                        <td>150php</td>
+                    </tr>
+                    <tbody>
+                        <th></th>
+                    </tbody>
+                </table>
             </table>
             <footer style="text-align:center;margin-top: 13px;font-size: 19px;">Bill for the month of <span
                     style="font-weight: bold;">{{prevmonth}}</span></footer>
