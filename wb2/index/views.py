@@ -253,7 +253,7 @@ def ledger(request, id):
         else:
             template = redirect('bills_list')
             return template
-
+    unpaid = []
     table = []
     year = datetime.today().year
     usage = 0
@@ -380,10 +380,23 @@ def ledger(request, id):
         y = tran.year
         bal = math.ceil(bal*100)/100
         ttype = tran.transType
+       
         if tran.transType != 'Received Amount':
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid)
             table.append(new_row)
-
+        
+        if tran.transType == 'Billing' and not tran.is_billpaid:
+            unpaid_month = monthnames[tran.month-1]
+            unpaid_year = tran.year
+            unpaid_amount = tran.bill
+            usage = tran.usage
+            unpaid_bill_info = {
+                'month': unpaid_month,
+                'year': unpaid_year,
+                'amount': unpaid_amount,
+                'usage' : usage
+                }
+            print(unpaid_bill_info)
     ispaid = False
     is_issues = get_is_seen_issues(request)
 
@@ -405,7 +418,8 @@ def ledger(request, id):
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
         'ispaid':ispaid,
-        'is_issues' : is_issues
+        'is_issues' : is_issues,
+        'up' : unpaid
         
     }
     return render(request, 'ledger.html', context)

@@ -166,6 +166,20 @@
         --bs-table-accent-bg: var(--bs-table-hover-bg);
         color: var(--bs-table-hover-color);
     }
+
+    .row {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 0;
+        margin-top: calc(var(--bs-gutter-y) * -1);
+        margin-right: calc(var(--bs-gutter-x) * -.5);
+        margin-left: calc(var(--bs-gutter-x) * -.5);
+    }
+    .custom-color {
+        background-color: #aca9a9b7; /* Replace with your desired color code */
+        color: #000000;
+        }
+
+
 </style>
 
 <!-- Water Billing Layout -->
@@ -197,17 +211,20 @@
                                 <tr>
                                     <td style="line-height: 0px;">
                                         <div class="container">
-                                            <h4 class="st">Consumer Info</h4>
                                             <div class="row">
-                                                <div class="col-md-3">
-                                                    <h6 class="sk "><b>Name:</b> <u class="underThick">{{u.firstname}}
-                                                            {{u.middlename}} {{u.lastname}}</u></h6>
-                                                    <h6 class="sk"><b>Account ID:</b> <u class="underThick">{{u.consumer_id}}</u></h6>
-                                                </div>
-                                                <div class="col-md-9">
-                                
-                                                    <h6 class="sk"><b>Meter Number:</b> {{u.meternumber}}</h6>
-                                                    <h6 class="sk"><b>Address:</b> {{u.installation_address}}</h6>
+                                                <div class="d-flex flex-row-reverse">
+                                                    <div class="col-md-3">
+                                                        <h6 class="sk"><b>Meter Number:</b> {{u.meternumber}}</h6>
+                                                        <h6 class="sk"><b>Address:</b> {{u.installation_address}}</h6>
+                                                    </div>
+                                                    <div class="col-md-9 mt-md-0 mt-3">
+                                                        <h6 class="sk "><b>Name:</b> <u
+                                                                class="underThick">{{u.firstname}}
+                                                                {{u.middlename}} {{u.lastname}}</u></h6>
+                                                        <h6 class="sk"><b>Account ID:</b> <u
+                                                                class="underThick">{{u.consumer_id}}</u></h6>
+
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -218,27 +235,26 @@
                     </tr>
                 </tbody>
 
-                <table class="table ">
-                    <tr>
-                        <th>No.</th>
-                        <th>Unpaid Month</th>
-                        <th>Usage per Cubic</th>
-                        <th>Charges</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>December</td>
-                        <td>30</td>
-                        <td>150php</td>
-                    </tr>
+                <table class="table table-bordered">
+                    <thead class="custom-color">
+                        <tr>
+                            <th>No.</th>
+                            <th>Unpaid Month</th>
+                            <th>Usage per Cubic</th>
+                            <th>Charges</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <th></th>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td class="text-center">December</td>
+                            <td>30</td>
+                            <td>150php</td>
+                        </tr>
                     </tbody>
                 </table>
             </table>
-            <footer style="text-align:center;margin-top: 13px;font-size: 19px;">Bill for the month of <span
-                    style="font-weight: bold;">{{prevmonth}}</span></footer>
-            <footer style="text-align:center;margin-top: 12px;font-size: 13px;">Bill Issued: {{date_today}}</footer>
+            <footer style="text-align:center;margin-top: 12px;font-size: 13px; color:rgb(255, 0, 0);">Date Issued: {{date_today}}</footer>
         </div>
     </div>
 </div>
