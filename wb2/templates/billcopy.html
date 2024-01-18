@@ -270,13 +270,13 @@
                             <td class="text-center">{{forloop.counter}}</td>
                             <td class="text-center">{{up.month}} - {{up.year}}</td>
                             <td>{{up.usage}}</td>
-                            <td>{{up.amount}}</td>
+                            <td id="amountFromBackend">{{up.amount}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 <div class="d-flex flex-row-reverse" style="padding-right: 5px;">
-                    <h6><b>Total:</b> <u class="underThick">PHP   {{tu}}</u></h6>
+                    <h6 id="amountFromBackend"><b>Total:</b> <u class="underThick">PHP   {{tu}}</u></h6>
                 </div>
             </table>
             <footer class="footer">Date Issued: {{date_today}}</footer>
@@ -298,6 +298,15 @@
             jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
         };
         html2pdf().from(invoice).set(opt).save();
-    }
+    }       
+
+    var amountElement = document.getElementById("amountFromBackend");
+    var amountValue = parseFloat(amountElement.innerHTML);
+
+    // Format the number with at least 2 decimal places using JavaScript
+    var formattedAmount = amountValue.toFixed(4);
+
+    // Update the HTML with the formatted value
+    amountElement.innerHTML = formattedAmount;
 
 </script>
