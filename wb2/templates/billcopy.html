@@ -21,6 +21,7 @@
         line-height: 16px;
         font-family: monospace;
         color: #000;
+        height: 690px;
     }
 
     .invoice-box table {
@@ -174,12 +175,29 @@
         margin-right: calc(var(--bs-gutter-x) * -.5);
         margin-left: calc(var(--bs-gutter-x) * -.5);
     }
+
     .custom-color {
-        background-color: #aca9a9b7; /* Replace with your desired color code */
+        background-color: #aca9a9b7;
+        /* Replace with your desired color code */
         color: #000000;
-        }
+    }
 
+    .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding-top: 12px;
+        font-size: 13px;
+        color: rgb(255, 0, 0);
+        display: flex;
+        justify-content: center;
+    }
 
+    .border-custom {
+        border-color: #000000bd !important;
+    }
 </style>
 
 <!-- Water Billing Layout -->
@@ -199,7 +217,12 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align:center;">
-                                        <p class="mun"> Ginatilan Water</p>
+                                        <p class="mun">Water Bill</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; color: #423e3e; padding-top: 0%; !important">
+                                        <h6><i>Municipality of Ginatilan</i></h6>
                                     </td>
                                 </tr>
                             </table>
@@ -214,16 +237,13 @@
                                             <div class="row">
                                                 <div class="d-flex flex-row-reverse">
                                                     <div class="col-md-3">
-                                                        <h6 class="sk"><b>Meter Number:</b> {{u.meternumber}}</h6>
-                                                        <h6 class="sk"><b>Address:</b> {{u.installation_address}}</h6>
+                                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
+                                                        <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
                                                     </div>
                                                     <div class="col-md-9 mt-md-0 mt-3">
-                                                        <h6 class="sk "><b>Name:</b> <u
-                                                                class="underThick">{{u.firstname}}
+                                                        <h6><b>Name:</b> <u class="underThick">{{u.firstname}}
                                                                 {{u.middlename}} {{u.lastname}}</u></h6>
-                                                        <h6 class="sk"><b>Account ID:</b> <u
-                                                                class="underThick">{{u.consumer_id}}</u></h6>
-
+                                                        <h6><b>Account ID:</b><u class="underThick">{{u.consumer_id}}</u></h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,7 +255,7 @@
                     </tr>
                 </tbody>
 
-                <table class="table table-bordered">
+                <table class="table table-bordered border-custom">
                     <thead class="custom-color">
                         <tr>
                             <th>No.</th>
@@ -245,16 +265,21 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for up in up %}
                         <tr>
-                            <td class="text-center">1</td>
-                            <td class="text-center">December</td>
-                            <td>30</td>
-                            <td>150php</td>
+                            <td class="text-center">{{forloop.counter}}</td>
+                            <td class="text-center">{{up.month}} - {{up.year}}</td>
+                            <td>{{up.usage}}</td>
+                            <td>{{up.amount}}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
+                <div class="d-flex flex-row-reverse" style="padding-right: 5px;">
+                    <h6><b>Total:</b> <u class="underThick">PHP   {{tu}}</u></h6>
+                </div>
             </table>
-            <footer style="text-align:center;margin-top: 12px;font-size: 13px; color:rgb(255, 0, 0);">Date Issued: {{date_today}}</footer>
+            <footer class="footer">Date Issued: {{date_today}}</footer>
         </div>
     </div>
 </div>

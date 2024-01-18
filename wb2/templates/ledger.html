@@ -161,7 +161,7 @@ Account Ledger
 <div class="row w-100 m-auto pt-2">
 
 		{% include 'billingbuttons.html' %}
-		{% include 'billcopy.html' %}
+		{% include 'billcopy.html' with unpaid=unpaid%}
 	<!-- Sort for Billing, Payment, Penalty, Discount and Get copy buttom -->
 	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 		<button type="button" onclick="getpdf()" class="btn button2" style="float:right;">

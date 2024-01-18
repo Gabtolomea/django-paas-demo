@@ -396,7 +396,9 @@ def ledger(request, id):
                 'amount': unpaid_amount,
                 'usage' : usage
                 }
-            print(unpaid_bill_info)
+            unpaid.append(unpaid_bill_info)
+        total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
+
     ispaid = False
     is_issues = get_is_seen_issues(request)
 
@@ -419,8 +421,8 @@ def ledger(request, id):
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
         'ispaid':ispaid,
         'is_issues' : is_issues,
-        'up' : unpaid
-        
+        'up' : unpaid,        
+        'tu' : total_unpaid_amount
     }
     return render(request, 'ledger.html', context)
 
