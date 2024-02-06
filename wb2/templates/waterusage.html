@@ -19,10 +19,14 @@ Water Usage
 	}
 
 	.form-select {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 		width: 10%;
 =======
 >>>>>>> Stashed changes
+=======
+		width: 13%;
+>>>>>>> jazzy
 		margin-left: 30px;
 	}
 
@@ -163,12 +167,10 @@ Water Usage
 			font-size: 20px;
 		}
 	}
-
 	#years {
 		width: 180px;
 		height: 23px;
 		border-radius: 50px;
-
 	}
 </style>
 
@@ -187,10 +189,9 @@ Water Usage
 <div>
 	<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
 	<form id="yearselection" action="">
-		<select class="form-select" id="selector" onchange="change()">
-			<option value="{{cur_year}}">{{cur_year}}</option>
-			{% for i in years reversed %}
-			<option value="{{i}}">{{i}}</option>
+		<select class="form-select mb-3" id="selector" onchange="change()">
+			{% for i in years %}
+			<option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
 			{% endfor %}
 		</select>
 	</form>

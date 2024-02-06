@@ -26,9 +26,15 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89',]
 
-# Application definition
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '192.168.254.109',
+]
+
+
+SCHEDULER_AUTOSTART = True
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
 ]
 
+# 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 TEMPLATE_CONTEXT_PROCESSORS = [
@@ -79,6 +86,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'wb2.wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

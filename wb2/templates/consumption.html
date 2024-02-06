@@ -4,10 +4,22 @@
 {% block title %}
 More Reports...
 {% endblock title %}
+{% block script %}
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="static/DataTables/js/jquery3.5.1.js"></script>
+<!-- Bootstrap 5 JS (popper.js is required) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#datatables').DataTable();
+    });
+</script>
+{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
-
 <style>
     table {
         border: 1px solid #ccc;
@@ -17,9 +29,16 @@ More Reports...
         width: 100%;
     }
 
-    .form-select {
-        width: 10%;
-        margin-left: 30px;
+	.form-select {
+		width: 13%;
+		margin-left: 30px;
+	}
+    .page-link{
+        z-index:0 !important;
+        color: #006c85;
+    }
+    .page-link:hover {
+        color: #006c85;
     }
 
     table tr {
@@ -186,6 +205,28 @@ More Reports...
     #myBtn:hover {
         background-color: #777;
     }
+    .odd {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		-webkit-text-size-adjust: 100%; 
+		-webkit-tap-highlight-color: transparent;
+
+		caption-side: bottom;
+		font-family: Arial;
+		border-collapse: separate !important;
+		border-spacing: 0;
+		box-sizing: border-box;
+		border-color: inherit;
+		border-style: solid;
+		border-width: 1px 0;
+		color: #212529;
+	}
+
+	.dataTables_empty {
+		text-align: center;
+	}
+
 </style>
 
 {% endblock style %}
@@ -211,10 +252,16 @@ More Reports...
 <div>
     <label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
     <form id="yearselection" action="">
+<<<<<<< HEAD
         <select class="form-select" id="selector" onchange="change()">
             <option value="{{cur_year}}">{{cur_year}}</option>
             {% for i in years reversed %}
             <option value="{{i}}">{{i}}</option>
+=======
+        <select class="form-select mb-3" id="selector" onchange="change()">
+            {% for i in years reversed %}
+            <option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
+>>>>>>> jazzy
             {% endfor %}
         </select>
     </form>
@@ -228,7 +275,115 @@ More Reports...
         }
     </script>
 </div>
+<<<<<<< HEAD
 <div class="row table-responsive">
+=======
+    <div class="p-3">
+        <h3 style="text-align: center;">Total Data</h3>
+        <div>
+            <table class="table table-bordered table-hover table-striped table-sm ">
+                <thead class="wb_thead">
+                    <tr>
+
+                        <th scope="col" style="background-color: #006c85">Year</th>
+                        <th scope="col" style="background-color: #006c85">Total Consumer</th>
+
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    {% for i in tyc %}
+                    <tr>
+                        <td>{{i.year}}</td>
+                        <td>{{i.total}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    
+<!-- Stop Meter Accounts -->
+<div class="p-3">
+    <h3 style="text-align: center;">Stop Meter Accounts</h3>
+    <div>
+        <table class="table table-bordered table-hover table-striped table-sm ">
+            <thead class="wb_thead">
+                <tr>
+                    <th scope="col" style="background-color: #006c85">No.</th>
+                    <th scope="col" style="background-color: #006c85">Account ID</th>
+                    <th scope="col" style="background-color: #006c85">Meter Number</th>
+                    <th scope="col" style="background-color: #006c85">Name</th>
+                    <th scope="col" style="background-color: #006c85">Balance</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                {% for sm in sm_arr %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{sm.consumer_id}}</td>
+                    <td>{{sm.meternumber}}</td>
+                    <td>{{sm.firstname}} {{sm.lastname}}</td>
+                    <td>{{sm.current_bal|floatformat:2|intcomma}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+    <div class="p-3">
+        <h3 style="text-align: center;">Condemn Accounts</h3>
+
+        <div>
+            <table id="datatables" class="table table-bordered table-hover table-striped table-sm ">
+                <thead class="wb_thead">
+                    <tr>
+                        <th scope="col" style="background-color: #006c85">List</th>
+                        <th scope="col" style="background-color: #006c85">Meter Number</th>
+                        <th scope="col" style="background-color: #006c85">Name</th>
+                        <th scope="col" style="background-color: #006c85">Address</th>
+                        <th scope="col" style="background-color: #006c85">Balance</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    {% for i in condemn %}
+                    <script src="{% static 'jquery/jquery.js' %}"></script>
+                    <script>
+                    jQuery(document).ready(function ($) {
+                            $(".clickable-row").click(function () {
+                                window.location = $(this).data("href");
+                            });
+                        });
+                    </script>
+                    <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' i.consumer_id cur_year %}">
+                        <td>{{ forloop.counter }}.</td>
+                        <td>{{i.meternumber}}</td>
+                        <td>{{i.firstname}} {{i.lastname}}</td>
+                        <td>{{i.installation_address}}</td>
+                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}} 
+                        {% if i.current_bal == 0 %}
+                        <form action="{%url 'undodelete' %}" method="post" style="float: right;" >
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{i.consumer_id}}">
+                            <button class="btn btn-success btn-sm rounded-0" type="submit"
+                                data-placement="top" title="Amend Account">
+                                <img style="width:22px;" src="{% static '/svgs/amend.svg' %}" />
+                            </button>
+                        
+                        </form>
+                        {% endif %}
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <!-- Total Number of Consumers in Consumption Range -->
+>>>>>>> jazzy
     <div class="p-3">
         <h3 style="text-align: center;">Total Data</h3>
         <div>
@@ -311,8 +466,13 @@ More Reports...
         </div>
     </div>
     <br>
+<<<<<<< HEAD
 
+=======
+>>>>>>> jazzy
     <br>
+
+    <!-- Top 10 Consumer Consumption -->
     <div class="p-3">
         <h3 style="text-align: center;">Top 10 Consumer Consumption</h3>
 
@@ -328,7 +488,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10 %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>{{i.usage}} &#13221</td>
                     </tr>
@@ -338,6 +498,8 @@ More Reports...
         </div>
     </div>
     <br>
+
+    <!-- Top 10 Delinquent Amount -->
     <div class="p-3">
         <h3 style="text-align: center;">Top 10 Delinquent Amount</h3>
 
@@ -353,7 +515,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10_del_amount %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>&#8369; {{i.balance|floatformat:2|intcomma}}</td>
                     </tr>
@@ -362,6 +524,8 @@ More Reports...
             </table>
         </div>
     </div>
+
+    <!-- Top 10 Delinquent Months -->
     <div class="p-3">
         <h3 style="text-align: center;">Top 10 Delinquent Months</h3>
 
@@ -369,6 +533,7 @@ More Reports...
             <table class="table table-bordered table-hover table-striped table-sm ">
                 <thead class="wb_thead">
                     <tr>
+                        <th scope="col" style="background-color: #006c85">Top</th>
                         <th scope="col" style="background-color: #006c85">Name</th>
                         <th scope="col" style="background-color: #006c85">Months</th>
                     </tr>
@@ -376,6 +541,7 @@ More Reports...
                 <tbody class="tbody">
                     {% for i in top_10_del_month %}
                     <tr>
+                        <td>{{ forloop.counter }}.</td>
                         <td>{{i.name}}</td>
                         <td>{{i.months}}</td>
                     </tr>
@@ -385,7 +551,10 @@ More Reports...
             <br>
         </div>
     </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> jazzy
     <br><br>
 
 

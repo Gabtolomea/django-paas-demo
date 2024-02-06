@@ -14,6 +14,8 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
 from django.db.models import F
+from django.db import transaction
+from django.db.models import F, Q
 
 def n_int(var):
     if var is None:
@@ -39,9 +41,10 @@ def camelize():
         c.lastname = c.lastname.title()
         c.middlename = c.middlename.title()
         c.save()
-def enye(cons):
+def enye_cons():
+    cons = ConsumerInfo.objects.all()
     for c in cons:
-        chars = ["ã‘","ã±"]
+        chars = ["ã‘","ã±","Ã±"]
         for char in chars:
             if char in c.firstname:
                 c.firstname = c.firstname.replace(char, "ñ")
@@ -50,6 +53,14 @@ def enye(cons):
             if char in c.middlename:
                 c.middlename = c.middlename.replace(char, "ñ")
             c.save()
+def enye_bars():
+    bars = Barangays.objects.all()
+    for b in bars:
+        chars = ["ã‘","ã±","Ã±","ÃƒÂ±","ÃƒÆ’Ã‚Â±"]
+        for char in chars:
+            if char in b.barangay:
+                b.barangay = b.barangay.replace(char, "ñ")
+            b.save()
 def capitalize():
     cons = ConsumerInfo.objects.all()
     for c in cons:
@@ -67,6 +78,13 @@ def years(id):
         years.append(datetime.today().year)
     return years
 def last_reading(id, year, mo):
+    try:
+        latest_reset = Transactions.objects.filter(acctID=id, transType='Reset Meter').order_by('-year', '-month')[0]
+        if latest_reset.year == year and latest_reset.month == mo:
+            return latest_reset.meterReading
+    except IndexError:
+        pass
+    
     allyears = years(id)
     allyears.sort(reverse=True)
     fyears = [item for item in allyears if item <= year]
@@ -130,6 +148,8 @@ def get_balance(id):
     bal = 0
     for i in range(len(asc_trans)):
         if asc_trans[i].transType == 'Billing':
+            bal+=asc_trans[i].bill
+        elif asc_trans[i].transType == 'Additional Fees':
             bal+=asc_trans[i].bill
         elif asc_trans[i].transType == 'Payment':
             bal-=asc_trans[i].payment
@@ -206,7 +226,6 @@ def portfromcsv():
     new_billings = []
     new_payments = []
     for i in arr_df:
-        # print(i)
         if i[2] == "Billing":
             b = billings(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[10],i[11],i[13],i[14],i[15],i[16])
             new_billings.append(b)
@@ -393,16 +412,17 @@ def bulkinputreading(consumer, year, reading, pb, d):
     
     con_b_rec.save()
     get_balance(consumer.consumer_id)
-
+def set_first_tran():
+    cons = ConsumerInfo.objects.all()
+    for c in cons:
+        trans = Transactions.objects.filter(acctID_id=c.consumer_id).order_by('year')
+        try:
+            c.first_tran = trans[0].year
+        except IndexError:
+            c.first_tran = 0
+        c.save()
 def get_consumers_yearly():
     cons = ConsumerInfo.objects.all()
-    # for c in cons:
-    #     trans = Transactions.objects.filter(acctID_id=c.consumer_id).order_by('year')
-    #     try:
-    #         c.first_tran = trans[0].year
-    #     except IndexError:
-    #         c.first_tran = 0
-    #     c.save()
     y2019 = len(cons.filter(first_tran__lt=2020))
     y2020 = len(cons.filter(first_tran__lt=2021))
     y2021 = len(cons.filter(first_tran__lt=2022))
@@ -421,7 +441,7 @@ class MonthYearPair:
         self.year = year
 
 def billing_errors_to_csv():
-    csv_file_path = "output.csv"
+    csv_file_path = "C:/Users/watersystem/Desktop/output.csv"
     header = ["Year", "Month", "Consumer ID", "Consumer Name", "Meter Reading", "Next Previous", "Next Current"]
     program_output = [header]
 
@@ -430,8 +450,8 @@ def billing_errors_to_csv():
     for consumer in ConsumerInfo.objects.all():
         transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, transType='Billing').order_by('year', 'month')
         consumer_transactions[consumer.consumer_id] = list(transactions)
-
     for consumer in consumer_transactions:
+        c = ConsumerInfo.objects.get(consumer_id=consumer)
         transactions = consumer_transactions[consumer]
 
         for i in range(len(transactions) - 1):
@@ -445,8 +465,8 @@ def billing_errors_to_csv():
             nt_reading = nt.meterReading
 
             if t_reading > nt_prev_reading and t_reading <= nt_reading:
-                consumer_name = f"{consumer.firstname} {consumer.lastname}"
-                program_output.append([t_year, t_month, consumer.consumer_id, consumer_name, t_reading, nt_prev_reading, nt_reading])
+                consumer_name = f"{c.firstname} {c.lastname}"
+                program_output.append([t_year, t_month, consumer, consumer_name, t_reading, nt_prev_reading, nt_reading])
 
     with open(csv_file_path, "w", newline="") as f:
         writer = csv.writer(f)
@@ -520,14 +540,18 @@ def fix_billing_errors():
         consumer.current_bal += consumer_bal_delta
         consumer.save()
 
+<<<<<<< HEAD
 # def get_transaction_error():
 #     cons = ConsumerInfo.objects.all()
 #     for c in cons:
 #         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+=======
+
+>>>>>>> jazzy
 
 
 def dump_database():
-
+    
     cnx = mysql.connector.connect(
         user='root',
         password='jazfer',
@@ -558,7 +582,7 @@ def dump_database():
     dump_file_path = f'{dump_directory}{timestamp}wb2_data_dump.sql'
     
     if os.path.exists(dump_file_path):
-        print("already dumped today, balik lang ugma")
+        print("Already dumped today, returning")
         return
 
     with open(dump_file_path, 'w', buffering=1000000) as dump_file:
@@ -592,7 +616,7 @@ def dump_database():
                     dump_file.write(f"INSERT INTO `{table_name}` VALUES\n")
                     for i in range(start_index, end_index):
                         row = rows[i]
-                        values = [f"'{str(value)}'" if value is not None else 'NULL' for value in row]
+                        values = [f"'{str(value).encode('ascii', 'ignore').decode()}'" if value is not None else 'NULL' for value in row]
                         row_data = f"({', '.join(values)})"
                         if i < end_index - 1:
                             row_data += ','
@@ -608,7 +632,11 @@ def dump_database():
     cursor.close()
     cnx.close()
     
+<<<<<<< HEAD
     credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/service_key.json"
+=======
+    credentials_file = "D:/waterbilling2.0/service_key.json"
+>>>>>>> jazzy
 
     if not os.path.exists(credentials_file):
         print(f"Please save the service account credentials JSON file at the specified path.")
@@ -636,3 +664,224 @@ def dump_database():
         drive_service.files().create(body=file_metadata, media_body=media).execute()
 
     print("Files uploaded successfully to the specified folder on Google Drive.")
+
+
+def update_from_csv():
+    consumer_brec_updates = []
+    with open('D:/waterbilling2.0/wb2/output.csv', 'r') as file:
+        reader = csv.reader(file)
+        trans = [[row[0], row[1], row[4]] for row in reader]
+    trans = trans[1:]
+    for t in trans:
+        transaction = Transactions.objects.get(transactionid=t[0])
+        consumer = ConsumerInfo.objects.get(consumer_id=t[2])
+        if transaction.is_billpaid == False:
+            consumer.current_bal -= transaction.bill
+            transaction.is_billpaid = bool(t[1])
+            brec_key = f"{consumer.installation_address_id}-{transaction.year}"
+            brec_field_due = f"total_due_{months[transaction.month - 1]}"
+            brec_field_usage = f"total_usage_{months[transaction.month - 1]}"
+            consumer_brec_updates.append((brec_key, brec_field_due, brec_field_usage, transaction.bill, transaction.usage))
+            for brec_key, brec_field_due, brec_field_usage, bill_delta, usage_delta in consumer_brec_updates:
+                BarangayRecord.objects.filter(barangayrec_id=brec_key).update(**{
+                    brec_field_due: F(brec_field_due) - bill_delta,
+                    brec_field_usage: F(brec_field_usage) - usage_delta
+                })
+            transaction.save()
+            consumer.save()
+
+
+def get_bal_exempt(id):
+    user = ConsumerInfo.objects.get(consumer_id = id)
+    trans = Transactions.objects.filter(acctID = id)
+    asc_trans = trans.order_by('year', 'month','transactionid')
+    bal = 0
+    for i in range(len(asc_trans)):
+        if asc_trans[i].transType == 'Billing':
+            bal+=asc_trans[i].bill
+    try:
+        user.current_reading = trans.filter(transType='Billing').order_by('-year', '-month')[0].meterReading
+    except IndexError:
+        pass
+    user.current_bal = math.ceil(bal*100)/100
+    if user.current_bal < 0:
+        user.current_bal = 0
+    user.save()
+
+
+def exempt_accounts(consumer):
+    bills = Transactions.objects.filter(acctID=consumer, transType='Billing')
+    for b in bills:
+        con_b_rec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{b.year}")
+        con_b_rec.__dict__[f"total_due_{months[b.month - 1]}"] -= b.bill
+        con_b_rec.save()
+        b.bill = 0
+    Transactions.objects.bulk_update(bills, ['bill'])
+
+    
+def adjust_excess_only():
+    search = 'excess only'
+    excess_only_accts = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(lastname__icontains=search))
+    for acct in excess_only_accts:
+        adjust_from_contype(acct.meternumber, 'C003')
+
+
+
+def adjust_from_contype(meternumber, contype):
+    consumer = ConsumerInfo.objects.get(meternumber=meternumber)
+    consumer.contypeid = ConsumerType.objects.get(contypeid=contype)
+    transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, is_billpaid=False, transType='Billing').exclude(contypeid=contype).order_by('year', 'month')
+
+    for t in transactions:
+        brec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{t.year}") 
+        old_bill = t.bill
+        t.contypeid = consumer.contypeid.contypeid
+        if t.usage <= consumer.contypeid.minReading:
+            t.bill = consumer.contypeid.minReadingCharge
+        else:
+            t.bill = ((t.usage - consumer.contypeid.minReading)*consumer.contypeid.rateAfterMin) + consumer.contypeid.minReadingCharge
+        diff = t.bill - old_bill
+        brec.__dict__[f"total_due_{months[t.month - 1]}"] -= diff
+        brec.save()
+        t.save()
+    consumer.save()
+    get_balance(consumer.consumer_id)
+
+def set_overdue_months():
+    consumers = ConsumerInfo.objects.filter(current_bal__gt=0, excep_accnt = False)
+    for c in consumers:
+        unpaid_trans = Transactions.objects.filter(acctID=c.consumer_id, is_billpaid=False, transType='Billing').order_by('year', 'month')
+        for t in unpaid_trans:
+            if t.months_not_paid >= 6:
+                print(t.month)
+                try:
+                    issue = Issues.objects.get(transactionid_id=t.transactionid)
+                    issue.issue = f"Overdue"
+                    issue.save()
+                except ObjectDoesNotExist:
+                    issue = Issues()
+                    issue.consumer_id = c
+                    issue.transactionid = t
+                    issue.issued_by = "System"
+                    issue.issue = f"Overdue"
+                    issue.save()
+                except MultipleObjectsReturned:
+                    pass
+            else:
+                t.months_not_paid += 1
+                t.save()
+
+def get_month_diff(month1, year1, month2, year2):
+    return (year1 - year2) * 12 + (month1 - month2)
+
+def remove_duplicate_od_months():
+    issues = Issues.objects.all().order_by('transactionid_id')
+    current_id = 0
+    for i in issues:
+        if i.transactionid == current_id:
+            i.delete()
+        else:
+            current_id = i.transactionid
+
+def set_months_unpaid():
+    consumers = ConsumerInfo.objects.filter(current_bal__gt=0, excep_accnt = False)
+    for c in consumers:
+        unpaid_trans = Transactions.objects.filter(acctID=c.consumer_id, is_billpaid=False, transType='Billing').order_by('year', 'month')
+        for t in unpaid_trans:
+            t.months_not_paid = get_month_diff(date.today().month, date.today().year, t.month, t.year)
+            t.save()
+            if t.months_not_paid >= 6:
+                try:
+                    issue = Issues.objects.get(transactionid_id=t.transactionid)
+                except ObjectDoesNotExist:
+                    issue = Issues()
+                    issue.consumer_id = c
+                    issue.transactionid = t
+                    issue.issued_by = "System"
+                issue.issue = "Overdue"
+                issue.save()
+
+def set_currentreadings():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        try:
+            t = Transactions.objects.filter(acctID=c.consumer_id, transType='Billing').order_by('-year', '-month')[0]
+            c.current_reading = t.meterReading
+            c.save()
+        except IndexError:
+            pass
+
+def pay_saall():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        trans = Transactions.objects.filter(acctID=c.consumer_id, transType='Billing', is_billpaid=False).order_by('year', 'month')
+        for t in trans:
+            try:
+                Transactions.objects.get(acctID_id=c.consumer_id, transType='Payment', year=t.year, month=t.month)
+                t.is_billpaid = True
+                t.save()
+            except MultipleObjectsReturned:
+                trans = Transactions.objects.filter(acctID=c.consumer_id, transType='Payment', year=t.year, month=t.month).order_by('-transactionid')
+                trans[0].delete()
+            except ObjectDoesNotExist:
+                pass
+
+def add_additionalFees():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        try:
+            addfees = AdditionalFees.objects.filter(consumer_id=c.consumer_id)
+        except ObjectDoesNotExist:
+            pass
+        else:
+            try:
+                last_af = Transactions.objects.filter(acctID_id=c.consumer_id, transType='Additional Fees').order_by('-year', '-month')[0]
+            except IndexError:
+                pass
+            else:
+                for addfee in addfees:
+                    # new add fee bill
+                    if addfee.month_counter < addfee.months:
+                        afbill = Transactions()
+                        afbill.acctID = c
+                        afbill.transType = "Additional Fees"
+                        afbill.date = datetime.today()
+                        afbill.month = last_af.month + 1
+                        afbill.year = last_af.year
+                        if afbill.month == 13:
+                            afbill.month = 1
+                            afbill.year = last_af.year + 1
+                        
+                        afbill.processedBy = 'System'
+                        afbill.bill = addfee.amount
+                        
+                        afbill.save()
+                        addfee.transactions.add(afbill)
+                        addfee.save()
+
+                        c.current_bal += addfee.amount
+                        c.save()
+
+                    else:
+                        if addfee.remainder:
+                            afbill = Transactions()
+                            afbill.acctID = c
+                            afbill.transType = "Additional Fees"
+                            afbill.date = datetime.today()
+                            afbill.month = last_af.month + 1
+                            afbill.year = last_af.year
+                            if afbill.month == 13:
+                                afbill.month = 1
+                                afbill.year = last_af.year + 1
+                            
+                            afbill.processedBy = 'System'
+                            afbill.bill = addfee.remainder
+                            afbill.save()
+                            addfee.transactions.add(afbill)
+                            addfee.save()
+                            c.current_bal += addfee.remainder
+                            c.save()
+                        else:
+                            addfee.delete()
+                    addfee.month_counter += 1
+                    addfee.save()

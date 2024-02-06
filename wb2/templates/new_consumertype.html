@@ -24,7 +24,7 @@ Consumer Type
     .button3 {
         background-color: #006c85;
         color: white;
-        padding: 8px 30px;
+        padding: 8px 20px;
         border: none;
         margin-top: 100px;
         border-radius: 15px;
@@ -134,11 +134,16 @@ Consumer Type
                     <th class="align-middle text-center">Code</th>
                     <th class="align-middle text-center">Consumer Type</th>
                     <th class="align-middle text-center">Minimum Water Reading</th>
+<<<<<<< HEAD
                     <th class="align-middle text-center">Minimum Water Reading Charge</th>
                     <th class="align-middle text-center">Rate</th>
+=======
+                    <th class="align-middle text-center">Rate After Minimum Reading</th>
+                    <th class="align-middle text-center">Minimum Water Reading Charge</th>
+>>>>>>> jazzy
                     <th class="align-middle text-center">Added By</th>
                     <th class="align-middle text-center">Date Added</th>
-                    <td class="align-middle text-center">Edit</td>
+                
                 </tr>
             </thead>
             <tbody>
@@ -147,16 +152,11 @@ Consumer Type
                     <td class="align-middle text-center">{{c.contypeid}}</td>
                     <td>{{c.contype}}</td>
                     <td>{{c.minReading}}</td>
-                    <td>{{c.minReadingCharge}}</td>
                     <td>{{c.rateAfterMin}}</td>
+                    <td>{{c.minReadingCharge}}</td>
                     <td>{{c.added_by_id}}</td>
                     <td class="align-middle text-center">{{c.date_added}}</td>
-                    <td class="align-middle text-center p-0">
-                        <button type="button" class="btn button2 btn-success btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#edit-{{c.contypeid}}"> <img style="width:20px;"
-                                src="{% static '/images/edit_white_36dp.svg' %}" />
-                        </button>
-                    </td>
+
                 </tr>
                 {% endfor %} 
             </tbody>
@@ -165,52 +165,7 @@ Consumer Type
 
     
 </div>
-<!-- Edit Modal -->
 
-{% for i in cont %}
-<div class="modal fade" id="edit-{{i.contypeid}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"
-aria-labelledby="payment" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-        <form action="{% url 'editcontype' i.contypeid %}" method="POST">
-            {% csrf_token %}
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">Edit Consumer Type</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <i class="fa fa-xmark"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Consumer Type*</label>
-                    <input type="text" value="{{i.contype}}" name="contype" type="" class="form-control" required>
-
-                </div>
-                <div class="form-group">
-                    <label>Minimum Water Reading*</label>
-                            <input type="number" value="{{i.minReading}}" name="minReading" type="" class="form-control" required>
-
-                </div>
-                <div class="form-group">
-                    <label>Minimum Water Reading Charge*</label>
-                    <input type="number" value="{{i.minReadingCharge}}" name="minReadingCharge" type="" class="form-control"
-                        required>
-
-                </div>
-                <div class="form-group">
-                    <label>Rate After Minimum Reading:</label><br>
-                            <input type="number" value="{{i.rateAfterMin}}" name="rateAfterMin" type="" class="form-control" required>
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" name="btnform2" class="btn btn-primary2">Update</button>
-            </div>
-        </form>
-    </div>
-</div>
-</div>
-{% endfor %}
 
 
 

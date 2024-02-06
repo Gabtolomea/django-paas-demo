@@ -30,7 +30,7 @@ Input Reading
 	.button2 {
 		background-color: var(--main-color);
 		color: white;
-		padding: 8px 30px;
+		padding: 8px 20px;
 		border: none;
 		border-radius: 15px;
 		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
@@ -62,6 +62,8 @@ Input Reading
 					<th scope="col" style="min-width:120px">Name</th>
 					<th scope="col" style="min-width:100px">Meter Number</th>
 					<th scope="col" style="min-width:100px">Address</th>
+					
+					{% if user.is_supervisor %}
 					<th scope="col" style="min-width:100px;">
 						{% if consumer.stopmeterflag %}
 						Enable
@@ -69,6 +71,7 @@ Input Reading
 						Stop
 						{% endif %}Meter
 					</th>
+					{% endif %}
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
@@ -77,10 +80,11 @@ Input Reading
 					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
 					<td style="text-align:center;">{{consumer.meternumber}}</td>
 					<td>{{consumer.homeaddress}}</td>
+					{% if user.is_supervisor %}
 					<td>
 						<form action="{% if consumer.stopmeterflag %}{% else %}{% url 'stopmeter' consumer.consumer_id %}{% endif %}" method="post">
 							{% csrf_token %}
-							{% if consumer.stopmeterflag %}
+							{% if consumer.stopmeterflag%}
 							<button class="btn btn-success btn-sm rounded-3"  type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal" title="Enable">
 								<i class="fa fa-play"></i> ENABLE
 							</button>
@@ -92,6 +96,7 @@ Input Reading
 							{% endif %}
 						</form>
 					</td>
+					{% endif %}
 				</tr>
 			</tbody>
 		</table>
@@ -101,6 +106,33 @@ Input Reading
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
+<div class="modal fade" id="rollback">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<form action="{% url 'add_issue' id=consumer.consumer_id year=cur_year%}" method="post">
+				{% csrf_token %}
+				<input id="rollback-reading" type="hidden">
+				<input id="rollback-prev" type="hidden">
+				<div class="modal-header">
+					<h4 class="modal-title">Reading Rollback Detected!</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<span style="font-weight: bold;">Are you sure you want to proceed with this reading?</span><br><br>
+							If you choose to proceed, the transaction may encounter issues, and you will not be able to input the meter reading. 
+						You may need to consult the Supervisor.<br><br>
+						If you decide to cancel, you will still be able to input the correct meter reading.
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Cancel</button>
+					<button type="submit" class="btn btn-danger">Proceed</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -127,16 +159,25 @@ Input Reading
 							<option value="{{t.monthval}}">{{t.month}}</option>
 							{% endfor %}
 						</select>
+						<label for="year_id" class="form-label">Year</label>
+						<select name="year" disabled id="year_id" class="form-select input-group">
+							<option value=""></option>
+							{% for y in years %}
+							<option value="{{y}}">{{y}}</option>
+							{% endfor %}
+						</select>
 					</div>
 				</div>
 				<script>
 					meternum = document.getElementById('meternum')
 					initialreading = document.getElementById('initialreading')
 					month = document.getElementById('month_id')
+					year = document.getElementById('year_id')
 					document.getElementById('flexSwitchCheckDefault').onchange = function() {
 						meternum.disabled = !this.checked;
 						initialreading.disabled = !this.checked;
 						month.disabled = !this.checked;
+						year.disabled = !this.checked;
 					};
 				</script>
 				<div class="modal-footer">
@@ -149,13 +190,20 @@ Input Reading
 </div>
 
 <div class="row w-100 m-auto">
-	<div class="col-lg-6 col-md-6 col-sm-6" style="text-align-last: right;">
-		<button type="button" class="btn button2" style="float: left;" onclick="print()">
-			<img style="width: 25px;"
-			src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
-			Get a Copy
-		</button>
-	</div>
+    <div class="col-12">
+        <button type="button" class="btn button2" style="margin-right: 5px;" onclick="print()">
+            <img style="width: 25px;" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
+            Get a Copy
+        </button>
+        <button type="button" class="btn button2" id="exemption-btn" style="background-color: #006c85; color: white;"
+            {% if consumer.excep_accnt %}disabled{% endif %}>
+            {% if consumer.excep_accnt %}
+            Exempted
+            {% else %}
+            Exempt
+            {% endif %}
+        </button>
+    </div>
 </div>
 <h1 class="mb-3 text-center">Input Reading</h1>
 <div class="container-fluid p-0">
@@ -174,6 +222,27 @@ Input Reading
 				yearselection.action = selector.value
 				yearselection.submit()
 			}
+
+			document.addEventListener("DOMContentLoaded", function () {
+			var isExempted = {% if consumer.excep_accnt %}true{% else %}false{% endif %};
+			var btn = document.getElementById("exemption-btn");
+
+			if (isExempted) {
+				btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+				btn.textContent = "Exempted";
+			} else {
+				btn.addEventListener("click", handleExemptionClick);
+			}
+
+			function handleExemptionClick() {
+				btn.disabled = true;
+				btn.style.backgroundColor = "#f39c12"; // Set a notice color when disabled
+				btn.textContent = "Exempted";
+				isExempted = true;
+				var consumerId = '{{ consumer.consumer_id }}';
+				window.location.href = '{% url "addexemptions" consumer.consumer_id %}';
+			}
+		});
 		</script>
 		<table id="table" class="table table-bordered table-sm" cellspacing="0" width="100%" border-spacing: 0;>
 			<thead class="wb_thead" >
@@ -190,10 +259,8 @@ Input Reading
 			<tbody class="wb_tbody">
 				{% for t in table %}
 					<tr class="showOnHover text-center">
-						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
-							{{t.month}}</td>
-						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">
-							{{t.usage}}</td>
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.month}}</td>
+						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary">{{t.usage}}</td>
 						<form id="form-{{t.transid}}" class="sr-only" action="{% url 'inputreading' id=consumer.consumer_id year=cur_year %}" method="POST">
 							{% csrf_token %}
 							<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
@@ -201,27 +268,32 @@ Input Reading
 									class = "input form-control border-0 rounded-0 " 
 									name = "reading-{{t.month}}" 
 									id = "{{t.transid}}" 
-									onfocus = "this.select()" 
+									onfocus = "this.select()"
+									oninput="check_rollback(this)"
 									disabled 
 									type = "number"
+									data-prev = {{t.prev}}
+									data-next = {{t.next}}
 									{% comment %}
 									{% if t.prev %} min={{t.prev}} {% endif %} 
 									{% if t.next %} max="{{t.next}}" {%endif%} {% endcomment %}
 									{% if t.reading %} value="{{t.reading}}" {% endif %}>
-								
+								<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
 							</td>
 						</form>
 						{% if consumer.stopmeterflag %}
 						{% else %}
 						<td class="{{t.style}} border-bottom border-start-0 border-end-0 border-secondary p-0">
-							<button id="submit-{{t.transid}}" type="button" style="display: none;" class="btn btn-success" onclick="submit_this('{{t.transid}}',{{t.prev}})">
-								SAVE
-							</button>
-							<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}},{{t.prev}},{{t.reading}})">
-								EDIT
-							</button>
-							{% if t.reading %}
-							<button id="delete-{{t.transid}}" class="hide btn btn-danger" onclick="window.location.href='{% url 'deletereading' t.transid %}'">DELETE</button>
+							{% if not t.is_issue %}
+								<button id="submit-{{t.transid}}" type="button" style="display: none;" class="btn btn-success" onclick="submit_this('{{t.transid}}',{{t.prev}})">
+									SAVE
+								</button>
+								<button id="edit-{{t.transid}}" type="button" class="hide btn btn-primary" onclick="toggle({{t.transid}},{{t.prev}},{{t.reading}})">
+									EDIT
+								</button>
+								{% if t.reading %}
+								<button id="delete-{{t.transid}}" class="hide btn btn-danger" onclick="window.location.href='{% url 'deletereading' t.transid %}'">DELETE</button>
+								{% endif %}
 							{% endif %}
 						{% endif %}
 						</td>
@@ -229,6 +301,33 @@ Input Reading
 				{% endfor %}
 			</tbody>
 			<script>
+				function check_rollback(input) {
+					rollback_reading = document.getElementById("rollback-reading")
+					rollback_prev = document.getElementById("rollback-prev")
+					id = input.id
+					submit = document.getElementById("submit-" + id)
+					prev = parseInt(input.getAttribute('data-prev'))
+					if (input.value<prev){
+						rollback_reading.value = input.value
+						rollback_prev.value = prev
+						rollback_reading.setAttribute("name", input.name)
+						rollback_prev.setAttribute("name", "prev"+input.name.split('-')[1] )
+						submit.removeAttribute("onclick")
+						submit.setAttribute("data-bs-toggle", "modal")
+						submit.setAttribute("data-bs-target", "#rollback")
+						input.classList.remove('border-0')
+						input.classList.add('is-invalid')
+					}
+					else{
+						rollback_reading.removeAttribute("name")
+						rollback_prev.removeAttribute("name")
+						submit.setAttribute("onclick", "submit_this('" + id + "'," + prev + ")")
+						submit.removeAttribute("data-bs-toggle")
+						submit.removeAttribute("data-bs-target")
+						input.classList.remove("is-invalid")
+						input.classList.add('border-0')
+					}
+				}
 				function submit_this(id, prev) {
 					form = document.getElementById('form-'+id)
 					// input = document.getElementById(id)
@@ -252,6 +351,7 @@ Input Reading
 					}
 				}
 				function toggle(id, prev, reading) {
+					form = document.getElementById('form-'+id)
 					input = document.getElementById(id)
 					edit = document.getElementById("edit-" + id)
 					submit = document.getElementById("submit-" + id)
@@ -263,13 +363,13 @@ Input Reading
 						}
 						submit.style.display = "none"
 						edit.innerHTML = "EDIT" 
+						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
 						edit.classList.remove("btn-danger")
 						edit.classList.add("btn-primary")
 					} else {
 						if (has_del){
 							del = document.getElementById("delete-" + id)
-							
-						del.style.display = "none"
+							del.style.display = "none"
 						}
 						submit.style.display = "inline"
 						edit.innerHTML = "CANCEL"
@@ -435,7 +535,7 @@ Input Reading
 			y = 20
 		}
 		console.log("testing")
-		doc.save('{{consumer.firstname}}_{{consumer.lastname}}_ledger.pdf');
+		doc.save('{{consumer.firstname}} {{consumer.lastname}}- Meter Reading.pdf');
 	}				
 		</script>
 	</div>

@@ -57,140 +57,42 @@ Account Ledger
 
 	/* ============================================================================================= */
 
-	.invoice-box {
-		max-width: 1044px;
-		margin: auto;
-		padding: 0;
-		border: 1px solid #000;
-		box-shadow: 0 0 10px rgb(0 0 0 / 15%);
-		font-size: 17px;
-		line-height: 16px;
-		font-family: monospace;
-		color: #000;
-	}
-
-	.invoice-box table {
-		width: 100%;
-		line-height: inherit;
-		text-align: left;
-	}
-
-	.invoice-box table td {
-		padding: 11px;
-		vertical-align: top;
-	}
-
-	.invoice-box table tr td:nth-child(2) {
-		text-align: right;
-	}
-
-	.invoice-box table tr.top table td {
-		padding-bottom: 0px;
-	}
-
-	.invoice-box table tr.top table td.title {
-		font-size: 45px;
-		line-height: 45px;
-		color: rgb(0, 0, 0);
-	}
-
-	.invoice-box table tr.information table td {
-		padding-top: 0;
-	}
-
-	.invoice-box table tr.heading td {
-		background: #eee;
-		border-bottom: 1px solid #ddd;
-		font-weight: bold;
-	}
-
-	.invoice-box table tr.details td {
-		padding-bottom: 0px;
-	}
-
-	.invoice-box table tr.item td {
-		border-bottom: 1px solid #eee;
-	}
-
-	.invoice-box table tr.item.last td {
-		border-bottom: none;
-	}
-
-	.invoice-box table tr.total td:nth-child(2) {
-		border-top: 2px solid #eee;
-		font-weight: bold;
-	}
-
-	@media only screen and (max-width: 600px) {
-		.invoice-box table tr.top table td {
-			width: 100%;
-			display: block;
-			text-align: center;
+	/* Colors for the transactions types */
+	.table-orange{
+		background-color: #ffd8a9;
+		color: black;
 		}
 
-		.invoice-box table tr.information table td {
-			width: 100%;
-			display: block;
-			text-align: center;
-		}
+	.table-red {
+	background-color: #ff7272;
+	color: white;
 	}
 
-	/** RTL **/
-	.rtl {
-		direction: rtl;
-		font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+	.table-blue {
+	background-color: #a9d8ff;
+	color: black;
 	}
 
-	.rtl table {
-		text-align: right;
+	.table-yellow {
+	background-color: #fffaa9;
+	color: black;
 	}
 
-	.rtl table tr td:nth-child(2) {
-		text-align: left;
+	.table-lightblue {
+	background-color: #a9e6ff;
+	color: black;
 	}
 
-	#logo {
-		vertical-align: middle;
-		border-style: none;
-		height: 90px;
-	}
-
-	.total {
-		font-weight: bold;
-		color: blue;
-		border-width: 1px;
-		border-style: solid;
-		border-color: black;
-	}
-
-	.mun {
-		font-family: monospace;
-		font-size: 25px;
-		font-weight: bold;
-	}
-
-	.mun-header {
-		font-size: 38px;
-		font-family: monospace;
-		font-weight: bold;
-	}
-
-	.st {
-		font-size: 21px;
-		font-weight: bold;
-		font-family: emoji;
-	}
 	
-	.table-scrolls{
-		display: block;
-		height: 600px;
-		overflow-y: scroll;
-	}
 </style>
 <!-- Header Info of Consumer -->
 <div class="container-fluid p-0">
+	
+    <div id="contextMenu" class="context-menu" style="text-decoration: none;">
+        <div class="context-menu-item" id="customLink"></div>
+    </div>
 	<div class="table-responsive">
-		<table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+		<table id="dtBasicExample1" class="table table-bordered" cellspacing="0" width="100%">
 			<thead class="wb_thead">
 				<tr class="header">
 					<th scope="col" style="min-width:25px">Account ID</th>
@@ -210,7 +112,9 @@ Account Ledger
 					<td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
 					<td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
+
 					 	{% if not ispaid %}<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button> {% endif %}
+
 					</td>
 				</tr>
 			</tbody>
@@ -231,6 +135,7 @@ Account Ledger
 					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
+				
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="id_amount">Amount</label>
@@ -239,11 +144,13 @@ Account Ledger
 						<input type="text" name="or_num" id="id_or_num" required class="input form-control">
 						<label for="id_dis_code">Discount Code</label>
 						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
+						
 					</div>
 				</div>
+
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
+					<button type="submit" class="btn btn-primary" name="btnform1">Submit</button>
 				</div>
 			</form>
 		</div>
@@ -253,14 +160,8 @@ Account Ledger
 
 <div class="row w-100 m-auto pt-2">
 
-	<!-- Buttons -->
-	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
-
-		<button type="button" onclick="toggleVisibility('ledger');" class="btn button2" style="float: left; margin-right: 5px;">Ledger</button>
-		<a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Monthly</button></a>
-		<a href="{% url 'payment_history' u.consumer_id year %}"><button type="button" class="btn button2" style="float:left;">Payment History</button></a>
-	</div>
-
+		{% include 'billingbuttons.html' %}
+		{% include 'billcopy.html' %}
 	<!-- Sort for Billing, Payment, Penalty, Discount and Get copy buttom -->
 	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 		<button type="button" onclick="getpdf()" class="btn button2" style="float:right;">
@@ -274,6 +175,7 @@ Account Ledger
 				<select id="selector" name="show" class="form-select form-select ms-1 me-3" onchange="this.form.submit()">
 					<option value="" {% if disp == ""%}selected{% endif %}>All</option>
 					<option value="Billing" {% if disp == "Billing"%}selected{% endif %}>Billing</option>
+					<option value="Additional Fees" {% if disp == "Additional Fees"%}selected{% endif %}>Additional Fees</option>
 					<option value="Payment" {% if disp == "Payment"%}selected{% endif %}>Payment</option>
 					<option value="Penalty" {% if disp == "Penalty"%}selected{% endif %}>Penalty</option>
 					<option value="Discount" {% if disp == "Discount"%}selected{% endif %}>Discount</option>
@@ -281,121 +183,6 @@ Account Ledger
 			</label>
 		</form>
 	</div>
-
-	<!-- Billing outline, hidden arund dili hasul ang pag layout sa bill XD -->
-	<div class="billling" style="display:none;">
-		<div id="invoice">
-			<div class="invoice-box">
-				<table cellpadding="0" cellspacing="0">
-					<tbody class="ttt">
-						<tr class="top">
-							<td colspan="2">
-								<table>
-									<tr>
-										<td style="padding-bottom: 0px;
-								padding-left: 44%;">
-											<img id="logo" src="{% static 'images/lgulogo.png'%}" alt="LOGO" />
-										</td>
-									</tr>
-									<tr>
-										<td style="text-align:center;">
-											<p class="mun"> Ginatilan Water</p>
-			</div>
-			</td>
-			</tr>
-			</table>
-			</td>
-			</tr>
-			<tr class="information">
-				<td colspan="2">
-					<table>
-						<tr>
-							<td style="line-height: 0px;">
-								<h4 class="st">Consumer Info</h4>
-								<h6 class="sk"><b>Name: </b>{{u.firstname}} {{u.middlename}} {{u.lastname}} </h6><br>
-								<h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
-								<h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
-								<h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
-								<h6 class="sk"><b>Connection Type: </b>{{u.contypeid.contype}}</h6><br>
-								<h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-
-			<tr class="heading">
-				<td>
-					BILL INFO
-				</td>
-
-				<td>
-
-				</td>
-			</tr>
-
-			<tr class="item">
-				<td>
-					<strong>Current Reading</strong>
-				</td>
-
-				<td>
-					<b>{{cur}}</b>
-				</td>
-			</tr>
-
-			<tr class="item">
-				<td>
-					<strong>Previous Reading</strong>
-				</td>
-
-				<td>
-					<b>{{pre}}</b>
-				</td>
-			</tr>
-
-			<tr class="item last">
-				<td>
-					<strong>Usage</strong>
-				</td>
-
-				<td>
-					<b>{{usage}}</b>
-				</td>
-			</tr>
-
-			<tr class="total">
-				<td>
-					<strong>Penalty: <b>{{pen}}</b></strong><br>
-					<strong>Previous Due: <b></b></strong><br>
-					<strong>Total Balance: <b>&#8369;{{bal}}</b></strong><br>
-					<strong>Total Bill: <b>&#8369;{{bill}}</b></strong>
-
-				</td>
-			</tr>
-			</table>
-			<footer style="text-align:center;margin-top: 13px;font-size: 19px;">Bill for the month of <span style="font-weight: bold;">{{prevmonth}}</span></footer>
-			<footer style="text-align:center;margin-top: 12px;font-size: 13px;">Bill Issued:{{date_today}}</footer>
-		</div>
-	</div>
-
-	<!-- Script For Invoice -->
-	<script>
-		function print() {
-			const invoice = this.document.getElementById("invoice");
-			console.log(invoice);
-			console.log(window);
-			var opt = {
-				margin: .5,
-				filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
-				image: { type: 'png', quality: 0.98 },
-				html2canvas: { scale: 2 },
-				jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-			};
-			html2pdf().from(invoice).set(opt).save();
-		}
-
-	</script>
 </div>
 
 <!-- Ledger -->
@@ -410,33 +197,39 @@ Account Ledger
 								<th style="min-width: 100px;">Transaction ID</th>
 								<th style="min-width: 100px;">Date</th>
 								<th style="min-width: 100px;">Month-Year</th>
-								<th style="min-width: 100px;">Previous Reading</th>
-								<th style="min-width: 100px;">Current Reading</th>
-								<th style="min-width: 110px;">Cubic Meter Used</th>
-								<th style="min-width: 110px;">Amount Billed</th>
+								<th style="min-width: 100px;">Previous</th>
+								<th style="min-width: 100px;">Current</th>
+								<th style="min-width: 110px;">Usage</th>
+								<th style="min-width: 110px;">Bill</th>
 								<th style="min-width: 100px;">Payment</th>
-								<th style="min-width: 100px;">Current Balance</th>
+								<th style="min-width: 100px;">Balance</th>
 								<th style="min-width: 110px;">Connection Type</th>
 								<th style="min-width: 100px;">Processed By</th>
-								<th style="min-width: 110px;">Payment Status</th>
+								<th style="min-width: 110px;">Status</th>
 							</tr>
 						</thead>
 						<tbody class="wb_tbody" >
 							{% for t in table reversed %}
-							<tr>
-								<td class="{{t.style}}">{{t.transid}}</td>
-								<td class="{{t.style}}">{{t.date}}</td>
-								<td class="{{t.style}}">{{t.month}}-{{t.year}}</td>
-								<td class="{{t.style}}">{{t.prev}}</td>
-								<td class="{{t.style}}">{{t.reading}}</td>
-								<td class="{{t.style}}">{{t.usage}}</td>
-								<td class="{{t.style}}">{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
-								<td class="{{t.style}}">{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
-								<td class="{{t.style}}">&#8369; {{t.bal|floatformat:2|intcomma}}</td>
-								<td class="{{t.style}}">{{t.rateid}}</td>
-								</td>
-								<td class="{{t.style}}">{{t.pb}}</td>
-								<td style="text-align: center;" class="{{t.style}} text-center align-middle">{% if t.ispaid %} Paid {% endif %}</td>
+							<tr class="{% if t.reading %} context-menu-target {% else %}no-right-click {% endif %} {{t.style}}" data-link="form-{{t.transid}}">
+								<form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
+									<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
+									<input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
+									<input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
+								</form>
+								<td>{{t.transid}}</td>
+								<td>{{t.date}}</td>
+								<td>{{t.month | slice:":3"}}-{{t.year}}</td>
+								<td>{{t.prev}}</td>
+								<td>{{t.reading}}</td>
+								<td>{{t.usage}}</td>
+								<td>{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+								<td>{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+								<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+								<td>{{t.rateid}}</td>
+								<td>{{t.pb}}</td>
+								<td style="text-align: center;" class="text-center align-middle">{{ t.ispaid }}</td>
 							</tr>
 							{% endfor %}
 						</tbody>
@@ -448,8 +241,51 @@ Account Ledger
 </div>	
 
 
-<!-- Script for PDF Get Copy -->
+<!-- Script for PDF Get Copy  and many more... -->
 <script type="text/javascript">
+	const noRightClickElements = document.querySelectorAll('.no-right-click');
+    noRightClickElements.forEach(function(element) {
+      element.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+      });
+    });
+	function submitForm(id) {
+		document.getElementById(id).submit();
+	}
+	const table = document.getElementById("dtBasicExample2");
+	// Get the context menu element
+    const contextMenu = document.getElementById('contextMenu');
+    const customLink = document.getElementById('customLink');
+	let highlightedRow = null;
+    // Show the custom context menu on right-click on .context-menu-target elements
+    const contextMenuTargets = document.querySelectorAll('.context-menu-target');
+    contextMenuTargets.forEach(function(target) {
+		target.addEventListener('contextmenu', function(e) {
+			 // Remove previous highlight
+			table.classList.remove('table-hover')
+			 if (highlightedRow) {
+				highlightedRow.classList.remove('highlight');
+			}
+			
+			highlightedRow = target;
+        	highlightedRow.classList.add('highlight');
+			e.preventDefault();
+        	customLink.innerHTML = `<a class="text-danger fw-bold" onClick="submitForm('${target.dataset.link}')">Report as Issue</a>`;
+			contextMenu.style.display = 'block';
+			contextMenu.style.left = e.pageX + 'px';
+			contextMenu.style.top = e.pageY + 'px';
+		});
+    });
+
+    // Hide the context menu when clicking outside of it
+    document.addEventListener('click', function() {
+		if (highlightedRow) {
+			highlightedRow.classList.remove('highlight');
+			highlightedRow = null;
+			table.classList.add('table-hover')
+		}
+      contextMenu.style.display = 'none';
+    });
 
 	function getpdf() {
 		var doc = new jsPDF('landscape', 'pt', 'legal');

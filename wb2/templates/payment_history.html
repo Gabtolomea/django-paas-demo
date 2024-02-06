@@ -218,11 +218,11 @@ Payment History
             </thead>
             <tbody class="wb_tbody">
                 <tr class="showOnHover">
-                    <td class="table-light text-center">{{consumer.consumer_id}}</td>
-                    <td class="table-light text-center">{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
-                    <td class="table-light text-center">{{consumer.meternumber}}</td>
-                    <td class="table-light text-center">&#8369; {{consumer.excess|floatformat:2|intcomma}}</td>
-                    <td class="table-light text-center">&#8369; {{consumer.current_bal|floatformat:2|intcomma}}</td>
+                    <td class="table-light text-center">{{u.consumer_id}}</td>
+                    <td class="table-light text-center">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+                    <td class="table-light text-center">{{u.meternumber}}</td>
+                    <td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
+                    <td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}</td>
                 </tr>
             </tbody>
         </table>
@@ -237,14 +237,9 @@ Payment History
 <div class="row w-100 m-auto pt-2">
 
     <!-- Buttons -->
-    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
 
-        <a href="{% url 'ledger' consumer.consumer_id %}"><button type="button" class="btn button2" style="float: left; margin-right: 5px;">Ledger</button></a>
-        <a href="{% url 'monthly_summary' consumer.consumer_id year %}"><button type="button" class="btn button2" style="float:left; margin-right: 5px;">Monthly</button></a>
-        <a href=""><button type="button" class="btn button2" style="float:left;">Payment History</button></a>
+    {% include 'billingbuttons.html' %}
 
-
-    </div>
 
     <!--Year Selection -->
     <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
@@ -334,7 +329,7 @@ Payment History
 				<div class="modal-body">
 					<div class="form-group">
 						<label>Amount</label>
-						<input value="{{i.receivedamt}}" name="amount" type="" class="form-control" required>
+						<input value="{{i.receivedamt}}" name="amount" type="number" class="form-control" required>
 						<label>OR Number</label>
 						<input value="{{i.or_number}}" name="or_num" type="" class="form-control" required>
 						<label>Discount Code</label>

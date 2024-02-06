@@ -1,0 +1,312 @@
+{% load static %}
+<style>
+    /* Water bill theme styles */
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
+    }
+
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+    }
+
+    .invoice-box {
+        max-width: 1044px;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #000;
+        box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+        font-size: 17px;
+        line-height: 16px;
+        font-family: monospace;
+        color: #000;
+        height: 690px;
+    }
+
+    .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+    }
+
+    .invoice-box table td {
+        padding: 11px;
+        vertical-align: top;
+    }
+
+    .invoice-box table tr td:nth-child(2) {
+        text-align: right;
+    }
+
+    .invoice-box table tr.top table td {
+        padding-bottom: 0px;
+    }
+
+    .invoice-box table tr.top table td.title {
+        font-size: 45px;
+        line-height: 45px;
+        color: rgb(0, 0, 0);
+    }
+
+    .invoice-box table tr.information table td {
+        padding-top: 0;
+    }
+
+    .invoice-box table tr.heading td {
+        background: #eee;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .invoice-box table tr.details td {
+        padding-bottom: 0px;
+    }
+
+    .invoice-box table tr.item td {
+        border-bottom: 1px solid #eee;
+    }
+
+    .invoice-box table tr.item.last td {
+        border-bottom: none;
+    }
+
+    .invoice-box table tr.total td:nth-child(2) {
+        border-top: 2px solid #eee;
+        font-weight: bold;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+
+        .invoice-box table tr.information table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+    }
+
+    /** RTL **/
+    .rtl {
+        direction: rtl;
+        font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    }
+
+    .rtl table {
+        text-align: right;
+    }
+
+    .rtl table tr td:nth-child(2) {
+        text-align: left;
+    }
+
+    #logo {
+        vertical-align: middle;
+        border-style: none;
+        height: 90px;
+    }
+
+    .total {
+        font-weight: bold;
+        color: blue;
+        border-width: 1px;
+        border-style: solid;
+        border-color: black;
+    }
+
+    .mun {
+        font-family: monospace;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .mun-header {
+        font-size: 38px;
+        font-family: monospace;
+        font-weight: bold;
+    }
+
+    .st {
+        font-size: 21px;
+        font-weight: bold;
+        font-family: emoji;
+    }
+
+    .table-scrolls {
+        display: block;
+        height: 600px;
+        overflow-y: scroll;
+    }
+
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 5px;
+        z-index: 100;
+        box-shadow: 0 3px 6px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .context-menu-item {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .underThick {
+        text-decoration: none;
+        border-bottom: 2px solid #000;
+    }
+
+    .highlight {
+        --bs-table-accent-bg: var(--bs-table-hover-bg);
+        color: var(--bs-table-hover-color);
+    }
+
+    .row {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 0;
+        margin-top: calc(var(--bs-gutter-y) * -1);
+        margin-right: calc(var(--bs-gutter-x) * -.5);
+        margin-left: calc(var(--bs-gutter-x) * -.5);
+    }
+
+    .custom-color {
+        background-color: #aca9a9b7;
+        /* Replace with your desired color code */
+        color: #000000;
+    }
+
+    .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding-top: 12px;
+        font-size: 13px;
+        color: rgb(255, 0, 0);
+        display: flex;
+        justify-content: center;
+    }
+
+    .border-custom {
+        border-color: #000000bd !important;
+    }
+</style>
+
+<!-- Water Billing Layout -->
+<!-- for content to hide in the ledger -->
+<div  style="display: none;" class="billing">
+    <div id="invoice">
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+                <tbody class="ttt">
+                    <tr class="top">
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                    <td style="padding-bottom: 0px; padding-left: 44%;">
+                                        <img id="logo" src="{% static 'images/lgulogo.png' %}" alt="LOGO" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;">
+                                        <p class="mun">Water Bill</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; color: #423e3e; padding-top: 0%; !important">
+                                        <h6><i>Municipality of Ginatilan</i></h6>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="information">
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                    <td style="line-height: 0px;">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="d-flex flex-row-reverse">
+                                                    <div class="col-md-3">
+                                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
+                                                        <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
+                                                    </div>
+                                                    <div class="col-md-9 mt-md-0 mt-3">
+                                                        <h6><b>Name:</b> <u class="underThick">{{u.firstname}}
+                                                                {{u.middlename}} {{u.lastname}}</u></h6>
+                                                        <h6><b>Account ID:</b><u class="underThick">{{u.consumer_id}}</u></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <table class="table table-bordered border-custom">
+                    <thead class="custom-color">
+                        <tr>
+                            <th>No.</th>
+                            <th>Unpaid Month</th>
+                            <th>Usage per Cubic</th>
+                            <th>Charges</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for up in up %}
+                        <tr>
+                            <td class="text-center">{{forloop.counter}}</td>
+                            <td class="text-center">{{up.month}} - {{up.year}}</td>
+                            <td>{{up.usage}}</td>
+                            <td>{{up.amount}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="d-flex flex-row-reverse" style="padding-right: 5px;">
+                    <h6><b>Total:</b> <u class="underThick">PHP   {{tu}}</u></h6>
+                </div>
+            </table>
+            <footer class="footer">Date Issued: {{date_today}}</footer>
+        </div>
+    </div>
+</div>
+
+<!-- Script For Invoice -->
+<script>
+    function print() {
+        const invoice = this.document.getElementById("invoice");
+        console.log(invoice);
+        console.log(window);
+        var opt = {
+            margin: .5,
+            filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
+            image: { type: 'png', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+        };
+        html2pdf().from(invoice).set(opt).save();
+    }       
+
+    var amountElement = document.getElementById("amountFromBackend");
+    var amountValue = parseFloat(amountElement.innerHTML);
+
+    // Format the number with at least 2 decimal places using JavaScript
+    var formattedAmount = amountValue.toFixed(4);
+
+    // Update the HTML with the formatted value
+    amountElement.innerHTML = formattedAmount;
+
+</script>

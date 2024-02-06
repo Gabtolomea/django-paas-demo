@@ -2,9 +2,6 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from PIL import Image
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-import sys
 # Create your models here.
 
 class LoginRec(models.Model):
@@ -150,6 +147,9 @@ class ConsumerInfo(models.Model):
     excess = models.IntegerField(default=0)
     penaltycode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True, default='POO1')
     first_tran = models.IntegerField(null=True)
+    excep_accnt = models.BooleanField(default=False)
+    has_additionalfees = models.BooleanField(default=False)
+
 class Transactions(models.Model):
     TRANS_TYPE = (
         ('Billing','Billing'),
@@ -175,8 +175,20 @@ class Transactions(models.Model):
     payment = models.FloatField(null=True)
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
+    is_issue = models.BooleanField(default=False)
+    months_not_paid = models.IntegerField(default=0)
     def __str__(self) -> str:
         return str(self.transactionid)
+
+class Issues(models.Model):
+    issueid = models.AutoField(primary_key=True)
+    transactionid = models.ForeignKey(Transactions, on_delete=models.CASCADE)
+    issue = models.CharField(max_length=100)
+    date = models.DateField(auto_now_add=True)
+    last_comment = models.CharField(max_length=100, null=True)
+    issued_by = models.CharField(max_length=100, null=True)
+    is_seen = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, default='Pending')
 
 class revenuecode(models.Model):
     application_fee = models.FloatField(default = 0)
@@ -201,3 +213,23 @@ class revenuecode(models.Model):
     fix_amount_penalty = models.FloatField(default = 0)
     percentage_penalty = models.FloatField(default = 0)
 
+class Messages(models.Model):
+    message_id = models.AutoField(primary_key=True)
+    issue_id = models.ForeignKey(Issues, on_delete=models.CASCADE)
+    from_user = models.ForeignKey(SystemUsers, on_delete=models.CASCADE, related_name='from_user')
+    to_user = models.ForeignKey(SystemUsers, on_delete=models.CASCADE, related_name='to_user')
+    message = models.CharField(max_length=100)
+    date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+class AdditionalFees(models.Model):
+    feeid = models.AutoField(primary_key=True)
+    consumer_id = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
+    fee_name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    months = models.IntegerField()
+    month_counter = models.IntegerField(default=1)
+    remainder = models.IntegerField()
+    transactions = models.ManyToManyField(Transactions)
+    date_added = models.DateField(auto_now_add=True)
