@@ -1,9 +1,0 @@
-2023-1, id: 0000000306-01, name: Restituta Dugaduga, current: 8, next_prev: 0, next_current: 8 
-2023-3, id: 0000000341-01, name: Vic Quintana, current: 3111, next_prev: 3021, next_current: 3121 
-2023-1, id: 0000000389-01, name: Annabel Cuevas, current: 7948, next_prev: 7157, next_current: 7948 
-2023-2, id: 0000000448-01, name: Justino-2 Tojong (Bop-43.00), current: 4180, next_prev: 0, next_current: 4180 
-2023-1, id: 0000000654-01, name: Godofredo Cadungog, current: 2535, next_prev: 0, next_current: 2535 
-2023-2, id: 0000001019-01, name: Catalino Catubig, current: 5587, next_prev: 5549, next_current: 5594 
-2023-2, id: 0000001376-01, name: Pacholo Bajenting, current: 1805, next_prev: 182, next_current: 1832 
-2023-3, id: 0000001719-01, name: Julem Asengua, current: 1076, next_prev: 108, next_current: 1086 
-2023-1, id: 0000002043-01, name: Mary Cathyline Erac, current: 8, next_prev: 4, next_current: 8 
