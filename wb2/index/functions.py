@@ -78,6 +78,13 @@ def years(id):
         years.append(datetime.today().year)
     return years
 def last_reading(id, year, mo):
+    try:
+        latest_reset = Transactions.objects.filter(acctID=id, transType='Reset Meter').order_by('-year', '-month')[0]
+        if latest_reset.year == year and latest_reset.month == mo:
+            return latest_reset.meterReading
+    except IndexError:
+        pass
+    
     allyears = years(id)
     allyears.sort(reverse=True)
     fyears = [item for item in allyears if item <= year]
@@ -142,7 +149,7 @@ def get_balance(id):
     for i in range(len(asc_trans)):
         if asc_trans[i].transType == 'Billing':
             bal+=asc_trans[i].bill
-        if asc_trans[i].transType == 'Additional Fees':
+        elif asc_trans[i].transType == 'Additional Fees':
             bal+=asc_trans[i].bill
         elif asc_trans[i].transType == 'Payment':
             bal-=asc_trans[i].payment
@@ -219,7 +226,6 @@ def portfromcsv():
     new_billings = []
     new_payments = []
     for i in arr_df:
-        # print(i)
         if i[2] == "Billing":
             b = billings(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[10],i[11],i[13],i[14],i[15],i[16])
             new_billings.append(b)
@@ -735,15 +741,20 @@ def set_overdue_months():
         unpaid_trans = Transactions.objects.filter(acctID=c.consumer_id, is_billpaid=False, transType='Billing').order_by('year', 'month')
         for t in unpaid_trans:
             if t.months_not_paid >= 6:
+                print(t.month)
                 try:
                     issue = Issues.objects.get(transactionid_id=t.transactionid)
+                    issue.issue = f"Overdue"
+                    issue.save()
                 except ObjectDoesNotExist:
                     issue = Issues()
                     issue.consumer_id = c
                     issue.transactionid = t
                     issue.issued_by = "System"
-                issue.issue = f"Overdue"
-                issue.save()
+                    issue.issue = f"Overdue"
+                    issue.save()
+                except MultipleObjectsReturned:
+                    pass
             else:
                 t.months_not_paid += 1
                 t.save()
@@ -751,6 +762,14 @@ def set_overdue_months():
 def get_month_diff(month1, year1, month2, year2):
     return (year1 - year2) * 12 + (month1 - month2)
 
+def remove_duplicate_od_months():
+    issues = Issues.objects.all().order_by('transactionid_id')
+    current_id = 0
+    for i in issues:
+        if i.transactionid == current_id:
+            i.delete()
+        else:
+            current_id = i.transactionid
 
 def set_months_unpaid():
     consumers = ConsumerInfo.objects.filter(current_bal__gt=0, excep_accnt = False)
@@ -769,3 +788,88 @@ def set_months_unpaid():
                     issue.issued_by = "System"
                 issue.issue = "Overdue"
                 issue.save()
+
+def set_currentreadings():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        try:
+            t = Transactions.objects.filter(acctID=c.consumer_id, transType='Billing').order_by('-year', '-month')[0]
+            c.current_reading = t.meterReading
+            c.save()
+        except IndexError:
+            pass
+
+def pay_saall():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        trans = Transactions.objects.filter(acctID=c.consumer_id, transType='Billing', is_billpaid=False).order_by('year', 'month')
+        for t in trans:
+            try:
+                Transactions.objects.get(acctID_id=c.consumer_id, transType='Payment', year=t.year, month=t.month)
+                t.is_billpaid = True
+                t.save()
+            except MultipleObjectsReturned:
+                trans = Transactions.objects.filter(acctID=c.consumer_id, transType='Payment', year=t.year, month=t.month).order_by('-transactionid')
+                trans[0].delete()
+            except ObjectDoesNotExist:
+                pass
+
+def add_additionalFees():
+    consumers = ConsumerInfo.objects.all()
+    for c in consumers:
+        try:
+            addfees = AdditionalFees.objects.filter(consumer_id=c.consumer_id)
+        except ObjectDoesNotExist:
+            pass
+        else:
+            try:
+                last_af = Transactions.objects.filter(acctID_id=c.consumer_id, transType='Additional Fees').order_by('-year', '-month')[0]
+            except IndexError:
+                pass
+            else:
+                for addfee in addfees:
+                    # new add fee bill
+                    if addfee.month_counter < addfee.months:
+                        afbill = Transactions()
+                        afbill.acctID = c
+                        afbill.transType = "Additional Fees"
+                        afbill.date = datetime.today()
+                        afbill.month = last_af.month + 1
+                        afbill.year = last_af.year
+                        if afbill.month == 13:
+                            afbill.month = 1
+                            afbill.year = last_af.year + 1
+                        
+                        afbill.processedBy = 'System'
+                        afbill.bill = addfee.amount
+                        
+                        afbill.save()
+                        addfee.transactions.add(afbill)
+                        addfee.save()
+
+                        c.current_bal += addfee.amount
+                        c.save()
+
+                    else:
+                        if addfee.remainder:
+                            afbill = Transactions()
+                            afbill.acctID = c
+                            afbill.transType = "Additional Fees"
+                            afbill.date = datetime.today()
+                            afbill.month = last_af.month + 1
+                            afbill.year = last_af.year
+                            if afbill.month == 13:
+                                afbill.month = 1
+                                afbill.year = last_af.year + 1
+                            
+                            afbill.processedBy = 'System'
+                            afbill.bill = addfee.remainder
+                            afbill.save()
+                            addfee.transactions.add(afbill)
+                            addfee.save()
+                            c.current_bal += addfee.remainder
+                            c.save()
+                        else:
+                            addfee.delete()
+                    addfee.month_counter += 1
+                    addfee.save()

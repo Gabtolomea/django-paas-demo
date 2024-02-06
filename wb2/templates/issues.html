@@ -23,21 +23,34 @@ Issues
         z-index: 2 !important;
     }
   </style>
-<div class="p-3">
     <h3 style="text-align: center;">Issues</h3>
-
+    {% include 'search.html' %}
+    
     <div>
         <div class="rounded-top bg-light p-3"></div>
         <table class="table table-hover table-sm rounded-top mb-0" style="user-select: none; cursor: pointer;">
+            {% if issue_list %}
             <thead >
+                <tr>
+                    <th class="ps-3">Issued By</th>
+                    <th>Status</th>
+                    <th>Meter Number</th>
+                    <th>Consumer Name </th>
+                    <th>Transaction</th>
+                    <th>Comment</th>
+                    <th class="text-end pe-3">Date</th>
+                </tr>
             </thead>
+            {% endif %}
             <tbody class="tbody">
-                {% if issues %}
-                    {% for i in issues %}
+                {% if issue_list %}
+                    {% for i in issue_list %}
                         {% if user.is_supervisor or i.issued_by == user.username and last_message %}
                             <tr class="{% if not i.is_seen or not last_message.is_read %}table-light{% endif %} clickable-row" data-href="{% url 'issue_details' i.issueid %}" {% if not i.is_seen %}style="font-weight: 600;"{% else %}style="color: #202124;"{% endif %}>
                                 <td class="ps-3">{{ i.issued_by }}</td>
                                 <td>{{ i.status }}</td>
+                                <td>{{ i.transactionid.acctID.meternumber }}</td>
+                                <td>{{ i.transactionid.acctID.lastname }} {{ i.transactionid.acctID.firstname }} {{ i.transactionid.acctID.middlename }}</td>
                                 <td><span style="font-weight: 300;">From </span>{{ i.transactionid.prevReading }} <span style="font-weight: 300;"> to </span>{{ i.transactionid.meterReading }}</td>
                                 <td style="font-weight: 300; font-style: italic;">{{ i.last_comment }}</td>
                                 <td class="text-end pe-3">{{ i.date }}</td>
@@ -49,6 +62,61 @@ Issues
                         <td colspan="5" class="table-light" style="text-align: center;">No issues found</td>
                     </tr>
                 {% endif %}
+                <style>
+
+                    a {
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        cursor: default;
+                        text-decoration: none;
+                    }
+
+                    .paginate_button {
+                        cursor: pointer;
+                        position: relative;
+                        display: block;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        color: var(--main-color);
+                        text-decoration: none;
+                        background-color: white;
+                        border: 1px solid #dee2e6;
+                        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+                    }
+
+                    .active>.paginate_button,
+                    .paginate_button.active {
+                        z-index: 3;
+                        color: white !important;
+                        background-color: var(--main-color);
+                        border-color: #dee2e6;
+                    }
+
+                    .previous {
+                        border-top-left-radius: .375rem;
+                        border-bottom-left-radius: .375rem;
+                    }
+
+                    .next {
+                        border-top-right-radius: .375rem;
+                        border-bottom-right-radius: .375rem;
+                    }
+
+                    .disabled {
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        cursor: default;
+                        color: #6c757d;
+                    }
+                </style>
             
                 <script src="{% static 'jquery/jquery.js' %}"></script>
                 <script>
@@ -62,6 +130,217 @@ Issues
         </table>
         <div class="rounded-bottom bg-light p-3 z-n1"></div>
     </div>
-</div>
+    {# Pagination controls #}
+    {% if issue_list.has_other_pages %}
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <div class="dataTables_paginate paging_simple_numbers" id="table_paginate">
+                <ul style="display: flex; padding-left: 0; list-style: none;">
+                    {% if issue_list.paginator.num_pages > 5 %}
+                        {% if issue_list.number < 5 %} 
+                            {% if issue_list.has_previous %} 
+                                <a class="page-links" href="?page={{ issue_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item previous">Previous</li>
+                                </a>
+                            {% else %}
+                                <li class="paginate_button disabled page-item previous">Previous</li>
+                            {% endif %}
+                            {% for i in five %}
+                                {% if i == issue_list.number %}
+                                    <a class="page-links" href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item active">{{i}}</li>
+                                    </a>
+                                {% else %}
+                                    <a class="page-links" href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item">{{i}}</li>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            <li class="paginate_button disabled page-item">...</li>
+                            <a class="page-links" href="?page={{ issue_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                                <li class="paginate_button page-item">{{ issue_list.paginator.num_pages }}</li>
+                            </a>
+                            {% if issue_list.has_next %}
+                                <a class="page-links" href="?page={{ issue_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item next">Next</li>
+                                </a>
+                            {% else %}
+                                <li class="paginate_button disabled page-item next">Next</li>
+                            {% endif %}
+                        {% else %}
+                            {% if issue_list.number > issue_list.paginator.num_pages|add:'-3'%}
+                                {% if issue_list.has_previous %}
+                                    <a class="page-links" href="?page={{ issue_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item previous">Previous</li>
+                                    </a>
+                                {% else %}
+                                    <li class="paginate_button disabled page-item previous">Previous</li>
+                                {% endif %}
+                                <a class="page-links" href="?page=1&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item">1</li>
+                                </a>
+                                <li class="paginate_button disabled page-item">...</li>
+                                {% for i in last %}
+                                    {% if i == issue_list.number %}
+                                        <a class="page-links" href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                            <li class="paginate_button page-item active">{{i}}</li>
+                                        </a>
+                                    {% else %}
+                                        <a class="page-links" href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                            <li class="paginate_button page-item">{{i}}</li>
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if issue_list.number == issue_list.paginator.num_pages %}
+                                    <a class="page-links" href="?page={{ issue_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item active">{{ issue_list.paginator.num_pages }}</li>
+                                    </a>
+                                {% else %}
+                                    <a class="page-links" href="?page={{ issue_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item">{{ issue_list.paginator.num_pages }}</li>
+                                    </a>
+                                {% endif %}
+                                {% if issue_list.has_next %}
+                                    <a class="page-links" href="?page={{ issue_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item next">Next</li>
+                                    </a>
+                                {% else %}
+                                    <li class="paginate_button disabled page-item next">Next</li>
+                                {% endif %}
+                            {% else %}
+                                {% if issue_list.has_previous %}
+                                    <a class="page-links" href="?page={{ issue_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item previous">Previous</li>
+                                    </a>
+                                {% else %}
+                                    <li class="paginate_button disabled page-item previous">Previous</li>
+                                {% endif %}
+                                {% if issue_list.number > 2 %}
+                                    <a class="page-links" href="?page=1&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item">1</li>
+                                    </a>
+                                    {% if issue_list.number > 3 %}
+                                        <li class="paginate_button disabled page-item">...</li>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% for num in issue_list.paginator.page_range %}
+                                    {% if issue_list.number == num %}
+                                        <a class="page-links" href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
+                                            <li class="paginate_button page-item active">{{ num }}</li>
+                                        </a>
+                                    {% elif num > issue_list.number|add:'-2' and num < issue_list.number|add:'2' %} 
+                                    <a class="page-links" href="?page={{ num }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item">{{ num }}</li>
+                                    </a>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if issue_list.number < issue_list.paginator.num_pages|add:'-2' %} 
+                                    <li class="paginate_button disabled page-item">...</li>
+                                    <a class="page-links" href="?page={{ issue_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item">{{ issue_list.paginator.num_pages }} </li>
+                                    </a>
+                                {% elif issue_list.number < issue_list.paginator.num_pages|add:'-1' %} 
+                                    <a class="page-links" href="?page={{ issue_list.paginator.num_pages }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item">{{ issue_list.paginator.num_pages }} </li>
+                                    </a>
+                                {% endif %}
+                                {% if issue_list.has_next %}
+                                    <a class="page-links" href="?page={{ issue_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                                        <li class="paginate_button page-item next">Next</li>
+                                    </a>
+                                {% else %}
+                                    <li class="paginate_button page-item disabled next">Next</li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        {% if issue_list.has_previous %}
+                            <a class="page-links" href="?page={{ issue_list.previous_page_number }}&search={{search}}&p={{paginate_by}}">
+                                <li class="paginate_button page-item previous">Previous</li>
+                            </a>
+                        {% else %}
+                            <li class="paginate_button disabled page-item previous">Previous</li>
+                        {% endif %}
+                        {% for i in issue_list.paginator.page_range %}
+                            {% if i == issue_list.number %}
+                                <a class="page-links" href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item active">{{i}}</li>
+                                </a>
+                            {% else %}
+                                <a class="page-links" href="?page={{i}}&search={{search}}&p={{paginate_by}}">
+                                    <li class="paginate_button page-item">{{i}}</li>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        {% if issue_list.has_next %}
+                            <a class="page-links" href="?page={{ issue_list.next_page_number }}&search={{search}}&p={{paginate_by}}">
+                                <li class="paginate_button page-item next">Next</li>
+                            </a>
+                        {% else %}
+                            <li class="paginate_button disabled page-item next">Next</li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <style>
+                    a {
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        cursor: default;
+                        text-decoration: none;
+                    }
+
+                    .paginate_button {
+                        cursor: pointer;
+                        position: relative;
+                        display: block;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        color: var(--main-color);
+                        text-decoration: none;
+                        background-color: white;
+                        border: 1px solid #dee2e6;
+                        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+                    }
+
+                    .active>.paginate_button,
+                    .paginate_button.active {
+                        z-index: 3;
+                        color: white !important;
+                        background-color: var(--main-color);
+                        border-color: #dee2e6;
+                    }
+
+                    .previous {
+                        border-top-left-radius: .375rem;
+                        border-bottom-left-radius: .375rem;
+                    }
+
+                    .next {
+                        border-top-right-radius: .375rem;
+                        border-bottom-right-radius: .375rem;
+                    }
+
+                    .disabled {
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        cursor: default;
+                        color: #6c757d;
+                    }
+
+                </style>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 {% endblock issues %}

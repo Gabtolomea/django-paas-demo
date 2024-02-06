@@ -62,6 +62,8 @@ Input Reading
 					<th scope="col" style="min-width:120px">Name</th>
 					<th scope="col" style="min-width:100px">Meter Number</th>
 					<th scope="col" style="min-width:100px">Address</th>
+					
+					{% if user.is_supervisor %}
 					<th scope="col" style="min-width:100px;">
 						{% if consumer.stopmeterflag %}
 						Enable
@@ -69,6 +71,7 @@ Input Reading
 						Stop
 						{% endif %}Meter
 					</th>
+					{% endif %}
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
@@ -77,10 +80,11 @@ Input Reading
 					<td>{{consumer.firstname}} {{consumer.middlename}} {{consumer.lastname}}</td>
 					<td style="text-align:center;">{{consumer.meternumber}}</td>
 					<td>{{consumer.homeaddress}}</td>
+					{% if user.is_supervisor %}
 					<td>
 						<form action="{% if consumer.stopmeterflag %}{% else %}{% url 'stopmeter' consumer.consumer_id %}{% endif %}" method="post">
 							{% csrf_token %}
-							{% if consumer.stopmeterflag %}
+							{% if consumer.stopmeterflag%}
 							<button class="btn btn-success btn-sm rounded-3"  type="button"  class="btn button2" data-bs-toggle="modal" data-bs-target="#myModal" title="Enable">
 								<i class="fa fa-play"></i> ENABLE
 							</button>
@@ -92,6 +96,7 @@ Input Reading
 							{% endif %}
 						</form>
 					</td>
+					{% endif %}
 				</tr>
 			</tbody>
 		</table>
@@ -101,6 +106,33 @@ Input Reading
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
+<div class="modal fade" id="rollback">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<form action="{% url 'add_issue' id=consumer.consumer_id year=cur_year%}" method="post">
+				{% csrf_token %}
+				<input id="rollback-reading" type="hidden">
+				<input id="rollback-prev" type="hidden">
+				<div class="modal-header">
+					<h4 class="modal-title">Reading Rollback Detected!</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<span style="font-weight: bold;">Are you sure you want to proceed with this reading?</span><br><br>
+							If you choose to proceed, the transaction may encounter issues, and you will not be able to input the meter reading. 
+						You may need to consult the Supervisor.<br><br>
+						If you decide to cancel, you will still be able to input the correct meter reading.
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-secondary close">Cancel</button>
+					<button type="submit" class="btn btn-danger">Proceed</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -127,16 +159,25 @@ Input Reading
 							<option value="{{t.monthval}}">{{t.month}}</option>
 							{% endfor %}
 						</select>
+						<label for="year_id" class="form-label">Year</label>
+						<select name="year" disabled id="year_id" class="form-select input-group">
+							<option value=""></option>
+							{% for y in years %}
+							<option value="{{y}}">{{y}}</option>
+							{% endfor %}
+						</select>
 					</div>
 				</div>
 				<script>
 					meternum = document.getElementById('meternum')
 					initialreading = document.getElementById('initialreading')
 					month = document.getElementById('month_id')
+					year = document.getElementById('year_id')
 					document.getElementById('flexSwitchCheckDefault').onchange = function() {
 						meternum.disabled = !this.checked;
 						initialreading.disabled = !this.checked;
 						month.disabled = !this.checked;
+						year.disabled = !this.checked;
 					};
 				</script>
 				<div class="modal-footer">
@@ -228,7 +269,7 @@ Input Reading
 									name = "reading-{{t.month}}" 
 									id = "{{t.transid}}" 
 									onfocus = "this.select()"
-									oninput="change_url(this)"
+									oninput="check_rollback(this)"
 									disabled 
 									type = "number"
 									data-prev = {{t.prev}}
@@ -257,21 +298,32 @@ Input Reading
 						{% endif %}
 						</td>
 					</tr>
-					
 				{% endfor %}
 			</tbody>
 			<script>
-				function change_url(input) {
+				function check_rollback(input) {
+					rollback_reading = document.getElementById("rollback-reading")
+					rollback_prev = document.getElementById("rollback-prev")
 					id = input.id
-					form = document.getElementById('form-'+id)
+					submit = document.getElementById("submit-" + id)
 					prev = parseInt(input.getAttribute('data-prev'))
 					if (input.value<prev){
-						form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
+						rollback_reading.value = input.value
+						rollback_prev.value = prev
+						rollback_reading.setAttribute("name", input.name)
+						rollback_prev.setAttribute("name", "prev"+input.name.split('-')[1] )
+						submit.removeAttribute("onclick")
+						submit.setAttribute("data-bs-toggle", "modal")
+						submit.setAttribute("data-bs-target", "#rollback")
 						input.classList.remove('border-0')
 						input.classList.add('is-invalid')
 					}
 					else{
-						form.action = "{% url 'inputreading' id=consumer.consumer_id year=cur_year %}"
+						rollback_reading.removeAttribute("name")
+						rollback_prev.removeAttribute("name")
+						submit.setAttribute("onclick", "submit_this('" + id + "'," + prev + ")")
+						submit.removeAttribute("data-bs-toggle")
+						submit.removeAttribute("data-bs-target")
 						input.classList.remove("is-invalid")
 						input.classList.add('border-0')
 					}
@@ -318,9 +370,6 @@ Input Reading
 						if (has_del){
 							del = document.getElementById("delete-" + id)
 							del.style.display = "none"
-						}
-						if (input.value < prev){
-							form.action = "{% url 'add_issue' id=consumer.consumer_id year=cur_year%}"
 						}
 						submit.style.display = "inline"
 						edit.innerHTML = "CANCEL"

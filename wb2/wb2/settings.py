@@ -26,7 +26,12 @@ SECRET_KEY = 'django-insecure-v1#y52o##fi-heo-bh8@!*g)olfw9c75viwsxga81lvxho1fm(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['waterbilling.test', '127.0.0.1', '192.168.1.109', '172.28.52.89','192.168.254.129','172.28.52.214']
+
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '192.168.254.109',
+]
+
 
 SCHEDULER_AUTOSTART = True
 

@@ -229,6 +229,7 @@ class AdditionalFees(models.Model):
     fee_name = models.CharField(max_length=100)
     amount = models.FloatField()
     months = models.IntegerField()
+    month_counter = models.IntegerField(default=1)
     remainder = models.IntegerField()
-    current_tran = models.IntegerField(null=True)
+    transactions = models.ManyToManyField(Transactions)
     date_added = models.DateField(auto_now_add=True)
