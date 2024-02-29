@@ -21,6 +21,7 @@
         line-height: 16px;
         font-family: monospace;
         color: #000;
+        height: 690px;
     }
 
     .invoice-box table {
@@ -157,14 +158,51 @@
         cursor: pointer;
     }
 
+    .underThick {
+        text-decoration: none;
+        border-bottom: 2px solid #000;
+    }
+
     .highlight {
         --bs-table-accent-bg: var(--bs-table-hover-bg);
         color: var(--bs-table-hover-color);
     }
+
+    .row {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 0;
+        margin-top: calc(var(--bs-gutter-y) * -1);
+        margin-right: calc(var(--bs-gutter-x) * -.5);
+        margin-left: calc(var(--bs-gutter-x) * -.5);
+    }
+
+    .custom-color {
+        background-color: #aca9a9b7;
+        /* Replace with your desired color code */
+        color: #000000;
+    }
+
+    .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding-top: 12px;
+        font-size: 13px;
+        color: rgb(255, 0, 0);
+        display: flex;
+        justify-content: center;
+    }
+
+    .border-custom {
+        border-color: #000000bd !important;
+    }
 </style>
 
 <!-- Water Billing Layout -->
-<div class="billing" style="display: none;">
+<!-- for content to hide in the ledger -->
+<div  style="display: none;" class="billing">
     <div id="invoice">
         <div class="invoice-box">
             <table cellpadding="0" cellspacing="0">
@@ -179,7 +217,12 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align:center;">
-                                        <p class="mun"> Ginatilan Water</p>
+                                        <p class="mun">Water Bill</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; color: #423e3e; padding-top: 0%; !important">
+                                        <h6><i>Municipality of Ginatilan</i></h6>
                                     </td>
                                 </tr>
                             </table>
@@ -190,73 +233,53 @@
                             <table>
                                 <tr>
                                     <td style="line-height: 0px;">
-                                        <h4 class="st">Consumer Info</h4>
-                                        <h6 class="sk"><b>Name: </b>{{u.firstname}} {{u.middlename}} {{u.lastname}}
-                                        </h6><br>
-                                        <h6 class="sk"><b>Account ID: </b>{{u.consumer_id}}</h6><br>
-                                        <h6 class="sk"><b>Meter Number: </b>{{u.meternumber}}</h6><br>
-                                        <h6 class="sk"><b>Address: </b>{{u.installation_address}}</h6><br>
-                                        <h6 class="sk"><b>Connection Type: </b>{{u.contypeid.contype}}</h6><br>
-                                        <h6 class="sk"><b>Contact Info: </b>{{u.mobilenum}}</h6><br>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="d-flex flex-row-reverse">
+                                                    <div class="col-md-3">
+                                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
+                                                        <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
+                                                    </div>
+                                                    <div class="col-md-9 mt-md-0 mt-3">
+                                                        <h6><b>Name:</b> <u class="underThick">{{u.firstname}}
+                                                                {{u.middlename}} {{u.lastname}}</u></h6>
+                                                        <h6><b>Account ID:</b><u class="underThick">{{u.consumer_id}}</u></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
-
-                    <tr class="heading">
-                        <td>
-                            BILL INFO
-                        </td>
-
-                        <td>
-
-                        </td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>
-                            <strong>Current Reading</strong>
-                        </td>
-
-                        <td>
-                            <b>{{cur}}</b>
-                        </td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>
-                            <strong>Previous Reading</strong>
-                        </td>
-
-                        <td>
-                            <b>{{pre}}</b>
-                        </td>
-                    </tr>
-
-                    <tr class="item last">
-                        <td>
-                            <strong>Usage</strong>
-                        </td>
-
-                        <td>
-                            <b>{{usage}}</b>
-                        </td>
-                    </tr>
-
-                    <tr class="total">
-                        <td>
-                            <strong>Penalty: <b>{{pen}}</b></strong><br>
-                            <strong>Previous Due: <b>{{prev_due}}</b></strong><br>
-                            <strong>Total Balance: <b>&#8369;{{bal}}</b></strong><br>
-                            <strong>Total Bill: <b>&#8369;{{bill}}</b></strong>
-                        </td>
-                    </tr>
                 </tbody>
+
+                <table class="table table-bordered border-custom">
+                    <thead class="custom-color">
+                        <tr>
+                            <th>No.</th>
+                            <th>Unpaid Month</th>
+                            <th>Usage per Cubic</th>
+                            <th>Charges</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for up in up %}
+                        <tr>
+                            <td class="text-center">{{forloop.counter}}</td>
+                            <td class="text-center">{{up.month}} - {{up.year}}</td>
+                            <td>{{up.usage}}</td>
+                            <td>{{up.amount}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="d-flex flex-row-reverse" style="padding-right: 5px;">
+                    <h6><b>Total:</b> <u class="underThick">PHP   {{tu}}</u></h6>
+                </div>
             </table>
-            <footer style="text-align:center;margin-top: 13px;font-size: 19px;">Bill for the month of <span
-                    style="font-weight: bold;">{{prevmonth}}</span></footer>
-            <footer style="text-align:center;margin-top: 12px;font-size: 13px;">Bill Issued: {{date_today}}</footer>
+            <footer class="footer">Date Issued: {{date_today}}</footer>
         </div>
     </div>
 </div>
@@ -275,6 +298,15 @@
             jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
         };
         html2pdf().from(invoice).set(opt).save();
-    }
+    }       
+
+    var amountElement = document.getElementById("amountFromBackend");
+    var amountValue = parseFloat(amountElement.innerHTML);
+
+    // Format the number with at least 2 decimal places using JavaScript
+    var formattedAmount = amountValue.toFixed(4);
+
+    // Update the HTML with the formatted value
+    amountElement.innerHTML = formattedAmount;
 
 </script>

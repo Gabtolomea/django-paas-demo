@@ -102,7 +102,7 @@ def signin(request):
 
 @login_required(login_url='login')
 def bills_list(request):
-    
+    # unexcempt_account('1454')
     # balance()
     # get_consumers_yearly()
     # billing_errors_to_csv()
@@ -243,6 +243,7 @@ def user_creation(request):
 
 @login_required(login_url='login')
 def ledger(request, id):
+
     
     disp = request.GET.get('show','')
     template = ""
@@ -255,6 +256,7 @@ def ledger(request, id):
             return template
 
     table = []
+    unpaid = []
     year = datetime.today().year
     usage = 0
     transid = 0
@@ -263,6 +265,7 @@ def ledger(request, id):
     cur = 0
     pen = 0
     bill = 0
+    total_unpaid_amount = 0
     monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
     # get_balance(id)
     class ledgerclass():
@@ -384,8 +387,24 @@ def ledger(request, id):
             new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid)
             table.append(new_row)
 
+        if tran.transType == 'Billing' and not tran.is_billpaid:
+                unpaid_month = monthnames[tran.month-1]
+                unpaid_year = tran.year
+                unpaid_amount = tran.bill
+                usage = tran.usage
+                unpaid_bill_info = {
+                    'month': unpaid_month,
+                    'year': unpaid_year,
+                    'amount': unpaid_amount,
+                    'usage' : usage
+                    }
+                unpaid.append(unpaid_bill_info)
+        total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
+
+
     ispaid = False
     is_issues = get_is_seen_issues(request)
+
 
     context = {
         'disp':disp,
@@ -405,8 +424,9 @@ def ledger(request, id):
         'user': request.user,
         'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
         'ispaid':ispaid,
-        'is_issues' : is_issues
-        
+        'is_issues' : is_issues,
+        'up' : unpaid,        
+        'tu' : total_unpaid_amount
     }
     return render(request, 'ledger.html', context)
 
@@ -567,7 +587,10 @@ def meterreading(request):
 def deletereading(request, id):
     reading = Transactions.objects.get(transactionid = id)
     consumer = ConsumerInfo.objects.get(consumer_id=reading.acctID_id)
-    latest_reset = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter').order_by('-year', '-month')[0]
+    try:
+        latest_reset = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter').order_by('-year', '-month')[0]
+    except IndexError:
+        latest_reset = None
     con = reading.acctID
     con.current_bal -= reading.bill
     if con.current_bal < 0:
@@ -579,11 +602,11 @@ def deletereading(request, id):
         payment.delete()
     except ObjectDoesNotExist:
         pass
-    if latest_reset.month == reading.month and latest_reset.year == reading.year:
-        con.current_reading = latest_reset.meterReading
-    else:
-        latesttrans = Transactions.objects.filter(acctID=con.consumer_id, transType = "Billing").order_by('-year', '-month')[0]
-        con.current_reading = latesttrans.meterReading
+    latesttrans = Transactions.objects.filter(acctID=con.consumer_id, transType = "Billing").order_by('-year', '-month')[0]
+    con.current_reading = latesttrans.meterReading
+    if latest_reset is not None:
+        if latest_reset.month == reading.month and latest_reset.year == reading.year:
+            con.current_reading = latest_reset.meterReading
     con.save()
     reading.delete()
     return redirect('inputreading', con.consumer_id, date.today().year)
@@ -622,7 +645,10 @@ def inputreading(request, id, year):
     # print([i.transType for i in alltrans])
     trans = alltrans.filter(year=year)
     brec = BarangayRecord.objects.all().order_by('-year')
-    latest_reset = alltrans.filter(transType='Reset Meter').order_by('-year', '-month')[0]
+    try:
+        latest_reset = alltrans.filter(transType='Reset Meter').order_by('-year', '-month')[0]
+    except IndexError:
+        latest_reset = None
     for i in brec:
         if i.year not in years:
             years.append(i.year)
@@ -655,19 +681,19 @@ def inputreading(request, id, year):
                         break
                 m = meterreaderclass(bill.transactionid, calendar.month_name[i], i, usage, lastreading, cur_reading, next_reading, style, False)
             except ObjectDoesNotExist:
-                if latest_reset.month == i and latest_reset.year == year:
-                    lastreading = latest_reset.meterReading
-                else:
-                    for y in years_backward:
-                        for x in range(i, 0, -1):
-                            try:
-                                prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
-                                lastreading = prev_bill.meterReading
-                                break
-                            except ObjectDoesNotExist:
-                                pass
-                        if lastreading:
+                for y in years_backward:
+                    for x in range(i, 0, -1):
+                        try:
+                            prev_bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=y, month=x)
+                            lastreading = prev_bill.meterReading
                             break
+                        except ObjectDoesNotExist:
+                            pass
+                    if lastreading:
+                        break
+                if latest_reset is not None:
+                    if latest_reset.month == i and latest_reset.year == year:
+                        lastreading = latest_reset.meterReading
                 lastid+=1
                 transid = lastid
                 month = calendar.month_name[i]
@@ -733,12 +759,14 @@ def inputreading(request, id, year):
                 tran.meterReading = r
                 tran.bill = 0
                 tran.processedBy = request.user
+                tran.date = datetime.today()
                 tran.save()
                 
             except:
                 usage = r - consumer.current_reading
                 tran = Transactions()
                 tran.transType = 'Billing'
+                tran.date = datetime.today()
                 tran.meterReading = r
                 tran.usage = usage
                 tran.bill = 0
@@ -1215,6 +1243,7 @@ def enablemeter(request, id):
             consumer.meternumber = meternum
             initialreading = int(request.POST.get('initialreading'))
             month = int(request.POST.get('month'))
+            year = int(request.POST.get('year'))
             tran = Transactions()
             tran.transactionid = lasttranid + 1
             tran.date = date.today()
@@ -1225,10 +1254,7 @@ def enablemeter(request, id):
             tran.usage = 0
             tran.bill = 0
             tran.month = month
-            if tran.month == 12:
-                tran.year = date.today().year-1
-            else:
-                tran.year = date.today().year
+            tran.year = year
             tran.processedBy = str(request.user)
             tran.or_number = "N/A"
             tran.save()
@@ -2630,7 +2656,6 @@ def userprof(request):
     return render(request, 'userprof.html', context)
 
 def monthly_summary (request, id, year):
-    
     table = []
     years = []
     class montly_sum():
@@ -2646,18 +2671,7 @@ def monthly_summary (request, id, year):
 
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', is_issue=False)
-    billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year, is_issue=False).order_by('month')
-    payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, is_issue=False).order_by('month')
     
-    lastid = Transactions.objects.latest('transactionid').transactionid
-    pcount = len(payment)
-    count = len(billing)
-    j = 0
-    try:
-        if billing[0].date.month == 1:
-            j = 1
-    except IndexError:
-        j=0
 
     for i in alltran:
         if i.year not in years:
@@ -2665,31 +2679,36 @@ def monthly_summary (request, id, year):
     if datetime.today().year not in years:
         years.append(datetime.today().year)
 
-    # --------------------------#
-
-    j = 0
-    c = 0
     for i in range(1, 13):
-        lastid+=1
-        payid = lastid
         month = calendar.month_name[i]
-        usage = 0
-        reading = 0
-        total_bill = 0
-        reading_date = ''
-        total_amount_paid = 0
-        if c < pcount and pcount != 0:
-            if i == payment[c].month:
-                total_amount_paid = payment[c].payment
-                payid = payment[c].transactionid
-                c += 1
-        if j < count and count != 0:
-            if i == billing[j].month:
-                usage = billing[j].usage
-                reading = billing[j].meterReading
-                reading_date = billing[j].date
-                total_bill = billing[j].bill
-                j += 1
+        try:
+            bill = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=i, is_issue=False)
+        except ObjectDoesNotExist:
+            a = montly_sum(month, i, 0, '', 0, 0, 0, 0)
+            table.append(a)
+            continue
+        usage = bill.usage
+        reading = bill.meterReading
+        reading_date = bill.date
+        total_bill = bill.bill
+        if bill.is_billpaid:
+            payments = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
+            payment = payments[0]
+            try:
+                add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
+                for p in payments:
+                    if p.payment == add_fee.bill:
+                        payment = p
+                        break
+            except ObjectDoesNotExist:
+                pass
+            payid = payment.transactionid
+            total_amount_paid = payment.payment
+        else:
+            total_amount_paid = 0
+            payid = 0
+
+
         a = montly_sum(month, i, reading, reading_date, usage, total_bill, total_amount_paid, payid)
         table.append(a)
     
@@ -2701,9 +2720,6 @@ def monthly_summary (request, id, year):
         'year' : year,
         'years': years,
         'is_issues' : is_issues
-        
-        
-
     }
     return render(request,'conmon_summary.html', context)
 

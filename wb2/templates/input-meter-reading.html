@@ -159,16 +159,25 @@ Input Reading
 							<option value="{{t.monthval}}">{{t.month}}</option>
 							{% endfor %}
 						</select>
+						<label for="year_id" class="form-label">Year</label>
+						<select name="year" disabled id="year_id" class="form-select input-group">
+							<option value=""></option>
+							{% for y in years %}
+							<option value="{{y}}">{{y}}</option>
+							{% endfor %}
+						</select>
 					</div>
 				</div>
 				<script>
 					meternum = document.getElementById('meternum')
 					initialreading = document.getElementById('initialreading')
 					month = document.getElementById('month_id')
+					year = document.getElementById('year_id')
 					document.getElementById('flexSwitchCheckDefault').onchange = function() {
 						meternum.disabled = !this.checked;
 						initialreading.disabled = !this.checked;
 						month.disabled = !this.checked;
+						year.disabled = !this.checked;
 					};
 				</script>
 				<div class="modal-footer">
