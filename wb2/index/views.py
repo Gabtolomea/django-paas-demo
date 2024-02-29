@@ -32,8 +32,6 @@ from django.http import JsonResponse
 addfee_isdone = False
 
 
-
-
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
