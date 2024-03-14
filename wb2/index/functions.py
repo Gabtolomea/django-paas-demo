@@ -897,6 +897,14 @@ def unexcempt_account(meternumber):
             else:
                 bill = ((usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
             consumer.current_bal += bill
+        
+        if t.date is None:
+            t.date = datetime.today()    
+        if t.prevReading is None:
+            if t.usage is None:
+                t.usage = 0
+            t.prevReading = t.meterReading - t.usage
+        
         t.bill = bill
         brec.__dict__[f"total_due_{months[t.month - 1]}"] += bill
         brec.save()
@@ -920,3 +928,21 @@ def unexcempt_accounts():
     for i in list:
         unexcempt_account(i)
         
+
+def set_date_all_transactions():
+    transactions = Transactions.objects.filter(date__isnull=True, transType='Billing')
+    for t in transactions:
+        t.date = datetime.today()
+        t.save()
+
+
+def set_prev_reading_all():
+    transactions = Transactions.objects.filter(prevReading__isnull=True, transType='Billing')
+    for t in transactions:
+        try:
+            if t.usage is None:
+                t.usage = 0
+            t.prevReading = t.meterReading - t.usage
+            t.save()
+        except IndexError:
+            pass

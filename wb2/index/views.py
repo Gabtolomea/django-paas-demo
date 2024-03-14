@@ -106,6 +106,8 @@ def bills_list(request):
     # billing_errors_to_csv()
     # fix_billing_errors()
     # adjust_excess_only()
+    # set_date_all_transactions()
+    # set_prev_reading_all()
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -783,8 +785,11 @@ def inputreading(request, id, year):
                 interest = xy/100
             
             # transaction exists
+                
             try:
+                print(year)
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
+                print(billtran)
                 lastreading = billtran.prevReading
 
                 # finding next billing
