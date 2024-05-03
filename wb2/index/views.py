@@ -2668,13 +2668,16 @@ def monthly_summary (request, id, year):
     table = []
     years = []
     class montly_sum():
-        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, total_amount_paid, payid):
+        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, payid):
             self.month = month
             self.monthval = monthval
             self.reading = reading
             self.reading_date = reading_date
             self.usage = usage
             self.total_bill = total_bill
+            self.prev_bal = prev_bal
+            self.additional_fees = additional_fees
+            self.total_due = total_due
             self.total_amount_paid = total_amount_paid
             self.payid = payid
 
@@ -2693,13 +2696,20 @@ def monthly_summary (request, id, year):
         try:
             bill = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=i, is_issue=False)
         except ObjectDoesNotExist:
-            a = montly_sum(month, i, 0, '', 0, 0, 0, 0)
+            a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0)
             table.append(a)
             continue
         usage = bill.usage
         reading = bill.meterReading
         reading_date = bill.date
         total_bill = bill.bill
+        prev_bal = 0
+        try:
+            add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
+            additional_fees = add_fee.bill
+        except ObjectDoesNotExist:
+            additional_fees = 0
+        total_due = bill.bill + consumer.current_bal + additional_fees
         if bill.is_billpaid:
             payments = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
             payment = payments[0]
@@ -2718,7 +2728,7 @@ def monthly_summary (request, id, year):
             payid = 0
 
 
-        a = montly_sum(month, i, reading, reading_date, usage, total_bill, total_amount_paid, payid)
+        a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
         table.append(a)
     
     is_issues = get_is_seen_issues(request)

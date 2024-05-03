@@ -261,18 +261,24 @@ Monthly Summary
                             <th style="min-width: 100px;">Month</th>
                             <th style="min-width: 100px;">Reading</th>
                             <th style="min-width: 100px;">Usage</th>
-                            <th style="min-width: 100px;">Bill</th>
+                            <th style="min-width: 100px;">Current Due</th>
+                            <th style="min-width: 100px;">Previous Balance</th>
+                            <th style="min-width: 100px;">Additional Fees</th>
+                            <th style="min-width: 100px;">Total Due</th>
                             <th style="min-width: 110px;">Amount Paid</th>
                         </tr>
                     </thead>
 
                     <tbody class="wb_tbody">
-                        {% for t in table %}
+                        {% for t in table reversed %}
                         <tr>
                             <td class="text-center">{{t.month}}</td>
                             <td class="text-center">{{t.reading}}</td>
                             <td class="text-center">{{t.usage}}</td>
                             <td class="text-center">{% if t.total_bill %} &#8369; {{t.total_bill}} {% endif %}</td>
+                            <td class="text-center">{{t.previous_balance}}</td>
+                            <td class="text-center">{{t.additional_fees}}</td>
+                            <td class="text-center">{{t.total_due}}</td>
                             <td class="text-center">
 
                                 {% if t.total_bill %} 
