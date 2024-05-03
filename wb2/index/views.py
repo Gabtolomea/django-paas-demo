@@ -29,8 +29,6 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.http import JsonResponse
 
 
-addfee_isdone = False
-
 
 def porter(request):
     porter_in()
@@ -52,7 +50,14 @@ def porter(request):
 
 @unauthenticated_user
 def lp(request):
-    global addfee_isdone
+    sys_info = SystemInfo.objects.all()
+    if sys_info:
+        sys_info = sys_info[0]
+    else:
+        sys_info = SystemInfo()
+        sys_info.save()
+
+    
     # !!!please ask previous developers before attempting to uncomment!!!
     # portfromcsv()
     sxz()
@@ -62,10 +67,12 @@ def lp(request):
     camelize()
     set_first_tran()
     # set_months_unpaid()
-    if datetime.now().day == 1 and not addfee_isdone:
+    if datetime.now().month != sys_info.current_month:
         set_currentreadings()
         add_additionalFees()
-        addfee_isdone = True
+        sys_info.current_month = datetime.now().month
+        sys_info.current_year = datetime.now().year
+        sys_info.save()
     #     set_overdue_months()
     #     remove_duplicate_od_months()
     # capitalize()
@@ -100,6 +107,8 @@ def signin(request):
 
 @login_required(login_url='login')
 def bills_list(request):
+    # add_additionalFees()
+    # del_addfees()
     # unexcempt_account('1454')
     # balance()
     # get_consumers_yearly()
@@ -243,8 +252,6 @@ def user_creation(request):
 
 @login_required(login_url='login')
 def ledger(request, id):
-
-    
     disp = request.GET.get('show','')
     template = ""
     LoginSession = request.user
@@ -292,7 +299,6 @@ def ledger(request, id):
             return self.transtype
     try:
         u = ConsumerInfo.objects.get(pk=id)
-        
     except ObjectDoesNotExist:
         pass
     if disp == '':

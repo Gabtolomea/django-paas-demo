@@ -844,7 +844,9 @@ def add_additionalFees():
                         afbill.bill = addfee.amount
                         
                         afbill.save()
+                        print(f'{afbill.year} {afbill.month} {afbill.bill}')
                         addfee.transactions.add(afbill)
+                        addfee.month_counter += 1
                         addfee.save()
 
                         c.current_bal += addfee.amount
@@ -869,10 +871,8 @@ def add_additionalFees():
                             addfee.save()
                             c.current_bal += addfee.remainder
                             c.save()
-                        else:
-                            addfee.delete()
-                    addfee.month_counter += 1
-                    addfee.save()
+                        # else:
+                        #     addfee.delete()
 
 
 
