@@ -78,9 +78,13 @@ def years(id):
         years.append(datetime.today().year)
     return years
 def last_reading(id, year, mo):
-    latest_reset = Transactions.objects.filter(acctID=id, transType='Reset Meter').order_by('-year', '-month')[0]
-    if latest_reset.year == year and latest_reset.month == mo:
-        return latest_reset.meterReading
+    try:
+        latest_reset = Transactions.objects.filter(acctID=id, transType='Reset Meter').order_by('-year', '-month')[0]
+        if latest_reset.year == year and latest_reset.month == mo:
+            return latest_reset.meterReading
+    except IndexError:
+        pass
+    
     allyears = years(id)
     allyears.sort(reverse=True)
     fyears = [item for item in allyears if item <= year]
@@ -840,7 +844,9 @@ def add_additionalFees():
                         afbill.bill = addfee.amount
                         
                         afbill.save()
+                        print(f'{afbill.year} {afbill.month} {afbill.bill}')
                         addfee.transactions.add(afbill)
+                        addfee.month_counter += 1
                         addfee.save()
 
                         c.current_bal += addfee.amount
@@ -865,7 +871,78 @@ def add_additionalFees():
                             addfee.save()
                             c.current_bal += addfee.remainder
                             c.save()
-                        else:
-                            addfee.delete()
-                    addfee.month_counter += 1
-                    addfee.save()
+                        # else:
+                        #     addfee.delete()
+
+
+
+def unexcempt_account(meternumber):
+    consumer = ConsumerInfo.objects.get(meternumber=meternumber)
+    consumer.excep_accnt = False
+
+    rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
+
+    transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, transType='Billing').order_by('year', 'month')
+
+    for t in transactions:
+        brec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{t.year}")
+        bill = 0
+        try:
+            payment = Transactions.objects.get(acctID_id=consumer.consumer_id, transType='Payment', year=t.year, month=t.month)
+            bill = payment.payment
+        except ObjectDoesNotExist:
+            usage = t.usage
+            if usage <= rate.minReading:
+                bill = rate.minReadingCharge
+            else:
+                bill = ((usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+            consumer.current_bal += bill
+        
+        if t.date is None:
+            t.date = datetime.today()    
+        if t.prevReading is None:
+            if t.usage is None:
+                t.usage = 0
+            t.prevReading = t.meterReading - t.usage
+        
+        t.bill = bill
+        brec.__dict__[f"total_due_{months[t.month - 1]}"] += bill
+        brec.save()
+        t.save()
+        print(f'{t.year} {t.month} {t.usage} === new bill == {bill}')
+
+    consumer.save()
+
+
+def unexcempt_accounts():
+    list = [
+        '1062',
+        '1263',
+        '1278',
+        # '1458',
+        '1515',
+        '1767',
+        '0382'
+    ]
+
+    for i in list:
+        unexcempt_account(i)
+        
+
+def set_date_all_transactions():
+    transactions = Transactions.objects.filter(date__isnull=True, transType='Billing')
+    for t in transactions:
+        t.date = datetime.today()
+        t.save()
+
+
+def set_prev_reading_all():
+    transactions = Transactions.objects.filter(prevReading__isnull=True, transType='Billing')
+    for t in transactions:
+        try:
+            if t.usage is None:
+                t.usage = 0
+            t.prevReading = t.meterReading - t.usage
+            t.save()
+        except IndexError:
+            pass

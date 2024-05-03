@@ -233,3 +233,8 @@ class AdditionalFees(models.Model):
     remainder = models.IntegerField()
     transactions = models.ManyToManyField(Transactions)
     date_added = models.DateField(auto_now_add=True)
+
+class SystemInfo(models.Model):
+    current_year = models.IntegerField(default=datetime.now().year)
+    current_month = models.IntegerField(default=datetime.now().month)
+    authors = models.CharField(max_length=100, default='Ryla, Charlie, Jazfer')
