@@ -12,16 +12,16 @@
     }
 
     .invoice-box {
-        max-width: 1044px;
+        max-width: 400px;
         margin: auto;
         padding: 0;
         border: 1px solid #000;
         box-shadow: 0 0 10px rgb(0 0 0 / 15%);
-        font-size: 17px;
-        line-height: 16px;
+        font-size: 15px;
+        line-height: 12px;
         font-family: monospace;
         color: #000;
-        height: 690px;
+        height: 1100px;
     }
 
     .invoice-box table {
@@ -211,18 +211,13 @@
                         <td colspan="2">
                             <table>
                                 <tr>
-                                    <td style="padding-bottom: 0px; padding-left: 44%;">
-                                        <img id="logo" src="{% static 'images/lgulogo.png' %}" alt="LOGO" />
-                                    </td>
-                                </tr>
-                                <tr>
                                     <td style="text-align:center;">
                                         <p class="mun">Water Bill</p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center; color: #423e3e; padding-top: 0%; !important">
-                                        <h6><i>Municipality of Ginatilan</i></h6>
+                                        <h7><i>Municipality of Ginatilan</i></h7>
                                     </td>
                                 </tr>
                             </table>
@@ -237,13 +232,14 @@
                                             <div class="row">
                                                 <div class="d-flex flex-row-reverse">
                                                     <div class="col-md-3">
-                                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
                                                         <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
+                                                        <h6><b>Balance:</b> <u class="underThick">PHP {{tu}}</u></h6>
                                                     </div>
                                                     <div class="col-md-9 mt-md-0 mt-3">
                                                         <h6><b>Name:</b> <u class="underThick">{{u.firstname}}
                                                                 {{u.middlename}} {{u.lastname}}</u></h6>
-                                                        <h6><b>Account ID:</b><u class="underThick">{{u.consumer_id}}</u></h6>
+                                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -295,7 +291,7 @@
             filename: '{{u.firstname}} {{u.middlename}} {{u.lastname}}_bill.pdf',
             image: { type: 'png', quality: 0.98 },
             html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait' }
         };
         html2pdf().from(invoice).set(opt).save();
     }       
