@@ -288,85 +288,90 @@ Account Ledger
     });
 
 	function getpdf() {
-		var doc = new jsPDF('landscape', 'pt', 'legal');
+			var doc = new jsPDF('landscape', 'pt', 'legal');
 
-		margins = {
-			top: 150,
-			bottom: 60,
-			left: 40,
-			right: 40,
-			width: 600
-		};
+			margins = {
+				top: 150,
+				bottom: 60,
+				left: 40,
+				right: 40,
+				width: 600
+			};
 
-		const numberformat = new Intl.NumberFormat('en-US', {
-			style: 'currency',
-			currency: 'PHP',
-			currencyDisplay: 'code'
+			const numberformat = new Intl.NumberFormat('en-US', {
+				style: 'currency',
+				currency: 'PHP',
+				currencyDisplay: 'code'
+			});
 
+			var y = 20;
+			var x = 40;
 
+			doc.setFont("Courier");
+			doc.setFontType("bold");
+			doc.setLineWidth(10);
+			doc.setFontSize(20);
+			doc.text(420, y = y + 20, "GINATILAN WATER ");
+
+			var y = 60;
+			var x = 40;
+			doc.setFont("Courier");
+			doc.setLineWidth(5);
+			doc.setFontSize(15);
+			doc.text(x, y = y + 10, "Account ID:");
+			doc.text(300, y, "{{u.consumer_id}}")
+			doc.text(x, y = y + 15, "Name:");
+			doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}")
+			doc.text(x, y = y + 15, "Meter Number:");
+			doc.text(300, y, "{{u.meternumber}}");
+			doc.text(x, y = y + 15, "Balance:");
+			doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
+
+			y = y + 70
+			doc.setFont("Courier");
+			doc.setFontType("bold");
+			doc.setLineWidth(10);
+			doc.setFontSize(20);
+			doc.setTextColor(0, 0, 0)
+			doc.text(420, y = y + 30, "ACCOUNT LEDGER");
+
+			var table = [{% for t in table reversed %}
+		['{{t.transid}}', '{{t.month | slice:":3"}}-{{t.year}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
+    ]
+
+		y = y + 5
+		doc.setLineWidth(2);
+		doc.setFontSize(11);
+		doc.autoTable({
+			head: [['Transaction ID', 'Month-Year', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Connectiong Type', 'Amount', 'Payment', 'Processed By', 'OR Number', 'Current Balance']],
+			pageBreak: 'auto',
+			body: table,
+			theme: 'striped',
+			startY: y = y + 30,
+			styles: { font: "Courier" },
+			didParseCell: function (data) {
+				if (data.row.index > 0 && data.cell.section === 'body') {
+					const row = table[data.row.index - 1];
+					const payment = parseFloat(row[6].replace(/[^\d.-]/g, ''));
+
+					if (payment == 0) {
+						data.cell.styles.fillColor = [135, 206, 235];
+					} else {
+						
+						data.cell.styles.fillColor = [255, 255, 255];
+					}
+				}
+			}
 		});
 
+		if (y > 600) {
+			doc.addPage()
+			y = 20
+		}
 
-		var y = 20;
-		var x = 40;
-
-		doc.setFont("Courier");
-		doc.setFontType("bold");
-		doc.setLineWidth(10);
-		doc.setFontSize(20);
-		doc.text(420, y = y + 20, "GINATILAN WATER ");
-
-
-		// var imgData = ("{% static 'images/govlog.png' %}");
-		var y = 60;
-		var x = 40;
-		doc.setFont("Courier");
-		doc.setLineWidth(5);
-		doc.setFontSize(15);
-		doc.text(x, y = y + 10, "Account ID:");
-		doc.text(300, y, "{{u.consumer_id}}")
-		doc.text(x, y = y + 15, "Name:");
-		doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}")
-		doc.text(x, y = y + 15, "Meter Number:");
-		doc.text(300, y, "{{u.meternumber}}");
-		doc.text(x, y = y + 15, "Balance:");
-		doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
-		// doc.addImage(imgData, 'PNG', 15, 40, 180, 160);
-
-
-		y = y + 70
-		doc.setFont("Courier");
-		doc.setFontType("bold");
-		doc.setLineWidth(10);
-		doc.setFontSize(20);
-		doc.setTextColor(0,0,0)
-		doc.text(420, y = y + 30, "ACCOUNT LEDGER");
-
-		var table = [{% for t in table reversed %}
-	['{{t.transid}}', '{{t.date}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
-		]
-	y = y + 5
-	doc.setLineWidth(2);
-	doc.setFontSize(11);
-	doc.autoTable({
-		head: [['Transaction ID', 'Date', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Connectiong Type', 'Amount', 'Payment', 'Processed By', 'OR Number', 'Current Balance']],
-		pageBreak: 'auto',
-		body: table,
-		theme: 'striped',
-		startY: y = y + 30,
-		styles: { font: "Courier" }
-
-	})
-
-	if (y > 600) {
-		doc.addPage()
-		y = 20
-	}
-
-
-	console.log("testing")
-	doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
-	}
+		console.log("testing")
+		doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+}
 </script>
 
 

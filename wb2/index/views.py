@@ -322,6 +322,8 @@ def ledger(request, id):
         cur = ''
         ispaid = ''
 
+        # print(tran.transType)
+
         if tran.transType == 'Billing':
             usage = tran.usage
             pre = tran.meterReading - usage
@@ -378,10 +380,15 @@ def ledger(request, id):
             if tran.is_billpaid:
                 ispaid = 'Paid'
             else:
-                addfee = AdditionalFees.objects.get(transactions=tran.transactionid)
-                ispaid = f'{currentaddfeecount}/{addfee.months}'
+                try:
+                    # print(tran.transactionid)
+                    addfee = AdditionalFees.objects.get(transactions=tran.transactionid)
+                    ispaid = f'{currentaddfeecount}/{addfee.months}'
+                except ObjectDoesNotExist:
+                    pass
             
             currentaddfeecount += 1
+
         date = tran.date
         payment = tran.payment
         transid = tran.transactionid
@@ -408,24 +415,23 @@ def ledger(request, id):
             unpaid.append(unpaid_bill_info)
         total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
 
-        if tran.transType == 'Billing' and not tran.is_billpaid:
-                unpaid_month = monthnames[tran.month-1]
-                unpaid_year = tran.year
-                unpaid_amount = tran.bill
-                usage = tran.usage
-                unpaid_bill_info = {
-                    'month': unpaid_month,
-                    'year': unpaid_year,
-                    'amount': unpaid_amount,
-                    'usage' : usage
-                    }
-                unpaid.append(unpaid_bill_info)
-        total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
+        #if tran.transType == 'Billing' and not tran.is_billpaid:
+        #        unpaid_month = monthnames[tran.month-1]
+        #        unpaid_year = tran.year
+        #        unpaid_amount = tran.bill
+        #        usage = tran.usage
+        #        unpaid_bill_info = {
+        #            'month': unpaid_month,
+        #            'year': unpaid_year,
+        #            'amount': unpaid_amount,
+        #            'usage' : usage
+        #            }
+        #        unpaid.append(unpaid_bill_info)
+        #total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
 
-
+    #gbaguia 08/16/2024
     ispaid = False
     is_issues = get_is_seen_issues(request)
-
 
     context = {
         'disp':disp,
@@ -1492,26 +1498,28 @@ def payment(request, id):
             consumer.excess += amount
             consumer.save()
             if consumer.excess > 0:
-                unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('year', 'month')
-                if unsettled:
-                    for i in unsettled:
-                        if consumer.excess>=i.bill:
-                            ex = consumer.excess - i.bill
-                            pt = Transactions()
-                            pt.acctID = consumer
-                            pt.transType = "Payment"
-                            pt.processedBy = request.user
-                            pt.date = datetime.today()
-                            pt.year = i.year
-                            pt.month = i.month
-                            pt.payment = i.bill
-                            amount -= i.bill
-                            pt.save()
-                            i.is_billpaid = True
-                            i.save()
-                            consumer.excess = ex
-                        else:
-                            break
+                #gbaguia 08/16/2024
+                #DO NOT USE this FACILITY when making monthly payments
+                #unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('year', 'month')
+                #if unsettled:
+                #    for i in unsettled:
+                #        if consumer.excess>=i.bill:
+                #            ex = consumer.excess - i.bill
+                #            pt = Transactions()
+                #            pt.acctID = consumer
+                #            pt.transType = "Payment"
+                #            pt.processedBy = request.user
+                #            pt.date = datetime.today()
+                #            pt.year = i.year
+                #            pt.month = i.month
+                #            pt.payment = i.bill
+                #            amount -= i.bill
+                #            pt.save()
+                #            i.is_billpaid = True
+                #            i.save()
+                #            consumer.excess = ex
+                #        else:
+                #            break
                 aftrans = Transactions.objects.filter(transType="Additional Fees", acctID_id=consumer)
                 
                 for af in aftrans:
@@ -1537,7 +1545,6 @@ def payment(request, id):
                         else:
                             break
                 consumer.save()
-
 
             try:
                 discount = Discount.objects.get(discountcode=dis_code)
@@ -1587,6 +1594,7 @@ def payment(request, id):
             con_b_rec.save()
             
     return redirect('ledger', id=id)
+
 def editpayment(request, id):
     if request.method =='POST':
         ted = Transactions.objects.get(transactionid=id)
@@ -2683,7 +2691,8 @@ def monthly_summary (request, id, year):
     table = []
     years = []
     class montly_sum():
-        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, payid):
+        #def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, payid):
+        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid):
             self.month = month
             self.monthval = monthval
             self.reading = reading
@@ -2711,7 +2720,9 @@ def monthly_summary (request, id, year):
         try:
             bill = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=i, is_issue=False)
         except ObjectDoesNotExist:
-            a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0)
+            #gbaguia 09112024 Added total_amount_paid container
+            # a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0)
+            a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0, 0)
             table.append(a)
             continue
         usage = bill.usage
@@ -2725,25 +2736,41 @@ def monthly_summary (request, id, year):
         except ObjectDoesNotExist:
             additional_fees = 0
         total_due = bill.bill + consumer.current_bal + additional_fees
+
+        # gbaguia 08162024
+        # if bill.is_billpaid:
+        # let us check if a payment has been maid
+        payid = 0
+        total_amount_paid = 0
+
         if bill.is_billpaid:
-            payments = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
-            payment = payments[0]
             try:
-                add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
-                for p in payments:
-                    if p.payment == add_fee.bill:
-                        payment = p
-                        break
+                payments = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
+                try:
+                    payment = payments[0]
+                    try:
+                        add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
+                        for p in payments:
+                            if p.payment == add_fee.bill:
+                                payment = p
+                                break
+                    except ObjectDoesNotExist:
+                        pass
+
+                    payid = payment.transactionid
+                    total_amount_paid = payment.payment
+                except IndexError:
+                    total_amount_paid = 0
+                    payid = 0
             except ObjectDoesNotExist:
-                pass
-            payid = payment.transactionid
-            total_amount_paid = payment.payment
-        else:
-            total_amount_paid = 0
-            payid = 0
+                    #pass
+            #else:
+                total_amount_paid = 0
+                payid = 0
 
-
-        a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
+        #gbaguia 09112024
+        #a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
+        a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, total_amount_paid, payid)
         table.append(a)
     
     is_issues = get_is_seen_issues(request)
@@ -2771,62 +2798,127 @@ def monthlypayment(request):
         except ObjectDoesNotExist:
             con_b_rec = create_brec(consumer.installation_address_id, year)
         try:
-            Transactions.objects.get(acctID_id = conid, transType = "Payment", month = month, year = year)
+            #gbaguia 08/16/2024
+            #We must check the Billing if Paid or not
+            #tr = Transactions.objects.get(acctID_id = conid, transType = "Payment", month = month, year = year)
+            billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
+            #print(tr)
+            if not billtran.is_billpaid:
+                paytran = Transactions()
+                paytran.payment = payment
+                paytran.date = date.today()
+                paytran.acctID = consumer
+                paytran.month = month
+                paytran.year = year
+                paytran.transType = "Payment"
+                paytran.processedBy = request.user
+                paytran.save()
+                recT = Transactions()
+                recT.receivedamt = payment
+                recT.date = date.today()
+                recT.acctID = consumer
+                recT.month = month
+                recT.year = year
+                recT.transType = "Received Amount"
+                recT.processedBy = request.user
+                recT.or_number = or_num
+                recT.save()
+                try:
+                    billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
+                    billtran.is_billpaid = True
+                    billtran.save()
+                except ObjectDoesNotExist:
+                    pass
+                get_balance(consumer.consumer_id)
+                match month:
+                    case 1:
+                        con_b_rec.total_paid_jan += payment
+                    case 2:
+                        con_b_rec.total_paid_feb += payment
+                    case 3:
+                        con_b_rec.total_paid_mar += payment
+                    case 4:
+                        con_b_rec.total_paid_apr += payment
+                    case 5:
+                        con_b_rec.total_paid_may += payment
+                    case 6:
+                        con_b_rec.total_paid_jun += payment
+                    case 7:
+                        con_b_rec.total_paid_jul += payment
+                    case 8:
+                        con_b_rec.total_paid_aug += payment
+                    case 9:
+                        con_b_rec.total_paid_sept += payment
+                    case 10:
+                        con_b_rec.total_paid_oct += payment
+                    case 11:
+                        con_b_rec.total_paid_nov += payment
+                    case 12:
+                        con_b_rec.total_paid_dec += payment
+                con_b_rec.save()
+
         except ObjectDoesNotExist:
-            paytran = Transactions()
-            paytran.payment = payment
-            paytran.date = date.today()
-            paytran.acctID = consumer
-            paytran.month = month
-            paytran.year = year
-            paytran.transType = "Payment"
-            paytran.processedBy = request.user
-            paytran.save()
-            recT = Transactions()
-            recT.receivedamt = payment
-            recT.date = date.today()
-            recT.acctID = consumer
-            recT.month = month
-            recT.year = year
-            recT.transType = "Received Amount"
-            recT.processedBy = request.user
-            recT.or_number = or_num
-            recT.save()
-            try:
-                billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
-                billtran.is_billpaid = True
-                billtran.save()
-            except ObjectDoesNotExist:
-                pass
-            get_balance(consumer.consumer_id)
-            match month:
-                case 1:
-                    con_b_rec.total_paid_jan += payment
-                case 2:
-                    con_b_rec.total_paid_feb += payment
-                case 3:
-                    con_b_rec.total_paid_mar += payment
-                case 4:
-                    con_b_rec.total_paid_apr += payment
-                case 5:
-                    con_b_rec.total_paid_may += payment
-                case 6:
-                    con_b_rec.total_paid_jun += payment
-                case 7:
-                    con_b_rec.total_paid_jul += payment
-                case 8:
-                    con_b_rec.total_paid_aug += payment
-                case 9:
-                    con_b_rec.total_paid_sept += payment
-                case 10:
-                    con_b_rec.total_paid_oct += payment
-                case 11:
-                    con_b_rec.total_paid_nov += payment
-                case 12:
-                    con_b_rec.total_paid_dec += payment
-            con_b_rec.save()
+            #gbaguia 08/16/2024
+            #not billed yet
+            pass
             
     return redirect('monthly_summary', id=conid, year=year)
+
+def makepayment(conid, consumer, month, year, user, or_num, con_b_rec):
+    paytran = Transactions()
+    paytran.payment = payment
+    paytran.date = date.today()
+    paytran.acctID = consumer
+    paytran.month = month
+    paytran.year = year
+    paytran.transType = "Payment"
+    #paytran.processedBy = request.user
+    paytran.processedBy = user
+    paytran.save()
+    recT = Transactions()
+    recT.receivedamt = payment
+    recT.date = date.today()
+    recT.acctID = consumer
+    recT.month = month
+    recT.year = year
+    recT.transType = "Received Amount"
+    recT.processedBy = user
+    recT.or_number = or_num
+    recT.save()
+    try:
+        billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
+        billtran.is_billpaid = True
+        billtran.save()
+    except ObjectDoesNotExist:
+        pass
+    get_balance(consumer.consumer_id)
+    match month:
+        case 1:
+            con_b_rec.total_paid_jan += payment
+        case 2:
+            con_b_rec.total_paid_feb += payment
+        case 3:
+            con_b_rec.total_paid_mar += payment
+        case 4:
+            con_b_rec.total_paid_apr += payment
+        case 5:
+            con_b_rec.total_paid_may += payment
+        case 6:
+            con_b_rec.total_paid_jun += payment
+        case 7:
+            con_b_rec.total_paid_jul += payment
+        case 8:
+            con_b_rec.total_paid_aug += payment
+        case 9:
+            con_b_rec.total_paid_sept += payment
+        case 10:
+            con_b_rec.total_paid_oct += payment
+        case 11:
+            con_b_rec.total_paid_nov += payment
+        case 12:
+            con_b_rec.total_paid_dec += payment
+    con_b_rec.save()
+    
 
 def payment_history (request, id, year):
     
@@ -2964,7 +3056,6 @@ def consumption(request, year):
         'is_cc':True,
         'sm_arr':sm_arr,
         'is_issues' : is_issues
-        
     }
     return render(request,'consumption.html', context)
 
