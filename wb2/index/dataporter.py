@@ -1,6 +1,7 @@
 # import mysql.connector
 from .models import *
 from .colnames import *
+from .functions import *
 from datetime import date, datetime
 import math
 # import mysql.connector
@@ -243,10 +244,15 @@ def billing_out(con, rate, reading, date, year, usage, month, payment, bill):
             con.save()
             billingT.usage = billingT.meterReading - prev
             rate = ConsumerType.objects.get(contypeid=billingT.contypeid)
-            if billingT.usage <= rate.minReading:
-                billingT.bill = rate.minReadingCharge
-            else:
-                billingT.bill = ((billingT.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+            #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
+            year = billingT.year
+            month = billingT.month
+            usage = billingT.usage
+            #bill_computer = BillComputer()
+            billingT.bill = bill_compute(year, month, usage, rate)
+             #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
             try:
                 brec = BarangayRecord.objects.get(year=billingT.year, barangaycode=con.installation_address)
                 brec.__dict__[f"total_usage_{months[month-1]}"] += billingT.usage
@@ -326,9 +332,11 @@ def get_cummulative(id):
     cum = 0
     for i in range(len(asc_trans)):
         if asc_trans[i].transType == 'Billing':
-            cum+=asc_trans[i].bill
+            #cum += asc_trans[i].bill
+            cum += float(asc_trans[i].bill)
         elif asc_trans[i].transType == 'Payment':
-            cum=cum-asc_trans[i].payment
+            #cum=cum-asc_trans[i].payment
+            cum = float(cum - asc_trans[i].payment)
     user.cummulative = math.ceil(cum*100)/100
     user.save()
     return math.ceil(cum*100)/100
@@ -365,8 +373,9 @@ def sys_user_out(i):
 def rt_out(i):
     rt.contypeid = "C00"+i[0]
     rt.minReading = i[1]
-    rt.minReadingCharge = i[2]
-    rt.rateAfterMin = i[3]
+    #rt.maxReading = i[2] #added by K. Bandajon 19_09_24 (maxReading)
+    rt.minReadingCharge = i[3]
+    rt.rateAfterMin = i[4]
     if i[0] == '1':
         rt.contype = 'Residential'
     elif i[0] == '2':

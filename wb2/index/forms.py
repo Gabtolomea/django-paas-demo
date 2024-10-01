@@ -157,6 +157,7 @@ class addDiscount(ModelForm):
 class ConscumertypecreationForm (ModelForm):
     contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
+    #maxReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0})) #added by Kathrina Bandajon 19_09_24
     minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
     rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
 
@@ -165,6 +166,7 @@ class ConscumertypecreationForm (ModelForm):
         fields = (
             'contype',
             'minReading',
+            #'maxReading', #added by Kathrina Bandajon
             'minReadingCharge',
             'rateAfterMin'
         )

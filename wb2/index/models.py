@@ -44,7 +44,8 @@ class SystemUsers(AbstractUser):
 class ConsumerType(models.Model):
     contypeid = models.CharField(primary_key=True, max_length=20)
     contype = models.CharField(max_length=20)
-    minReading = models.IntegerField()
+    minReading = models.IntegerField()    
+    #maxReading = models.IntegerField() #added  by K. Bandajon, Maximum Reading 19_09_2024
     minReadingCharge = models.IntegerField()
     rateAfterMin = models.IntegerField()
     date_added = models.DateField(auto_now_add=True)

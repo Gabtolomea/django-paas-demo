@@ -106,6 +106,10 @@ Consumer Type
                             <label>Minimum Water Reading:</label>
                             {{form.minReading}}
                         </div>
+                        <!--<div class="form-group">
+                            <label>Max Water Reading:</label>
+                            {{form.maxReading}}
+                        </div>-->
                         <div class="form-group">
                             <label>Minimum Water Reading Charge:</label>
                             {{form.minReadingCharge}}
@@ -113,7 +117,7 @@ Consumer Type
                         <div class="form-group">
                             <label>Rate After Minimum Reading:</label>
                             {{form.rateAfterMin}}
-                        </div>
+                        </div>    
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="btnform1" class="btn btn-primary2">Submit</button>
@@ -134,6 +138,7 @@ Consumer Type
                     <th class="align-middle text-center">Code</th>
                     <th class="align-middle text-center">Consumer Type</th>
                     <th class="align-middle text-center">Minimum Water Reading</th>
+                    <th class="align-middle text-center">Maximum Water Reading</th>
                     <th class="align-middle text-center">Rate After Minimum Reading</th>
                     <th class="align-middle text-center">Minimum Water Reading Charge</th>
                     <th class="align-middle text-center">Added By</th>
@@ -147,6 +152,7 @@ Consumer Type
                     <td class="align-middle text-center">{{c.contypeid}}</td>
                     <td>{{c.contype}}</td>
                     <td>{{c.minReading}}</td>
+                    <td>{{c.maxReading}}</td>
                     <td>{{c.rateAfterMin}}</td>
                     <td>{{c.minReadingCharge}}</td>
                     <td>{{c.added_by_id}}</td>

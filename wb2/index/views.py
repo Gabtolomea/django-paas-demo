@@ -640,7 +640,6 @@ def deletereading(request, id):
 
 @login_required(login_url='login')
 def inputreading(request, id, year):
-    
     table = []
     years = []
     class meterreaderclass():
@@ -863,10 +862,18 @@ def inputreading(request, id, year):
                 usage = billtran.usage
                 rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
                 dif = billtran.bill
-                if billtran.usage <= rate.minReading or billtran.usage < 0:
-                    billtran.bill = rate.minReadingCharge
-                else:
-                    billtran.bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                
+                #kbandajon 09262024
+                #addition of new rates
+                year = billtran.year
+                month = billtran.month
+                usage = billtran.usage
+                #bill_computer = BillComputer()
+                billtran.bill = bill_compute(year, month, usage, rate)
+                #kbandajon 09262024
+                #addition of new rates
+
+
                 billtran.processedBy = str(request.user)
                 billtran.save()
                 dif = billtran.bill - dif
@@ -932,12 +939,17 @@ def inputreading(request, id, year):
                 billtran.usage = r - lastreading
                 usage = billtran.usage
                 billtran.contypeid = consumer.contypeid_id
-                rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
-                if billtran.usage <= rate.minReading:
-                    billtran.bill = rate.minReadingCharge
-                else:
-                    bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                    billtran.bill = bill
+                #added by K. Bandajon 09_23_2024 - 21-09_2024
+                #This is the new rate implemented starting from October , 2024 and onwards
+                rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
+                year = billtran.year
+                month = billtran.month
+                usage = billtran.usage
+                #bc = BillComputer()
+                #billtran.bill = bill_computer.bill_compute(year, month, usage, rate)
+                billtran.bill = bill_compute(year,month, usage, rate)
+                #added by K. Bandajon 09_23_2024 - 21-09_2024
+
                 billtran.payment = 0
                 billtran.processedBy = request.user
                 billtran.save()
@@ -1061,7 +1073,6 @@ def inputreading(request, id, year):
         
     }
     return render(request, 'input-meter-reading.html', context)
-
 
 @login_required(login_url='login')
 def consumer_list(request):
@@ -1501,30 +1512,35 @@ def payment(request, id):
                 #gbaguia 08/16/2024
                 #DO NOT USE this FACILITY when making monthly payments
                 #unsettled = Transactions.objects.filter(acctID_id=consumer, transType="Billing", is_billpaid=False, is_issue=False).order_by('year', 'month')
-                #if unsettled:
-                #    for i in unsettled:
-                #        if consumer.excess>=i.bill:
-                #            ex = consumer.excess - i.bill
-                #            pt = Transactions()
-                #            pt.acctID = consumer
-                #            pt.transType = "Payment"
-                #            pt.processedBy = request.user
-                #            pt.date = datetime.today()
-                #            pt.year = i.year
-                #            pt.month = i.month
-                #            pt.payment = i.bill
-                #            amount -= i.bill
-                #            pt.save()
-                #            i.is_billpaid = True
-                #            i.save()
-                #            consumer.excess = ex
-                #        else:
-                #            break
+                '''if unsettled:
+                    for i in unsettled:
+                        if consumer.excess>=i.bill:
+                            ex = consumer.excess - i.bill
+                            pt = Transactions()
+                            pt.acctID = consumer
+                            pt.transType = "Payment"
+                            pt.processedBy = request.user
+                            pt.date = datetime.today()
+                            pt.year = i.year
+                            pt.month = i.month
+                            pt.payment = i.bill
+                            amount -= i.bill
+                            pt.save()
+                            i.is_billpaid = True
+                            i.save()
+                            consumer.excess = ex
+                        else:
+                            break
+                        '''
                 aftrans = Transactions.objects.filter(transType="Additional Fees", acctID_id=consumer)
                 
                 for af in aftrans:
                     if not af.is_billpaid:
-                        addfee = AdditionalFees.objects.get(transactions__transactionid=af.transactionid)
+                        #changed 24_09_2024
+                        try:
+                            addfee = AdditionalFees.objects.get(transactions__transactionid=af.transactionid)
+                        except:
+                            pass
                         if consumer.excess>=af.bill:
                             ex = consumer.excess - af.bill
                             pt = Transactions()
@@ -1540,6 +1556,7 @@ def payment(request, id):
                             af.is_billpaid = True
                             af.save()
                             consumer.excess = ex
+                            print("hey, one")
                             addfee.month_counter += 1
                             addfee.save()
                         else:
@@ -2221,6 +2238,9 @@ def new_consumertype(request):
     if request.method == "POST":
         contype = request.POST['contype']
         minReading = request.POST['minReading']
+
+        #added by K. Bandajon 19_09_24
+        #maxReading = request.POST['maxReading']
         minReadingCharge = request.POST['minReadingCharge']
         rateAfterMin = request.POST['rateAfterMin']
         ct = ConsumerType()
@@ -2231,6 +2251,9 @@ def new_consumertype(request):
         ct.contypeid = "C"+zeroes+str(contypecount+1)
         ct.contype = contype
         ct.minReading = minReading
+
+        #added by K. Bandajon 19_09_24 (maxReading)
+        #ct.maxReading = maxReading
         ct.minReadingCharge = minReadingCharge
         ct.rateAfterMin = rateAfterMin
         ct.added_by = request.user
@@ -2256,12 +2279,14 @@ def editcontype(request, id):
     con = ConsumerType.objects.get(contypeid=id)
     if request.method == 'POST':
         contype = request.POST['contype']
-        minReading = request.POST['minReading']
+        minReading = request.POST['minReading']        
+        #maxReading = request.POST['maxReading'] #added by K. Bandajon 19_09_24
         minReadingCharge = request.POST['minReadingCharge']
         rateAfterMin = request.POST['rateAfterMin']
         
         con.contype = contype
         con.minReading = minReading
+        #con.maxReading = maxReading #added by K. Bandajon 19_09_24
         con.minReadingCharge = minReadingCharge
         con.rateAfterMin = rateAfterMin
         con.save()
@@ -2551,11 +2576,28 @@ def bulkreading(request):
                     usage = a - prev
                     t.contypeid = c.contypeid_id
                     rate = ConsumerType.objects.get(contypeid=c.contypeid_id)
-                    if t.usage <= rate.minReading or t.usage < 0:
-                        t.bill = rate.minReadingCharge
+                    #added by K. Bandajon 09_23_2024 - 21-09_2024
+                    #This is the new rate implemented starting from October , 2024 and onwards
+                    if t.month > 9 and t.year >=2024:
+                        if  t.usage >= 1 and t.usage <= 5 :
+                            t.bill = t.usage * 5
+                        elif  t.usage >= 6 and t.usage <= 10 :
+                            t.bill = ((t.usage - 5) * 6) + 25
+                        elif t.usage >= 11 and t.usage <= 20:
+                            t.bill = ((t.usage - 5) * 7) + 25
+                        elif t.usage >= 21 and t.usage <= 35 :
+                            t.bill = ((t.usage - 5) * 8) + 25
+                        elif t.usage >= 36 and t.usage <= 50:
+                            t.bill = ((t.usage - 5) * 9) + 25
+                        elif t.usage >= 51:
+                            t.bill = ((t.usage - 5) * 10) + 25
                     else:
-                        bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                        t.bill = bill
+                    #original
+                        if t.usage <= rate.minReading or t.usage < 0:
+                            t.bill = rate.minReadingCharge
+                        else:
+                            bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+                            t.bill = bill
                     t.payment = 0
                     t.processedBy = request.user
                     t.save()

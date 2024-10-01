@@ -330,12 +330,20 @@ def bulkinputreading(consumer, year, reading, pb, d):
             billtran.date = datetime.today()
             billtran.usage = reading - billtran.prevReading
             usage = billtran.usage
+            dif = billtran.bill 
             rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
-            dif = billtran.bill
-            if billtran.usage <= rate.minReading:
-                billtran.bill = rate.minReadingCharge
-            else:
-                billtran.bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+
+            #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
+            year = billtran.year
+            month = billtran.month
+            usage = billtran.usage
+            #bill_computer = BillComputer()
+            billtran.bill = bill_compute(year, month, usage, rate)
+            #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
+
+
             billtran.processedBy = str(pb)
             billtran.save()
             dif = billtran.bill - dif
@@ -366,11 +374,17 @@ def bulkinputreading(consumer, year, reading, pb, d):
             usage = billtran.usage
             billtran.contypeid = consumer.contypeid_id
             rate = ConsumerType.objects.get(contypeid=consumer.contypeid_id)
-            if billtran.usage <= rate.minReading:
-                billtran.bill = rate.minReadingCharge
-            else:
-                bill = ((billtran.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                billtran.bill = bill
+            #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
+            year = billtran.year
+            month = billtran.month
+            usage = billtran.usage
+            #bill_computer = BillComputer()
+            billtran.bill = bill_compute(year, month, usage, rate)
+            #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
+
+
             billtran.payment = 0
             billtran.processedBy = pb
             billtran.save()
@@ -714,20 +728,25 @@ def adjust_excess_only():
         adjust_from_contype(acct.meternumber, 'C003')
 
 
-
 def adjust_from_contype(meternumber, contype):
     consumer = ConsumerInfo.objects.get(meternumber=meternumber)
     consumer.contypeid = ConsumerType.objects.get(contypeid=contype)
     transactions = Transactions.objects.filter(acctID_id=consumer.consumer_id, is_billpaid=False, transType='Billing').exclude(contypeid=contype).order_by('year', 'month')
+    rate = ConsumerType.objects.get(contypeid=consumer.contypeid)
 
     for t in transactions:
         brec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{t.year}") 
         old_bill = t.bill
         t.contypeid = consumer.contypeid.contypeid
-        if t.usage <= consumer.contypeid.minReading:
-            t.bill = consumer.contypeid.minReadingCharge
-        else:
-            t.bill = ((t.usage - consumer.contypeid.minReading)*consumer.contypeid.rateAfterMin) + consumer.contypeid.minReadingCharge
+        #added by K. Bandajon 09_23_2024 - 21-09_2024
+        #This is the new rate implemented starting from October , 2024 and onwards
+        year = t.year
+        month = t.month
+        usage = t.usage
+        t.bill = bill_compute(year, month, usage, rate)
+        #added by K. Bandajon 09_23_2024 - 21-09_2024
+        #This is the new rate implemented starting from October , 2024 and onwards
+
         diff = t.bill - old_bill
         brec.__dict__[f"total_due_{months[t.month - 1]}"] -= diff
         brec.save()
@@ -892,12 +911,17 @@ def unexcempt_account(meternumber):
             bill = payment.payment
         except ObjectDoesNotExist:
             usage = t.usage
-            if usage <= rate.minReading:
-                bill = rate.minReadingCharge
-            else:
-                bill = ((usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+            #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
+            year = transactions.year
+            month = transactions.month
+            usage = transactions.usage
+            #bill_computer = BillComputer()
+            bill = bill_compute(year, month, usage, rate)
+            #added by K. Bandajon 09_23_2024 - 21-09_2024
+            #This is the new rate implemented starting from October , 2024 and onwards
+
             consumer.current_bal += bill
-        
         if t.date is None:
             t.date = datetime.today()    
         if t.prevReading is None:
@@ -946,3 +970,44 @@ def set_prev_reading_all():
             t.save()
         except IndexError:
             pass
+
+#class BillComputer:
+def bill_compute(year, month, usage, rate):
+    bill = 0.00
+    minimumrate = 5.00
+    minimumusage = 5
+    minimumpayment =  minimumusage * minimumrate
+    min6to10 = 6
+    max6to10 = 10
+    excessrate6to10 = 6.00
+    min11to20 = 11
+    max11to20 = 20
+    excessrate11to20 = 7.00
+    min21to35 = 21
+    max21to35 = 35
+    excessrate21to35 = 8.00
+    min36to50 = 36
+    max36to50 = 50
+    excessrate36to50 = 9.00
+    min51 = 51
+    excessrate51 = 10.00
+    if month >= 9 and year >=2024:
+        if  usage >= 1 and usage <= 5 :
+            bill = usage * minimumrate
+        elif  usage >= min6to10 and usage <= max6to10 :
+                bill = ((usage - minimumusage) * excessrate6to10) + minimumpayment
+        elif usage >= min11to20 and usage <= max11to20:
+                bill = ((usage - minimumusage) * excessrate11to20) + minimumpayment
+        elif usage >= min21to35 and usage <= max21to35 :
+                bill = ((usage - minimumusage) * excessrate21to35) + minimumpayment
+        elif usage >=  min36to50 and usage <= max36to50:
+                bill = ((usage - minimumusage) * excessrate36to50) + minimumpayment
+        elif usage >= min51:
+                bill = ((usage - minimumusage) * excessrate51) + minimumpayment
+    else:
+    #original
+        if usage <= rate.minReading:
+                bill = rate.minReadingCharge
+        else:
+                bill = ((usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
+    return float(bill)

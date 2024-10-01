@@ -265,6 +265,7 @@
 #     'year',
 #     'rateid',
 #     'minimumreading',
+#     'maximumreading', added K. Bandajon
 #     'minimumreading_charge',
 #     'rateafterminimum',
 #     'ratepenalty',
