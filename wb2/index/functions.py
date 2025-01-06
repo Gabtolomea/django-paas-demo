@@ -977,6 +977,9 @@ def bill_compute(year, month, usage, rate):
     minimumrate = 5.00
     minimumusage = 5
     minimumpayment =  minimumusage * minimumrate
+    min1to5 = 1
+    max1to5 = 5
+    excessrate1to5 = 5.00
     min6to10 = 6
     max6to10 = 10
     excessrate6to10 = 6.00
@@ -991,19 +994,31 @@ def bill_compute(year, month, usage, rate):
     excessrate36to50 = 9.00
     min51 = 51
     excessrate51 = 10.00
-    if month >= 9 and year >=2024:
-        if  usage >= 1 and usage <= 5 :
+
+    day = 1
+    startDate = datetime(2024, 10, day)
+    nowDate = datetime(year, month, day)
+    #if month >= 10 and year >=2024:
+    if nowDate >= startDate:
+        
+        if usage <= rate.minReading:
+                bill = rate.minReadingCharge
+        elif  usage >= 1 and usage <= 5 :
             bill = usage * minimumrate
-        elif  usage >= min6to10 and usage <= max6to10 :
-                bill = ((usage - minimumusage) * excessrate6to10) + minimumpayment
-        elif usage >= min11to20 and usage <= max11to20:
-                bill = ((usage - minimumusage) * excessrate11to20) + minimumpayment
-        elif usage >= min21to35 and usage <= max21to35 :
-                bill = ((usage - minimumusage) * excessrate21to35) + minimumpayment
-        elif usage >=  min36to50 and usage <= max36to50:
-                bill = ((usage - minimumusage) * excessrate36to50) + minimumpayment
-        elif usage >= min51:
-                bill = ((usage - minimumusage) * excessrate51) + minimumpayment
+        else:
+            excess = usage - minimumusage
+            if excess >= min1to5 and excess <= max1to5 :
+                    bill = ((usage - minimumusage) * excessrate1to5) + minimumpayment
+            elif excess >= min6to10 and excess <= max6to10 :
+                    bill = ((usage - minimumusage) * excessrate6to10) + minimumpayment
+            elif excess >= min11to20 and excess <= max11to20:
+                    bill = ((usage - minimumusage) * excessrate11to20) + minimumpayment
+            elif excess >= min21to35 and excess <= max21to35 :
+                    bill = ((usage - minimumusage) * excessrate21to35) + minimumpayment
+            elif excess >=  min36to50 and excess <= max36to50:
+                    bill = ((usage - minimumusage) * excessrate36to50) + minimumpayment
+            elif excess >= min51:
+                    bill = ((usage - minimumusage) * excessrate51) + minimumpayment
     else:
     #original
         if usage <= rate.minReading:
@@ -1011,3 +1026,63 @@ def bill_compute(year, month, usage, rate):
         else:
                 bill = ((usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
     return float(bill)
+
+
+
+#Excess Method || Date Added: November 15, 2024 ||Added by: Kathrina Bandajon, Ralf Adjay Estenor ||ID: Excess098
+'''def excessLogOctober(month, year ):
+    #for October only
+    prevMonth = month - 2
+    
+    if prevMonth == 10 and year == 2024:
+        allConsumer = ConsumerInfo.objects.all()
+
+        for consumer in allConsumer:
+            ID = consumer.consumer_id
+            billOfConsumer = Transactions.objects.filter(month=prevMonth, year=year, acctID=ID, transType='Billing').first()
+            paymentExists = Transactions.objects.filter(month=prevMonth, year=year, acctID=ID, transType='Payment').exists()
+
+            if paymentExists:
+                rcvdamt = Transactions.objects.filter(month=prevMonth, year=year, acctID=ID, transType='Received Amount').first()
+                paymentAmt = rcvdamt.receivedamt
+                bill = billOfConsumer.bill
+                excessamount = paymentAmt - bill
+
+                excess_logs = ExcessLog(
+                    year = month,
+                    month = year,
+                    accountID = billOfConsumer.acctID,
+                    excessamt = excessamount,
+                    excessID = paymentExists.transactionid
+                )
+                excess_logs.save()'''
+#Excess Extraction || ID: ExcessKB || Added by: Kathrina Bandajon December 2, 2024
+#through inputreading (firstrun)
+def excessLog(month, year, id):
+    datetime = datetime.today()
+    billthisMonth = Transactions.object.filter(
+        month = datetime.month,
+        year = datetime.year,
+        acctID = id,
+    ).first()
+
+    paymentExists = Transactions.objects.filter(month=month-1, year=year-1, acctID=id, transType='Payment').exists()
+
+    if paymentExists:
+                rcvdamt = Transactions.objects.filter(month=prevMonth, year=year, acctID=ID, transType='Received Amount').first()
+                paymentAmt = rcvdamt.receivedamt
+                bill = billthisMonth.bill
+                excessamount = paymentAmt - bill
+
+                excess_logs = ExcessLog(
+                    year = month,
+                    month = year,
+                    accountID = id,
+                    excessamt = excessamount,
+                    excessID = paymentExists.transactionid
+                )
+                excess_logs.save()
+
+    
+
+#def unpaid_method(request):

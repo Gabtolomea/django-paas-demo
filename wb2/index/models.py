@@ -10,9 +10,6 @@ class LoginRec(models.Model):
     last_access = models.DateTimeField()
     expiration = models.DateTimeField(default = datetime.now())
 
-
-    
-
 class SystemUsers(AbstractUser):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
@@ -77,6 +74,7 @@ class Barangays(models.Model):
     barangay = models.CharField(max_length=20, blank=True)
     def __str__(self) -> str:
         return self.barangay
+    
 class BarangayRecord(models.Model):
     barangayrec_id = models.CharField(primary_key = True ,max_length=20)
     barangaycode = models.ForeignKey(Barangays,on_delete=models.SET_NULL, null=True)
@@ -150,6 +148,8 @@ class ConsumerInfo(models.Model):
     first_tran = models.IntegerField(null=True)
     excep_accnt = models.BooleanField(default=False)
     has_additionalfees = models.BooleanField(default=False)
+  
+    
 
 class Transactions(models.Model):
     TRANS_TYPE = (
@@ -168,8 +168,10 @@ class Transactions(models.Model):
     contypeid = models.CharField(max_length=20, blank=True, null=True)#consumertype
     penaltyCode = models.ForeignKey(Penalty, on_delete= models.SET_NULL, null=True)
     discountcode = models.CharField(max_length=50, null=True)
-    bill = models.FloatField(null=True)
+    amount_due = models.FloatField(null=True)
     is_billpaid = models.BooleanField(default = False)
+    bill = models.FloatField(null=True)
+    previousBill = models.FloatField(null=True) #Bandajon k || ExcessKB  || for the bill before partial or penalty is executed
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
     receivedamt = models.FloatField(null=True)
@@ -177,7 +179,11 @@ class Transactions(models.Model):
     processedBy = models.CharField(max_length=50, null=True)
     or_number = models.CharField(max_length=100)
     is_issue = models.BooleanField(default=False)
+    isExcess_Extracted = models.BooleanField(default=False) #to check whether the payment transaction has been checked for excess extraction
+    #isTrans_included = models.BooleanField(default=False) #to exclude all transactions before october
     months_not_paid = models.IntegerField(default=0)
+
+    remarks= models.TextField(null=True, blank=True)# added Enjambre & Sobrian 26/11/2024 for remarks in payment history
     def __str__(self) -> str:
         return str(self.transactionid)
 
@@ -239,3 +245,29 @@ class SystemInfo(models.Model):
     current_year = models.IntegerField(default=datetime.now().year)
     current_month = models.IntegerField(default=datetime.now().month)
     authors = models.CharField(max_length=100, default='Ryla, Charlie, Jazfer')
+
+#added K. Bandajon 26_10_24 ID: Penalty123
+
+#Excess Method || Date Added: November 15, 2024 ||Added by: Kathrina Bandajon, Ralf Adjay Estenor ||ID: Excess098
+class ExcessLog(models.Model):
+    excesslogID = models.AutoField(primary_key=True)
+    excessID = models.ForeignKey(Transactions, on_delete=models.CASCADE, limit_choices_to={'name': 'Payment'})
+    accountID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    excessamt = models.FloatField(null=True)
+    dateAdded  = models.DateField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+#Excess Method || Date Added: November 15, 2024 ||Added by: Kathrina Bandajon || ID: Partial123
+class PartialLog(models.Model):
+    partiallogID = models.AutoField(primary_key=True)
+    partialID = models.ForeignKey(Transactions, on_delete=models.CASCADE, limit_choices_to={'name': 'Payment'})
+    accntID = models.ForeignKey(ConsumerInfo, on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    partialamt = models.FloatField(null=True)
+    datepaid  = models.DateField(auto_now_add=True)
+
+#class background_task(models.Model):
+#class transaction_archive(models.Model):

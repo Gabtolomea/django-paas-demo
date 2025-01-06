@@ -8,6 +8,7 @@ from .dataporter import *
 from .decorators import *
 from .forms import *
 from .functions import * 
+from .tasks import * #added K. Bandajon 26_10_24 ID: Penalty123
 from .models import *
 from .tokens import generate_token
 from datetime import datetime, timedelta
@@ -27,6 +28,7 @@ from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.http import JsonResponse
+
 
 
 
@@ -273,10 +275,12 @@ def ledger(request, id):
     pen = 0
     bill = 0
     total_unpaid_amount = 0
+    paytranid = 0 # added for payment transaction id  Enjambre 21/11/2024
+    payment = 0  #  added for payment 21/11/2024
     monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
     # get_balance(id)
     class ledgerclass():
-        def __init__(self, transid, date, prev, reading, usage, bill, payment, pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, paytranid,  pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):#added paytranid Enjambre 21/11/2024
             self.transid = transid
             self.date = date
             self.prev = prev
@@ -284,6 +288,7 @@ def ledger(request, id):
             self.usage = usage
             self.bill = bill
             self.payment = payment
+            self.paytranid= paytranid
             self.pb = pb
             self.ornum = ornum
             self.bal = bal
@@ -321,6 +326,13 @@ def ledger(request, id):
         prev = ''
         cur = ''
         ispaid = ''
+        paytranid= ''# added for payment transaction id  Enjambre 21/11/2024
+        payment =0 # Added Enjambre 20/11,2024
+
+        if tran.transType == 'Payment':
+            paytranid = tran.transactionid
+            payment = tran.payment
+            continue # added zel 26/11/2024
 
         # print(tran.transType)
 
@@ -337,21 +349,40 @@ def ledger(request, id):
             if tran.processedBy is not None:
                 pb = tran.processedBy
             bal += bill
+
+            try:# starting point zel 26/11/2024
+                paymentTrans = Transactions.objects.filter(
+                    acctID=u.consumer_id,
+                    transType='Payment',
+                    month=tran.month,
+                    year=tran.year
+                ).first()  
+
+                if paymentTrans:
+                    paytranid = paymentTrans.transactionid  # Assign the payment transaction ID
+                    payment = paymentTrans.payment  # Get the payment amount
+            except ObjectDoesNotExist:
+                paytranid = None
+                payment = 0 #until here zel 26/11/2024
+
+
             if tran.is_billpaid:
                 ispaid = 'Paid'
-        elif tran.transType == 'Payment':
-            style = 'table-orange'
-            ornum = tran.or_number
-            if tran.processedBy:
-                pb = tran.processedBy
-            else:
-                pb = ''
-            bal = bal-tran.payment
-            try:
-                discount = Transactions.objects.get(transactionid=tran.discountcode)
-                dcode = discount.discountcode
-            except ObjectDoesNotExist:
-                pass
+               
+
+        #elif tran.transType == 'Payment':
+            #style = 'table-orange' #ORIGINAL
+            #ornum = tran.or_number
+            #if tran.processedBy:
+                #pb = tran.processedBy
+            #else:
+                #pb = ''
+            #bal = bal-tran.payment
+            #try:
+                #discount = Transactions.objects.get(transactionid=tran.discountcode)
+               # dcode = discount.discountcode
+            #except ObjectDoesNotExist:
+                #pass
         elif tran.transType == 'Penalty':
             bill = tran.bill
             pen = tran.penaltyCode
@@ -388,19 +419,25 @@ def ledger(request, id):
                     pass
             
             currentaddfeecount += 1
-
+        
+    
         date = tran.date
-        payment = tran.payment
+        #payment = tran.payment removed 26/11/2024
         transid = tran.transactionid
         m = tran.month
         y = tran.year
-        bal = math.ceil(bal*100)/100
+        bal = math.ceil(bal * 100) / 100
         ttype = tran.transType
-       
-        if tran.transType != 'Received Amount':
-            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, pb, ornum, bal, connectionType, style,dcode, ttype, monthnames[m-1], y, ispaid)
+
+        #if tran.transType == 'Payment':  # We already skip this above, but let's be explicit here too
+            #continue #zel 26/11/2024
+
+
+        if tran.transType != 'Received Amount' and tran.transType != 'Payment':  # added tran.transType != 'Payment'  20/11/2024   
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, paytranid, pb, ornum, bal, connectionType, style, dcode, ttype, monthnames[m-1], y, ispaid) #paytranid is added  21/11/2024           
             table.append(new_row)
         
+
         if tran.transType == 'Billing' and not tran.is_billpaid:
             unpaid_month = monthnames[tran.month-1]
             unpaid_year = tran.year
@@ -434,7 +471,7 @@ def ledger(request, id):
     is_issues = get_is_seen_issues(request)
 
     context = {
-        'disp':disp,
+        'disp': disp,
         'month': calendar.month_name[datetime.today().month-1],
         'date_today': datetime.today().strftime('%B %d, %Y - %I:%M %p'),
         'u': u,
@@ -449,11 +486,11 @@ def ledger(request, id):
         'bal': bal,
         'bill': bill,
         'user': request.user,
-        'prevmonth' : calendar.month_name[(datetime.today().month - 2) % 12 + 1],
-        'ispaid':ispaid,
-        'is_issues' : is_issues,
-        'up' : unpaid,        
-        'tu' : total_unpaid_amount
+        'prevmonth': calendar.month_name[(datetime.today().month - 2) % 12 + 1],
+        'ispaid': ispaid,
+        'is_issues': is_issues,
+        'up': unpaid,
+        'tu': total_unpaid_amount
     }
     return render(request, 'ledger.html', context)
 
@@ -876,6 +913,12 @@ def inputreading(request, id, year):
 
                 billtran.processedBy = str(request.user)
                 billtran.save()
+                # add the excess here <
+
+                excessLog(year, month, id)
+                
+                #>
+
                 dif = billtran.bill - dif
                 if interest:
                     p = Transactions()
@@ -953,6 +996,10 @@ def inputreading(request, id, year):
                 billtran.payment = 0
                 billtran.processedBy = request.user
                 billtran.save()
+
+                # add the excess here <
+
+                #>
                 if interest:
                     p = Transactions()
                     p.acctID = consumer
@@ -1506,6 +1553,7 @@ def payment(request, id):
             rt.processedBy = request.user
             rt.or_number = or_num
             rt.save()
+
             consumer.excess += amount
             consumer.save()
             if consumer.excess > 0:
@@ -1556,9 +1604,14 @@ def payment(request, id):
                             af.is_billpaid = True
                             af.save()
                             consumer.excess = ex
-                            print("hey, one")
-                            addfee.month_counter += 1
-                            addfee.save()
+                            #print("hey, one")
+                            #k. Bandajon 08_10_2024
+                            # addfee object not available
+                            try:
+                                addfee.month_counter += 1 
+                                addfee.save()
+                            except:
+                                pass
                         else:
                             break
                 consumer.save()
@@ -1677,13 +1730,89 @@ def editpayment(request, id):
             brec.__dict__[f"total_paid_{months[ted.month-1]}"] += ted.payment
             brec.save()
 
+        # added by Kathrina D. Bandajon || December 12, 2024 || ID : Excess098
+        # added by Kathrina D. Bandajon || December 12, 2024 || ID : Partial123
+
+        year = ted.year
+        print(year)
+        month = ted.month
+        print(month)
+        month_ted = Transactions.objects.filter(year=year, month=month, transType="Billing").first()
+        print(month_ted)
+        try:
+            thismonth_bill = month_ted.bill
+        except ObjectDoesNotExist as e:
+            print(f"Error retrieving bill transaction: {e}")
+        nowDate = datetime.now()
+
+        # Excess Logic
+        if amount > thismonth_bill:
+            excess = amount - thismonth_bill
+            con_bal = (con.current_bal - excess) * 1
+            excess_save = ExcessLog(
+                excessID = ted,
+                accountID = con,
+                year = year,
+                month = month,
+                excessamt = excess,
+                dateAdded = nowDate,
+                is_used = False
+            )
+            con.excess = excess
+            con.current_bal = con_bal
+            try:
+                excess_save.save()
+                con.save()
+            except Exception as e:
+                print(f"Error saving Excess transaction: {e}")
+
+        # Partial Logic
+        elif amount < thismonth_bill:
+            partial = amount - thismonth_bill
+            #partial = dif if dif >= 0 else dif * -1
+            former_bill = thismonth_bill
+            bill = thismonth_bill - partial
+            transactionType = ted.transType
+            to_update = Transactions.objects.filter(acctID=month_ted.acctID, month=month, year=year, transType=transactionType).update(previousBill=former_bill, bill=bill, is_billpaid=False)
+            con.excess = 0
+            con.current_bal += bill
+            partialLog_save = PartialLog(
+                partialID = ted,
+                accntID = con,
+                year = year,
+                month = month,
+                partialamt = partial,
+                datepaid = nowDate,
+            )
+            try:
+                partialLog_save.save()  # Corrected this line
+                to_update.save()
+                con.save()
+            except Exception as e:
+                print(f"Error saving Partial transaction: {e}")
+
+        # No excess or partial: Update the transaction
+        else:
+            update_trans = Transactions.objects.filter(acctID=con, month=month, year=year, transType=transactionType).update(previousBill=thismonth_bill, is_billpaid=True)
+            con_bal = con.current_bal - amount
+            con.current_bal = con_bal
+            con.save()
+            try:
+                # No need to call save() on `update_trans`, as `update()` directly saves the changes
+                pass
+            except Exception as e:
+                print(f"Error saving None transaction: {e}")
+
         get_balance(ted.acctID.consumer_id)
-        
-        if con.excess < 0:
+
+
+        #original
+        '''if con.excess < 0:
             con.current_bal += (con.excess*-1)
             con.excess = 0
-            con.save()
+            con.save()'''
         return redirect('payment_history', ted.acctID.consumer_id,ted.year)
+    
 
 def reports(request):
     cur_year =  datetime.today().year
@@ -2734,7 +2863,7 @@ def monthly_summary (request, id, year):
     years = []
     class montly_sum():
         #def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, payid):
-        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid):
+        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transType):
             self.month = month
             self.monthval = monthval
             self.reading = reading
@@ -2746,6 +2875,8 @@ def monthly_summary (request, id, year):
             self.total_due = total_due
             self.total_amount_paid = total_amount_paid
             self.payid = payid
+            self.transType = transType  
+            
 
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', is_issue=False)
@@ -2761,10 +2892,11 @@ def monthly_summary (request, id, year):
         month = calendar.month_name[i]
         try:
             bill = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=i, is_issue=False)
+            transtype = bill.transType
         except ObjectDoesNotExist:
             #gbaguia 09112024 Added total_amount_paid container
             # a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0)
-            a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0, 0)
+            a = montly_sum(month, i, 0, '', 0, 0, 0, 0, 0, 0, 0, transtype)
             table.append(a)
             continue
         usage = bill.usage
@@ -2772,12 +2904,15 @@ def monthly_summary (request, id, year):
         reading_date = bill.date
         total_bill = bill.bill
         prev_bal = 0
+        additional_fees = 0  # zel added 26/11/2024
         try:
             add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
             additional_fees = add_fee.bill
+            #addfee_transType = add_fee.transType #zel 26/11/2024
         except ObjectDoesNotExist:
-            additional_fees = 0
-        total_due = bill.bill + consumer.current_bal + additional_fees
+            pass #zel added 26/11/2024
+            
+        total_due = total_bill + consumer.current_bal + additional_fees
 
         # gbaguia 08162024
         # if bill.is_billpaid:
@@ -2805,26 +2940,60 @@ def monthly_summary (request, id, year):
                     total_amount_paid = 0
                     payid = 0
             except ObjectDoesNotExist:
-                    #pass
-            #else:
                 total_amount_paid = 0
-                payid = 0
+                payid = 0 #zel added 26/11/2024
+        
+        
 
         #gbaguia 09112024
         #a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
-        a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, total_amount_paid, payid)
+        a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transtype) 
         table.append(a)
+
+        
+
+        if additional_fees > 0: #Enjambre  trial section added for additional fees 22/11/2024
+            add_fee_paid = False
+            try:
+                fee_payment = Transactions.objects.get(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
+                add_fee_paid = fee_payment.payment == additional_fees #zel added 29/11/2024
+
+                if add_fee_paid:
+                    total_amount_paid = fee_payment.payment
+                    payid = fee_payment.transactionid
+                else:
+                    total_amount_paid = 0
+                    payid = 0
+            except ObjectDoesNotExist:
+                add_fee_paid = False
+                total_amount_paid = 0
+                payid = 0
+                additional_fee = Transactions.objects.filter(acctID_id=id, transType='Additional Fees', year=year, month=i).first()
+                #total_bill = additional_fee.bill
+
+                if additional_fee:
+                    total_bill = additional_fee.bill
+                else:
+                    total_bill = additional_fees
+
+            # Add additional fee row to the table
+                a_additional_fee = montly_sum(month, i, 0, '', 0, total_bill, 0, additional_fees, total_due, total_amount_paid, payid, 'Additional Fee')
+                table.append(a_additional_fee)
+
     
     is_issues = get_is_seen_issues(request)
 
     context = {
         'table': table,
         'u': consumer,
-        'year' : year,
+        'year': year,
         'years': years,
-        'is_issues' : is_issues
+        'is_issues': is_issues
     }
-    return render(request,'conmon_summary.html', context)
+    return render(request, 'conmon_summary.html', context)
+
+
+
 
 def monthlypayment(request):
     
@@ -2845,6 +3014,7 @@ def monthlypayment(request):
             #tr = Transactions.objects.get(acctID_id = conid, transType = "Payment", month = month, year = year)
             billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
             #print(tr)
+
             if not billtran.is_billpaid:
                 paytran = Transactions()
                 paytran.payment = payment
@@ -2869,41 +3039,104 @@ def monthlypayment(request):
                     billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
                     billtran.is_billpaid = True
                     billtran.save()
+                    #add_excess extraction here
+                    #Excess Extraction || ID: ExcessKB || Added by: Kathrina Bandajon December 2, 2024
+                    #Excess
+                    '''if payment > billtran.bill:
+                        rcvdamt = Transactions.objects.filter(month=month, year=year, acctID=id, transType='Received Amount').first()
+                        paymentAmt = rcvdamt.receivedamt
+                        bill = billtran.bill
+                        excessamount = paymentAmt - bill
+
+                        excess_logs = ExcessLog(
+                            year = month,
+                            month = year,
+                            accountID = id,
+                            excessamt = excessamount,
+                            excessID = rcvdamt.transactionid
+                        )
+                        excess_logs.save()
+
+                        #original
+                        billtran.is_billpaid = True
+                        billtran.save()
+                    #Partial
+                    elif payment < billtran.bill:
+                        billtran.previousBill = billtran.bill
+                        billtran.bill = billtran.bill - payment
+                        billtran.save()
+                    else:
+                    #add_excess extraction here
+                    #Excess Extraction || ID: ExcessKB || Added by: Kathrina Bandajon December 2, 2024
+                        billtran.is_billpaid = True
+                        billtran.save()
+                        '''
                 except ObjectDoesNotExist:
                     pass
+
+                # trial section for additional fee 10/12/2024 Enjambre
+                try:
+                    add_fee = Transactions.objects.get(acctID_id=conid, transType='Additional Fees', year=year, month=month, is_issue=False)
+                except ObjectDoesNotExist:
+                    add_fee = None
+
+                if add_fee:
+                    if payment >= add_fee.bill:
+                        add_fee.is_billpaid = True
+                        add_fee.save()
+                        excessamount = payment - add_fee.bill
+                        if excessamount > 0:
+                            excess_logs = ExcessLog(
+                                year=month,
+                                month=year,
+                                accountID=conid,
+                                excessamt=excessamount,
+                                excessID=add_fee.transactionid
+                            )
+                            excess_logs.save()
+
+                    else:
+                        add_fee.previousBill = add_fee.bill
+                        add_fee.bill -= payment
+                        add_fee.save()
+
+                #until here 10/12/2024
                 get_balance(consumer.consumer_id)
+
+            
+            
                 match month:
                     case 1:
-                        con_b_rec.total_paid_jan += payment
+                        con_b_rec.total_paid_jan += payment 
                     case 2:
-                        con_b_rec.total_paid_feb += payment
+                        con_b_rec.total_paid_feb += payment 
                     case 3:
-                        con_b_rec.total_paid_mar += payment
+                        con_b_rec.total_paid_mar += payment 
                     case 4:
-                        con_b_rec.total_paid_apr += payment
+                        con_b_rec.total_paid_apr += payment 
                     case 5:
-                        con_b_rec.total_paid_may += payment
+                        con_b_rec.total_paid_may += payment 
                     case 6:
-                        con_b_rec.total_paid_jun += payment
+                        con_b_rec.total_paid_jun += payment 
                     case 7:
-                        con_b_rec.total_paid_jul += payment
+                        con_b_rec.total_paid_jul += payment 
                     case 8:
-                        con_b_rec.total_paid_aug += payment
+                        con_b_rec.total_paid_aug += payment 
                     case 9:
-                        con_b_rec.total_paid_sept += payment
+                        con_b_rec.total_paid_sept += payment 
                     case 10:
-                        con_b_rec.total_paid_oct += payment
+                        con_b_rec.total_paid_oct += payment 
                     case 11:
-                        con_b_rec.total_paid_nov += payment
+                        con_b_rec.total_paid_nov += payment 
                     case 12:
-                        con_b_rec.total_paid_dec += payment
+                        con_b_rec.total_paid_dec += payment 
                 con_b_rec.save()
 
         except ObjectDoesNotExist:
             #gbaguia 08/16/2024
             #not billed yet
             pass
-            
+        
     return redirect('monthly_summary', id=conid, year=year)
 
 def makepayment(conid, consumer, month, year, user, or_num, con_b_rec):
@@ -2992,6 +3225,38 @@ def payment_history (request, id, year):
     }
 
     return render(request,'payment_history.html', context)
+
+def mark_unpaid (request, id): # Enjambre & Sobrian 26/11/2024 for unpaid in payment history trial
+    if request.method =="POST":
+        #transaction_id = request.POST.get ('transaction_id')
+        consumer_id = request.POST.get ('consumer_id')
+        #monthval = request.POST.get('month') #added
+       # year = request.POST.get('year')  #added
+        #payment = request.POST.get('payment')  #added
+        remarks = request.POST.get ('remarks')
+
+        
+
+        try:
+            transaction =Transactions.objects.get(transactionid=id, acctID =consumer_id ) #, acctID_id=consumer_id
+           
+
+            transaction.is_billpaid = False
+            transaction.remarks = remarks
+            transaction.save()
+            
+
+            #messages.success(request,f"Transaction {transaction_id}marked as unpaid.")
+            return redirect ('conmon_summary', id= consumer_id, year=transaction.year) #year=transaction.year
+        
+        except Transactions.DoesNotExist:
+            #messages.error(request, "Transaction not found.")
+            print(f"Transaction with ID {transaction_id} not found.")
+            return HttpResponse( "Transaction not found.", status =404)
+        
+    #return HttpResponse("Invalid request.", status=400)
+    return redirect('payment_history', id = consumer_id) #  year=transaction.year  
+    
 
 def consumption(request, year):
     
@@ -3365,3 +3630,108 @@ def get_is_seen_issues(request):
     
     
     return is_issues
+
+
+#added by K. Bandajon October 29, 2024 The new penalty rate-.- ID: NewPenaltyOct2024
+def new_penalty(request):
+    schedule_monthlyTask()
+    return HttpResponse("Task is Ongoing")
+
+#added by Kathrina D. Bandajon November 26, 2024
+from datetime import datetime
+from django.shortcuts import render
+from .models import ConsumerInfo, Transactions, Barangays
+
+@login_required(login_url='login')
+def allPaid(request): 
+    disp = request.GET.get('show', '')
+    filter_by = request.GET.get('p', 'all') 
+    selected_year = request.GET.get('fyear', str(datetime.year))
+    selected_month = request.GET.get('fmonth', str(datetime.month))
+    paidtable = []
+
+    current_date = datetime.today()
+    current_year = current_date.year
+    years = []
+
+    monthnames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+    allConsumer = ConsumerInfo.objects.all()
+    allBarangays = Barangays.objects.all()
+
+    yer = Transactions.objects.filter(acctID_id=id, transType='Received Amount', is_issue=False)
+
+    for i in yer:
+        if i.year not in years:
+            years.append(i.year)
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
+    if int(year) in years:
+        years.remove(int(year)) 
+
+    class allwhoPaid:
+        def __init__(self, name, consumerid, transactionid, date, month, year, payment, processedby, brgy):
+            self.name = name
+            self.consumerid = consumerid
+            self.transactionid = transactionid
+            self.date = date
+            self.month = month
+            self.year = year
+            self.payment = payment  # Amount paid
+            self.processedby = processedby
+            self.brgy = brgy
+
+    for consumer in allConsumer:
+        consumerid = consumer.consumer_id
+        name = consumer.firstname + " " + consumer.lastname
+        inst_add = consumer.installation_address
+
+        if filter_by == 'all':
+            thisConsumerPaid = Transactions.objects.filter(
+                acctID=consumerid,
+                transType="Payment",
+            )
+        elif filter_by == 'barangay':
+            barangay = request.GET.get('barangay', '')  # Get the selected barangay from the request
+            thisConsumerPaid = Transactions.objects.filter(
+                acctID=consumerid,
+                transType="Payment",
+                barangay__name__icontains=barangay  # Assuming Barangay has a 'name' field
+            )
+        else:
+            thisConsumerPaid = Transactions.objects.filter(
+                acctID=consumerid,
+                transType="Payment"
+            )
+        for paid in thisConsumerPaid:
+            transactionid = paid.transactionid
+            date = paid.date
+            month = paid.month
+            year = paid.year
+            payment = paid.payment
+            processedby = paid.processedBy
+            row = allwhoPaid(name, consumerid, transactionid, date, month, year, payment, processedby, inst_add)
+            paidtable.append(row)
+
+    is_issues = get_is_seen_issues(request)
+
+    context = {
+        'disp': disp,
+        'month': monthnames[current_date.month-1],  # Current month name
+        'date_today': current_date.strftime('%B %d, %Y - %I:%M %p'),  # Current date and time
+        'paidtable': paidtable,  # Transactions data to be displayed
+        'user': request.user,
+        'is_issues': is_issues,
+        'filter_by': filter_by,
+        'selected_year': selected_year,
+        'selected_month': selected_month,
+        'current_year': current_year,
+        'years': years,
+        'allBarangays': allBarangays,  # Add Barangays to the context
+    }
+
+    return render(request, 'allpaid.html', context)
+
+#def unpaid_method(request):
+    #if request.method == "POST":
+

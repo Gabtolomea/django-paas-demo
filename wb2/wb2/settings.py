@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'active_link',
     'django.contrib.humanize',
     'crispy_forms',
+    'background_task',
 ]
 
 # 

@@ -10,46 +10,53 @@ Payment History
 <script src="{% static 'html2pdf.bundle.min.js'%}"> </script>
 <script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
 
+
 <style>
     /* .table-scrolls{
-		width: 100%;
-		display: table-caption;
-		height: 500px;
-		overflow-y: scroll;
-		overflow-x: hidden;
-	} */
+        width: 100%;
+        display: table-caption;
+        height: 500px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    } */
 
-	.dataTables_empty {
-		text-align: center;
-	}
 
-	.odd {
-		font-size: 1rem;
-		font-weight: 400;
-		line-height: 1.5;
-		-webkit-text-size-adjust: 100%; 
-		-webkit-tap-highlight-color: transparent;
+    .dataTables_empty {
+        text-align: center;
+    }
 
-		caption-side: bottom;
-		font-family: Arial;
-		border-collapse: separate !important;
-		border-spacing: 0;
-		box-sizing: border-box;
-		border-color: inherit;
-		border-style: solid;
-		border-width: 1px 0;
-		color: #212529;
-	}
+
+    .odd {
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
+
+
+        caption-side: bottom;
+        font-family: Arial;
+        border-collapse: separate !important;
+        border-spacing: 0;
+        box-sizing: border-box;
+        border-color: inherit;
+        border-style: solid;
+        border-width: 1px 0;
+        color: #212529;
+    }
+
 
     .hide {
         opacity: 0;
         transition: 0.3s all ease-in-out;
     }
 
+
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
     }
+
 
     .button2 {
         background-color: var(--main-color);
@@ -61,6 +68,7 @@ Payment History
         transition: all ease 0.3s;
     }
 
+
     .btn.button2:hover {
         background: var(--main-color);
         color: #ffffff;
@@ -68,6 +76,7 @@ Payment History
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
+
 
     .btn.button2:focus {
         background: var(--main-color);
@@ -77,7 +86,9 @@ Payment History
         transition: all 0.1s;
     }
 
+
     /* ============================================================================================= */
+
 
     .invoice-box {
         max-width: 1044px;
@@ -91,24 +102,29 @@ Payment History
         color: #000;
     }
 
+
     .invoice-box table {
         width: 100%;
         line-height: inherit;
         text-align: left;
     }
 
+
     .invoice-box table td {
         padding: 11px;
         vertical-align: top;
     }
 
+
     .invoice-box table tr td:nth-child(2) {
         text-align: right;
     }
 
+
     .invoice-box table tr.top table td {
         padding-bottom: 0px;
     }
+
 
     .invoice-box table tr.top table td.title {
         font-size: 45px;
@@ -116,9 +132,11 @@ Payment History
         color: rgb(0, 0, 0);
     }
 
+
     .invoice-box table tr.information table td {
         padding-top: 0;
     }
+
 
     .invoice-box table tr.heading td {
         background: #eee;
@@ -126,22 +144,27 @@ Payment History
         font-weight: bold;
     }
 
+
     .invoice-box table tr.details td {
         padding-bottom: 0px;
     }
+
 
     .invoice-box table tr.item td {
         border-bottom: 1px solid #eee;
     }
 
+
     .invoice-box table tr.item.last td {
         border-bottom: none;
     }
+
 
     .invoice-box table tr.total td:nth-child(2) {
         border-top: 2px solid #eee;
         font-weight: bold;
     }
+
 
     @media only screen and (max-width: 600px) {
         .invoice-box table tr.top table td {
@@ -150,6 +173,7 @@ Payment History
             text-align: center;
         }
 
+
         .invoice-box table tr.information table td {
             width: 100%;
             display: block;
@@ -157,25 +181,30 @@ Payment History
         }
     }
 
+
     /** RTL **/
     .rtl {
         direction: rtl;
         font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
     }
 
+
     .rtl table {
         text-align: right;
     }
 
+
     .rtl table tr td:nth-child(2) {
         text-align: left;
     }
+
 
     #logo {
         vertical-align: middle;
         border-style: none;
         height: 90px;
     }
+
 
     .total {
         font-weight: bold;
@@ -185,17 +214,20 @@ Payment History
         border-color: black;
     }
 
+
     .mun {
         font-family: monospace;
         font-size: 25px;
         font-weight: bold;
     }
 
+
     .mun-header {
         font-size: 38px;
         font-family: monospace;
         font-weight: bold;
     }
+
 
     .st {
         font-size: 21px;
@@ -211,6 +243,7 @@ Payment History
                 <tr class="header">
                     <th scope="col" style="min-width:25px">Account ID</th>
                     <th scope="col" style="min-width:25px">Name</th>
+                    <th scope="col" style="min-width:25px">Connection Type</th><!-- new 28/10/2024 Enjambre-->
                     <th scope="col" style="min-width:25px">Meter Number</th>
                     <th scope="col" style="min-width:25px">Excess Payment</th>
                     <th scope="col" style="min-width:25px">Current Balance</th>
@@ -220,6 +253,8 @@ Payment History
                 <tr class="showOnHover">
                     <td class="table-light text-center">{{u.consumer_id}}</td>
                     <td class="table-light text-center">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+                    <td class="table-light text-center">{{u.contypeid.contype}}</td>
+                    <!-- from u.rateid to u.contypeid.contype  19/11/2024 Enjambre -->
                     <td class="table-light text-center">{{u.meternumber}}</td>
                     <td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
                     <td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}</td>
@@ -229,16 +264,24 @@ Payment History
     </div>
 </div>
 
+
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
 
 
 
+
+
+
 <div class="row w-100 m-auto pt-2">
+
 
     <!-- Buttons -->
 
+
     {% include 'billingbuttons.html' %}
+
+
 
 
     <!--Year Selection -->
@@ -246,13 +289,14 @@ Payment History
         <div class="table-responsive" style="max-height: 700px;">
             <form id="yearselection" action="">
                 <label class="d-flex" style="float: right; align-items: center;">Year
-                        <select style="width: 100px; margin: 0 5px;" class="form-select" id="selector" onchange="change()">
+                    <select style="width: 100px; margin: 0 5px;" class="form-select" id="selector" onchange="change()">
                         <option value="{{year}}">{{year}}</option>
                         {% for i in years reversed %}
                         <option value="{{i}}">{{i}}</option>
                         {% endfor %}
                     </select>
                 </label>
+
 
             </form>
             <script>
@@ -263,88 +307,188 @@ Payment History
                     yearselection.submit()
                 }
             </script>
-    </div>
-
-
-</div>
-
-
-<!-- Payment History -->
-<div id="Payment">
-    <div class="">
-        <form></form>
-        <h1 class="mb-3 text-center">Payment History</h1>
-        <div class="container-fluid p-0">
-            <div class="table-responsive">
-                <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
-                    width="100%">
-                    <thead class="wb_thead">
-                        <tr>
-                            <th style="min-width: 100px;">Transaction ID</th>
-                            <th style="min-width: 100px;">OR Number</th>
-                            <th style="min-width: 100px;">Date</th>
-                            <th style="min-width: 100px;">Received Amount</th>
-                            <th style="min-width: 100px;">Processed By</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="wb_tbody">
-                        {% if alltrans %}
-                        {% for t in alltrans %}
-                        <tr style="cursor: pointer;" title="Edit Payment {{t.transactionid}}" data-bs-toggle="modal" data-bs-target="#edit-{{t.transactionid}}">
-                            <td class="text-center">{{t.transactionid}}</td>
-                            <td class="text-center">{{t.or_number}}</td>
-                            <td class="text-center">{{t.date}}</td>
-                            <td class="">{% if t.receivedamt %}&#8369; {{t.receivedamt|floatformat:2|intcomma}}{% endif %}</td>
-                            <td class="text-center">{{t.processedBy}}</td>
-
-                        </tr>
-                        {% endfor %}
-                        {% else %}
-                        <tr class="odd">
-                            <td valign="top" colspan="5" class="dataTables_empty">No records found</td>
-                        </tr>
-                        {% endif %}                       
-                    </tbody>
-
-                </table>
-            </div>
         </div>
 
-        </form>
+
+
+
     </div>
-</div>
 
-<!-- Payment form/Modal -->
-{% for i in alltrans  %}
-<div class="modal fade" id="edit-{{i.transactionid}}" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<form action="{% url 'editpayment' i.transactionid %}" method="POST">
-				{% csrf_token %}
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label>Amount</label>
-						<input value="{{i.receivedamt}}" name="amount" type="number" class="form-control" required>
-						<label>OR Number</label>
-						<input value="{{i.or_number}}" name="or_num" type="" class="form-control" required>
-						<label>Discount Code</label>
-						<input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary" name="btnform2" >Update</button>
-				</div>
-				<input type="hidden" name="fshow" value="">
-			</form>
-		</div>
-	</div>
-</div>
-{% endfor %}
 
-{% endblock payment_history %}
+
+
+    <!-- Payment History -->
+    <div id=c>
+        <div class="">
+            <form></form>
+            <h1 class="mb-3 text-center">Payment History</h1>
+            <div class="container-fluid p-0">
+                <div class="table-responsive">
+                    <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
+                        width="100%">
+                        <thead class="wb_thead">
+                            <tr>
+                                <th style="min-width: 100px;">Transaction ID</th>
+                                <th style="min-width: 100px;">Bill Type</th> <!-- changes 28/10/2024 Enjambre -->
+                                <th style="min-width: 100px;">OR Number</th>
+                                <th style="min-width: 100px;">Date</th>
+                                <th style="min-width: 100px;">Received Amount</th>
+                                <th style="min-width: 100px;">Processed By</th>
+                                <th style="min-width: 100px;">Action</th> <!-- changes 28/10/2024 Enjambre -->
+                            </tr>
+                        </thead>
+
+
+                        <tbody class="wb_tbody">
+                            {% if alltrans %}
+                            {% for t in alltrans %}
+                            <tr style="cursor: pointer;" title="Edit Payment {{t.transactionid}}" data-bs-toggle="modal"
+                                data-bs-target="#edit-{{t.transactionid}}">
+                                <td class="text-center">{{t.transactionid}}</td>
+                                <td class="text-center">{{t.transType}}</td><!-- 20/11/2024 -->
+                                <td class="text-center">{{t.or_number}}</td>
+                                <td class="text-center">{{t.date}}</td>
+                                <td class="text-center">{% if t.receivedamt %}&#8369;
+                                    {{t.receivedamt|floatformat:2|intcomma}}{% endif %}</td>
+                                <td class="text-center">{{t.processedBy}}</td>
+                                <!-- below is for Action unfinished 29/10/2024-->
+                                <td class="text-center">
+                                    {% if t.total_amount_paid %}
+                                    &#8369; {{ t.total_amount_paid }}
+                                    {% else %}
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#pay-{{ t.monthval }}">
+                                        UNPAID
+                                    </button>
+                                    {% endif %}
+                                </td>
+                                <!-- until here for Unpaid Action unfinished 29/10/2024-->
+
+
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr class="odd">
+                                <td valign="top" colspan="5" class="dataTables_empty">No records found</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+
+
+                    </table>
+                </div>
+            </div>
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Payment form/Modal -->
+    {% for i in alltrans %}
+    <div class="modal fade" id="edit-{{i.transactionid}}" tabindex="-1" role="dialog" aria-labelledby="payment"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="{% url 'editpayment' i.transactionid %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input value="{{i.receivedamt}}" name="amount" type="number" class="form-control" required>
+                            <label>OR Number</label>
+                            <input value="{{i.or_number}}" name="or_num" type="" class="form-control" required>
+                            <label>Discount Code</label>
+                            <input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="btnform2">Update</button>
+                    </div>
+                    <input type="hidden" name="fshow" value="">
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    {% endfor %}
+
+
+    {% for t in alltrans%}
+    <!-- This section is for Unpaid Action unfinished 26/11/2024 Enjambre&Sobrian-->
+<div class="modal fade" id="pay-{{t.monthval}}" tabindex="-1" role="dialog" aria-labelledby="payment"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="{% url 'mark_unpaid' %} t.transactionid" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title-{{ t.transactionid }}">Unpaid Transaction</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" >
+                        <div class="form-group">
+
+
+                            <label for="transaction_id">Transaction ID:</label>
+                            <span id="modal-transaction-id"
+                                style="margin-left: 10px;"></span><span>{{ t.transactionid }}</span><br><!-- need to change 29/10/2024-->
+
+                                
+                            <label for="id_or_num">Amount Paid:</label>
+                            <span id="modal-amount"
+                                style="margin-left: 10px;"></span><span>{{ t.receivedamt }}</span><br><!-- need to change 29/10/2024-->
+
+
+                            <label for="id_or_num">OR Number:</label>
+                            <span id="modal-or-number"
+                                style="margin-left: 10px;"></span><span>{{ t.or_number }}</span><br><!-- need to change 29/10/2024-->
+
+
+                            <label for="payment_date">Date Paid:</label>
+                            <span id="modal-payment-date"
+                                style="margin-left: 10px;"></span><span>{{ t.date }}</span><br><!-- need to change 29/10/2024-->
+
+                            <!--<input type="hidden" name="transaction_id" value="{{ t.transactionid }}">
+                            <input type="hidden" name="conid" value="{{ u.consumer_id }}">
+                            <input type="hidden" name="month" value="{{ t.monthval }}">
+                            <input type="hidden" name="year" value="{{ year }}">
+                            <input type="hidden" name="payment" value="{{ t.total_bill }}">-->
+
+
+                            <label for="id_remarks">Remarks:</label>
+                            <input type="text" name="remarks" id="id_remarks" required class="input form-control"
+                                placeholder="Enter Remarks"><br>
+
+
+                            <div style="color: red; margin-top: 10px;">
+                                Are you sure to delete (unpaid) this transaction?
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-primary" name="btnform1">Yes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+    <!-- Until here for Unpaid Transaction 29/10/2024-->
+
+
+
+
+    {% endblock payment_history %}

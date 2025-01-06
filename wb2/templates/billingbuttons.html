@@ -3,7 +3,7 @@
     <a href="{% url 'ledger' u.consumer_id %}"><button type="button" class="btn button2"
             style="float: left; margin-right: 5px;">Ledger</button></a>
     <a href="{% url 'monthly_summary' u.consumer_id year %}"><button type="button" class="btn button2"
-            style="float:left; margin-right: 5px;">Monthly</button></a>
+            style="float:left; margin-right: 5px;">Outstanding Balances</button></a> <!-- changed from Monthly to Outstanding Balances 28/10/2024 -->
     <a href="{% url 'payment_history' u.consumer_id year %}"><button type="button" class="btn button2"
             style="float:left; margin-right: 5px;">Payment History</button></a>
     <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment"

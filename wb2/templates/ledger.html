@@ -97,6 +97,9 @@ Account Ledger
 				<tr class="header">
 					<th scope="col" style="min-width:25px">Account ID</th>
 					<th scope="col" style="min-width:25px">Name</th>
+					<!--changed-->
+					<th scope="col" style="min-width:25px">Connection Type</th>
+					<!--changed-->
 					<th scope="col" style="min-width:25px">Meter Number</th>
 					<th scope="col" style="min-width:25px">Current Reading</th>
 					<th scope="col" style="min-width:25px">Excess Payment</th>
@@ -107,12 +110,15 @@ Account Ledger
 				<tr class="showOnHover">
 					<td class="table-light text-center">{{u.consumer_id}}</td>
 					<td class="table-light text-center">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<!--changed-->
+					<td class="table-light text-center">{{u.contypeid.contype}}</td> <!--from u.rateid to u.contypeid.contype  Enjambre 19/11/2024-->
+					<!--changed-->
 					<td class="table-light text-center">{{u.meternumber}}</td>
 					<td class="table-light text-center">{{u.current_reading}}</td>
 					<td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
 					<td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}
 						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
-
+						
 					 	{% if not ispaid %}<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button> {% endif %}
 
 					</td>
@@ -194,16 +200,20 @@ Account Ledger
 					<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
 						<thead class="wb_thead"  style="position: sticky; top: 0;">
 							<tr>
-								<th style="min-width: 100px;">Transaction ID</th>
+								<th style="min-width: 100px;">Billing Transaction ID</th>
 								<th style="min-width: 100px;">Date</th>
-								<th style="min-width: 100px;">Month-Year</th>
-								<th style="min-width: 100px;">Previous</th>
-								<th style="min-width: 100px;">Current</th>
-								<th style="min-width: 110px;">Usage</th>
-								<th style="min-width: 110px;">Bill</th>
+								<th style="min-width: 100px;">Bill Month(Month-Year)</th> <!-- from Month-Year to Bill Month(Month-Year) 28/10/2024 Enjambre -->
+								<th style="min-width: 100px;">Previous Reading</th> <!-- from previous to Previous Reading 28/10/2024  -->
+								<th style="min-width: 100px;">Current Reading</th> <!--from Current to Current Reading  28/10/2024  -->
+								<th style="min-width: 110px;">CU.M Used</th> <!--from Usage to CU.M Used  28/10/2024  -->
+								<th style="min-width: 110px;">Bill Amount</th> <!--from Bill to Bill Amount  28/10/2024  -->
+								<th style="min-width: 110px;">Less Excess</th> <!--added changes  14/11/2024  -->
+								<th style="min-width: 110px;">Penalty</th> <!--added changes  28/10/2024  -->
+								<th style="min-width: 110px;">Amount Due</th> <!--added changes  14/11/2024  -->
 								<th style="min-width: 100px;">Payment</th>
+								<th style="min-width: 110px;">Payment Transaction ID</th> <!--added changes  28/10/2024  -->
 								<th style="min-width: 100px;">Balance</th>
-								<th style="min-width: 110px;">Connection Type</th>
+								<!--remove the connection type in this line  28/10/2024  -->
 								<th style="min-width: 100px;">Processed By</th>
 								<th style="min-width: 110px;">Status</th>
 							</tr>
@@ -225,9 +235,13 @@ Account Ledger
 								<td>{{t.reading}}</td>
 								<td>{{t.usage}}</td>
 								<td>{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+								<td>{{t.}}</td><!--added changes for less excess unfinished 14/11/2024  -->
+								<td>{{t.}}</td><!--added changes for penalty unfinished 28/10/2024  -->
+								<td>{{t.}}</td><!--added changes for Amount Due unfinished 14/11/2024  -->								
 								<td>{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+								<td>{{t.paytranid}}</td><!--added changes for payment transaction id unfinished 28/10/2024  -->
 								<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>
-								<td>{{t.rateid}}</td>
+								<!--remove the <td>{{t.rateid}}</td> (connection type) in this line  28/10/2024  -->
 								<td>{{t.pb}}</td>
 								<td style="text-align: center;" class="text-center align-middle">{{ t.ispaid }}</td>
 							</tr>
@@ -321,7 +335,7 @@ Account Ledger
 			doc.text(x, y = y + 10, "Account ID:");
 			doc.text(300, y, "{{u.consumer_id}}")
 			doc.text(x, y = y + 15, "Name:");
-			doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}")
+			doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}");
 			doc.text(x, y = y + 15, "Meter Number:");
 			doc.text(300, y, "{{u.meternumber}}");
 			doc.text(x, y = y + 15, "Balance:");
@@ -335,7 +349,7 @@ Account Ledger
 			doc.setTextColor(0, 0, 0)
 			doc.text(420, y = y + 30, "ACCOUNT LEDGER");
 
-			var table = [{% for t in table reversed %}
+			var table = [{% for t in table reversed %}]
 		['{{t.transid}}', '{{t.month | slice:":3"}}-{{t.year}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
     ]
 
