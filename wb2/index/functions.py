@@ -1019,6 +1019,32 @@ def bill_compute(year, month, usage, rate):
                     bill = ((usage - minimumusage) * excessrate36to50) + minimumpayment
             elif excess >= min51:
                     bill = ((usage - minimumusage) * excessrate51) + minimumpayment
+    
+
+    day = 1
+    startdate = datetime(2024, 10, day)
+    nowDate = datetime(year, month, day)
+    
+    #if month >= 10 and year >=2024:
+    if nowDate >= startdate:
+        #if  usage >= 1 and usage <= 5 :
+        #    bill = usage * minimumrate
+        #else:
+        #    excess = usage - minimumrate
+        #    if excess >= min1to5 and excess <= max1to5:
+        #        bill = ((usage - minimumusage) * excessrate1to5) + minimumpayment
+        #    elif  excess >= min6to10 and excess <= max6to10 :
+        #        bill = ((usage - minimumusage) * excessrate6to10) + minimumpayment
+        #    elif excess >= min11to20 and excess <= max11to20:
+        #        bill = ((usage - minimumusage) * excessrate11to20) + minimumpayment
+        #    elif excess >= min21to35 and excess <= max21to35 :
+        #        bill = ((usage - minimumusage) * excessrate21to35) + minimumpayment
+        #    elif excess >=  min36to50 and excess <= max36to50:
+        #        bill = ((usage - minimumusage) * excessrate36to50) + minimumpayment
+        #    elif excess >= min51:
+        #        bill = ((usage - minimumusage) * excessrate51) + minimumpayment
+        bill = calculate_water_bill_fromOct2024(usage)
+
     else:
     #original
         if usage <= rate.minReading:
@@ -1086,3 +1112,40 @@ def excessLog(month, year, id):
     
 
 #def unpaid_method(request):
+
+#gbaguia 11132024
+# Define the ranges and rates in an array
+rate_ranges = [
+    {"max_cubic_meters": 5, "rate": 5.0},   # 1-5 cubic meters at PHP 5.00 per cubic meter
+    {"max_cubic_meters": 5, "rate": 6.0},   # 6-10 cubic meters at PHP 6.00 per cubic meter
+    {"max_cubic_meters": 10, "rate": 7.0},   # 11-20 cubic meters at PHP 7.00 per cubic meter
+    {"max_cubic_meters": 15, "rate": 8.0},  # 21-35 cubic meters at PHP 8.00 per cubic meter
+    {"max_cubic_meters": 15, "rate": 9.0},  # 36-50 cubic meters at PHP 9.00 per cubic meter
+    {"max_cubic_meters": 0, "rate": 10.0},  # 51 cubic meters and up at PHP 10.00 per cubic meter
+]
+
+def calculate_water_bill_fromOct2024(consumption):
+    bill = 0.0
+    
+    for rate_info in rate_ranges:
+        if consumption <= 0:
+            break
+        
+        # Calculate the cubic meters for the current range
+        range_cubic_meters = min(consumption, rate_info["max_cubic_meters"])
+        
+        # Add to the bill
+        bill += range_cubic_meters * rate_info["rate"]
+        
+        # Subtract the calculated cubic meters from the total consumption
+        consumption -= range_cubic_meters
+    
+    # Handle any excess consumption beyond the defined ranges
+    if consumption > 0:
+        bill += consumption * rate_ranges[-1]["rate"]  # Use the rate of the last range
+    
+    # gbaguia 12/45/2024
+    # 60% adjustment/discounted rate
+    bill = bill * 0.60
+    
+    return bill

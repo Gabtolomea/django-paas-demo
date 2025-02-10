@@ -218,19 +218,26 @@ Water Usage
 				{% for br in br %}
 				<tr class='clickable-row' style="cursor: pointer;"
 					data-href="{% url 'view_barangay' br.barangayrec_id %}">
-					<td data-label="Barangay">
+					<td>
 						{{br.barangaycode}}
 					</td>
-					<td data-label="Total Usage(Cu. Meter)">
+					<!--Removed Area:
+					data-label="Barangay"
+					data-label="Total Usage(Cu. Meter)"
+					data-label="Total Receivables" 
+					data-label="Total Collection" 
+					 data-label="Collection Rate" 
+					-->
+					<td>
 						{{br.total_usage|floatformat:2}} &#13221;
 					</td>
-					<td data-label="Total Receivables" class="total_due">
+					<td class="total_due">
 						{{br.total_rec|floatformat:1}}
 					</td>
-					<td data-label="Total Collection" class="total_paid">
+					<td class="total_paid">
 						{{br.total_paid|floatformat:1}}
 					</td>
-					<td data-label="Collection Rate" class="rate">
+					<td class="rate">
 					</td>
 				</tr>
 				{% endfor %}

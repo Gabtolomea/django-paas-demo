@@ -327,7 +327,7 @@ def ledger(request, id):
         cur = ''
         ispaid = ''
         paytranid= ''# added for payment transaction id  Enjambre 21/11/2024
-        payment =0 # Added Enjambre 20/11,2024
+
 
         if tran.transType == 'Payment':
             paytranid = tran.transactionid
@@ -3251,7 +3251,13 @@ def mark_unpaid (request, id): # Enjambre & Sobrian 26/11/2024 for unpaid in pay
         
         except Transactions.DoesNotExist:
             #messages.error(request, "Transaction not found.")
-            print(f"Transaction with ID {transaction_id} not found.")
+
+            #print(f"Transaction with ID {transaction_id} not found.")
+
+            #print(f"Transaction with ID {ransaction_id} not found.")
+
+            #print(f"Transaction with ID {ransaction_id} not found.")
+
             return HttpResponse( "Transaction not found.", status =404)
         
     #return HttpResponse("Invalid request.", status=400)
@@ -3637,6 +3643,7 @@ def new_penalty(request):
     schedule_monthlyTask()
     return HttpResponse("Task is Ongoing")
 
+
 #added by Kathrina D. Bandajon November 26, 2024
 from datetime import datetime
 from django.shortcuts import render
@@ -3734,4 +3741,141 @@ def allPaid(request):
 
 #def unpaid_method(request):
     #if request.method == "POST":
+
+def month_name_to_int(month_name):
+    try:
+        month = datetime.strptime(month_name, '%B').month
+        return month
+    except ValueError:
+        # Handle invalid month name
+        return None
+
+@login_required(login_url='login')
+def record_list(request):
+    selected_year = request.GET.get('fyear', 2025)
+    selected_brgy = request.GET.get('fbar', 1)
+    selected_month = request.GET.get('fmonth', 'January')
+    page = request.GET.get('page')
+    #isnum = search.isnumeric()
+
+    month_number = month_name_to_int(selected_month)
+    print(month_number)
+
+    class recordListClass:
+        def __init__(self, consumer_id, meternumber, name, paid_amount, date_paid, transtype, transID):
+            self.consumer_id = consumer_id
+            self.meternumber = meternumber
+            self.name = name
+            self.paid_amount = paid_amount
+            self.date_paid = date_paid
+            self.transtype = transtype
+            self.transID = transID
+
+    years = []
+    yer = Transactions.objects.filter(transType='Received Amount', is_issue=False)
+    for i in yer:
+        if i.year not in years:
+            years.append(i.year)
+    
+    # Add current year if not already present
+    current_year = datetime.today().year
+    if current_year not in years:
+        years.append(current_year)
+    
+    print(years)
+    # Fetching months
+    months = []
+    mon = Transactions.objects.filter(transType='Received Amount', is_issue=False)
+    for m in mon:
+        if m.month not in months:
+            months.append(m.month)
+    
+    # Add current month if not already present
+    current_month = datetime.today().month
+    if current_month not in months:
+        months.append(current_month)
+
+    month_names = [calendar.month_name[month] for month in months]
+    #print(month_names)
+
+    # Fetch Barangays (all)
+    bars = Barangays.objects.all()
+    #print(bars)
+    # Initialize reclist
+    reclist = []
+
+    print(selected_brgy)
+
+    # Filtering the records based on the search and selected filters
+    try:
+        conlistofBarangay = ConsumerInfo.objects.filter(Q(installation_address=selected_brgy))
+        print(conlistofBarangay)
+        for consumer in conlistofBarangay:
+            meternumber = consumer.meternumber
+            consumer_id = consumer.consumer_id
+            fname = consumer.firstname
+            try:
+                lname = consumer.lastname
+            except:
+                pass
+            name =  f"{lname} {fname}"
+            #print(len(name))
+            try:
+                rec = Transactions.objects.filter(
+                        Q(year=selected_year) & Q(acctID=consumer_id) & Q(month=month_number) &
+                        Q(transType="Received Amount")
+                )
+                    
+                    # Assuming `rec` contains only one record, you can use first()
+                if rec.exists():
+                    rec = rec.first()  # To avoid working with queryset and use only the first record
+                    paid_amount = rec.receivedamt
+                    date_paid = rec.date
+                    transtype = rec.transType
+                    transID = rec.transactionid
+
+                        # Append to the list
+                    reclist.append(recordListClass(consumer_id, meternumber, name, paid_amount, date_paid, transtype, transID))
+            except Exception as e:
+                print(f"Error processing transaction for consumer {consumer_id}: {str(e)}")
+                print(len(reclist))
+    except:
+        print(f"Error processing transaction for consumer {consumer_id}: {str(e)}")
+        print("error handling")
+
+    # Pagination
+    paginate_bypages = int(request.GET.get('p', 10))
+    paginate_by = request.GET.get('paginate_by', paginate_bypages)
+
+    paginator = Paginator(reclist, paginate_by)
+    try:
+        record_list = paginator.page(page)
+    except PageNotAnInteger:
+        record_list = paginator.page(1)
+    except EmptyPage:
+        record_list = paginator.page(paginator.num_pages)
+
+    # Get issues (if any)
+    is_issues = get_is_seen_issues(request)
+
+    context = {
+        #'search': search,
+        'last': range(paginator.num_pages - 3, paginator.num_pages),
+        'five': range(1, 6),
+        'paginate_by': paginate_by,
+        'month_names': month_names,
+        'months': months,
+        'years': years,
+        'selected_year': int(selected_year) if selected_year else None,
+        'selected_month': selected_month if selected_month else None,
+        'selected_brgy': selected_brgy,
+        'bars': bars,
+        'count': len(reclist),
+        'reclist': reclist,  # Use reclist here if no pagination is needed elsewhere
+        'record_list': record_list,
+        'user': request.user,
+        'is_issues': is_issues
+    }
+
+    return render(request, 'recordList.html', context)
 

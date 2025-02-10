@@ -1,4 +1,5 @@
-from background_task import background
+'''from background_task import background
+
 from datetime import datetime, timedelta
 from .models import *
 
@@ -71,4 +72,7 @@ def schedule_monthlyTask():
         print(next_run)
         #new_penalty_rate()
 
+
 schedule_monthlyTask()
+
+'''

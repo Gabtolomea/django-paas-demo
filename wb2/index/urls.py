@@ -63,7 +63,8 @@ urlpatterns = [
     path('resolve_issue', views.resolve_issue,name='resolve_issue'),
     path('new_penalty', views.new_penalty), #added by K. Bandajon October 29, 2024 The new penalty rate-.- ID: NewPenaltyOct2024
     path('mark_unpaid', views.mark_unpaid, name ='mark_unpaid'),# added Enjambre & Sobrian 26/11/2024 for unpaid in payment history
-    path('allpaid', views.allPaid, name ='all_Paid') #added by kathrina D. Bandajon nov. 26, 2024 -.- ID: AllPaid2611
+    path('record_list', views.record_list, name ='record_list') #added by kathrina D. Bandajon nov. 26, 2024 -.- ID: AllPaid2611
+
     #path 'unpaid',
 ]
 
