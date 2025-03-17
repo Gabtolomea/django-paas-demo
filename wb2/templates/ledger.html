@@ -351,7 +351,7 @@ Account Ledger
 
 			var table = [{% for t in table reversed %}]
 		['{{t.transid}}', '{{t.month | slice:":3"}}-{{t.year}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
-    ]
+	]
 
 		y = y + 5
 		doc.setLineWidth(2);

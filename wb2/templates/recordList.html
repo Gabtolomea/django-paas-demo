@@ -1,32 +1,18 @@
 {% extends 'dashboard.html' %}
 {% load static %}
-{% block title %}
-Record List
-{% endblock title %}
 
-<h1>Yoooo!</h1>
+{% block title %}Record List{% endblock title %}
+
 {% block style %}
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
 <style>
-    .odd {
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        -webkit-text-size-adjust: 100%;
-        -webkit-tap-highlight-color: transparent;
-        caption-side: bottom;
-        font-family: Arial;
-        border-collapse: separate !important;
-        border-spacing: 0;
-        box-sizing: border-box;
-        border-color: inherit;
-        border-style: solid;
-        border-width: 1px 0;
-        color: #212529;
-    }
-
     .dataTables_empty {
         text-align: center;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
     }
 </style>
 {% endblock style %}
@@ -34,74 +20,39 @@ Record List
 {% block script %}
 <script src="{% static 'jquery/jquery.js' %}"></script>
 <script>
-    // Pagination script
     $(document).ready(function () {
         $('#rows-per-page').change(function () {
             this.form.submit();
         });
+
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+        });
     });
 </script>
 {% endblock script %}
-
 
 {% block record_list %}
 <script src="{% static 'jspdf.min.js' %}"></script>
 <script src="{% static 'jquery.min.js' %}"></script>
 <script src="{% static 'html2pdf.bundle.min.js' %}"></script>
 <script src="{% static 'jspdf.plugin.autotable.js' %}"></script>
-<style>
-    /* Style for the modal */
-    .modal-content {
-        padding: 20px;
-    }
 
-    .modal-header {
-        background-color: #f1f1f1;
-        padding: 10px;
-    }
-
-    .modal-footer {
-        padding: 10px;
-        text-align: center;
-    }
-
-    .modal-body {
-        padding: 20px;
-    }
-
-    .modal-dialog {
-        max-width: 600px;
-        margin: 30px auto;
-    }
-
-    /* Other styles like button styles can go here */
-    .btn-primary {
-        background-color: #5cb85c;
-        border: none;
-    }
-</style>
-
-<!-- Record List -->
-<div class="" id="record_list">
+<div id="record_list">
     <h1 class="mb-3 text-center">Record List</h1>
 
-    <!-- Button to trigger the modal -->
-    <div class="text-center mb-3">     
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-toggle="tooltip" data-bs-placement="top"
-            title="Filter to change year, month, barangay" data-bs-target="#filterModal">
-        Filter Records</button>
+    <div class="text-center mb-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+            Filter Records
+        </button>
     </div>
 
-    <!-- Modal for Filters -->
-    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="filterModalLabel">Filter Records</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title">Filter Records</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
                 </div>
                 <form method="get">
                     <div class="modal-body">
@@ -110,16 +61,19 @@ Record List
                             <select id="year" name="fyear" class="form-control">
                                 <option value="">-- Select Year --</option>
                                 {% for year in years %}
-                                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="month_names">Select Month</label>
+                            <label for="month">Select Month</label>
                             <select id="month" name="fmonth" class="form-control">
                                 <option value="">-- Select Month --</option>
                                 {% for month_name in month_names %}
-                                <option value="{{ month_name }}" {% if month == selected_month %}selected{% endif %}>{{month_name}}</option>
+                                <option value="{{ month_name }}" {% if month_name == selected_month %}selected{% endif %}>
+                                    {{ month_name }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -128,13 +82,14 @@ Record List
                             <select id="barangay" name="fbar" class="form-control">
                                 <option value="">-- Select Barangay --</option>
                                 {% for bar in bars %}
-                                <option value="{{ bar.id }}" {% if bar.id == selected_brgy %}selected{% endif %}>{{bar}}</option>
+                                <option value="{{ bar.id }}" {% if bar.id == selected_brgy %}selected{% endif %}>{{ bar }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Apply Filters</button>
                     </div>
                 </form>
@@ -142,35 +97,31 @@ Record List
         </div>
     </div>
 
-    <div class="container-fluid p-0">
-        <div class="table-responsive">
-            <div class="col-12 {% if record_list.paginator.count > 10 %}table-scrolls{% endif %}">
-                <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
-                    width="100%">
-                    <h4 class="mb-3 text-center fs-6">Displaying the list of all paid transactions for the year {{ selected_year }}, month of {{ selected_month }} in barangay {{ selected_brgy }}</h4>
-                    <thead class="wb_thead" style="position: sticky; top: 0;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <h3 class="text-center">Displaying the Record in Barangay {{ barangay }} for the Month of {{ selected_month }}, Year {{ selected_year }}</h3>
+                <table id="recordTable" class="table table-bordered table-hover table-striped" cellspacing="0" width="100%">
+                    <thead class="wb_thead">
                         <tr>
                             <th style="min-width: 100px;">Account ID</th>
                             <th style="min-width: 100px;">Meter Number</th>
-                            <th style="min-width: 100px;">Name</th>
+                            <th style="min-width: 150px;">Name</th>
                             <th style="min-width: 100px;">Paid Amount</th>
-                            <th style="min-width: 100px;">Date Paid</th>
-                            <th style="min-width: 100px;">Transaction ID</th>
+                            <th style="min-width: 120px;">Date Paid</th>
+                            <th style="min-width: 150px;">Transaction ID</th>
                         </tr>
                     </thead>
                     <tbody class="wb_tbody">
                         {% if record_list %}
                         {% for rec in record_list %}
-                        <tr class="clickable-row" style="cursor: pointer;"
-                            data-href="{% url 'ledger' rec.consumer_id %}">
-                            <td style="text-align:center;">{{ rec.consumer_id }}</td>
-                            <td style="text-align:center;">{{ rec.meternumber }}</td>
+                        <tr class="clickable-row" style="cursor: pointer;" data-href="{% url 'ledger' rec.consumer_id %}">
+                            <td class="text-center">{{ rec.consumer_id }}</td>
+                            <td class="text-center">{{ rec.meternumber }}</td>
                             <td>{{ rec.name }}</td>
-                            <td class="balance">
-                                &#8369; {{ rec.paid_amount|floatformat:2}}<br>
-                            </td>
-                            <td>{{ rec.date_paid }}</td>
-                            <td>{{ rec.transID }}</td>
+                            <td class="text-center">&#8369; {{ rec.paid_amount|floatformat:2 }}</td>
+                            <td class="text-center">{{ rec.date_paid }}</td>
+                            <td class="text-center">{{ rec.transID }}</td>
                         </tr>
                         {% endfor %}
                         {% else %}
@@ -180,71 +131,47 @@ Record List
                         {% endif %}
                     </tbody>
                 </table>
-
-                <!-- Pagination Controls -->
-                {% if record_list.paginator.num_pages > 1 %}
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        {% if record_list.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ record_list.previous_page_number }}">Previous</a>
-                        </li>
-                        {% endif %}
-                
-                        <!-- Show first page and ellipsis if necessary -->
-                        {% if record_list.number > 3 %}
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
-                        {% endif %}
-                
-                        <!-- Show pages around the current page -->
-                        {% for page_num in record_list.paginator.page_range %}
-                        {% if page_num == record_list.number %}
-                        <li class="page-item active">
-                            <a class="page-link" href="#">{{ page_num }}</a>
-                        </li>
-                        {% elif page_num == record_list.number|add:"-1" or page_num == record_list.number|add:"1" %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
-                        </li>
-                        {% elif page_num == 1 or page_num == record_list.paginator.num_pages %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
-                        </li>
-                        {% endif %}
-                        {% endfor %}
-                
-                        <!-- Show ellipsis before the last page if necessary -->
-                        {% if record_list.number < record_list.paginator.num_pages|add:"-2" %} <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                            </li>
-                            {% endif %}
-                
-                            <!-- Show Next and Last page -->
-                            {% if record_list.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ record_list.next_page_number }}">Next</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ record_list.paginator.num_pages }}">Last</a>
-                            </li>
-                            {% endif %}
-                    </ul>
-                </nav>
-                {% endif %}
             </div>
         </div>
     </div>
+
+    <!-- ✅ Fixed Pagination -->
+    <div class="d-flex justify-content-center">
+        <ul class="pagination">
+            {% if record_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ record_list.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                </li>
+            {% endif %}
+    
+            {% for num in record_list.paginator.page_range %}
+                {% if num == 1 or num == record_list.paginator.num_pages or num >= record_list.number|add:"-2" and num <= record_list.number|add:"2" %} 
+                    <li class="page-item {% if num == record_list.number %}active{% endif %}">
+                        <a class="page-link"href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                    </li>
+                {% elif num == record_list.number|add:"-3" or num == record_list.number|add:"3" %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if record_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ record_list.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ record_list.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    // Enable all tooltips on page load
     document.addEventListener('DOMContentLoaded', function () {
         var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltipTriggerList.forEach(function (tooltipTriggerEl) {
@@ -252,11 +179,4 @@ Record List
         });
     });
 </script>
-
-
-
-<!-- Modal Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-
-{% endblock record_list%}
+{% endblock record_list %}

@@ -77,7 +77,8 @@ def years(id):
     if datetime.today().year not in years:
         years.append(datetime.today().year)
     return years
-def last_reading(id, year, mo):
+#original
+'''def last_reading(id, year, mo):
     try:
         latest_reset = Transactions.objects.filter(acctID=id, transType='Reset Meter').order_by('-year', '-month')[0]
         if latest_reset.year == year and latest_reset.month == mo:
@@ -97,7 +98,32 @@ def last_reading(id, year, mo):
             except ObjectDoesNotExist:
                 pass
         mo = 13
-    return 0
+    return 0'''
+
+#Added by Kathrina D. Bandajon Previous Reading Error
+def last_reading(id, year, mo):
+    try:
+        latest_reset = Transactions.objects.filter(acctID=id, transType='Reset Meter').order_by('-year', '-month').first()
+        if latest_reset and latest_reset.year == year and latest_reset.month == mo:
+            return latest_reset.meterReading
+    except Transactions.DoesNotExist:
+        pass
+    
+    allyears = years(id)
+    allyears.sort(reverse=True)
+    fyears = [item for item in allyears if item <= year]
+
+    for i in fyears:
+        for j in reversed(range(1, mo + 1)):  # Include the current month in the check
+            try:
+                lasttran = Transactions.objects.filter(acctID=id, transType='Billing', year=i, month=j).order_by('-transactionid').first()
+                if lasttran:
+                    return lasttran.meterReading
+            except Transactions.DoesNotExist:
+                pass
+        mo = 12  # Reset month to December when moving to the previous year
+
+    return 0  # Return 0 if no previous reading is found
 
 def create_brec(address_id, year):
     con_b_rec = BarangayRecord()  

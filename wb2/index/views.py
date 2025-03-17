@@ -27,7 +27,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.http import JsonResponse
+ 
 
 
 
@@ -3640,7 +3640,7 @@ def get_is_seen_issues(request):
 
 #added by K. Bandajon October 29, 2024 The new penalty rate-.- ID: NewPenaltyOct2024
 def new_penalty(request):
-    schedule_monthlyTask()
+    #schedule_monthlyTask()
     return HttpResponse("Task is Ongoing")
 
 
@@ -3752,16 +3752,32 @@ def month_name_to_int(month_name):
 
 @login_required(login_url='login')
 def record_list(request):
-    selected_year = request.GET.get('fyear', 2025)
+    print("===== Entering record_list view =====")
+
+    selected_year = request.GET.get('fyear', datetime.today().year)
     selected_brgy = request.GET.get('fbar', 1)
     selected_month = request.GET.get('fmonth', 'January')
     page = request.GET.get('page')
-    #isnum = search.isnumeric()
+
+    print(f"Received GET params -> Year: {selected_year}, Barangay: {selected_brgy}, Month: {selected_month}, Page: {page}")
+
+    try:
+        selected_year = int(selected_year)
+        selected_brgy = int(selected_brgy)
+    except ValueError:
+        print("Invalid year or barangay received")
+        return render(request, 'recordList.html', {'error': 'Invalid year or barangay selected'})
+
+    def month_name_to_int(month_name):
+        try:
+            return list(calendar.month_name).index(month_name)
+        except ValueError:
+            return 1  # Default to January if invalid
 
     month_number = month_name_to_int(selected_month)
-    print(month_number)
+    print(f"Converted month name '{selected_month}' to month number {month_number}")
 
-    class recordListClass:
+    class RecordListClass:
         def __init__(self, consumer_id, meternumber, name, paid_amount, date_paid, transtype, transID):
             self.consumer_id = consumer_id
             self.meternumber = meternumber
@@ -3771,111 +3787,167 @@ def record_list(request):
             self.transtype = transtype
             self.transID = transID
 
-    years = []
-    yer = Transactions.objects.filter(transType='Received Amount', is_issue=False)
-    for i in yer:
-        if i.year not in years:
-            years.append(i.year)
-    
-    # Add current year if not already present
-    current_year = datetime.today().year
-    if current_year not in years:
-        years.append(current_year)
-    
-    print(years)
-    # Fetching months
-    months = []
-    mon = Transactions.objects.filter(transType='Received Amount', is_issue=False)
-    for m in mon:
-        if m.month not in months:
-            months.append(m.month)
-    
-    # Add current month if not already present
-    current_month = datetime.today().month
-    if current_month not in months:
-        months.append(current_month)
+    # Fetch distinct years
+    years = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('year', flat=True).distinct()
+    years = list(set(years))
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
 
+    print(f"Available years: {years}")
+
+    # Fetch distinct months
+    months = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('month', flat=True).distinct()
+    months = sorted(set(months))
     month_names = [calendar.month_name[month] for month in months]
-    #print(month_names)
+    print(f"Available months: {month_names}")
 
-    # Fetch Barangays (all)
+    # Fetch Barangays
     bars = Barangays.objects.all()
-    #print(bars)
-    # Initialize reclist
+    print(f"Total Barangays found: {bars.count()}")
+
+    # Fetch ConsumerInfo records based on Barangay filter
     reclist = []
 
-    print(selected_brgy)
+    barangay = Barangays.objects.get(id=selected_brgy)
 
-    # Filtering the records based on the search and selected filters
     try:
-        conlistofBarangay = ConsumerInfo.objects.filter(Q(installation_address=selected_brgy))
-        print(conlistofBarangay)
+        conlistofBarangay = ConsumerInfo.objects.filter(installation_address=selected_brgy)
+        print(f"Found {conlistofBarangay.count()} consumers for Barangay {selected_brgy}")
+
         for consumer in conlistofBarangay:
             meternumber = consumer.meternumber
             consumer_id = consumer.consumer_id
             fname = consumer.firstname
-            try:
-                lname = consumer.lastname
-            except:
-                pass
-            name =  f"{lname} {fname}"
-            #print(len(name))
-            try:
-                rec = Transactions.objects.filter(
-                        Q(year=selected_year) & Q(acctID=consumer_id) & Q(month=month_number) &
-                        Q(transType="Received Amount")
-                )
-                    
-                    # Assuming `rec` contains only one record, you can use first()
-                if rec.exists():
-                    rec = rec.first()  # To avoid working with queryset and use only the first record
-                    paid_amount = rec.receivedamt
-                    date_paid = rec.date
-                    transtype = rec.transType
-                    transID = rec.transactionid
+            lname = consumer.lastname if hasattr(consumer, 'lastname') else ""
 
-                        # Append to the list
-                    reclist.append(recordListClass(consumer_id, meternumber, name, paid_amount, date_paid, transtype, transID))
-            except Exception as e:
-                print(f"Error processing transaction for consumer {consumer_id}: {str(e)}")
-                print(len(reclist))
-    except:
-        print(f"Error processing transaction for consumer {consumer_id}: {str(e)}")
-        print("error handling")
+            name = f"{lname} {fname}".strip()  
+            print(f"Processing consumer: {consumer_id}, Name: {name}, Meter: {meternumber}")
+
+            rec = Transactions.objects.filter(
+                year=selected_year, acctID=consumer_id, month=month_number, transType="Received Amount"
+            ).first()
+
+            if rec:
+                print(f"Transaction found for {consumer_id} -> Amount: {rec.receivedamt}, Date: {rec.date}, ID: {rec.transactionid}")
+                reclist.append(RecordListClass(consumer_id, meternumber, name, rec.receivedamt, rec.date, rec.transType, rec.transactionid))
+            else:
+                print(f"No transaction found for {consumer_id}")
+
+    except Exception as e:
+        print(f"Error processing transactions: {str(e)}")
+
+    print(f"Total records collected: {len(reclist)}")
 
     # Pagination
-    paginate_bypages = int(request.GET.get('p', 10))
-    paginate_by = request.GET.get('paginate_by', paginate_bypages)
+    paginate_bypages = int(request.GET.get('p', 10))  # Default to 10 if not provided
+    try:
+        paginate_by = int(request.GET.get('paginate_by', paginate_bypages))  # Convert to int
+    except ValueError:
+        paginate_by = 10  # Default to 10 if conversion fails
+
+    print(f"Paginate by: {paginate_by}")
 
     paginator = Paginator(reclist, paginate_by)
+
     try:
+        page = int(page) if page else 1  # Convert page to integer
         record_list = paginator.page(page)
+    except ValueError:
+        print("Invalid page number, defaulting to page 1")
+        record_list = paginator.page(1)
     except PageNotAnInteger:
+        print("Page is not an integer, defaulting to page 1")
         record_list = paginator.page(1)
     except EmptyPage:
+        print("Page is empty, showing last page")
         record_list = paginator.page(paginator.num_pages)
 
-    # Get issues (if any)
-    is_issues = get_is_seen_issues(request)
+    print("===== Rendering Template =====")
 
     context = {
-        #'search': search,
         'last': range(paginator.num_pages - 3, paginator.num_pages),
         'five': range(1, 6),
         'paginate_by': paginate_by,
         'month_names': month_names,
         'months': months,
         'years': years,
-        'selected_year': int(selected_year) if selected_year else None,
-        'selected_month': selected_month if selected_month else None,
+        'selected_year': selected_year,
+        'selected_month': selected_month,
         'selected_brgy': selected_brgy,
+        'barangay' : barangay,
         'bars': bars,
         'count': len(reclist),
-        'reclist': reclist,  # Use reclist here if no pagination is needed elsewhere
         'record_list': record_list,
         'user': request.user,
-        'is_issues': is_issues
     }
 
     return render(request, 'recordList.html', context)
 
+def monthly_collections(request, year):
+    
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
+            template = "revenue_report.html"
+        else:
+            template = redirect('bills_list')
+            return template
+        
+    class MonthlyCollection:
+        def __init__(self, month, collection, transTotal):
+            self.month = month
+            self.collection = collection
+            self.transTotal = transTotal
+
+    years = []
+    my = BarangayRecord.objects.all()
+    for i in my:
+        if i.year not in years:
+            years.append(i.year)
+    years.sort()
+
+    # Ensure that the year is obtained from the parameter
+    month_bounds = calculate_month_bounds(year)
+    table = []
+    
+    for month, (start, end) in month_bounds.items():
+        print(f"{month}: Start Date: {start}, End Date: {end}")
+
+        # Get all records in the target month
+        try:
+            payments = Transactions.objects.filter(
+                date__gte=start,
+                date__lte=end,
+                transType="Payment"
+            ).values('year', 'month')
+
+            all_payments = sum(payment.get('payment', 0) for payment in payments)  # Ensure that 'payment' key exists
+            month_col = month
+            number_of_transactions = len(payments)
+
+            new_row = MonthlyCollection(month_col, all_payments, number_of_transactions)
+            table.append(new_row)
+        except ObjectDoesNotExist: 
+            pass
+
+    is_issues = get_is_seen_issues(request)
+
+    context = {
+        'table': table,
+        'years': years,
+        'is_mc': True,
+    }
+    
+    return render(request, 'monthly_collection.html', context)
+
+def calculate_month_bounds(year):
+    month_bounds = {}
+    for month in range(1, 13):  # Loop over all months from 1 to 12
+        start = date(year, month, 1)
+        max_days_in_month = calendar.monthrange(year, month)[1]
+        end = date(year, month, max_days_in_month)
+        
+        month_bounds[calendar.month_name[month]] = (start, end)
+
+    return month_bounds
