@@ -42,7 +42,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_mc %}active{% endif %}" id="monthly_collections"
-                data-href="{% url 'monthly_collections' %}" type="button" role="tab">
+                data-href="{% url 'monthly_collections' cur_year %}" type="button" role="tab">
                 <img style="width: 20px" src="{% static '/images/grouped_bar_chart_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                 Monthly Collections
             </button>

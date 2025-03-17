@@ -121,9 +121,19 @@ Revenue Report
 
 
 
-<!-- Ledger -->
-<div class="" id="ledger">
+<div class="" id="">
     <h1 class="mb-3 text-center">Monthly Collections</h1>
+    <div class="form-group">
+        <form method="GET" action="{% url 'monthly_collections' cur_year %}">
+            <label for="year">Select Year</label>
+            <select id="year" name="fyear" class="form-control" onchange="this.form.submit()">
+                <option value="">-- Select Year --</option>
+                {% for year in years %}
+                <option value="{{ year }}" {% if year == cur_year %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
     <div class="container-fluid p-0">
         <div class="table-responsive">
             <div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
@@ -136,11 +146,14 @@ Revenue Report
                             <th style="min-width: 100px;">Number of Transactions</th>
                         </tr>
                     </thead>
-                    <tbody class="wb_tbody">
+                    <tbody class="wb_tbody text-center"> <!-- Center-align all table data -->
                         {% for t in table reversed %}
-                            <td>{{t.month_col}}</td>
-                            <td>&#8369; {{t.all_payments}}</td>
-                            <td>{{t.number_of_transactions}}</td>
+                        <tr>
+                            <td class="text-center">{{ t.month_col }}</td>
+                            <td class="text-center">&#8369; {{ t.all_payments|floatformat:2|intcomma }}</td>
+                            <!-- Two decimal places + comma separator -->
+                            <td class="text-center">{{ t.number_of_transactions|intcomma }}</td> <!-- Add comma separator for numbers -->
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>

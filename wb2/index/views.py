@@ -3751,6 +3751,7 @@ def month_name_to_int(month_name):
         return None
 
 @login_required(login_url='login')
+#added KDB
 def record_list(request):
     print("===== Entering record_list view =====")
 
@@ -3883,63 +3884,114 @@ def record_list(request):
 
     return render(request, 'recordList.html', context)
 
+'''@login_required(login_url='login')
+#added KDB_17_03_2025
 def monthly_collections(request, year):
-    
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "revenue_report.html"
-        else:
-            template = redirect('bills_list')
-            return template
-        
+    selected_year = request.GET.get('fyear', datetime.today().year)
     class MonthlyCollection:
         def __init__(self, month, collection, transTotal):
             self.month = month
             self.collection = collection
             self.transTotal = transTotal
 
-    years = []
-    my = BarangayRecord.objects.all()
-    for i in my:
-        if i.year not in years:
-            years.append(i.year)
-    years.sort()
+    # Fetch distinct years
+    years = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('year', flat=True).distinct()
+    years = list(set(years))
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
 
-    # Ensure that the year is obtained from the parameter
-    month_bounds = calculate_month_bounds(year)
-    table = []
+    # Fetch distinct months
+    months = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('month', flat=True).distinct()
+    months = sorted(set(months))
+    month_names = [calendar.month_name[month] for month in months]
+    print(f"Available months: {month_names}")
+
+    print(f"Available years: {years}")
+
+    col_monthly = []
+    for month in months:
+        monthly_trans = Transactions.objects.filter(
+            transType='Received Amount',
+            date__year=selected_year,  # Extract year from date field
+            date__month=month  # Extract month from date field
+        ).aggregate(total_amount=Sum('receivedamt'))
+
+        num_of_trans = monthly_trans.count()
+
+        # Ensure None values are replaced with 0
+        amount_col = monthly_trans['total_amount'] or 0  
+        col_monthly.append(amount_col)
+        table = MonthlyCollection.append(month, amount_col, num_of_trans)
+
+    context = {
+        #'table': table,
+        'years': years,
+    }
     
-    for month, (start, end) in month_bounds.items():
-        print(f"{month}: Start Date: {start}, End Date: {end}")
+    return render(request, 'monthly_collection.html', context)'''
 
-        # Get all records in the target month
-        try:
-            payments = Transactions.objects.filter(
-                date__gte=start,
-                date__lte=end,
-                transType="Payment"
-            ).values('year', 'month')
 
-            all_payments = sum(payment.get('payment', 0) for payment in payments)  # Ensure that 'payment' key exists
-            month_col = month
-            number_of_transactions = len(payments)
 
-            new_row = MonthlyCollection(month_col, all_payments, number_of_transactions)
-            table.append(new_row)
-        except ObjectDoesNotExist: 
-            pass
+@login_required(login_url='login')
+def monthly_collections(request, year=None):
+    if year is None:  # Use the current year if no year is provided
+        year = datetime.today().year
+    else:
+        year = int(year)  # Convert to integer
 
-    is_issues = get_is_seen_issues(request)
+    selected_year = int(request.GET.get('fyear', year))  # Allow selection from GET
+
+    class MonthlyCollection:
+        def __init__(self, month, collection, transTotal):
+            self.month_col = calendar.month_name[month]  # Convert month number to name
+            self.all_payments = collection
+            self.number_of_transactions = transTotal
+
+    # Fetch distinct years
+    years = Transactions.objects.filter(
+        transType='Received Amount', is_issue=False
+    ).dates('date', 'year').values_list('year', flat=True)
+
+    years = list(set(years))  # Ensure uniqueness
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
+
+    # Fetch distinct months
+    months = Transactions.objects.filter(
+        transType='Received Amount', is_issue=False,
+        date__year=selected_year  # Filter months based on selected year
+    ).dates('date', 'month').values_list('month', flat=True)
+
+    months = sorted(set(months))
+
+    table = []  # List to store data for the table
+
+    for month in months:
+        monthly_trans = Transactions.objects.filter(
+            transType='Received Amount',
+            date__year=selected_year,
+            date__month=month
+        ).aggregate(total_amount=Sum('receivedamt'))
+
+        num_of_trans = Transactions.objects.filter(
+            transType='Received Amount',
+            date__year=selected_year,
+            date__month=month
+        ).count()
+
+        amount_col = monthly_trans['total_amount'] or 0  
+        table.append(MonthlyCollection(month, amount_col, num_of_trans))
 
     context = {
         'table': table,
         'years': years,
         'is_mc': True,
+        'cur_year': selected_year,
     }
-    
+
     return render(request, 'monthly_collection.html', context)
+
+
 
 def calculate_month_bounds(year):
     month_bounds = {}
