@@ -1851,6 +1851,7 @@ def barangayreport(request, year):
         F('total_paid_oct') + F('total_paid_nov') + F('total_paid_dec'),
         total_rec=F('total_due') - F('total_paid')
     )
+    print(br)
     fr = BarangayRecord.objects.filter(year=year).annotate(
         total_usage=F('total_usage_jan') + F('total_usage_feb') + F('total_usage_mar') + F('total_usage_apr') + F('total_usage_may') + F('total_usage_jun') +
         F('total_usage_jul') + F('total_usage_aug') + F('total_usage_sept') +
@@ -1865,8 +1866,19 @@ def barangayreport(request, year):
     ).aggregate(
         tu=Sum('total_usage'),
         tp=Sum('total_paid'),
-        tr=Sum('total_due')
+        td=Sum('total_due'),
+        tr=Sum('total_rec'),
     )
+
+    for record in br:
+        print(f"Barangay: {record.barangaycode}")
+        print(f"Total Usage: {record.total_usage}")
+        print(f"Total Due: {record.total_due}")
+        print(f"Total Paid: {record.total_paid}")
+        print(f"Total Receivables: {record.total_rec}")
+        print("-" * 30)  # Just for separation
+
+
 
     is_issues = get_is_seen_issues(request)
     context = {
@@ -3884,54 +3896,6 @@ def record_list(request):
 
     return render(request, 'recordList.html', context)
 
-'''@login_required(login_url='login')
-#added KDB_17_03_2025
-def monthly_collections(request, year):
-    selected_year = request.GET.get('fyear', datetime.today().year)
-    class MonthlyCollection:
-        def __init__(self, month, collection, transTotal):
-            self.month = month
-            self.collection = collection
-            self.transTotal = transTotal
-
-    # Fetch distinct years
-    years = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('year', flat=True).distinct()
-    years = list(set(years))
-    if datetime.today().year not in years:
-        years.append(datetime.today().year)
-
-    # Fetch distinct months
-    months = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('month', flat=True).distinct()
-    months = sorted(set(months))
-    month_names = [calendar.month_name[month] for month in months]
-    print(f"Available months: {month_names}")
-
-    print(f"Available years: {years}")
-
-    col_monthly = []
-    for month in months:
-        monthly_trans = Transactions.objects.filter(
-            transType='Received Amount',
-            date__year=selected_year,  # Extract year from date field
-            date__month=month  # Extract month from date field
-        ).aggregate(total_amount=Sum('receivedamt'))
-
-        num_of_trans = monthly_trans.count()
-
-        # Ensure None values are replaced with 0
-        amount_col = monthly_trans['total_amount'] or 0  
-        col_monthly.append(amount_col)
-        table = MonthlyCollection.append(month, amount_col, num_of_trans)
-
-    context = {
-        #'table': table,
-        'years': years,
-    }
-    
-    return render(request, 'monthly_collection.html', context)'''
-
-
-
 @login_required(login_url='login')
 def monthly_collections(request, year=None):
     if year is None:  # Use the current year if no year is provided
@@ -3991,8 +3955,6 @@ def monthly_collections(request, year=None):
 
     return render(request, 'monthly_collection.html', context)
 
-
-
 def calculate_month_bounds(year):
     month_bounds = {}
     for month in range(1, 13):  # Loop over all months from 1 to 12
@@ -4003,144 +3965,3 @@ def calculate_month_bounds(year):
         month_bounds[calendar.month_name[month]] = (start, end)
 
     return month_bounds
-
-#added by Kathrina 20/03/2025
-'''@login_required(login_url='login')
-def gen_sheets_monthlyrec(request):
-    years = list(range(2019, datetime.now().year + 1))  
-    month_names = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ]
-
-    # Get filter values from the request
-    start_month = request.GET.get("start_month")
-    start_year = request.GET.get("start_year")
-    end_month = request.GET.get("end_month")
-    end_year = request.GET.get("end_year")
-
-    # Convert to date format
-    if start_month and start_year:
-        start_date = datetime.strptime(f"1 {start_month} {start_year}", "%d %B %Y")
-    else:
-        start_date = None
-
-    if end_month and end_year:
-        end_date = datetime.strptime(f"1 {end_month} {end_year}", "%d %B %Y")
-    else:
-        end_date = None
-
-    # Query database based on filter values
-    records = ConsumerInfo.objects.all()
-    for record in records:
-        id = record.consumer_id
-        all_bills = Transactions.objects.filter(acctID=id, transType = 'Billing')
-        for bill in all_bills:
-            if bill.month >= start_month and bill.year >= start_year and bill.month <= end_month and bill.year <= end_year:
-                #append transaction in consumer class
-        
-        
-
-
-    context = {
-        "years": years,
-        "month_names": month_names,
-        "selected_start_month": start_month,
-        "selected_start_year": start_year,
-        "selected_end_month": end_month,
-        "selected_end_year": end_year,
-        "records": records,  # Filtered records
-    }
-
-    return render(request, 'billreportcopy.html', context)'''
-
-from collections import defaultdict
-import calendar
-from datetime import datetime
-import openpyxl
-from openpyxl.styles import Font
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import ConsumerInfo, Transactions
-
-def monthly_billing_report(request):
-    # Get date range from request (or default values)
-    start_month = int(request.GET.get("start_month", 4))  # Default: April
-    start_year = int(request.GET.get("start_year", 2024))  # Default: 2024
-    end_month = int(request.GET.get("end_month", 2))  # Default: February
-    end_year = int(request.GET.get("end_year", 2025))  # Default: 2025
-
-    # Dictionary to store data
-    consumer_data = defaultdict(lambda: defaultdict(float))  # Use float to ensure decimal precision
-    months_list = []
-
-    # Fetch all consumer records
-    records = ConsumerInfo.objects.all()
-
-    for record in records:
-        consumer_name = f"{record.lastname}, {record.firstname}".strip()  # Format: Last, First
-        all_bills = Transactions.objects.filter(acctID=record.consumer_id, transType='Billing')
-
-        for bill in all_bills:
-            bill_date = datetime(bill.year, bill.month, 1)
-            start_date = datetime(start_year, start_month, 1)
-            end_date = datetime(end_year, end_month, 1)
-
-            if start_date <= bill_date <= end_date:
-                month_year = f"{calendar.month_abbr[bill.month]} - {str(bill.year)[-2:]}"  # "Apr - 24"
-                
-                # Ensure the bill amount is rounded to two decimal places
-                consumer_data[consumer_name][month_year] += round(float(bill.bill or 0), 2)
-
-                if month_year not in months_list:
-                    months_list.append(month_year)
-
-    # Sort months for correct order
-    months_list.sort(key=lambda x: datetime.strptime(x, "%b - %y"))
-
-    # Prepare data for HTML template (sorted alphabetically by last name)
-    sorted_consumers = sorted(consumer_data.keys())  # Sort consumers by name
-    table_data = [
-        [consumer] + [f"₱{consumer_data[consumer].get(month, 0):,.2f}" for month in months_list]
-        for consumer in sorted_consumers
-    ]
-
-    # Calculate totals
-    total_row = ["Total"] + [f"₱{sum(consumer_data[c][month] for c in consumer_data):,.2f}" for month in months_list]
-
-    # Check if user requested an Excel file
-    if "export" in request.GET:
-        return generate_excel(months_list, table_data, total_row)
-
-    return render(request, "billreportcopy.html", {"months_list": months_list, "table_data": table_data, "total_row": total_row})
-
-def generate_excel(months_list, table_data, total_row):
-    """Generate and return an Excel file."""
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Billing Report"
-
-    # Add headers
-    header = ["Consumer Names"] + months_list
-    ws.append(header)
-    for col in range(1, len(header) + 1):
-        ws.cell(row=1, column=col).font = Font(bold=True)
-
-    # Add consumer data
-    for row in table_data:
-        ws.append([row[0]] + [float(row[i][1:].replace(",", "")) for i in range(1, len(row))])  # Convert ₱ back to number
-
-    # Add total row
-    ws.append([total_row[0]] + [float(total_row[i][1:].replace(",", "")) for i in range(1, len(total_row))])
-
-    # Format as currency in Excel
-    peso_format = '"₱"#,##0.00'  # Peso format for Excel
-    for row in ws.iter_rows(min_row=2, min_col=2, max_col=len(months_list) + 1, max_row=ws.max_row):
-        for cell in row:
-            cell.number_format = peso_format
-
-    # Prepare response
-    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    response["Content-Disposition"] = 'attachment; filename="Billing_Report.xlsx"'
-    wb.save(response)
-    return response
