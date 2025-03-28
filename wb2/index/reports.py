@@ -7,6 +7,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import ConsumerInfo, Transactions
 
+#This report is used as a replacement of  reports due to data inconsistencies that occured in the first code
+#Created this 24th of March 2025 -- Kathrina D. Bandajon
+
 def monthly_billing_report(request):
     # Get date range from request (or default values)
     start_month = int(request.GET.get("start_month", 4))  # Default: April
@@ -174,3 +177,5 @@ def generate_excelave1(months_list, table_data, total_row, avg_row):
     response["Content-Disposition"] = 'attachment; filename="Average_Filter_By_Commercial.xlsx"'
     wb.save(response)
     return response
+
+

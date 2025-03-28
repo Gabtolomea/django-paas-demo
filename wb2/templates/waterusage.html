@@ -1,20 +1,16 @@
 {% extends 'dashboard.html' %}
 {% load static %}
-{% block title %}
-Water Usage
-{% endblock title %}
-{% block style %}
+{% load humanize %}
+{% block title %}Water Usage{% endblock title %}
 
+{% block style %}
 <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
-
 
 <style>
 	table {
 		border: 1px solid #ccc;
 		border-collapse: collapse;
-		margin: 0;
-		padding: 0;
 		width: 100%;
 	}
 
@@ -35,21 +31,26 @@ Water Usage
 		text-align: center;
 	}
 
-	@media screen and (max-width: 600px) {
+	.right-align {
+		text-align: right;
+	}
+
+	.right-align-with-fw {
+		text-align: right;
+		font-weight: bold;
+	}
+
+	.soft-aquamarine {
+		background-color: #cfebe1;
+	}
+
+	@media (max-width: 600px) {
 		table {
 			border: 0;
 		}
 
-
 		table thead {
-			border: none;
-			clip: rect(0 0 0 0);
-			height: 1px;
-			margin: -1px;
-			overflow: hidden;
-			padding: 0;
-			position: absolute;
-			width: 1px;
+			display: none;
 		}
 
 		table tr {
@@ -59,115 +60,20 @@ Water Usage
 		}
 
 		table td {
-			border-bottom: 1px solid #ddd;
 			display: block;
-			font-size: .8em;
 			text-align: right;
-		}
-
-		table th {
-			font-size: .85em;
-			letter-spacing: .1em;
-			text-transform: uppercase;
-		}
-	}
-
-	@media screen and (max-width: 600px) {
-		table {
-			border: 0;
-		}
-
-		table caption {
-			font-size: 1.3em;
-		}
-
-		table thead {
-			border: none;
-			clip: rect(0 0 0 0);
-			height: 1px;
-			margin: -1px;
-			overflow: hidden;
-			padding: 0;
-			position: absolute;
-			width: 1px;
-		}
-
-		table tr {
-			border-bottom: 3px solid #ddd;
-			display: block;
-			margin-bottom: .625em;
-		}
-
-		table td {
-			border-bottom: 1px solid #ddd;
-			display: block;
 			font-size: .8em;
-			text-align: right;
 		}
 
 		table td::before {
-
 			content: attr(data-label);
 			float: left;
 			font-weight: bold;
-			text-transform: uppercase;
 		}
-
-		table td:last-child {
-			border-bottom: 0;
-		}
-	}
-
-	body {
-
-		table td::before {
-			/*
-        * aria-label has no advantage, it won't be read inside a table
-        content: attr(aria-label);
-        */
-			content: attr(data-label);
-			float: left;
-			font-weight: bold;
-			text-transform: uppercase;
-		}
-
-		table td:last-child {
-			border-bottom: 0;
-		}
-	}
-
-
-	@media (max-width: 400px) {
-		h2 {
-			font-size: 20px;
-		}
-	}
-
-	@media (min-width: 401px) {
-		h2 {
-			font-size: 32px;
-		}
-	}
-
-	@media (max-width: 400px) {
-		h3 {
-			font-size: 15px;
-		}
-	}
-
-	@media (min-width: 401px) {
-		h3 {
-			font-size: 20px;
-		}
-	}
-	#years {
-		width: 180px;
-		height: 23px;
-		border-radius: 50px;
 	}
 </style>
-
 {% endblock style %}
+
 {% block waterusage %}
 
 {% include 'reportstabs.html' %}
@@ -179,6 +85,7 @@ Water Usage
 		<h1 class="" style="text-align: center;">Water Usage Per Barangay</h1>
 	</div>
 </div>
+
 <div>
 	<label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
 	<form id="yearselection" action="">
@@ -190,110 +97,61 @@ Water Usage
 	</form>
 
 	<script>
-		yearselection = document.getElementById("yearselection")
-		selector = document.getElementById("selector")
 		function change() {
-			yearselection.action = selector.value
-			yearselection.submit('')
+			document.getElementById("yearselection").action = document.getElementById("selector").value;
+			document.getElementById("yearselection").submit();
 		}
 	</script>
 </div>
+
 <div class="">
-	<h3 style="text-align: center;"> Barangay Record of {{cur_year}}
-	</h3>
+	<h3 style="text-align: center;"> Barangay Record of {{cur_year}}</h3>
 </div>
+
 <div>
 	<div class="row table-responsive">
-		<table id="dtBasicExample2" class="table table-bordered table-hover table-striped table-sm " width="100%">
+		<table id="dtBasicExample2" class="table table-bordered table-hover table-striped table-sm" width="100%">
 			<thead class="wb_thead">
 				<tr>
-					<th scope="col" style="background-color: #006c85">Barangay</th>
-					<th scope="col" style="background-color: #006c85">Total Usage(&#13221;)</th>
-					<th scope="col" style="background-color: #006c85">Total Due</th>
-					<th scope="col" style="background-color: #006c85">Total Collection</th>
-					<th scope="col" style="background-color: #006c85">Total Receivables</th>
-					<th scope="col" style="background-color: #006c85">Collection Rate</th>
+					<th style="background-color: #006c85">Barangay</th>
+					<th style="background-color: #006c85">Total Usage(m³)</th>
+					<th style="background-color: #006c85">Total Due</th>
+					<th style="background-color: #006c85">Total Collection</th>
+					<th style="background-color: #006c85">Total Receivables</th>
+					<th style="background-color: #006c85">Collection Rate</th>
 				</tr>
 			</thead>
 			<tbody class="wb_tbody">
 				{% for br in br %}
 				<tr class='clickable-row' style="cursor: pointer;"
-					data-href="{% url 'view_barangay' br.barangayrec_id %}">
-					<td>
-						{{br.barangaycode}}
-					</td>
-					<!--Removed Area:
-					data-label="Barangay"
-					data-label="Total Usage(Cu. Meter)"
-					data-label="Total Receivables" 
-					data-label="Total Collection" 
-					 data-label="Collection Rate" 
-					-->
-					<td>
-						{{br.total_usage|floatformat:2}} &#13221;
-					</td>
-					<td>
-						{{br.total_due|floatformat:1}}
-					</td>
-					<td class="total_paid">
-						{{br.total_paid|floatformat:1}}
-					</td>
-					<td class="total_due">
-						{{br.total_rec|floatformat:1}}
-					</td>
-					
-					<td class="rate">
-					</td>
+					data-href="{% url 'view_barangay' br.barangaycode %}">
+					<td>{{br.barangaycode}}</td>
+					<td class="right-align">{{ br.total_usage|floatformat:2|intcomma }} m³</td>
+					<td class="right-align">{{ br.total_due|floatformat:2|intcomma }}</td>
+					<td class="right-align">{{ br.total_paid|floatformat:2|intcomma }}</td>
+					<td class="right-align">{{ br.total_rec|floatformat:2|intcomma }}</td>
+					<td class="right-align">{{ br.collection_rate|floatformat:2 }}%</td>
 				</tr>
 				{% endfor %}
-				<tr>
-					<td data-label="Barangay" style="background-color:#006c85; color: white; font-weight: bold;">Total
-					</td>
-					<td data-label="Total Usage(Cu. Meter)" class="total_due">
-						{{fr.tu|floatformat:1}}</td>
-					<td data-label="Total Due" >{{fr.td|floatformat:1}}</td>
-					<td data-label="Total Collection" class="total_paid">
-						{{fr.tp|floatformat:1}}
-					</td>
-					<td data-label="Total Receivables">{{fr.tr|floatformat:1}}</td>
-					<td data-label="Collection Rate" class="rate"></td>
+				<tr class="soft-aquamarine">
+					<td style="background-color:#006c85; color: white; font-weight: bold;">Total</td>
+					<td class="right-align-with-fw">{{ fr.tu|floatformat:2|intcomma }} m³</td>
+					<td class="right-align-with-fw">{{ fr.td|floatformat:2|intcomma }}</td>
+					<td class="right-align-with-fw">{{ fr.tp|floatformat:2|intcomma }}</td>
+					<td class="right-align-with-fw">{{ fr.tr|floatformat:2|intcomma }}</td>
+					<td class="right-align-with-fw">{{ fr.cr|floatformat:2 }}%</td>
 				</tr>
-				<script>
-					jQuery(document).ready(function ($) {
-						$(".clickable-row").click(function () {
-							window.location = $(this).data("href");
-						});
-					});
-				</script>
 			</tbody>
 		</table>
-
 	</div>
-
-
-
-	<script>
-		function collection_rate() {
-			total_paid = document.getElementsByClassName("total_paid")
-			total_due = document.getElementsByClassName("total_due")
-			rate = document.getElementsByClassName("rate")
-
-			for (let index = 0; index < rate.length; index++) {
-				int_total_due = parseInt(total_due[index].innerHTML)
-				int_total_paid = parseInt(total_paid[index].innerHTML)
-				temporary_rate = (int_total_paid / int_total_due) * 100
-				if (temporary_rate != temporary_rate) {
-					rate[index].innerHTML = "0.0%"
-				} else {
-					rate[index].innerHTML = temporary_rate.toFixed(2) + "%"
-				}
-				console.log("test")
-			}
-		}
-		collection_rate()
-	</script>
 </div>
 
-
+<script>
+	jQuery(document).ready(function ($) {
+		$(".clickable-row").click(function () {
+			window.location = $(this).data("href");
+		});
+	});
+</script>
 
 {% endblock waterusage %}

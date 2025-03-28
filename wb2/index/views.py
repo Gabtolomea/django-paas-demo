@@ -1821,7 +1821,9 @@ def reports(request):
         cur_year-=1
     return redirect('barangayreport', cur_year)
 
-@login_required(login_url='login')
+#Formerly used to track report of each barangay per year
+#Commented by Bandajon, K.
+'''@login_required(login_url='login')
 def barangayreport(request, year):
     
     template = ""
@@ -1891,7 +1893,96 @@ def barangayreport(request, year):
         'is_issues' : is_issues
         
     }
+    return render(request, 'waterusage.html', context)'''
+
+''''''
+#New Used Barangay Report Water Usage
+#Added by Bandajon K. 25/03/2025
+from django.db.models import Sum, F, Case, When, FloatField
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='login')
+def barangayreport(request, year):
+    if not request.user.is_teller and not request.user.is_supervisor:
+        return redirect('bills_list')
+
+    # Get unique years from BarangayRecord
+    years = BarangayRecord.objects.values_list('year', flat=True).distinct().order_by('-year')
+
+    # Get all barangays
+    bars = Barangays.objects.prefetch_related('consumerinfo_set').all()
+
+    # Aggregate transaction data by barangay (fixing the lookup issue)
+    transactions = Transactions.objects.filter(year=year).values(
+        'acctID__installation_address__barangay'  # Corrected lookup
+    ).annotate(
+        total_usage=Sum(Case(When(transType='Billing', then=F('usage')), default=0, output_field=FloatField())),
+        total_due=Sum(Case(When(transType='Billing', then=F('bill')), default=0, output_field=FloatField())),
+        total_paid=Sum(Case(When(transType='Received Amount', then=F('receivedamt')), default=0, output_field=FloatField()))  # Fixed transType
+    )
+
+    # Convert transaction data into a dictionary for fast lookup
+    transaction_data = {t['acctID__installation_address__barangay']: t for t in transactions}
+
+    # List to store barangay data
+    barangay_data = []
+    total_usage = total_due = total_paid = total_rec = 0
+
+    for bar in bars:
+        # Fetch transactions using the correct barangay field
+        trans = transaction_data.get(bar.barangay, {'total_usage': 0, 'total_due': 0, 'total_paid': 0})
+
+        barangay_usage = trans['total_usage'] or 0
+        barangay_due = trans['total_due'] or 0
+        barangay_paid = trans['total_paid'] or 0
+        barangay_receivables = barangay_due - barangay_paid
+
+        # Compute collection rate (capped at 100%)
+        collection_rate = (barangay_paid / barangay_due * 100) if barangay_due else 0
+        collection_rate = round(min(collection_rate, 100), 2)
+
+        barangay_data.append({
+            'barangaycode': bar.barangay,
+            'total_usage': barangay_usage,
+            'total_due': barangay_due,
+            'total_paid': barangay_paid,
+            'total_rec': barangay_receivables,
+            'collection_rate': collection_rate
+        })
+
+        print(f"Barangay: {bar.barangay}, Due: {barangay_due}, Paid: {barangay_paid}, Receivables: {barangay_receivables}, Collection Rate: {collection_rate:.2f}%")
+
+        # Accumulate totals
+        total_usage += barangay_usage
+        total_due += barangay_due
+        total_paid += barangay_paid
+        total_rec += barangay_receivables
+
+    # Compute total collection rate (capped at 100%)
+    total_collection_rate = (total_paid / total_due * 100) if total_due else 0
+    total_collection_rate = round(min(total_collection_rate, 100), 2)
+
+    is_issues = get_is_seen_issues(request)
+
+    context = {
+        'br': barangay_data,
+        'cur_year': year,
+        'years': years,
+        'fr': {
+            'tu': total_usage,
+            'td': total_due,
+            'tp': total_paid,
+            'tr': total_rec,
+            'cr': total_collection_rate  # Include total collection rate
+        },
+        'user': request.user,
+        'is_br': True,
+        'is_issues': is_issues
+    }
+
     return render(request, 'waterusage.html', context)
+
 
 
 def view_barangay(request, id):
@@ -1915,7 +2006,7 @@ def view_barangay(request, id):
         'is_issues' : is_issues
         
     }
-    return render(request, 'view_barangay.html', context)
+    return render(request, 'archive/view_barangay.html', context)
 
 def usage_report_data(request, year):
     
@@ -3660,99 +3751,6 @@ def new_penalty(request):
 from datetime import datetime
 from django.shortcuts import render
 from .models import ConsumerInfo, Transactions, Barangays
-
-@login_required(login_url='login')
-def allPaid(request): 
-    disp = request.GET.get('show', '')
-    filter_by = request.GET.get('p', 'all') 
-    selected_year = request.GET.get('fyear', str(datetime.year))
-    selected_month = request.GET.get('fmonth', str(datetime.month))
-    paidtable = []
-
-    current_date = datetime.today()
-    current_year = current_date.year
-    years = []
-
-    monthnames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-    allConsumer = ConsumerInfo.objects.all()
-    allBarangays = Barangays.objects.all()
-
-    yer = Transactions.objects.filter(acctID_id=id, transType='Received Amount', is_issue=False)
-
-    for i in yer:
-        if i.year not in years:
-            years.append(i.year)
-    if datetime.today().year not in years:
-        years.append(datetime.today().year)
-    if int(year) in years:
-        years.remove(int(year)) 
-
-    class allwhoPaid:
-        def __init__(self, name, consumerid, transactionid, date, month, year, payment, processedby, brgy):
-            self.name = name
-            self.consumerid = consumerid
-            self.transactionid = transactionid
-            self.date = date
-            self.month = month
-            self.year = year
-            self.payment = payment  # Amount paid
-            self.processedby = processedby
-            self.brgy = brgy
-
-    for consumer in allConsumer:
-        consumerid = consumer.consumer_id
-        name = consumer.firstname + " " + consumer.lastname
-        inst_add = consumer.installation_address
-
-        if filter_by == 'all':
-            thisConsumerPaid = Transactions.objects.filter(
-                acctID=consumerid,
-                transType="Payment",
-            )
-        elif filter_by == 'barangay':
-            barangay = request.GET.get('barangay', '')  # Get the selected barangay from the request
-            thisConsumerPaid = Transactions.objects.filter(
-                acctID=consumerid,
-                transType="Payment",
-                barangay__name__icontains=barangay  # Assuming Barangay has a 'name' field
-            )
-        else:
-            thisConsumerPaid = Transactions.objects.filter(
-                acctID=consumerid,
-                transType="Payment"
-            )
-        for paid in thisConsumerPaid:
-            transactionid = paid.transactionid
-            date = paid.date
-            month = paid.month
-            year = paid.year
-            payment = paid.payment
-            processedby = paid.processedBy
-            row = allwhoPaid(name, consumerid, transactionid, date, month, year, payment, processedby, inst_add)
-            paidtable.append(row)
-
-    is_issues = get_is_seen_issues(request)
-
-    context = {
-        'disp': disp,
-        'month': monthnames[current_date.month-1],  # Current month name
-        'date_today': current_date.strftime('%B %d, %Y - %I:%M %p'),  # Current date and time
-        'paidtable': paidtable,  # Transactions data to be displayed
-        'user': request.user,
-        'is_issues': is_issues,
-        'filter_by': filter_by,
-        'selected_year': selected_year,
-        'selected_month': selected_month,
-        'current_year': current_year,
-        'years': years,
-        'allBarangays': allBarangays,  # Add Barangays to the context
-    }
-
-    return render(request, 'allpaid.html', context)
-
-#def unpaid_method(request):
-    #if request.method == "POST":
 
 def month_name_to_int(month_name):
     try:

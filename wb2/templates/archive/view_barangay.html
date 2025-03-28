@@ -1,0 +1,446 @@
+{% extends 'dashboard.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+Barangay {{bang.barangaycode}} Monthly Usage
+{% endblock title %}
+{% block style %}
+
+<html>
+<style>
+	html {
+		background-color: #F2F3F2;
+	}
+
+	table {
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+
+	.form-select {
+		width: 10%;
+		margin-left: 30px;
+	}
+
+	table caption {
+		font-size: 1.5em;
+		margin: .5em 0 .75em;
+	}
+
+	table tr {
+		background-color: #f8f8f8;
+		border: 1px solid #ddd;
+		padding: .35em;
+	}
+
+	table th,
+	table td {
+		padding: .625em;
+		text-align: center;
+	}
+
+	table th {
+		font-size: .85em;
+		letter-spacing: .1em;
+		text-transform: uppercase;
+	}
+
+	@media screen and (max-width: 600px) {
+		table {
+			border: 0;
+		}
+
+		table caption {
+			font-size: 1.3em;
+		}
+
+		table thead {
+			border: none;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px;
+		}
+
+		table tr {
+			border-bottom: 3px solid #ddd;
+			display: block;
+			margin-bottom: .625em;
+		}
+
+		table td {
+			border-bottom: 1px solid #ddd;
+			display: block;
+			font-size: .8em;
+			text-align: right;
+		}
+
+		table th {
+			font-size: .85em;
+			letter-spacing: .1em;
+			text-transform: uppercase;
+		}
+	}
+
+	@media screen and (max-width: 600px) {
+		table {
+			border: 0;
+		}
+
+		table caption {
+			font-size: 1.3em;
+		}
+
+		table thead {
+			border: none;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px;
+
+		}
+
+		table tr {
+			border-bottom: 3px solid #ddd;
+			display: block;
+			margin-bottom: .625em;
+		}
+
+		table td {
+			border-bottom: 1px solid #ddd;
+			display: block;
+			font-size: .8em;
+			text-align: right;
+		}
+
+		table td::before {
+
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+
+		}
+
+		table td:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	body {
+		font-family: "Open Sans", sans-serif;
+		line-height: 1.25;
+
+		table td::before {
+			/*
+			* aria-label has no advantage, it won't be read inside a table
+			content: attr(aria-label);
+			*/
+			content: attr(data-label);
+			float: left;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		table td:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	body {
+		font-family: "Open Sans", sans-serif;
+		line-height: 1.25;
+	}
+
+	@media (max-width: 400px) {
+		h2 {
+			font-size: 20px;
+		}
+	}
+
+	@media (min-width: 401px) {
+		h2 {
+			font-size: 32px;
+		}
+	}
+
+	@media (max-width: 400px) {
+		h3 {
+			font-size: 15px;
+		}
+	}
+
+	@media (min-width: 401px) {
+		h3 {
+			font-size: 20px;
+		}
+	}
+
+	#years {
+		width: 180px;
+		height: 23px;
+		border-radius: 50px;
+
+	}
+
+	p {
+		font-size: 16px;
+		
+	}
+
+	.p-vert-align {
+		vertical-align: middle;
+	}
+
+	.button2 {
+		background-color: var(--main-color); 
+		color: white;
+		padding: 8px 20px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
+</style>
+<style>
+	.right-align {
+		text-align: right;
+		vertical-align: middle;
+	}
+</style>
+{% endblock style %}
+{% block view_barangay %}
+
+<h2 style="font-weight: bold; margin-bottom: 30px; margin-top: 30px; text-align: center;">Barangay {{bang.barangaycode}}
+	Monthly Records </h2>
+
+
+<title>Barangay {{bang.barangaycode}}</title>
+
+<body onload="collection_rate()">
+
+	<div class="col-sm-12 col-md-6">
+		<button type="button" class="btn button2" onclick="history.back()">
+			<img style="width: 20px;" src="{% static 'images/arrow_back_FILL1_wght600_GRAD200_opsz48.svg' %}"
+				alt="Django Icon" class="django-icon">
+			<i class="fa fa-rotate-left"></i>
+			Return
+		</button>
+	</div>
+
+	<div lass="row table-responsive">
+		<table class="table table-bordered table-hover table-striped table-sm " width="100%">
+			<thead class="wb_thead">
+				<tr>
+					<th scope="col" style="background-color: #006c85">Billing Cycle Cutoff Month</th>
+					<th scope="col" style="background-color: #006c85">Total Usage (Cubic Meter)</th>
+					<th scope="col" style="background-color: #006c85">Total Receivable</th>
+					<th scope="col" style="background-color: #006c85">Total Collection</th>
+
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				<tr lass='clickable-row' style="cursor: pointer;">
+					<td>
+						<p class="p-vert-align">January</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_jan|floatformat:1}}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_jan|floatformat:2|intcomma}}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_jan|floatformat:2|intcomma}}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">February</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_feb|floatformat:1}}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_feb|floatformat:2|intcomma}}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_feb|floatformat:2|intcomma}}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">March</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_mar|floatformat:1}}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_mar|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_mar|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">April</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_apr|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_apr|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_apr|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">May</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_may|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_may|floatformat:2|intcomma}}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_may|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">June</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_jun|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_jun|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_jun|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">July</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_jul|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_jul|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_jul|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">August</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_aug|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_aug|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_aug|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">September</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_sept|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_sept|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_sept|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">October</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_oct|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_oct|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_oct|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">November</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_nov|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_nov|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_nov|floatformat:2|intcomma }}</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="p-vert-align">December</p>
+					</td>
+
+					<td class="right-align">
+						{{bang.total_usage_dec|floatformat:1 }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_due_dec|floatformat:2|intcomma }}</td>
+					<td class="right-align">&#8369;
+						{{bang.total_paid_dec|floatformat:2|intcomma }} </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+
+
+
+
+	<!--<button type="button" onclick="alert('Hello world!')"><a
+  href="{&'url barangayreport'%}/bang.year">BACK</a></button>-->
+</body>
+
+<script src="{% static 'jquery.min.js' %}"></script>
+<script>
+	function collection_rate() {
+		total_paid = document.getElementsByClassName("total_paid")
+		total_due = document.getElementsByClassName("total_due")
+		rate = document.getElementsByClassName("rate")
+
+		for (let index = 0; index < rate.length; index++) {
+			int_total_due = parseInt(total_due[index].innerHTML)
+			int_total_paid = parseInt(total_paid[index].innerHTML)
+			temporary_rate = (int_total_paid / int_total_due) * 100
+			if (temporary_rate !== temporary_rate) {
+				rate[index].innerHTML = "0.0%"
+			} else {
+				rate[index].innerHTML = temporary_rate.toFixed(2) + "%"
+			}
+		}
+	}
+
+</script>
+
+</html>
+{% endblock view_barangay %}

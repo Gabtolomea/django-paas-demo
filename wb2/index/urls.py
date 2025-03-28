@@ -1,5 +1,5 @@
 from . import views
-from . import devsecret
+from . import reports
 from django.urls import path
 
 
@@ -67,7 +67,7 @@ urlpatterns = [
     path('new_penalty', views.new_penalty), #added by K. Bandajon October 29, 2024 The new penalty rate-.- ID: NewPenaltyOct2024
     path('mark_unpaid', views.mark_unpaid, name ='mark_unpaid'),# added Enjambre & Sobrian 26/11/2024 for unpaid in payment history
     path('record_list', views.record_list, name ='record_list'), #added by kathrina D. Bandajon nov. 26, 2024 -.- ID: AllPaid2611
-    path("billing-report/", devsecret.monthly_billing_report, name="billing_report"),
-    path("average_consumption_all_report/", devsecret.average_consumption_all_report, name="average_consumption_all_report"),
+    path("billing-report/", reports.monthly_billing_report, name="billing_report"),
+    path("average_consumption_all_report/", reports.average_consumption_all_report, name="average_consumption_all_report"),
 ]
 
