@@ -123,8 +123,7 @@
 			</thead>
 			<tbody class="wb_tbody">
 				{% for br in br %}
-				<tr class='clickable-row' style="cursor: pointer;"
-					data-href="{% url 'view_barangay' br.barangaycode %}">
+				<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_barangay' br.barangaycode cur_year %}">
 					<td>{{br.barangaycode}}</td>
 					<td class="right-align">{{ br.total_usage|floatformat:2|intcomma }} m³</td>
 					<td class="right-align">{{ br.total_due|floatformat:2|intcomma }}</td>

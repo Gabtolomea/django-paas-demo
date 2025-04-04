@@ -27,6 +27,9 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.db.models import Sum, F, Case, When, FloatField
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
  
 
 
@@ -1822,7 +1825,7 @@ def reports(request):
     return redirect('barangayreport', cur_year)
 
 #Formerly used to track report of each barangay per year
-#Commented by Bandajon, K.
+#Commented by Bandajon, K. Do Not uncomment if unnecessary
 '''@login_required(login_url='login')
 def barangayreport(request, year):
     
@@ -1896,12 +1899,10 @@ def barangayreport(request, year):
     return render(request, 'waterusage.html', context)'''
 
 ''''''
+
+
 #New Used Barangay Report Water Usage
 #Added by Bandajon K. 25/03/2025
-from django.db.models import Sum, F, Case, When, FloatField
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-
 @login_required(login_url='login')
 def barangayreport(request, year):
     if not request.user.is_teller and not request.user.is_supervisor:
@@ -1951,7 +1952,7 @@ def barangayreport(request, year):
             'collection_rate': collection_rate
         })
 
-        print(f"Barangay: {bar.barangay}, Due: {barangay_due}, Paid: {barangay_paid}, Receivables: {barangay_receivables}, Collection Rate: {collection_rate:.2f}%")
+        #print(f"Barangay: {bar.barangay}, Due: {barangay_due}, Paid: {barangay_paid}, Receivables: {barangay_receivables}, Collection Rate: {collection_rate:.2f}%")
 
         # Accumulate totals
         total_usage += barangay_usage
@@ -1984,8 +1985,9 @@ def barangayreport(request, year):
     return render(request, 'waterusage.html', context)
 
 
-
-def view_barangay(request, id):
+#Used up until March 29, 2025 
+#Commented by Bandajon K. (DO NOT Uncomment unless necessary)
+'''def view_barangay(request, id):
     
     template = ""
     LoginSession = request.user
@@ -2006,7 +2008,63 @@ def view_barangay(request, id):
         'is_issues' : is_issues
         
     }
-    return render(request, 'archive/view_barangay.html', context)
+    return render(request, 'archive/view_barangay.html', context)'''
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Sum
+from .models import Barangays, ConsumerInfo, Transactions
+
+def view_barangay(request, id, year):
+    LoginSession = request.user
+
+    if not LoginSession:
+        return redirect('bills_list')
+    
+    if not (LoginSession.is_teller or LoginSession.is_supervisor):
+        return redirect('bills_list')
+
+    barangay = get_object_or_404(Barangays, barangay=id)
+    consumers = ConsumerInfo.objects.filter(installation_address=barangay)
+    transactions = Transactions.objects.filter(acctID__in=consumers, year=year)
+
+    months = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ]
+
+    # Fetch usage, due, and paid data in one query
+    summary = transactions.values('month').annotate(
+        usage=Sum('usage'),
+        due=Sum('bill'),
+        paid=Sum('receivedamt')
+    )
+
+    # Convert to a dictionary for easier lookup
+    summary_dict = {str(item['month']): item for item in summary}
+
+    # Create structured data for easy template rendering
+    monthly_data = [
+        {
+            "month_num": str(i),
+            "month_name": months[i - 1],  # Convert index to month name
+            "usage": summary_dict.get(str(i), {}).get("usage", 0),
+            "due": summary_dict.get(str(i), {}).get("due", 0),
+            "paid": summary_dict.get(str(i), {}).get("paid", 0),
+        }
+        for i in range(1, 13)
+    ]
+
+    context = {
+        'barangay': barangay,
+        'monthly_data': monthly_data,
+    }
+
+    return render(request, 'view_barangay.html', context)
+
+
+
+
+
 
 def usage_report_data(request, year):
     
