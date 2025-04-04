@@ -693,7 +693,8 @@ def inputreading(request, id, year):
             self.style = style
             self.monthval = monthval
             self.is_issue = is_issue
-    consumer = ConsumerInfo.objects.get(consumer_id=id)
+    consumer = ConsumerInfo.objects.get(consumer_id=id) #based on the id consumer is retrieved
+    #year is retrieved from here 
     yt = Transactions.objects.filter(acctID=consumer.consumer_id, is_issue=False).values_list('year', flat=True)
     years_backward = []
     for i in yt:
@@ -705,21 +706,35 @@ def inputreading(request, id, year):
         if i not in years_forward and i >= year:
             years_forward.append(i)
     years_forward.sort()
-    lastreading = consumer.current_reading
+    #ends here
+
+    lastreading = consumer.current_reading#firstLastRead
+    print(f"Last reading: {lastreading}") #first run results to the current reading before input then after input, page refreshes thus reading is the most recent (new input)
+
     lastid = Transactions.objects.latest('transactionid').transactionid
+    print(f"Last Transaction ID: {lastid}")#same here. same as the last reading above
+
+
     alltrans = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing') | Transactions.objects.filter(acctID=consumer.consumer_id, transType='Reset Meter')
+    #retrieved Billing for continuous meter reading and Reset Meter for those transactions that are reseted to 0
     # print([i.transType for i in alltrans])
-    trans = alltrans.filter(year=year)
-    brec = BarangayRecord.objects.all().order_by('-year')
+    trans = alltrans.filter(year=year)#then transactions are filtered according to year. why? because there is year selection 
+    brec = BarangayRecord.objects.all().order_by('-year') #yeah, this one's no longer used but I somehow want to 
     try:
-        latest_reset = alltrans.filter(transType='Reset Meter').order_by('-year', '-month')[0]
+        latest_reset = alltrans.filter(transType='Reset Meter').order_by('-year', '-month')[0] #get Reset Meter if it is the most recent transaction AND it exist if not. . .
     except IndexError:
-        latest_reset = None
+        latest_reset = None #this is the result
+    
+    #it's year retrieval again  here. I don't know what's the difference from the first one though. but it must be here for some important reason.
     for i in brec:
         if i.year not in years:
             years.append(i.year)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
+    #and it ended here
+    #Oh, wait. The first one was actually year_forward and backward. Gotta check the references. So, the first one, was used for something later in the code.
+
+    #Now, remember how the transaction above is filtered according to year so the first condition if works if nothing exists for that year...
     if not trans:
         for i in range(1, 13):
             month = calendar.month_name[i]
@@ -727,8 +742,10 @@ def inputreading(request, id, year):
             transid = lastid
             m = meterreaderclass(transid, month, i, '', lastreading, '', '', '', False)
             table.append(m)
+    #then, else if some exist. But what if other months have and some doesn't? Now, these what ifs...
     else:
         for i in range(1, 13):
+            #this one is  if transaction exists for that month in i
             try:
                 bill = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=i)
                 lastreading = bill.prevReading
@@ -746,6 +763,7 @@ def inputreading(request, id, year):
                     if next_reading:
                         break
                 m = meterreaderclass(bill.transactionid, calendar.month_name[i], i, usage, lastreading, cur_reading, next_reading, style, False)
+            #and this one is for empty ones
             except ObjectDoesNotExist:
                 for y in years_backward:
                     for x in range(i, 0, -1):
@@ -766,29 +784,40 @@ def inputreading(request, id, year):
                 m = meterreaderclass(transid, month, i, '', lastreading, '', '', '', False)
             table.append(m)
 
-            
+    #Now don't get confused, that above was for the display in html. That doesn't have anything to do with the process. HAHAHAHA
+
+    #Penalty. . . now. Yeah. Just penalty if none then none if there is then retrieve it and punish those irresponsible consumers.        
     if consumer.penaltycode is None:
         con_penalty = Penalty.objects.get(penaltycode='P001')
     else:
         con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
-    cummulative = get_cummulative(id)
-    interest = 0
+
+    cummulative = get_cummulative(id) #cummulative. What does it mean  though? But here it uses only ID. Id of the consumer. What for? Haven't found any variable that has the same value.
+    #Now, i understand, this gets the value of the cummulative of that specific consumer.
+    interest = 0 #noh, i don't no
     usage = 0
+
+    #And now, the most exciting part. The process...
     if request.method == "POST":
+        #creation for barangay report or record or retrieve if existing.
         try:
             con_b_rec = BarangayRecord.objects.get(barangaycode_id=consumer.installation_address_id, year=year)
         except ObjectDoesNotExist:
             con_b_rec = create_brec(consumer.installation_address_id, year)
-            
+        
+        #this for the monthly barangay record . . yeah
         for i in range(12):
             if request.POST.get('reading-'+calendar.month_name[i+1]):
                 d = i+1
                 r = int(request.POST.get('reading-'+calendar.month_name[i+1]))
                 break
         bill = 0
+
+        #now if an  account  is exempted or the excep_accnt flag is on then pass through here
         # if excempted
         if consumer.excep_accnt:
             try:
+                #
                 tran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                 mm = d+1
                 has_next = False
@@ -853,10 +882,11 @@ def inputreading(request, id, year):
             # transaction exists
                 
             try:
-                print(year)
+                #print(year)
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                 print(billtran)
                 lastreading = billtran.prevReading
+                print(f"Transaction Exists: {lastreading}")
 
                 # finding next billing
                 mm = d+1
@@ -910,6 +940,7 @@ def inputreading(request, id, year):
                 usage = billtran.usage
                 #bill_computer = BillComputer()
                 billtran.bill = bill_compute(year, month, usage, rate)
+                bill = billtran.bill
                 #kbandajon 09262024
                 #addition of new rates
 
@@ -971,6 +1002,7 @@ def inputreading(request, id, year):
                     fm = 1
                 
                 lastreading = last_reading(consumer.consumer_id, year, d)
+                print(f"Transaction Does Not Exists: {lastreading}")
                 bill = 0
                 billtran = Transactions()
                 billtran.acctID = consumer
@@ -994,6 +1026,7 @@ def inputreading(request, id, year):
                 #bc = BillComputer()
                 #billtran.bill = bill_computer.bill_compute(year, month, usage, rate)
                 billtran.bill = bill_compute(year,month, usage, rate)
+                bill = billtran.bill
                 #added by K. Bandajon 09_23_2024 - 21-09_2024
 
                 billtran.payment = 0
@@ -2868,7 +2901,7 @@ def bulkreading(request):
                     rate = ConsumerType.objects.get(contypeid=c.contypeid_id)
                     #added by K. Bandajon 09_23_2024 - 21-09_2024
                     #This is the new rate implemented starting from October , 2024 and onwards
-                    if t.month > 9 and t.year >=2024:
+                    '''if t.month > 9 and t.year >=2024:
                         if  t.usage >= 1 and t.usage <= 5 :
                             t.bill = t.usage * 5
                         elif  t.usage >= 6 and t.usage <= 10 :
@@ -2887,7 +2920,16 @@ def bulkreading(request):
                             t.bill = rate.minReadingCharge
                         else:
                             bill = ((t.usage - rate.minReading) * rate.rateAfterMin) + rate.minReadingCharge
-                            t.bill = bill
+                            t.bill = bill'''
+                    #kbandajon 09262024
+                    #addition of new rates
+                    year = t.year
+                    month = t.month
+                    usage = t.usage
+                    #bill_computer = BillComputer()
+                    t.bill = bill_compute(year, month, usage, rate)
+                    #kbandajon 09262024
+                    #addition of new rates
                     t.payment = 0
                     t.processedBy = request.user
                     t.save()
