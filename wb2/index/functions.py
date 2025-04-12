@@ -1115,7 +1115,7 @@ def bill_compute(year, month, usage, rate):
                 excess_logs.save()'''
 #Excess Extraction || ID: ExcessKB || Added by: Kathrina Bandajon December 2, 2024
 #through inputreading (firstrun)
-def excessLog(month, year, id):
+'''def excessLog(month, year, id):
     datetime = datetime.today()
     billthisMonth = Transactions.object.filter(
         month = datetime.month,
@@ -1138,7 +1138,7 @@ def excessLog(month, year, id):
                     excessamt = excessamount,
                     excessID = paymentExists.transactionid
                 )
-                excess_logs.save()
+                excess_logs.save()'''
 
     
 

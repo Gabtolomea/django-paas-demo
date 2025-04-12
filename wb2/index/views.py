@@ -949,7 +949,7 @@ def inputreading(request, id, year):
                 billtran.save()
                 # add the excess here <
 
-                excessLog(year, month, id)
+                #excessLog(year, month, id)
                 
                 #>
 
