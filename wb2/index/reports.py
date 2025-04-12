@@ -1,5 +1,6 @@
 from collections import defaultdict
 import calendar
+from calendar import month_name
 from datetime import datetime
 import openpyxl
 from openpyxl.styles import Font
@@ -10,56 +11,82 @@ from .models import ConsumerInfo, Transactions
 #This report is used as a replacement of  reports due to data inconsistencies that occured in the first code
 #Created this 24th of March 2025 -- Kathrina D. Bandajon
 
+from datetime import datetime
+import calendar
+from collections import defaultdict
+
 def monthly_billing_report(request):
-    # Get date range from request (or default values)
-    start_month = int(request.GET.get("start_month", 4))  # Default: April
-    start_year = int(request.GET.get("start_year", 2024))  # Default: 2024
-    end_month = int(request.GET.get("end_month", 2))  # Default: February
-    end_year = int(request.GET.get("end_year", 2025))  # Default: 2025
+    start_month = int(request.GET.get("start_month", 4))
+    start_year = int(request.GET.get("start_year", 2024))
+    end_month = int(request.GET.get("end_month", 2))
+    end_year = int(request.GET.get("end_year", 2025))
 
-    # Dictionary to store data
-    consumer_data = defaultdict(lambda: defaultdict(float))  # Use float to ensure decimal precision
-    months_list = []
+    # Build start and end datetime objects
+    start_date = datetime(start_year, start_month, 1)
+    end_date = datetime(end_year, end_month, 1)
 
-    # Fetch all consumer records
-    records = ConsumerInfo.objects.all()
+    # Get all transactions within the date range with Billing type
+    transactions = Transactions.objects.filter(
+        transType="Billing",
+        year__gte=start_date.year,
+        year__lte=end_date.year,
+    ).select_related("acctID")
 
-    for record in records:
-        consumer_name = f"{record.lastname}, {record.firstname}".strip()  # Format: Last, First
-        all_bills = Transactions.objects.filter(acctID=record.consumer_id, transType='Billing')
+    # Optional: further reduce queryset with precise filtering
+    transactions = [
+        t for t in transactions
+        if start_date <= datetime(t.year, t.month, 1) <= end_date
+    ]
 
-        for bill in all_bills:
-            bill_date = datetime(bill.year, bill.month, 1)
-            start_date = datetime(start_year, start_month, 1)
-            end_date = datetime(end_year, end_month, 1)
+    consumer_data = defaultdict(lambda: defaultdict(float))
+    months_set = set()
 
-            if start_date <= bill_date <= end_date:
-                month_year = f"{calendar.month_abbr[bill.month]} - {str(bill.year)[-2:]}"  # "Apr - 24"
-                
-                # Ensure the bill amount is rounded to two decimal places
-                consumer_data[consumer_name][month_year] += round(float(bill.bill or 0), 2)
+    for trans in transactions:
+        consumer = trans.acctID
+        if not consumer:
+            continue
 
-                if month_year not in months_list:
-                    months_list.append(month_year)
+        consumer_name = f"{consumer.lastname}, {consumer.firstname}".strip()
+        bill_month = datetime(trans.year, trans.month, 1)
+        month_label = f"{calendar.month_abbr[trans.month]} - {str(trans.year)[-2:]}"
+        consumer_data[consumer_name][month_label] += round(float(trans.bill or 0), 2)
+        months_set.add(month_label)
 
-    # Sort months for correct order
-    months_list.sort(key=lambda x: datetime.strptime(x, "%b - %y"))
+    # Sort months chronologically
+    months_list = sorted(months_set, key=lambda x: datetime.strptime(x, "%b - %y"))
 
-    # Prepare data for HTML template (sorted alphabetically by last name)
-    sorted_consumers = sorted(consumer_data.keys())  # Sort consumers by name
+    # Sort consumers by name
+    sorted_consumers = sorted(consumer_data.keys())
     table_data = [
         [consumer] + [f"₱{consumer_data[consumer].get(month, 0):,.2f}" for month in months_list]
         for consumer in sorted_consumers
     ]
 
-    # Calculate totals
-    total_row = ["Total"] + [f"₱{sum(consumer_data[c][month] for c in consumer_data):,.2f}" for month in months_list]
+    total_row = ["Total"] + [
+        f"₱{sum(consumer_data[c][month] for c in consumer_data):,.2f}" for month in months_list
+    ]
 
-    # Check if user requested an Excel file
     if "export" in request.GET:
         return generate_excel(months_list, table_data, total_row)
 
-    return render(request, "billreportcopy.html", {"months_list": months_list, "table_data": table_data, "total_row": total_row})
+    months_n = [(i, month_name[i]) for i in range(1, 13)] 
+    months_range = range(1, 13)  # 1 to 12
+    years_range = range(2020, datetime.now().year + 2)  # or customize
+
+    return render(request, "billreportcopy.html", {
+        "months_list": months_list,
+        "months_n": months_n,
+        "table_data": table_data,
+        "total_row": total_row,
+        "start_month": start_month,
+        "start_year": start_year,
+        "end_month": end_month,
+        "end_year": end_year,
+        "months_range": months_range,
+        "years_range": years_range,
+        "cur_year": datetime.now().year,
+        'is_mbr': True,
+    })
 
 def generate_excel(months_list, table_data, total_row):
     """Generate and return an Excel file."""

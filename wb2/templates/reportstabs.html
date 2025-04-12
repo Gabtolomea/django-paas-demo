@@ -48,6 +48,13 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_mbr %}active{% endif %}" id="monthly_billcopy_report"
+                data-href="{% url 'billing_report' %}" type="button" role="tab">
+                <img style="width: 20px" src="{% static '/images/grouped_bar_chart_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                Bill Report
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_cc %}active{% endif %}" id="consumption_button" data-href="{% url 'consumption' cur_year %}" type="button" role="tab">
                 <img style="width: 20px"
                 src="{% static '/images/read_more_FILL0_wght700_GRAD200_opsz48.svg' %}" />
