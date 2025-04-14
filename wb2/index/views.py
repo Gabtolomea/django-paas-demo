@@ -3842,6 +3842,7 @@ def get_is_seen_issues(request):
 
 
 #added by K. Bandajon October 29, 2024 The new penalty rate-.- ID: NewPenaltyOct2024
+#Penalty at the moment is not yet applied but the result of the last test it is already functional
 def new_penalty(request):
     #schedule_monthlyTask()
     return HttpResponse("Task is Ongoing")
@@ -3990,6 +3991,8 @@ def record_list(request):
         'count': len(reclist),
         'record_list': record_list,
         'user': request.user,
+        "cur_year": datetime.now().year,
+        'is_rl': True,
     }
 
     return render(request, 'recordList.html', context)

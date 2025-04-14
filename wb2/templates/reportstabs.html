@@ -43,15 +43,22 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_mc %}active{% endif %}" id="monthly_collections"
                 data-href="{% url 'monthly_collections' cur_year %}" type="button" role="tab">
-                <img style="width: 20px" src="{% static '/images/grouped_bar_chart_FILL1_wght700_GRAD0_opsz48.svg' %}" />
-                Monthly Collections
+                <img style="width: 50px" src="{% static '/images/report_monthlybillcollection.svg' %}" />
+                Monthly Bill Collections
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {% if is_mbr %}active{% endif %}" id="monthly_billcopy_report"
                 data-href="{% url 'billing_report' %}" type="button" role="tab">
-                <img style="width: 20px" src="{% static '/images/grouped_bar_chart_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                <img style="width: 30px" src="{% static '/images/bill_report_xls_BLACK.svg' %}" />
                 Bill Report
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if is_rl %}active{% endif %}" id="monthly_billcopy_report"
+                data-href="{% url 'record_list' %}" type="button" role="tab">
+                <img style="width: 25px" src="{% static '/images/record_list_icon.svg' %}" />
+                Record List
             </button>
         </li>
         <li class="nav-item" role="presentation">

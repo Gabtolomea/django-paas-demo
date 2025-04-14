@@ -7,14 +7,15 @@ from openpyxl.styles import Font
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import ConsumerInfo, Transactions
+from .views import *
 
-#This report is used as a replacement of  reports due to data inconsistencies that occured in the first code
 #Created this 24th of March 2025 -- Kathrina D. Bandajon
 
 from datetime import datetime
 import calendar
 from collections import defaultdict
 
+@login_required(login_url='login')
 def monthly_billing_report(request):
     start_month = int(request.GET.get("start_month", 4))
     start_year = int(request.GET.get("start_year", 2024))
