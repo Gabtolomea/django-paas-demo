@@ -83,7 +83,10 @@ Account Ledger
 	color: black;
 	}
 
-	
+	.row-blue {
+		background-color: #cce5ff !important;
+	}
+
 </style>
 <!-- Header Info of Consumer -->
 <div class="container-fluid p-0">
@@ -220,7 +223,7 @@ Account Ledger
 						</thead>
 						<tbody class="wb_tbody" >
 							{% for t in table reversed %}
-							<tr class="{% if t.reading %} context-menu-target {% else %}no-right-click {% endif %} {{t.style}}" data-link="form-{{t.transid}}">
+							<tr class="{% if t.reading %} context-menu-target {% else %}no-right-click {% endif %} {{t.style}} {% if t.ispaid %}row-blue{% endif %}" data-link="form-{{t.transid}}">
 								<form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
@@ -238,7 +241,11 @@ Account Ledger
 								<td>{{t.}}</td><!--added changes for less excess unfinished 14/11/2024  -->
 								<td>{{t.}}</td><!--added changes for penalty unfinished 28/10/2024  -->
 								<td>{{t.}}</td><!--added changes for Amount Due unfinished 14/11/2024  -->								
-								<td>{% if t.payment %}&#8369; {{ t.payment|floatformat:2|intcomma }}{% else %}{% endif %}</td>
+								<td>
+									{% if t.ispaid and t.payment %}
+									&#8369; {{ t.payment|floatformat:2|intcomma }}
+									{% endif %}
+								</td>
 
 								<td>{{t.paytranid}}</td><!--added changes for payment transaction id unfinished 28/10/2024  -->
 								<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>

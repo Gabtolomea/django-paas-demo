@@ -793,7 +793,7 @@ def inputreading(request, id, year):
         con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
 
     cummulative = get_cummulative(id) #cummulative. What does it mean  though? But here it uses only ID. Id of the consumer. What for? Haven't found any variable that has the same value.
-    #Now, i understand, this gets the value of the cummulative of that specific consumer.
+    #Now, i understand, this gets the value of the cummulative of that specific consumer. This is used to calculate penalty . Since there is no penalty, it doesn't have any effect.
     interest = 0 #noh, i don't no
     usage = 0
 
