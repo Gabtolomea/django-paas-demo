@@ -30,6 +30,14 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.db.models import Sum, F, Case, When, FloatField
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db import connection
+from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponse
+from .models import Transactions
+from collections import Counter
+from django.urls import reverse
+from django.shortcuts import redirect
+from django.db.models import Sum , Q
  
 
 
@@ -2203,15 +2211,13 @@ def usage_report_data(request, year):
 
 
 def revenue_report(request, year):
-    
     template = ""
     LoginSession = request.user
     if LoginSession:
         if LoginSession.is_teller or LoginSession.is_supervisor:
             template = "revenue_report.html"
         else:
-            template = redirect('bills_list')
-            return template
+            return redirect('bills_list')
 
     years = []
     my = BarangayRecord.objects.all()
@@ -2219,49 +2225,51 @@ def revenue_report(request, year):
         if i.year not in years:
             years.append(i.year)
     years.sort()
-    # Total Collection\-
-    if BarangayRecord.objects.filter(year=year):
-        rev_col = BarangayRecord.objects.filter(year=year).aggregate(
-            jan=Sum('total_paid_jan'),
-            feb=Sum('total_paid_feb'),
-            mar=Sum('total_paid_mar'),
-            apr=Sum('total_paid_apr'),
-            may=Sum('total_paid_may'),
-            jun=Sum('total_paid_jun'),
-            jul=Sum('total_paid_jul'),
-            aug=Sum('total_paid_aug'),
-            sept=Sum('total_paid_sept'),
-            oct=Sum('total_paid_oct'),
-            nov=Sum('total_paid_nov'),
-            dec=Sum('total_paid_dec'),
-        )
-        values = rev_col.values()
-        col = sum(values)
-        # Total Receivables
-        rev_rec = BarangayRecord.objects.filter(year=year).aggregate(
-            jan=Sum('total_due_jan') - Sum('total_paid_jan'),
-            feb=Sum('total_due_feb') - Sum('total_paid_jan'),
-            mar=Sum('total_due_mar') - Sum('total_paid_jan'),
-            apr=Sum('total_due_apr') - Sum('total_paid_jan'),
-            may=Sum('total_due_may') - Sum('total_paid_jan'),
-            jun=Sum('total_due_jun') - Sum('total_paid_jan'),
-            jul=Sum('total_due_jul') - Sum('total_paid_jan'),
-            aug=Sum('total_due_aug') - Sum('total_paid_jan'),
-            sept=Sum('total_due_sept') - Sum('total_paid_jan'),
-            oct=Sum('total_due_oct') - Sum('total_paid_jan'),
-            nov=Sum('total_due_nov') - Sum('total_paid_jan'),
-            dec=Sum('total_due_dec') - Sum('total_paid_jan'),
-        )
 
-        filt = dict((i, j) for i, j in rev_rec.items() if j >= 0)
-        values = filt.values()
-        rec = sum(values)
+    # ------------------- REGULAR BILLING -------------------
+    if Transactions.objects.filter(year=year):
+        rev_col = {
+            month.lower(): Transactions.objects.filter(
+                year=year, month=i, transType='Billing', is_billpaid=True
+            ).aggregate(total=Sum('bill'))['total'] or 0
+            for i, month in enumerate([
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+            ], start=1)
+        }
+
+        col = sum(rev_col.values())
+
+        rev_rec = {
+            month.lower(): Transactions.objects.filter(
+                year=year, month=i, transType='Billing'
+            ).aggregate(total=Sum('bill'))['total'] or 0
+            for i, month in enumerate([
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+            ], start=1)
+        }
+
+        filt = {k: v for k, v in rev_rec.items() if v >= 0}
+        rec = sum(filt.values())
     else:
-        rev_col = {'jan': 0, 'feb': 0, 'mar': 0, 'apr': 0, 'may': 0, 'jun': 0, 'jul': 0, 'aug': 0, 'sept': 0, 'oct': 0, 'nov': 0, 'dec': 0}
+        rev_col = {month.lower(): 0 for month in ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']}
         filt = {}
         col = 0
         rec = 0
-    # filter negative since mo float ang result niya, did you know its called 'dictionary value?' new learningss.
+
+    # ------------------- ADDITIONAL FEES -------------------
+    # Total Additional Fees Receivables (Expected)
+    additional_fees_rec = AdditionalFees.objects.filter(
+        transactions__year=year
+    ).aggregate(total=Sum('amount'))['total'] or 0
+
+    # Total Additional Fees Collection (Paid)
+    additional_fees_col = Transactions.objects.filter(
+        year=year,
+        transType='Payment',
+        additionalfees__isnull=False
+    ).aggregate(total=Sum('payment'))['total'] or 0
 
     is_issues = get_is_seen_issues(request)
 
@@ -2273,11 +2281,12 @@ def revenue_report(request, year):
         'years': years,
         'col': col,
         'rec': rec,
-        'is_rr':True,
-        'is_issues' : is_issues
-        
+        'is_rr': True,
+        'is_issues': is_issues,
+        'additional_fees_rec': additional_fees_rec,
+        'additional_fees_col': additional_fees_col
     }
-    return render(request, 'revenue_report.html',  context)
+    return render(request, 'revenue_report.html', context)
 
 
 def deleteconsumer(request):
@@ -3155,33 +3164,51 @@ def monthly_summary (request, id, year):
 
         
 
-        if additional_fees > 0: #Enjambre  trial section added for additional fees 22/11/2024
+        if additional_fees > 0:  # Enjambre trial section added for additional fees 22/11/2024
             add_fee_paid = False
             try:
-                fee_payment = Transactions.objects.get(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
-                add_fee_paid = fee_payment.payment == additional_fees #zel added 29/11/2024
+                # Use filter().first() instead of get() to avoid MultipleObjectsReturned
+                fee_payment = Transactions.objects.filter(
+                    acctID_id=id,
+                    transType='Payment',
+                    year=year,
+                    month=i,
+                    is_issue=False
+                ).first()
 
-                if add_fee_paid:
+                if fee_payment and fee_payment.payment == additional_fees:  # zel added 29/11/2024
+                    add_fee_paid = True
                     total_amount_paid = fee_payment.payment
                     payid = fee_payment.transactionid
                 else:
                     total_amount_paid = 0
                     payid = 0
-            except ObjectDoesNotExist:
+ 
+            except Exception as e:
+                # You can log the exception if needed
                 add_fee_paid = False
                 total_amount_paid = 0
                 payid = 0
-                additional_fee = Transactions.objects.filter(acctID_id=id, transType='Additional Fees', year=year, month=i).first()
-                #total_bill = additional_fee.bill
 
-                if additional_fee:
-                    total_bill = additional_fee.bill
-                else:
-                    total_bill = additional_fees
+            # Look for the additional fee transaction
+            additional_fee = Transactions.objects.filter(
+                acctID_id=id,
+                transType='Additional Fees',
+                year=year,
+                month=i
+            ).first()
+
+            if additional_fee:
+                total_bill = additional_fee.bill
+            else:
+                total_bill = additional_fees
 
             # Add additional fee row to the table
-                a_additional_fee = montly_sum(month, i, 0, '', 0, total_bill, 0, additional_fees, total_due, total_amount_paid, payid, 'Additional Fee')
-                table.append(a_additional_fee)
+            a_additional_fee = montly_sum(
+                month, i, 0, '', 0, total_bill, 0, additional_fees,
+                total_due, total_amount_paid, payid, 'Additional Fee'
+            )
+            table.append(a_additional_fee)
 
     
     is_issues = get_is_seen_issues(request)
@@ -3429,43 +3456,66 @@ def payment_history (request, id, year):
 
     return render(request,'payment_history.html', context)
 
-def mark_unpaid (request, id): # Enjambre & Sobrian 26/11/2024 for unpaid in payment history trial
-    if request.method =="POST":
-        #transaction_id = request.POST.get ('transaction_id')
-        consumer_id = request.POST.get ('consumer_id')
-        #monthval = request.POST.get('month') #added
-       # year = request.POST.get('year')  #added
-        #payment = request.POST.get('payment')  #added
-        remarks = request.POST.get ('remarks')
+def mark_unpaid(request, transaction_id):
+    # Get the Payment Transaction
+    payment_transaction = get_object_or_404(Transactions, transactionid=transaction_id, transType="Received Amount")
 
-        
+    consumer = payment_transaction.acctID  # Ensure this is a valid ForeignKey reference
+    month = payment_transaction.month
+    year = payment_transaction.year
+    unpaid_amount = payment_transaction.receivedamt or 0  # ✅ Use receivedamt instead of payment
 
-        try:
-            transaction =Transactions.objects.get(transactionid=id, acctID =consumer_id ) #, acctID_id=consumer_id
-           
+    # Delete Received Amount Transactions
+    received_deleted_count, _ = Transactions.objects.filter(
+        transactionid=transaction_id, transType="Received Amount" ,month=month, year=year
+    ).delete()
 
-            transaction.is_billpaid = False
-            transaction.remarks = remarks
-            transaction.save()
-            
+    if received_deleted_count == 0:
+        messages.warning(request, "No Received Amount transaction found.")
 
-            #messages.success(request,f"Transaction {transaction_id}marked as unpaid.")
-            return redirect ('conmon_summary', id= consumer_id, year=transaction.year) #year=transaction.year
-        
-        except Transactions.DoesNotExist:
-            #messages.error(request, "Transaction not found.")
+    # Delete Payment Transactions
+    payment_deleted_count, _ = Transactions.objects.filter(
+        transactionid=transaction_id, transType="Payment",month=month, year=year
+    ).delete()
 
-            #print(f"Transaction with ID {transaction_id} not found.")
+    if payment_deleted_count == 0:
+        messages.warning(request, "No Payment transaction found.")
 
-            #print(f"Transaction with ID {ransaction_id} not found.")
+    # Update Billing Transaction: Set is_billpaid = False
+    bill_transaction = Transactions.objects.filter(acctID=consumer, transType="Billing", month=month, year=year).first()
+    if bill_transaction:
+        bill_transaction.is_billpaid = False
+        bill_transaction.save()
+    else:
+        messages.warning(request, "Billing transaction not found.")
 
-            #print(f"Transaction with ID {ransaction_id} not found.")
+    # Update Consumer's Balance: Add the Received Amount Back
+    consumer.refresh_from_db()  # Refresh latest data before updating
+    consumer.current_bal = (consumer.current_bal or 0) + unpaid_amount
+    consumer.save()
 
-            return HttpResponse( "Transaction not found.", status =404)
-        
-    #return HttpResponse("Invalid request.", status=400)
-    return redirect('payment_history', id = consumer_id) #  year=transaction.year  
-    
+    # Save the Unpaid Transaction Record for Tracking
+    unpaid_transaction = UnpaidTransaction.objects.create(
+        consumer=consumer,  # Ensure this matches the model field
+        month=month,
+        year=year,
+        unpaid_amount=unpaid_amount,  # ✅ Uses receivedamt instead of payment
+        date_unpaid=date.today()  # Ensure this field exists in the model
+    )
+
+    # Debugging: Check if the UnpaidTransaction object was created successfully
+    if unpaid_transaction:
+        messages.success(request, f"Unpaid transaction recorded for {consumer}.")
+    else:
+        messages.error(request, "Failed to record unpaid transaction.")
+
+    # Delete the original payment transaction after logging
+    payment_transaction.delete()
+
+    messages.success(request, f"Payment of ₱{unpaid_amount:.2f} for {consumer} has been marked as unpaid.")
+    return redirect(reverse('payment_history', kwargs={'id': consumer.consumer_id, 'year': year}))
+
+
 
 def consumption(request, year):
     
@@ -4066,3 +4116,86 @@ def calculate_month_bounds(year):
         month_bounds[calendar.month_name[month]] = (start, end)
 
     return month_bounds
+
+def delinquent_accounts(request):
+    barangay_filter = request.GET.get('barangay', '')
+
+    with connection.cursor() as cursor:
+        query = """
+            SELECT c.consumer_id, c.firstname, c.lastname, c.homeaddress, 
+                   COUNT(t.acctID_id) AS delinquent_months,
+                   SUM(t.bill) AS total_delinquent
+            FROM index_transactions t
+            JOIN index_consumerinfo c ON t.acctID_id = c.consumer_id
+            WHERE t.is_billpaid = 0
+        """
+        params = []
+
+        if barangay_filter and barangay_filter != "All":
+            query += " AND c.homeaddress = %s"
+            params.append(barangay_filter)
+
+        query += """
+            GROUP BY c.consumer_id, c.firstname, c.lastname, c.homeaddress
+            HAVING delinquent_months >= 2
+            ORDER BY delinquent_months DESC;
+        """
+
+        cursor.execute(query, params)
+        delinquent_accounts = cursor.fetchall()
+
+    paginator = Paginator(delinquent_accounts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'selected_barangay': barangay_filter,
+    }
+    return render(request, 'delinquents.html', context)
+
+
+    
+def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
+    # Get user selection from dropdown, defaulting to 10
+    num_to_display = int(request.GET.get('num_to_display', 10))
+
+    # Filter only billing transactions that are unpaid
+    unpaid_bills = Transactions.objects.filter(
+        is_billpaid=False, transType='billing'
+    ).values_list('month', 'year')  # Get both month and year
+
+    # Count occurrences of each (month, year) combination
+    delinquent_counts = Counter(unpaid_bills)
+
+    # If there are no unpaid bills, avoid errors
+    if not delinquent_counts:
+        context = {
+            'top_delinquent_months': [],
+            'available_options': [10],  # Default dropdown options
+            'selected_value': num_to_display,
+        }
+        return render(request, 'delinquentmonths.html', context)
+
+    # Sort and get the unique number of delinquent months
+    total_delinquent_months = len(delinquent_counts)
+
+    # Define dropdown options dynamically based on available data
+    available_options = list(range(10, total_delinquent_months + 1, 10))
+    if total_delinquent_months not in available_options:
+        available_options.append(total_delinquent_months)  # Include exact number of months
+
+    # Convert month numbers to names and format as "Month Year"
+    top_delinquent_months = [
+        {'month_year': f"{calendar.month_name[month]} {year}", 'num_delinquent': count}
+        for (month, year), count in delinquent_counts.most_common(num_to_display)
+    ]
+
+    # Pass data to template
+    context = {
+        'top_delinquent_months': top_delinquent_months,
+        'available_options': available_options,
+        'selected_value': num_to_display,
+    }
+
+    return render(request, 'delinquentmonths.html', context)

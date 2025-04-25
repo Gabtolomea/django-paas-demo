@@ -269,5 +269,15 @@ class PartialLog(models.Model):
     partialamt = models.FloatField(null=True)
     datepaid  = models.DateField(auto_now_add=True)
 
+class UnpaidTransaction(models.Model):
+    consumer = models.ForeignKey("ConsumerInfo", on_delete=models.CASCADE)
+    month = models.IntegerField()
+    year = models.IntegerField()
+    unpaid_amount = models.FloatField()  # Ensure this field exists
+    date_unpaid = models.DateField(default=datetime.today)
+
+    def __str__(self):
+        return f"Unpaid: {self.consumer} - {self.month}/{self.year} - {self.unpaid_amount}"
+
 #class background_task(models.Model):
 #class transaction_archive(models.Model):

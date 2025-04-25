@@ -1,6 +1,7 @@
 from . import views
 from . import reports
 from django.urls import path
+from .views import  mark_unpaid ,delinquent_accounts
 
 
 urlpatterns = [
@@ -68,7 +69,9 @@ urlpatterns = [
     path('submit_comment/<id>', views.submit_comment, name='submit_comment'),
     path('resolve_issue', views.resolve_issue,name='resolve_issue'),
     path('new_penalty', views.new_penalty), #added by K. Bandajon October 29, 2024 The new penalty rate-.- ID: NewPenaltyOct2024
-    path('mark_unpaid', views.mark_unpaid, name ='mark_unpaid'),# added Enjambre & Sobrian 26/11/2024 for unpaid in payment history
+    path("mark_unpaid/<int:transaction_id>/", mark_unpaid, name="mark_unpaid"),#added Adjay
+    path('payment_history/<str:id>/', views.payment_history, name='payment_history'),#added Adjay
+    path('delinquent-accounts/', delinquent_accounts, name='delinquent_accounts'),#zel added
     path("average_consumption_all_report/", reports.average_consumption_all_report, name="average_consumption_all_report"),
 ]
 

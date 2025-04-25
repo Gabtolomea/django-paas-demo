@@ -11,6 +11,8 @@ Payment History
 <script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
 
 
+
+
 <style>
     /* .table-scrolls{
         width: 100%;
@@ -21,9 +23,13 @@ Payment History
     } */
 
 
+
+
     .dataTables_empty {
         text-align: center;
     }
+
+
 
 
     .odd {
@@ -32,6 +38,8 @@ Payment History
         line-height: 1.5;
         -webkit-text-size-adjust: 100%;
         -webkit-tap-highlight-color: transparent;
+
+
 
 
         caption-side: bottom;
@@ -46,16 +54,22 @@ Payment History
     }
 
 
+
+
     .hide {
         opacity: 0;
         transition: 0.3s all ease-in-out;
     }
 
 
+
+
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
     }
+
+
 
 
     .button2 {
@@ -69,6 +83,8 @@ Payment History
     }
 
 
+
+
     .btn.button2:hover {
         background: var(--main-color);
         color: #ffffff;
@@ -76,6 +92,8 @@ Payment History
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
+
+
 
 
     .btn.button2:focus {
@@ -87,7 +105,11 @@ Payment History
     }
 
 
+
+
     /* ============================================================================================= */
+
+
 
 
     .invoice-box {
@@ -103,11 +125,15 @@ Payment History
     }
 
 
+
+
     .invoice-box table {
         width: 100%;
         line-height: inherit;
         text-align: left;
     }
+
+
 
 
     .invoice-box table td {
@@ -116,14 +142,20 @@ Payment History
     }
 
 
+
+
     .invoice-box table tr td:nth-child(2) {
         text-align: right;
     }
 
 
+
+
     .invoice-box table tr.top table td {
         padding-bottom: 0px;
     }
+
+
 
 
     .invoice-box table tr.top table td.title {
@@ -133,9 +165,13 @@ Payment History
     }
 
 
+
+
     .invoice-box table tr.information table td {
         padding-top: 0;
     }
+
+
 
 
     .invoice-box table tr.heading td {
@@ -145,9 +181,13 @@ Payment History
     }
 
 
+
+
     .invoice-box table tr.details td {
         padding-bottom: 0px;
     }
+
+
 
 
     .invoice-box table tr.item td {
@@ -155,15 +195,21 @@ Payment History
     }
 
 
+
+
     .invoice-box table tr.item.last td {
         border-bottom: none;
     }
+
+
 
 
     .invoice-box table tr.total td:nth-child(2) {
         border-top: 2px solid #eee;
         font-weight: bold;
     }
+
+
 
 
     @media only screen and (max-width: 600px) {
@@ -174,12 +220,16 @@ Payment History
         }
 
 
+
+
         .invoice-box table tr.information table td {
             width: 100%;
             display: block;
             text-align: center;
         }
     }
+
+
 
 
     /** RTL **/
@@ -189,9 +239,13 @@ Payment History
     }
 
 
+
+
     .rtl table {
         text-align: right;
     }
+
+
 
 
     .rtl table tr td:nth-child(2) {
@@ -199,11 +253,15 @@ Payment History
     }
 
 
+
+
     #logo {
         vertical-align: middle;
         border-style: none;
         height: 90px;
     }
+
+
 
 
     .total {
@@ -215,11 +273,15 @@ Payment History
     }
 
 
+
+
     .mun {
         font-family: monospace;
         font-size: 25px;
         font-weight: bold;
     }
+
+
 
 
     .mun-header {
@@ -229,12 +291,21 @@ Payment History
     }
 
 
+
+
     .st {
         font-size: 21px;
         font-weight: bold;
         font-family: emoji;
     }
 </style>
+
+
+ <!-- script added for unpaid button -Enjambre 3/21/2025-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
 <!-- Header Info of Consumer -->
 <div class="container-fluid p-0">
     <div class="table-responsive">
@@ -265,8 +336,16 @@ Payment History
 </div>
 
 
+
+
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
+
+
+
+
+
+
 
 
 
@@ -276,10 +355,18 @@ Payment History
 <div class="row w-100 m-auto pt-2">
 
 
+
+
     <!-- Buttons -->
 
 
+
+
     {% include 'billingbuttons.html' %}
+
+
+
+
 
 
 
@@ -298,6 +385,8 @@ Payment History
                 </label>
 
 
+
+
             </form>
             <script>
                 yearselection = document.getElementById("yearselection")
@@ -312,122 +401,127 @@ Payment History
 
 
 
+
+
+
+
     </div>
+
+
+
+
 
 
 
 
     <!-- Payment History -->
-    <div id=c>
-        <div class="">
-            <form></form>
-            <h1 class="mb-3 text-center">Payment History</h1>
-            <div class="container-fluid p-0">
-                <div class="table-responsive">
-                    <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
-                        width="100%">
-                        <thead class="wb_thead">
-                            <tr>
-                                <th style="min-width: 100px;">Transaction ID</th>
-                                <th style="min-width: 100px;">Bill Type</th> <!-- changes 28/10/2024 Enjambre -->
-                                <th style="min-width: 100px;">OR Number</th>
-                                <th style="min-width: 100px;">Date</th>
-                                <th style="min-width: 100px;">Received Amount</th>
-                                <th style="min-width: 100px;">Processed By</th>
-                                <th style="min-width: 100px;">Action</th> <!-- changes 28/10/2024 Enjambre -->
-                            </tr>
-                        </thead>
-
-
-                        <tbody class="wb_tbody">
-                            {% if alltrans %}
-                            {% for t in alltrans %}
-                            <tr style="cursor: pointer;" title="Edit Payment {{t.transactionid}}" data-bs-toggle="modal"
-                                data-bs-target="#edit-{{t.transactionid}}">
-                                <td class="text-center">{{t.transactionid}}</td>
-                                <td class="text-center">{{t.transType}}</td><!-- 20/11/2024 -->
-                                <td class="text-center">{{t.or_number}}</td>
-                                <td class="text-center">{{t.date}}</td>
-                                <td class="text-center">{% if t.receivedamt %}&#8369;
-                                    {{t.receivedamt|floatformat:2|intcomma}}{% endif %}</td>
-                                <td class="text-center">{{t.processedBy}}</td>
-                                <!-- below is for Action unfinished 29/10/2024-->
-                                <td class="text-center">
-                                    {% if t.total_amount_paid %}
+<div id=c>
+    <div class="">
+        <form></form>
+        <h1 class="mb-3 text-center">Payment History</h1>
+        <div class="container-fluid p-0">
+            <div class="table-responsive">
+                <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
+                    width="100%">
+                    <thead class="wb_thead">
+                        <tr>
+                            <th style="min-width: 100px;">Transaction ID</th>
+                            <th style="min-width: 100px;">Bill Type</th> <!-- changes 28/10/2024 Enjambre -->
+                            <th style="min-width: 100px;">OR Number</th>
+                            <th style="min-width: 100px;">Date</th>
+                            <th style="min-width: 100px;">Received Amount</th>
+                            <th style="min-width: 100px;">Processed By</th>
+                            <th style="min-width: 100px;">Action</th> <!-- changes 28/10/2024 Enjambre -->
+                        </tr>
+                    </thead>
+                    <tbody class="wb_tbody">
+                        {% if alltrans %}
+                        {% for t in alltrans %}
+                        <tr style="cursor: pointer;" title="Edit Payment {{t.transactionid}}" data-bs-toggle="modal"
+                            data-bs-target="#edit-{{t.transactionid}}">
+                            <td class="text-center">{{t.transactionid}}</td>
+                            <td class="text-center">{{t.transType}}</td><!-- 20/11/2024 -->
+                            <td class="text-center">{{t.or_number}}</td>
+                            <td class="text-center">{{t.date}}</td>
+                            <td class="text-center">{% if t.receivedamt %}&#8369;
+                                {{t.receivedamt|floatformat:2|intcomma}}{% endif %}</td>
+                            <td class="text-center">{{t.processedBy}}</td>
+                            <!-- below is for Unpaid Action -Enjambre 3/21/2025-->
+                            <td class="text-center">
+                                {% if t.total_amount_paid %}
                                     &#8369; {{ t.total_amount_paid }}
-                                    {% else %}
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#pay-{{ t.monthval }}">
+                                {% else %}
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" 
+                                        data-bs-target="#pay-{{ t.monthval }}"
+                                        data-transaction-id="{{ t.transactionid }}"
+                                        data-received-amount="{{ t.receivedamt|floatformat:2|intcomma }}"
+                                        data-or-number="{{ t.or_number }}"
+                                        data-date="{{ t.date }}">
                                         UNPAID
                                     </button>
-                                    {% endif %}
-                                </td>
-                                <!-- until here for Unpaid Action unfinished 29/10/2024-->
-
-
-                            </tr>
-                            {% endfor %}
-                            {% else %}
-                            <tr class="odd">
-                                <td valign="top" colspan="5" class="dataTables_empty">No records found</td>
-                            </tr>
-                            {% endif %}
-                        </tbody>
-
-
-                    </table>
-                </div>
+                                {% endif %}
+                             </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr class="odd">
+                            <td valign="top" colspan="5" class="dataTables_empty">No records found</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
             </div>
-
-
-            </form>
         </div>
+        </form>
     </div>
+</div>
+
+
 
 
     <!-- Payment form/Modal -->
-    {% for i in alltrans %}
-    <div class="modal fade" id="edit-{{i.transactionid}}" tabindex="-1" role="dialog" aria-labelledby="payment"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form action="{% url 'editpayment' i.transactionid %}" method="POST">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+{% for i in alltrans %}
+<div class="modal fade" id="edit-{{i.transactionid}}" tabindex="-1" role="dialog" aria-labelledby="payment"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="{% url 'editpayment' i.transactionid %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input value="{{i.receivedamt}}" name="amount" type="number" class="form-control" required>
+                        <label>OR Number</label>
+                        <input value="{{i.or_number}}" name="or_num" type="" class="form-control" required>
+                        <label>Discount Code</label>
+                        <input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Amount</label>
-                            <input value="{{i.receivedamt}}" name="amount" type="number" class="form-control" required>
-                            <label>OR Number</label>
-                            <input value="{{i.or_number}}" name="or_num" type="" class="form-control" required>
-                            <label>Discount Code</label>
-                            <input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" name="btnform2">Update</button>
-                    </div>
-                    <input type="hidden" name="fshow" value="">
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" name="btnform2">Update</button>
+                </div>
+                <input type="hidden" name="fshow" value="">
+            </form>
         </div>
     </div>
+</div>
+{% endfor %}
 
 
-    {% endfor %}
 
 
-    {% for t in alltrans%}
-    <!-- This section is for Unpaid Action unfinished 26/11/2024 Enjambre&Sobrian-->
+{% for t in alltrans%}
+    <!-- This section is for Unpaid Action finished 03/22/2025 by zel-->
 <div class="modal fade" id="pay-{{t.monthval}}" tabindex="-1" role="dialog" aria-labelledby="payment"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form action="{% url 'mark_unpaid' %} t.transactionid" method="POST">
+                <form id="unpaid-form-{{ t.transactionid }}" action="{% url 'mark_unpaid' t.transactionid %}" method="POST">
                     {% csrf_token %}
                     <div class="modal-header">
                         <h5 class="modal-title" id="modal-title-{{ t.transactionid }}">Unpaid Transaction</h5>
@@ -437,24 +531,26 @@ Payment History
                         <div class="form-group">
 
 
-                            <label for="transaction_id">Transaction ID:</label>
-                            <span id="modal-transaction-id"
-                                style="margin-left: 10px;"></span><span>{{ t.transactionid }}</span><br><!-- need to change 29/10/2024-->
 
-                                
+
+                            <label for="transaction_id">Transaction ID:</label>
+                            <span id="modal-transaction-id" style="margin-left: 10px;"></span><br>
+
+
+                               
                             <label for="id_or_num">Amount Paid:</label>
-                            <span id="modal-amount"
-                                style="margin-left: 10px;"></span><span>{{ t.receivedamt }}</span><br><!-- need to change 29/10/2024-->
+                            <span id="modal-amount" style="margin-left: 10px;"></span><br>
+
+
 
 
                             <label for="id_or_num">OR Number:</label>
-                            <span id="modal-or-number"
-                                style="margin-left: 10px;"></span><span>{{ t.or_number }}</span><br><!-- need to change 29/10/2024-->
+                            <span id="modal-or-number" style="margin-left: 10px;"></span><br>
 
 
                             <label for="payment_date">Date Paid:</label>
-                            <span id="modal-payment-date"
-                                style="margin-left: 10px;"></span><span>{{ t.date }}</span><br><!-- need to change 29/10/2024-->
+                            <span id="modal-payment-date" style="margin-left: 10px;"></span><br>
+
 
                             <!--<input type="hidden" name="transaction_id" value="{{ t.transactionid }}">
                             <input type="hidden" name="conid" value="{{ u.consumer_id }}">
@@ -463,14 +559,19 @@ Payment History
                             <input type="hidden" name="payment" value="{{ t.total_bill }}">-->
 
 
+
+
                             <label for="id_remarks">Remarks:</label>
-                            <input type="text" name="remarks" id="id_remarks" required class="input form-control"
-                                placeholder="Enter Remarks"><br>
+                            <input type="text" name="remarks" id="id_remarks" required class="input form-control" placeholder="Enter Remarks"><br>
+
+
 
 
                             <div style="color: red; margin-top: 10px;">
                                 Are you sure to delete (unpaid) this transaction?
                             </div>
+
+
 
 
                         </div>
@@ -484,11 +585,36 @@ Payment History
         </div>
     </div>
     {% endfor %}
+<!-- Until here for Unpaid Transaction 03/22/2025 added by zel-->
 
 
-    <!-- Until here for Unpaid Transaction 29/10/2024-->
 
+
+
+<!--  added for unpaid action-Estenor 3/21/2025-->
+<script>
+    $(document).ready(function () {
+        $(document).on('show.bs.modal', '[id^=pay-]', function (event) {
+            var button = $(event.relatedTarget);
+            var transactionId = button.data('transaction-id'); // Ensure the correct transaction ID is used
+            var receivedAmount = button.data('received-amount');
+            var orNumber = button.data('or-number');
+            var date = button.data('date');
+    
+            var modal = $(this);
+            modal.find('#modal-transaction-id').text(transactionId);
+            modal.find('#modal-amount').text(receivedAmount);
+            modal.find('#modal-or-number').text(orNumber);
+            modal.find('#modal-payment-date').text(date);
+    
+            // Update the form action dynamically to target the correct transaction ID
+            modal.find('form').attr('action', `/mark_unpaid/${transactionId}/`);
+        });
+    });
+</script>
+    <!-- until here -Estenor 3/21/2025-->
 
 
 
     {% endblock payment_history %}
+
