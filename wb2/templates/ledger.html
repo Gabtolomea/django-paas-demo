@@ -83,8 +83,16 @@ Account Ledger
 	color: black;
 	}
 
-	.row-blue {
-		background-color: #cce5ff !important;
+	.row-bill {
+		background-color: #e5ffd7;
+	}
+
+	.row-addfee {
+		background-color: #b8eef1;
+	}
+
+	.row-default {
+		background-color: #ffffff;
 	}
 
 </style>
@@ -223,7 +231,8 @@ Account Ledger
 						</thead>
 						<tbody class="wb_tbody" >
 							{% for t in table reversed %}
-							<tr class="{% if t.reading %} context-menu-target {% else %}no-right-click {% endif %} {{t.style}} {% if t.ispaid %}row-blue{% endif %}" data-link="form-{{t.transid}}">
+							<tr class="{% if t.reading %}context-menu-target{% else %}no-right-click{% endif %} {{ t.style }} {% if t.ispaid %} row-bill {% endif %} {% if t.ttype == 'Additional Fees' %} row-addfee {% endif %}" data-link="form-{{t.transid}}">
+
 								<form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
@@ -242,7 +251,7 @@ Account Ledger
 								<td>{{t.}}</td><!--added changes for penalty unfinished 28/10/2024  -->
 								<td>{{t.}}</td><!--added changes for Amount Due unfinished 14/11/2024  -->								
 								<td>
-									{% if t.ispaid and t.payment %}
+									{% if t.ispaid and t.payment and not t.ttype == 'Additional Fees'%}
 									&#8369; {{ t.payment|floatformat:2|intcomma }}
 									{% endif %}
 								</td>

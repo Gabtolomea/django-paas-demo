@@ -1,0 +1,175 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} Additional Fees {% endblock title %}
+
+{% block additionalfeeslist %}
+<!-- External JavaScript Libraries -->
+<script src="{% static 'jspdf.min.js' %}"></script>
+<script src="{% static 'jquery.min.js' %}"></script>
+<script src="{% static 'html2pdf.bundle.min.js' %}"></script>
+<script src="{% static 'jspdf.plugin.autotable.js' %}"></script>
+
+<!-- Custom Styling -->
+<style>
+    h1 {
+        text-align: center;
+    }
+
+    /* Button styling */
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%),
+            inset 0px 5px 7px 0 rgb(255 255 255 / 52%),
+            0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39),
+            inset 0px 5px 7px 0 #e6ecebd8,
+            0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274),
+            inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+
+    /* Improved table styling */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 18px;
+        /* Bigger font */
+    }
+
+    .styled-table thead {
+        background-color: #005F73;
+        /* Dark header */
+        color: white;
+        text-align: center;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+        /* Center align for consistency */
+    }
+
+    .styled-table tbody tr:nth-child(even) {
+        background-color: #f3f3f3;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #ddd;
+    }
+
+    .table-container {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 90vw;
+        /* Make it bigger */
+        margin: auto;
+    }
+</style>
+
+<!-- Header Info of Consumer -->
+<div class="container-fluid p-0">
+    <div class="table-responsive">
+        <table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+            <thead class="wb_thead">
+                <tr class="header">
+                    <th scope="col">Account ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Connection Type</th>
+                    <th scope="col">Meter Number</th>
+                    <th scope="col">Excess Payment</th>
+                    <th scope="col">Current Balance</th>
+                </tr>
+            </thead>
+            <tbody class="wb_tbody">
+                <tr class="showOnHover">
+                    <td class="table-light text-center">{{ u.consumer_id }}</td>
+                    <td class="table-light text-center">{{ u.firstname }} {{ u.middlename }} {{ u.lastname }}</td>
+                    <td class="table-light text-center">{{ u.contypeid.contype }}</td>
+                    <td class="table-light text-center">{{ u.meternumber }}</td>
+                    <td class="table-light text-center">&#8369; {{ u.excess|floatformat:2|intcomma }}</td>
+                    <td class="table-light text-center">&#8369; {{ u.current_bal|floatformat:2|intcomma }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top: 10px;">
+        <div class="button-container">
+            <a href="{% url 'ledger' u.consumer_id %}">
+                <button type="button" class="btn button2">Ledger</button>
+            </a>
+            <a href="{% url 'monthly_summary' u.consumer_id year %}">
+                <button type="button" class="btn button2">Outstanding Balances</button>
+            </a>
+            <a href="{% url 'payment_history' u.consumer_id year %}">
+                <button type="button" class="btn button2">Payment History</button>
+            </a>
+            <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment">
+                Additional Fees
+            </button>
+            <a href="{% url 'additionalfeeslist' u.consumer_id %}">
+                <button type="button" class="btn button2 active">List of Additional Fees</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Table Section for Additional Fees -->
+<div class="container mt-4 table-container">
+    <h1>List of Additional Fees</h1>
+
+    {% if has_additional_fees %}
+    <table class="styled-table mt-3">
+        <thead>
+            <tr>
+                <th>Fee Name</th>
+                <th>Months</th>
+                <th>Date</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fee in additional_fees %}
+            <tr>
+                <td>{{ fee.fee_name }}</td>
+                <td>{{ fee.months }}</td>
+                <td>{{ fee.date_added|date:"F j, Y" }}</td>
+                <td>₱{{ fee.amount|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info mt-3">
+        <p>No additional fees found for this consumer.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock additionalfeeslist %}

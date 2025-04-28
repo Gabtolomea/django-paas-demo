@@ -8,6 +8,8 @@
             style="float:left; margin-right: 5px;">Payment History</button></a>
     <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment"
         style="float:left;">Additional Fees</button>
+    <a href="{% url 'additionalfeeslist' u.consumer_id %}"><button type="button" class="btn button2"
+                style="float:left; margin-top: 5px;">List of Additional fees </button></a>
 </div>
 
 <!-- Installment Fee Modal -->

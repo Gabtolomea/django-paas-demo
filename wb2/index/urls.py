@@ -73,5 +73,6 @@ urlpatterns = [
     path('payment_history/<str:id>/', views.payment_history, name='payment_history'),#added Adjay
     path('delinquent-accounts/', delinquent_accounts, name='delinquent_accounts'),#zel added
     path("average_consumption_all_report/", reports.average_consumption_all_report, name="average_consumption_all_report"),
+    path('bills_list/ledger/additionalfeeslist/<str:consumer_id>/', views.additionalfeeslist, name='additionalfeeslist'),
 ]
 

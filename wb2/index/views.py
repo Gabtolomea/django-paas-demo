@@ -505,6 +505,69 @@ def ledger(request, id):
     }
     return render(request, 'ledger.html', context)
 
+
+
+'''@login_required(login_url='login')
+def ledger(request, id):
+    disp = request.GET.get('show','')
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
+            template = "ledger.html"
+        else:
+            template = redirect('bills_list')
+            return template
+    
+
+    #gbaguia 08/16/2024
+    ispaid = False
+    is_issues = get_is_seen_issues(request)
+
+    context = {
+
+    }
+    return render(request, 'ledger.html', context)'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @unauthenticated_user
 def forgetpassword(request):
     
@@ -3088,6 +3151,7 @@ def monthly_summary (request, id, year):
             self.total_amount_paid = total_amount_paid
             self.payid = payid
             self.transType = transType  
+            self.penalty = penalty
             
 
     consumer = ConsumerInfo.objects.get(consumer_id=id)
@@ -3102,9 +3166,11 @@ def monthly_summary (request, id, year):
 
     for i in range(1, 13):
         month = calendar.month_name[i]
+        transtype = "Billing"
         try:
             bill = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=i, is_issue=False)
             transtype = bill.transType
+            
         except ObjectDoesNotExist:
             #gbaguia 09112024 Added total_amount_paid container
             # a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0)
@@ -4117,6 +4183,24 @@ def calculate_month_bounds(year):
 
     return month_bounds
 
+
+#addtional fees added by Mary Joy Quibedo, Integrated by Kathrina Bandajon 24/04/2025
+
+def additionalfeeslist(request, consumer_id):
+    u = get_object_or_404(ConsumerInfo, consumer_id=consumer_id)
+    additional_fees = AdditionalFees.objects.filter(consumer_id=u)
+    has_additional_fees = additional_fees.exists()
+    
+    # Get the current year or set a default if needed
+    current_year = datetime.now().year  
+
+    context = {
+        'u': u,  # Use 'u' as the variable for the consumer in the template
+        'additional_fees': additional_fees,
+        'has_additional_fees': has_additional_fees,
+        'year': current_year,  # Add 'year' so it works in URLs
+    }
+    return render(request, 'additionalfeeslist.html', context)
 def delinquent_accounts(request):
     barangay_filter = request.GET.get('barangay', '')
 
