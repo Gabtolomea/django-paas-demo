@@ -242,6 +242,19 @@
                 </li>
             </a>
             {% endif %}
+
+            {% if request.user.is_teller or request.user.is_supervisor %}
+            <a class="icons" href="{% url 'delinquent_accounts' %}" style="color: white; text-decoration: none">
+                <li class="side_nav_li {% active_link 'delinquent_accounts' 'active' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 48 48" style="width: 13%;">
+                        <path d="M12 46q-2.5 0-4.25-1.75T6 40V14q0-2.5 1.75-4.25T12 8h8q0-1.25.875-2.125T23 5h4q1.25 0 2.125.875T30 8h8q2.5 0 4.25 1.75T44 14v26q0 2.5-1.75 4.25T38 46H12Zm8-4h16q1.25 0 2.125-.875T39 39V14q0-1.25-.875-2.125T36 11H12q-1.25 0-2.125.875T9 14v25q0 1.25.875 2.125T12 42ZM18 24v-2h6v2Zm0 6v-2h12v2Zm0-12v-2h12v2ZM12 42V14v25Z" />
+                    </svg>
+                    <span class="sidenav_text" style="padding-left: 20px; font-size: 20px;">Delinquent</span>
+                </li>
+            </a>
+            {% endif %}
+
+            
             {% if request.user.is_admin %}
             <a class="icons" href="{% url 'sysuser' %}" style="color: white; text-decoration: none">
                 <li class="side_nav_li {% active_link 'sysuser' 'active' %}">
@@ -307,6 +320,10 @@
         {% endblock unsettled_bills %}
         {% block view_unsettled_bills %}
         {% endblock view_unsettled_bills %}
+        {% block delinquent_accounts %}
+        {% endblock delinquent_accounts %}
+        {% block delinquent_months %}
+        {% endblock delinquent_months%}        
         {% block sysuserupdate %}
         {% endblock sysuserupdate %}
         {% block settingspage %}
@@ -322,8 +339,11 @@
         {% block view_barangay %}
         {% endblock view_barangay %}
 
+
         {% block bulkreading %}
         {% endblock bulkreading %}
+
+
 
 
         {% block userprof %}
@@ -335,16 +355,13 @@
         {% block stopmeter %}
         {% endblock stopmeter %}
 
-        {% block record_list %}
-        {% endblock record_list %}
-        {% block monthly_collections %}
-        {% endblock monthly_collections %}
 
         {% block additionalfeeslist %}
         {% endblock additionalfeeslist %}
 
         {% block conmon_sumary %}
         {% endblock conmon_sumary %}
+
 
         {% block payment_history%}
         {% endblock payment_history %}
@@ -356,6 +373,8 @@
         {% endblock issues  %}
         {% block issue_details %}
         {% endblock issue_details  %}
+
+
 
     </div>
 
