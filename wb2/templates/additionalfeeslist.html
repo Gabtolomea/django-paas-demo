@@ -119,7 +119,7 @@
     </div>
 
     <!-- Buttons -->
-    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top: 10px;">
+    <!--<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top: 10px;">
         <div class="button-container">
             <a href="{% url 'ledger' u.consumer_id %}">
                 <button type="button" class="btn button2">Ledger</button>
@@ -138,11 +138,14 @@
             </a>
         </div>
     </div>
+</div>-->
+<div>
+    {% include 'billingbuttons.html' %}
 </div>
-
 <!-- Table Section for Additional Fees -->
+<h1 class="mb-3 text-center">List of Additional Fees</h1>
 <div class="container mt-4 table-container">
-    <h1>List of Additional Fees</h1>
+
 
     {% if has_additional_fees %}
     <table class="styled-table mt-3">

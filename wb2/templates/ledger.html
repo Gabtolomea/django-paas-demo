@@ -213,6 +213,7 @@ Account Ledger
 							<tr>
 								<th style="min-width: 100px;">Billing Transaction ID</th>
 								<th style="min-width: 100px;">Date</th>
+								<th style="min-width: 100px;">Transaction Type</th>
 								<th style="min-width: 100px;">Bill Month(Month-Year)</th> <!-- from Month-Year to Bill Month(Month-Year) 28/10/2024 Enjambre -->
 								<th style="min-width: 100px;">Previous Reading</th> <!-- from previous to Previous Reading 28/10/2024  -->
 								<th style="min-width: 100px;">Current Reading</th> <!--from Current to Current Reading  28/10/2024  -->
@@ -242,6 +243,7 @@ Account Ledger
 								</form>
 								<td>{{t.transid}}</td>
 								<td>{{t.date}}</td>
+								<td>{{t.ttype}}</td>
 								<td>{{t.month | slice:":3"}}-{{t.year}}</td>
 								<td>{{t.prev}}</td>
 								<td>{{t.reading}}</td>

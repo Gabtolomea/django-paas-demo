@@ -263,6 +263,254 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
+'''@login_required(login_url='login')
+def ledger(request, id):
+    disp = request.GET.get('show','')
+    template = ""
+    LoginSession = request.user
+    if LoginSession:
+        if LoginSession.is_teller or LoginSession.is_supervisor:
+            template = "ledger.html"
+        else:
+            template = redirect('bills_list')
+            return template
+    unpaid = []
+    table = []
+    unpaid = []
+    year = datetime.today().year
+    usage = 0
+    transid = 0
+    connectionType = 0
+    pre = 0
+    cur = 0
+    pen = 0
+    bill = 0
+    total_unpaid_amount = 0
+    paytranid = 0 # added for payment transaction id  Enjambre 21/11/2024
+    payment = 0  #  added for payment 21/11/2024
+    monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    # get_balance(id)
+    class ledgerclass():
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, paytranid,  pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):#added paytranid Enjambre 21/11/2024
+            self.transid = transid
+            self.date = date
+            self.prev = prev
+            self.reading = reading
+            self.usage = usage
+            self.bill = bill
+            self.payment = payment
+            self.paytranid= paytranid
+            self.pb = pb
+            self.ornum = ornum
+            self.bal = bal
+            self.rateid = rateid
+            self.style = style
+            self.disc_code = disc_code
+            self.transtype = transtype
+            self.month = month
+            self.year = year
+            self.ispaid = ispaid
+
+        def __str__(self) -> str:
+            return self.transtype
+    try:
+        u = ConsumerInfo.objects.get(pk=id)
+    except ObjectDoesNotExist:
+        pass
+    if disp == '':
+        trans = Transactions.objects.filter(acctID=u.consumer_id, is_issue=False)
+    else:
+        trans = Transactions.objects.filter(acctID=u.consumer_id, transType = disp, is_issue=False)
+    asc_trans = trans.order_by('year', 'month','transactionid')
+    bal = 0
+    
+    currentaddfeecount = 1
+    for tran in asc_trans:
+        prev = 0
+        ornum = ''
+        connectionType = ''
+        style = ''
+        pb = ''
+        dcode = ''
+        usage = ''
+        bill = ''
+        prev = ''
+        cur = ''
+        ispaid = ''
+        paytranid= ''# added for payment transaction id  Enjambre 21/11/2024
+
+
+        if tran.transType == 'Payment':
+            paytranid = tran.transactionid
+            payment = tran.payment
+            continue # added zel 26/11/2024
+
+        # print(tran.transType)
+
+        if tran.transType == 'Billing':
+            usage = tran.usage
+            pre = tran.meterReading - usage
+            bill = tran.bill
+            try:
+                connectionType = ConsumerType.objects.get(contypeid=tran.contypeid).contype
+            except ObjectDoesNotExist:
+                pass
+            cur = tran.meterReading
+            prev = tran.prevReading
+            if tran.processedBy is not None:
+                pb = tran.processedBy
+            bal += bill
+
+            try:# starting point zel 26/11/2024
+                paymentTrans = Transactions.objects.filter(
+                    acctID=u.consumer_id,
+                    transType='Payment',
+                    month=tran.month,
+                    year=tran.year
+                ).first()  
+
+                if paymentTrans:
+                    paytranid = paymentTrans.transactionid  # Assign the payment transaction ID
+                    payment = paymentTrans.payment  # Get the payment amount
+            except ObjectDoesNotExist:
+                paytranid = None
+                payment = 0 #until here zel 26/11/2024
+
+
+            if tran.is_billpaid:
+                ispaid = 'Paid'
+               
+
+        #elif tran.transType == 'Payment':
+            #style = 'table-orange' #ORIGINAL
+            #ornum = tran.or_number
+            #if tran.processedBy:
+                #pb = tran.processedBy
+            #else:
+                #pb = ''
+            #bal = bal-tran.payment
+            #try:
+                #discount = Transactions.objects.get(transactionid=tran.discountcode)
+               # dcode = discount.discountcode
+            #except ObjectDoesNotExist:
+                #pass
+        elif tran.transType == 'Penalty':
+            bill = tran.bill
+            pen = tran.penaltyCode
+            style = 'table-red'
+            pb = tran.processedBy
+            bal += bill
+
+        elif tran.transType == 'Discount':
+            style = 'table-blue'
+            pb = tran.processedBy
+            bal = bal-tran.payment
+
+        elif tran.transType == 'Reset Meter':
+            bill = 0
+            cur = tran.meterReading
+            style = 'table-yellow'
+            pb = tran.processedBy
+            bal += bill
+        elif tran.transType == 'Additional Fees':
+            bill = tran.bill
+            style = 'table-lightblue'
+            bal += bill
+            if tran.processedBy is not None:
+                pb = tran.processedBy
+            
+            if tran.is_billpaid:
+                ispaid = 'Paid'
+            else:
+                try:
+                    # print(tran.transactionid)
+                    addfee = AdditionalFees.objects.get(transactions=tran.transactionid)
+                    ispaid = f'{currentaddfeecount}/{addfee.months}'
+                except ObjectDoesNotExist:
+                    pass
+            
+            currentaddfeecount += 1
+        
+    
+        date = tran.date
+        #payment = tran.payment removed 26/11/2024
+        transid = tran.transactionid
+        m = tran.month
+        y = tran.year
+        bal = math.ceil(bal * 100) / 100
+        ttype = tran.transType
+
+        #if tran.transType == 'Payment':  # We already skip this above, but let's be explicit here too
+            #continue #zel 26/11/2024
+
+
+        if tran.transType != 'Received Amount' and tran.transType != 'Payment':  # added tran.transType != 'Payment'  20/11/2024   
+            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, paytranid, pb, ornum, bal, connectionType, style, dcode, ttype, monthnames[m-1], y, ispaid) #paytranid is added  21/11/2024           
+            table.append(new_row)
+        
+
+        if tran.transType == 'Billing' and not tran.is_billpaid:
+            unpaid_month = monthnames[tran.month-1]
+            unpaid_year = tran.year
+            unpaid_amount = tran.bill
+            usage = tran.usage
+            unpaid_bill_info = {
+                'month': unpaid_month,
+                'year': unpaid_year,
+                'amount': unpaid_amount,
+                'usage' : usage
+                }
+            unpaid.append(unpaid_bill_info)
+        total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
+
+        #if tran.transType == 'Billing' and not tran.is_billpaid:
+        #        unpaid_month = monthnames[tran.month-1]
+        #        unpaid_year = tran.year
+        #        unpaid_amount = tran.bill
+        #        usage = tran.usage
+        #        unpaid_bill_info = {
+        #            'month': unpaid_month,
+        #            'year': unpaid_year,
+        #            'amount': unpaid_amount,
+        #            'usage' : usage
+        #            }
+        #        unpaid.append(unpaid_bill_info)
+        #total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
+
+    #gbaguia 08/16/2024
+    ispaid = False
+    is_issues = get_is_seen_issues(request)
+
+    context = {
+        'disp': disp,
+        'month': calendar.month_name[datetime.today().month-1],
+        'date_today': datetime.today().strftime('%B %d, %Y - %I:%M %p'),
+        'u': u,
+        'table': table,
+        'year': year,
+        'usage': usage,
+        'transid': transid,
+        'contype': connectionType,
+        'pre': pre,
+        'cur': cur,
+        'pen': pen,
+        'bal': bal,
+        'bill': bill,
+        'user': request.user,
+        'prevmonth': calendar.month_name[(datetime.today().month - 2) % 12 + 1],
+        'ispaid': ispaid,
+        'is_issues': is_issues,
+        'up': unpaid,
+        'tu': total_unpaid_amount
+    }
+    return render(request, 'ledger.html', context)'''
+
+
+
+
+
+
+#to be edited
 @login_required(login_url='login')
 def ledger(request, id):
     disp = request.GET.get('show','')
@@ -504,39 +752,6 @@ def ledger(request, id):
         'tu': total_unpaid_amount
     }
     return render(request, 'ledger.html', context)
-
-
-
-'''@login_required(login_url='login')
-def ledger(request, id):
-    disp = request.GET.get('show','')
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "ledger.html"
-        else:
-            template = redirect('bills_list')
-            return template
-    
-
-    #gbaguia 08/16/2024
-    ispaid = False
-    is_issues = get_is_seen_issues(request)
-
-    context = {
-
-    }
-    return render(request, 'ledger.html', context)'''
-
-
-
-
-
-
-
-
-
 
 
 
