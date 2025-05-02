@@ -238,8 +238,29 @@ class AdditionalFees(models.Model):
     months = models.IntegerField()
     month_counter = models.IntegerField(default=1)
     remainder = models.IntegerField()
+    month = models.IntegerField(blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
     transactions = models.ManyToManyField(Transactions)
+    processedBy = models.CharField(max_length=50, null=True)
     date_added = models.DateField(auto_now_add=True)
+
+class AdditionalFeesPayment(models.Model):
+    afpaymentID = models.AutoField(primary_key=True)
+    additional_fee = models.ForeignKey(AdditionalFees, on_delete=models.CASCADE, related_name='payments')
+    addfeepayID = models.CharField(max_length=100, unique=True)  # Store custom ID as a string
+    amount = models.FloatField()
+    processedBy = models.CharField(max_length=50, null=True)
+    remarks = models.CharField(max_length=100)
+    date_added = models.DateField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # Set addfeepayID if not set
+        if not self.addfeepayID:
+            # Concatenate feeid, months, and month_counter from the related AdditionalFees instance
+            self.addfeepayID = f"{self.additional_fee.feeid}-{self.additional_fee.months}-{self.additional_fee.month_counter}"
+        
+        # Call the original save method to actually save the instance
+        super(AdditionalFeesPayment, self).save(*args, **kwargs)
 
 class SystemInfo(models.Model):
     current_year = models.IntegerField(default=datetime.now().year)

@@ -254,7 +254,7 @@ Monthly Summary
     <div class="">
         <form></form>
         <h1 class="mb-3 text-center">Outstanding Balances</h1><!-- changed from Monthly Summary to Outstanding Balances 28/10/2024 Enjambre -->
-        <h4 class="mb-2 text-center">(List of Paid Bills)</h4>
+        <h4 class="mb-2 text-center">(List of Bills)</h4>
         <div class="container-fluid p-0">
             <div class="table-responsive">
                 <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
@@ -284,7 +284,7 @@ Monthly Summary
                             <td class="text-center">{% if t.total_bill %} &#8369; {{t.total_bill|floatformat:2|intcomma}} {% endif %}</td> 
                             <!--<td class="text-center">{{t.previous_balance}}</td> removed 28/10/2024 -->
                             <!--<td class="text-center">{{t.additional_fees}}</td> removed 28/10/2024 -->
-                            <td class="text-center">{{t.}}</td><!-- added changes unfinished for penalty 28/10/2024    -->
+                            <td class="text-center">{{t.}}</td><!-- added  for penalty 28/10/2024    -->
                             <td class="text-center">{{t.total_due}}</td>
                             <td class="text-center">
 
@@ -311,42 +311,26 @@ Monthly Summary
 
 {% for t in table %}
 
+{% if t.total_bill %}
 {% if t.total_amount_paid %}
 {% else %}
-{% if t.total_bill or t.additional_fees %} <!-- from if t.total_bill to  if t.total_bill or t.additional_fees  02/12/2024 Enjambre -->
-<div class="modal fade" id="pay-{{ t.monthval }}" tabindex="-1" role="dialog" aria-labelledby="payment-modal"
+<div class="modal fade" id="pay-{{t.monthval}}" tabindex="-1" role="dialog" aria-labelledby="payment"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <form action="{% url 'monthlypayment' %}" method="post">
                 {% csrf_token %}
                 <div class="modal-header">
-                    {% if t.additional_fees %}
-                    <h5 class="modal-title">Payment for Additional Fees</h5>
-                    {% else %}
-                    <h5 class="modal-title">Payment for Regular Fees</h5> <!--added changes for the additional fee 02/12/2024 -->
-                    {% endif %}
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <!-- Determine which fee to display -->
-                        {% if t.additional_fees %} <!--Added changes --Display additional fees if available 02/12/2024 -->
-                        <label>Amount:</label> 
-                        <span>₱ {{ t.additional_fees|floatformat:2|intcomma }}</span><br>
-                        <input type="hidden" name="payment" value="{{ t.additional_fees }}">
-                        {% else %}<!-- Display total bill if no additional fees are available 02/12/2024-->
-                        <label>Amount:</label>
-                        <span>₱ {{ t.total_bill|floatformat:2|intcomma }}</span><br>
-                        <input type="hidden" name="payment" value="{{ t.total_bill }}">
-                        {% endif %}
 
-                        <!-- Common hidden inputs -->
-                        <input type="hidden" name="conid" value="{{ u.consumer_id }}">
-                        <input type="hidden" name="month" value="{{ t.monthval }}">
-                        <input type="hidden" name="year" value="{{ year }}">
-
-                        <!-- OR Number input -->
+                        <input type="hidden" name="conid" value="{{u.consumer_id}}">
+                        <input type="hidden" name="month" value="{{t.monthval}}">
+                        <input type="hidden" name="year" value="{{year}}">
+                        <input type="hidden" name="payment" value="{{t.total_bill}}">
                         <label for="id_or_num">OR Number</label>
                         <input type="text" name="or_num" id="id_or_num" required class="input form-control">
                     </div>
@@ -363,6 +347,7 @@ Monthly Summary
 {% endif %}
 {% endif %}
 {% endfor %}
+
 
 
 

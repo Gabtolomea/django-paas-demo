@@ -75,5 +75,10 @@ urlpatterns = [
     path('delinquent_months/', views.delinquent_months, name='delinquent_months'),#added by Enjambre
     path("average_consumption_all_report/", reports.average_consumption_all_report, name="average_consumption_all_report"), #not yet applied
     path('bills_list/ledger/additionalfeeslist/<str:consumer_id>/', views.additionalfeeslist, name='additionalfeeslist'),
+    
+    
+    path('consumer/<int:consumer_id>/fees/', views.additionalfeeslist, name='additionalfeeslist'),
+    path('payfee/<int:id>/', views.addfee_paymentmethod, name='addfee_paymentmethod'),
+    path('additionalfees/<int:fee_id>/transactions/', views.addfeepayment_history, name='payment_history'),
 ]
 

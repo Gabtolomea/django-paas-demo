@@ -32,12 +32,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from .models import Transactions
 from collections import Counter
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.db.models import Sum , Q
+from django.views.decorators.csrf import csrf_exempt
+
  
 
 
@@ -263,7 +265,7 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
-'''@login_required(login_url='login')
+@login_required(login_url='login')
 def ledger(request, id):
     disp = request.GET.get('show','')
     template = ""
@@ -503,7 +505,7 @@ def ledger(request, id):
         'up': unpaid,
         'tu': total_unpaid_amount
     }
-    return render(request, 'ledger.html', context)'''
+    return render(request, 'ledger.html', context)
 
 
 
@@ -512,7 +514,7 @@ def ledger(request, id):
 
 #to be edited
 @login_required(login_url='login')
-def ledger(request, id):
+def ledgera(request, id):
     disp = request.GET.get('show','')
     template = ""
     LoginSession = request.user
@@ -526,204 +528,48 @@ def ledger(request, id):
     table = []
     unpaid = []
     year = datetime.today().year
-    usage = 0
-    transid = 0
-    connectionType = 0
-    pre = 0
-    cur = 0
-    pen = 0
-    bill = 0
-    total_unpaid_amount = 0
-    paytranid = 0 # added for payment transaction id  Enjambre 21/11/2024
-    payment = 0  #  added for payment 21/11/2024
     monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
     # get_balance(id)
     class ledgerclass():
-        def __init__(self, transid, date, prev, reading, usage, bill, payment, paytranid,  pb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):#added paytranid Enjambre 21/11/2024
-            self.transid = transid
-            self.date = date
-            self.prev = prev
-            self.reading = reading
-            self.usage = usage
-            self.bill = bill
-            self.payment = payment
-            self.paytranid= paytranid
-            self.pb = pb
-            self.ornum = ornum
-            self.bal = bal
-            self.rateid = rateid
-            self.style = style
-            self.disc_code = disc_code
-            self.transtype = transtype
+        def __init__(self, transid, date, prev, reading, usage, bill, payment, paytranid, bpb, ppb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):#added paytranid Enjambre 21/11/2024
+            self.transid = transid #transactionID Billing
+            self.date = date #Billing generated date
+            self.prev = prev #Previous Month
+            self.reading = reading #Current Reading
+            self.usage = usage #Usage
+            self.bill = bill #Bill
+            self.payment = payment #Amount Paid
+            self.paytranid= paytranid #Payment Transaction ID
+            self.bpb = bpb #Bill Processed By
+            self.ppb = ppb #Payment Processed By
+            self.ornum = ornum #OR Number (Unused)
+            self.bal = bal #balance (Removed)
+            self.rateid = rateid #Rate (Does not exist)
+            self.style = style #changed using frontend
+            self.disc_code = disc_code #Discount code
+            self.transtype = transtype 
             self.month = month
             self.year = year
             self.ispaid = ispaid
 
         def __str__(self) -> str:
             return self.transtype
+        
+
     try:
         u = ConsumerInfo.objects.get(pk=id)
     except ObjectDoesNotExist:
         pass
+
+
     if disp == '':
         trans = Transactions.objects.filter(acctID=u.consumer_id, is_issue=False)
     else:
         trans = Transactions.objects.filter(acctID=u.consumer_id, transType = disp, is_issue=False)
     asc_trans = trans.order_by('year', 'month','transactionid')
-    bal = 0
-    
-    currentaddfeecount = 1
-    for tran in asc_trans:
-        prev = 0
-        ornum = ''
-        connectionType = ''
-        style = ''
-        pb = ''
-        dcode = ''
-        usage = ''
-        bill = ''
-        prev = ''
-        cur = ''
-        ispaid = ''
-        paytranid= ''# added for payment transaction id  Enjambre 21/11/2024
 
 
-        if tran.transType == 'Payment':
-            paytranid = tran.transactionid
-            payment = tran.payment
-            continue # added zel 26/11/2024
 
-        # print(tran.transType)
-
-        if tran.transType == 'Billing':
-            usage = tran.usage
-            pre = tran.meterReading - usage
-            bill = tran.bill
-            try:
-                connectionType = ConsumerType.objects.get(contypeid=tran.contypeid).contype
-            except ObjectDoesNotExist:
-                pass
-            cur = tran.meterReading
-            prev = tran.prevReading
-            if tran.processedBy is not None:
-                pb = tran.processedBy
-            bal += bill
-
-            try:# starting point zel 26/11/2024
-                paymentTrans = Transactions.objects.filter(
-                    acctID=u.consumer_id,
-                    transType='Payment',
-                    month=tran.month,
-                    year=tran.year
-                ).first()  
-
-                if paymentTrans:
-                    paytranid = paymentTrans.transactionid  # Assign the payment transaction ID
-                    payment = paymentTrans.payment  # Get the payment amount
-            except ObjectDoesNotExist:
-                paytranid = None
-                payment = 0 #until here zel 26/11/2024
-
-
-            if tran.is_billpaid:
-                ispaid = 'Paid'
-               
-
-        #elif tran.transType == 'Payment':
-            #style = 'table-orange' #ORIGINAL
-            #ornum = tran.or_number
-            #if tran.processedBy:
-                #pb = tran.processedBy
-            #else:
-                #pb = ''
-            #bal = bal-tran.payment
-            #try:
-                #discount = Transactions.objects.get(transactionid=tran.discountcode)
-               # dcode = discount.discountcode
-            #except ObjectDoesNotExist:
-                #pass
-        elif tran.transType == 'Penalty':
-            bill = tran.bill
-            pen = tran.penaltyCode
-            style = 'table-red'
-            pb = tran.processedBy
-            bal += bill
-
-        elif tran.transType == 'Discount':
-            style = 'table-blue'
-            pb = tran.processedBy
-            bal = bal-tran.payment
-
-        elif tran.transType == 'Reset Meter':
-            bill = 0
-            cur = tran.meterReading
-            style = 'table-yellow'
-            pb = tran.processedBy
-            bal += bill
-        elif tran.transType == 'Additional Fees':
-            bill = tran.bill
-            style = 'table-lightblue'
-            bal += bill
-            if tran.processedBy is not None:
-                pb = tran.processedBy
-            
-            if tran.is_billpaid:
-                ispaid = 'Paid'
-            else:
-                try:
-                    # print(tran.transactionid)
-                    addfee = AdditionalFees.objects.get(transactions=tran.transactionid)
-                    ispaid = f'{currentaddfeecount}/{addfee.months}'
-                except ObjectDoesNotExist:
-                    pass
-            
-            currentaddfeecount += 1
-        
-    
-        date = tran.date
-        #payment = tran.payment removed 26/11/2024
-        transid = tran.transactionid
-        m = tran.month
-        y = tran.year
-        bal = math.ceil(bal * 100) / 100
-        ttype = tran.transType
-
-        #if tran.transType == 'Payment':  # We already skip this above, but let's be explicit here too
-            #continue #zel 26/11/2024
-
-
-        if tran.transType != 'Received Amount' and tran.transType != 'Payment':  # added tran.transType != 'Payment'  20/11/2024   
-            new_row = ledgerclass(transid, date, prev, cur, usage, bill, payment, paytranid, pb, ornum, bal, connectionType, style, dcode, ttype, monthnames[m-1], y, ispaid) #paytranid is added  21/11/2024           
-            table.append(new_row)
-        
-
-        if tran.transType == 'Billing' and not tran.is_billpaid:
-            unpaid_month = monthnames[tran.month-1]
-            unpaid_year = tran.year
-            unpaid_amount = tran.bill
-            usage = tran.usage
-            unpaid_bill_info = {
-                'month': unpaid_month,
-                'year': unpaid_year,
-                'amount': unpaid_amount,
-                'usage' : usage
-                }
-            unpaid.append(unpaid_bill_info)
-        total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
-
-        #if tran.transType == 'Billing' and not tran.is_billpaid:
-        #        unpaid_month = monthnames[tran.month-1]
-        #        unpaid_year = tran.year
-        #        unpaid_amount = tran.bill
-        #        usage = tran.usage
-        #        unpaid_bill_info = {
-        #            'month': unpaid_month,
-        #            'year': unpaid_year,
-        #            'amount': unpaid_amount,
-        #            'usage' : usage
-        #            }
-        #        unpaid.append(unpaid_bill_info)
-        #total_unpaid_amount = sum(unpaid_bill_info['amount'] for unpaid_bill_info in unpaid)
 
     #gbaguia 08/16/2024
     ispaid = False
@@ -1986,6 +1832,96 @@ def payment(request, id):
             con_b_rec.save()
             
     return redirect('ledger', id=id)
+
+#addtional fees added by Mary Joy Quibedo, Integrated by Kathrina Bandajon 24/04/2025
+
+def additionalfeeslist(request, consumer_id):
+    u = get_object_or_404(ConsumerInfo, consumer_id=consumer_id)
+    additional_fees = AdditionalFees.objects.filter(consumer_id=u).order_by('-feeid')
+    has_additional_fees = additional_fees.exists()
+    
+    # Get the current year or set a default if needed
+    current_year = datetime.now().year  
+
+    context = {
+        'u': u,  # Use 'u' as the variable for the consumer in the template
+        'additional_fees': additional_fees,
+        'has_additional_fees': has_additional_fees,
+        'year': current_year,  # Add 'year' so it works in URLs
+    }
+    return render(request, 'additionalfeeslist.html', context)
+
+#For modal
+#if fully paid then amount to pay (inst_month - rem_months) * amount
+#else amount
+
+@csrf_exempt
+#ID: AF252025 // Used to identify connected functions Bandajon K.
+def addfee_paymentmethod(request, id):
+    if request.method == "POST":
+        addfee = get_object_or_404(AdditionalFees, feeid=id)
+
+        try:
+            amount = float(request.POST.get("amount", 0))
+            remarks = request.POST.get("remarks", "")
+            payment_type = request.POST.get("payment_type", "monthly")  # optional if passed
+        except (TypeError, ValueError):
+            return redirect('additionalfeeslist', consumer_id=addfee.consumer_id.consumer_id)
+
+        # Create and save the payment
+        payment = AdditionalFeesPayment(
+            additional_fee=addfee,
+            amount=amount,
+            remarks=remarks,
+            processedBy=request.user.username  
+        )
+        payment.save()
+
+        # Update the month counter if it's a monthly payment
+        if payment_type == "monthly":
+            addfee.month_counter += 1
+        elif payment_type == "full":
+            remaining = addfee.months - addfee.month_counter
+            addfee.month_counter += remaining
+
+        addfee.save()
+
+        cons = get_object_or_404(ConsumerInfo, consumer_id = addfee.consumer_id)
+        # add something that
+
+        return redirect('additionalfeeslist', consumer_id=addfee.consumer_id.consumer_id)
+    
+    return HttpResponseNotAllowed(['POST'])
+
+'''def additionalfeedetails(request, id):
+    if request.method == "POST":
+        addfee = get_object_or_404(AdditionalFees, feeid=id)
+
+        paid_data = AdditionalFeesPayment.objects.filter(additional_fee_feeid = id)
+
+        return redirect('additionalfeeslist', consumer_id=addfee.consumer_id.consumer_id)
+    
+    return HttpResponseNotAllowed(['POST'])'''
+
+def addfeepayment_history(request, fee_id):
+    fee = get_object_or_404(AdditionalFees, feeid=fee_id)
+    payments = AdditionalFeesPayment.objects.filter(additional_fee=fee).values(
+        'addfeepayID', 'amount', 'processedBy', 'remarks', 'date_added'
+    )
+
+
+
+    months = fee.months
+    amount = fee.amount
+    total_amount = months * amount
+
+    # Return the payment history as JSON
+    return JsonResponse({
+        'success': True,
+        'total_amount': total_amount,
+        'fee_name': fee.fee_name,
+        'payments': list(payments)
+    })
 
 def editpayment(request, id):
     if request.method =='POST':
@@ -3405,7 +3341,8 @@ def monthly_summary (request, id, year):
         except ObjectDoesNotExist:
             pass #zel added 26/11/2024
             
-        total_due = total_bill + consumer.current_bal + additional_fees
+        total_due = total_bill + consumer.current_bal + additional_fees 
+        
 
         # gbaguia 08162024
         # if bill.is_billpaid:
@@ -3443,53 +3380,6 @@ def monthly_summary (request, id, year):
         a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transtype) 
         table.append(a)
 
-        
-
-        if additional_fees > 0:  # Enjambre trial section added for additional fees 22/11/2024
-            add_fee_paid = False
-            try:
-                # Use filter().first() instead of get() to avoid MultipleObjectsReturned
-                fee_payment = Transactions.objects.filter(
-                    acctID_id=id,
-                    transType='Payment',
-                    year=year,
-                    month=i,
-                    is_issue=False
-                ).first()
-
-                if fee_payment and fee_payment.payment == additional_fees:  # zel added 29/11/2024
-                    add_fee_paid = True
-                    total_amount_paid = fee_payment.payment
-                    payid = fee_payment.transactionid
-                else:
-                    total_amount_paid = 0
-                    payid = 0
- 
-            except Exception as e:
-                # You can log the exception if needed
-                add_fee_paid = False
-                total_amount_paid = 0
-                payid = 0
-
-            # Look for the additional fee transaction
-            additional_fee = Transactions.objects.filter(
-                acctID_id=id,
-                transType='Additional Fees',
-                year=year,
-                month=i
-            ).first()
-
-            if additional_fee:
-                total_bill = additional_fee.bill
-            else:
-                total_bill = additional_fees
-
-            # Add additional fee row to the table
-            a_additional_fee = montly_sum(
-                month, i, 0, '', 0, total_bill, 0, additional_fees,
-                total_due, total_amount_paid, payid, 'Additional Fee'
-            )
-            table.append(a_additional_fee)
 
     
     is_issues = get_is_seen_issues(request)
@@ -3586,7 +3476,8 @@ def monthlypayment(request):
                     pass
 
                 # trial section for additional fee 10/12/2024 Enjambre
-                try:
+                #additional fee removed and separated from here // Bandajon K.
+                '''try:
                     add_fee = Transactions.objects.get(acctID_id=conid, transType='Additional Fees', year=year, month=month, is_issue=False)
                 except ObjectDoesNotExist:
                     add_fee = None
@@ -3612,7 +3503,7 @@ def monthlypayment(request):
                         add_fee.save()
 
                 #until here 10/12/2024
-                get_balance(consumer.consumer_id)
+                get_balance(consumer.consumer_id)'''
 
             
             
@@ -4084,8 +3975,15 @@ def additional_fee(request, id):
         addFee.remainder = total_amount%months
         addFee.amount = (total_amount-addFee.remainder)/months
         addFee.months = months
+        addFee.month = date.today().month
+        addFee.year = date.today().year
+        addFee.processedBy = request.user
         addFee.consumer_id = consumer_id
-        tran = Transactions()
+        addFee.date_added = date.today()
+        
+        #Starting May 2, 2025, Additional Fee is separated from the Transaction table
+        #Bandajon K, ID: AF252025
+        '''tran = Transactions()
         tran.acctID = consumer_id
         tran.date = date.today()
         tran.month = date.today().month
@@ -4093,10 +3991,12 @@ def additional_fee(request, id):
         tran.transType = 'Additional Fees'
         tran.processedBy = request.user
         tran.bill = addFee.amount
-        tran.save()
+        tran.save()'''
+
         addFee.save()
-        addFee.transactions.add(tran)
-        addFee.save()
+
+        # addFee.transactions.add(tran)
+        # addFee.save()
         consumer_id.current_bal += addFee.amount
         consumer_id.save()
 
@@ -4399,23 +4299,8 @@ def calculate_month_bounds(year):
     return month_bounds
 
 
-#addtional fees added by Mary Joy Quibedo, Integrated by Kathrina Bandajon 24/04/2025
 
-def additionalfeeslist(request, consumer_id):
-    u = get_object_or_404(ConsumerInfo, consumer_id=consumer_id)
-    additional_fees = AdditionalFees.objects.filter(consumer_id=u)
-    has_additional_fees = additional_fees.exists()
-    
-    # Get the current year or set a default if needed
-    current_year = datetime.now().year  
 
-    context = {
-        'u': u,  # Use 'u' as the variable for the consumer in the template
-        'additional_fees': additional_fees,
-        'has_additional_fees': has_additional_fees,
-        'year': current_year,  # Add 'year' so it works in URLs
-    }
-    return render(request, 'additionalfeeslist.html', context)
 def delinquent_accounts(request):
     barangay_filter = request.GET.get('barangay', '')
 
