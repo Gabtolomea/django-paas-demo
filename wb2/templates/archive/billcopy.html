@@ -198,46 +198,11 @@
     .border-custom {
         border-color: #000000bd !important;
     }
-
-    .small-table {
-        font-size: 14px !important;
-        table-layout: fixed !important;
-        word-wrap: break-word !important;
-        width: 100% !important;
-    }
-
-    .invoice-box table th,
-    .invoice-box table td {
-        font-size: 14px !important;
-        word-wrap: break-word;
-        white-space: normal;
-    }
-
-    .invoice-box table th:first-child,
-    .invoice-box table td:first-child {
-        width: 40px !important; /* adjust as needed */
-        text-align: center;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-
-    .invoice-box table th:nth-child(4),
-    .invoice-box table td:nth-child(4) {
-        width: 60px !important;  /* or 50px depending on expected max digits */
-        text-align: center;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-
-    .invoice-box table th {
-        text-align: center !important;
-    }
-
 </style>
 
 <!-- Water Billing Layout -->
 <!-- for content to hide in the ledger -->
-<div style="display: none;" class="billing">
+<div  style="display: none;" class="billing">
     <div id="invoice">
         <div class="invoice-box">
             <table cellpadding="0" cellspacing="0">
@@ -247,48 +212,54 @@
                             <table>
                                 <tr class="top">
                                     <td colspan="2">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; text-align: center;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; text-align: center;">
                                             <!-- Left Logo LGU -->
-                                            <img src="/static/images/lgulogo.png" alt="Left Logo" style="height: 50px;">
-                
+                                            <img src="/static/images/lgulogo.png" alt="Left Logo" style="height: 50px;"> 
+                                
                                             <!-- Center Title -->
                                             <div style="flex: 1;">
                                                 <p class="mun" style="margin: 0;">Water Bill</p>
-                                                <h7 style="color: #423e3e; display: block; margin-top: 10px;">
-                                                    <i>Municipality of Ginatilan</i>
-                                                </h7>
+                                                <h7 style="color: #423e3e; display: block; margin-top: 10px;"><i>Municipality of Ginatilan</i></h7>
                                             </div>
-                
+                                
                                             <!-- Right Logo Bagong Pilipinas -->
                                             <img src="/static/images/logopilipinas.png" alt="Right Logo" style="height: 65px;">
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="information">
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                    <td style="line-height: 0px;">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="d-flex flex-row-reverse">
+                                                    <div class="col-md-3">
+                                                        <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
+                                                        <h6><b>Balance:</b> <u class="underThick">PHP {{tu}}</u></h6>
+                                                    </div>
+                                                    <div class="col-md-9 mt-md-0 mt-3">
+                                                        <h6><b>Name:</b> <u class="underThick">{{u.firstname}}
+                                                                {{u.middlename}} {{u.lastname}}</u></h6>
+                                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
-                    <tr class="information">
-                        <td colspan="2">
-                            <table class="small-table">
-                                <tr>
-                                    <td style="width: 100% !important; padding-right: 20px !important; text-align: left !important;">
-                                        
-                                        <h6><b>Name:</b> <u class="underThick">{{u.firstname}} {{u.middlename}} {{u.lastname}}</u></h6>
-                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
-                                    </td>
-                                    <td style="width: 100% !important; padding-left: 10px !important; text-align: right !important;">
-                                        <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
-                                        <h6><b>Balance:</b> <u class="underThick">PHP {{ total_balance|floatformat:2 }}</u></h6>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>        </tbody>
+                </tbody>
 
-                
-
-                <table class="table table-bordered border-custom small-table">
+                <table class="table table-bordered border-custom">
                     <thead class="custom-color">
                         <tr>
                             <th>No.</th>
@@ -333,7 +304,7 @@
             jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait' }
         };
         html2pdf().from(invoice).set(opt).save();
-    }
+    }       
 
     var amountElement = document.getElementById("amountFromBackend");
     var amountValue = parseFloat(amountElement.innerHTML);
@@ -345,6 +316,3 @@
     amountElement.innerHTML = formattedAmount;
 
 </script>
-
-
-

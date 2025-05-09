@@ -39,7 +39,12 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from django.db.models import Sum , Q
 from django.views.decorators.csrf import csrf_exempt
-
+from django.db.models.functions import ExtractMonth, ExtractYear
+from django.shortcuts import render, redirect
+from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime
+import calendar
+from dateutil.relativedelta import relativedelta
  
 
 
@@ -265,8 +270,9 @@ def user_creation(request):
     }
     return render(request, 'registration.html', context)
 
-@login_required(login_url='login')
-def ledger(request, id):
+#Old Ledger code: don't use this facility
+'''@login_required(login_url='login')
+def ledgerb(request, id):
     disp = request.GET.get('show','')
     template = ""
     LoginSession = request.user
@@ -506,99 +512,212 @@ def ledger(request, id):
         'tu': total_unpaid_amount
     }
     return render(request, 'ledger.html', context)
+'''
 
 
 
 
-
-
-#to be edited
 @login_required(login_url='login')
-def ledgera(request, id):
-    disp = request.GET.get('show','')
-    template = ""
-    LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "ledger.html"
-        else:
-            template = redirect('bills_list')
-            return template
-    unpaid = []
-    table = []
-    unpaid = []
-    year = datetime.today().year
-    monthnames = ['January','February','March','April','May','June','July','August','September','October','November','December']
-    # get_balance(id)
-    class ledgerclass():
-        def __init__(self, transid, date, prev, reading, usage, bill, payment, paytranid, bpb, ppb, ornum, bal, rateid, style, disc_code, transtype, month, year, ispaid):#added paytranid Enjambre 21/11/2024
-            self.transid = transid #transactionID Billing
-            self.date = date #Billing generated date
-            self.prev = prev #Previous Month
-            self.reading = reading #Current Reading
-            self.usage = usage #Usage
-            self.bill = bill #Bill
-            self.payment = payment #Amount Paid
-            self.paytranid= paytranid #Payment Transaction ID
-            self.bpb = bpb #Bill Processed By
-            self.ppb = ppb #Payment Processed By
-            self.ornum = ornum #OR Number (Unused)
-            self.bal = bal #balance (Removed)
-            self.rateid = rateid #Rate (Does not exist)
-            self.style = style #changed using frontend
-            self.disc_code = disc_code #Discount code
-            self.transtype = transtype 
+def ledger(request, id):
+    disp = request.GET.get('show', '')
+    user = request.user
+
+    if not (user.is_teller or user.is_supervisor):
+        return redirect('bills_list')
+
+    # Helper class for ledger entries
+    class LedgerEntry:
+        def __init__(self, transType, transid, date, prev, reading, usage, bill, amount_due, payment, paytranid, bpb, ppb, bal, month, year, status):
+            self.transType = transType
+            self.transid = transid
+            self.date = date
+            self.prev = prev
+            self.reading = reading
+            self.usage = usage
+            self.bill = bill
+            self.amount_due = amount_due
+            self.payment = payment
+            self.paytranid = paytranid
+            self.bpb = bpb
+            self.ppb = ppb
+            self.bal = bal
             self.month = month
             self.year = year
-            self.ispaid = ispaid
+            self.status = status
 
-        def __str__(self) -> str:
-            return self.transtype
-        
+        def __str__(self):
+            return f"{self.transType} - {self.transid}"
 
     try:
-        u = ConsumerInfo.objects.get(pk=id)
+        consumer = ConsumerInfo.objects.get(pk=id)
     except ObjectDoesNotExist:
-        pass
+        return redirect('bills_list')
 
-
-    if disp == '':
-        trans = Transactions.objects.filter(acctID=u.consumer_id, is_issue=False)
+    if disp:
+        transactions = Transactions.objects.filter(acctID=consumer.consumer_id, transType=disp, is_issue=False)
     else:
-        trans = Transactions.objects.filter(acctID=u.consumer_id, transType = disp, is_issue=False)
-    asc_trans = trans.order_by('year', 'month','transactionid')
+        transactions = Transactions.objects.filter(acctID=consumer.consumer_id, transType="Billing", is_issue=False)
 
+    transactions = transactions.order_by('year', 'month', 'transactionid')
 
+    ledger_table = []
+    year = datetime.today().year
+    monthnames = list(calendar.month_name)[1:]  # ['January', ..., 'December']
+    billbalance = 0
+    addfee_balance = 0
+    for tran in transactions:
+        current_month = tran.month
+        current_year = tran.year
+        #prev_month = 12 if current_month == 1 else current_month - 1
+        #prev_year = current_year - 1 if current_month == 1 else current_year
 
+        prev_tran = Transactions.objects.filter(
+            acctID=id,
+            transType='Billing'
+        ).filter(
+            Q(year__lt=current_year) | 
+            Q(year=current_year, month__lt=current_month)
+        ).order_by('-year', '-month', '-date').first()
 
-    #gbaguia 08/16/2024
-    ispaid = False
-    is_issues = get_is_seen_issues(request)
+        prev_reading = prev_tran.meterReading if prev_tran else 0
+
+        cur_reading = tran.meterReading
+        usage = cur_reading - prev_reading
+        bill = tran.bill
+        bpb = tran.processedBy
+        payment = ''
+        paytranid = ''
+        ppb = ''
+        status = 'Unpaid'
+
+        if tran.is_billpaid:
+            status = 'Paid'
+            payment_tran = Transactions.objects.filter(
+                transType='Payment', acctID=id,
+                month=current_month, year=current_year
+            ).first()
+            if payment_tran:
+                payment = payment_tran.payment
+                paytranid = payment_tran.transactionid
+                ppb = payment_tran.processedBy
+        else:       
+            billbalance= billbalance + tran.bill
+
+        ledger_table.append(LedgerEntry(
+            transType="Billing",
+            transid=tran.transactionid,
+            date=tran.date,
+            prev=prev_reading,
+            reading=cur_reading,
+            usage=usage,
+            bill=bill,
+            amount_due=bill,
+            payment=payment,
+            paytranid=paytranid,
+            bpb=bpb,
+            ppb=ppb,
+            bal=0,
+            month=monthnames[current_month - 1],
+            year=current_year,
+            status=status
+        ))
+        
+        
+    #additional fees display
+    installments = AdditionalFees.objects.filter(consumer_id=id)
+
+    for fee in installments:
+            start_date = fee.date_added.replace(day=1)  # First of the month
+            for i in range(fee.months):
+                installment_date = start_date + relativedelta(months=i)
+                installment_month = installment_date.month
+                installment_year = installment_date.year
+
+                # Check if this installment month has been paid (based on month_counter)
+                is_paid = i < fee.month_counter
+                status = "Paid" if is_paid else "Unpaid"
+                payment = fee.amount if is_paid else ''
+                amount_due = '' if is_paid else fee.amount
+
+                ledger_table.append(LedgerEntry(
+                    transType="Additional Fee",
+                    transid=fee.feeid,
+                    date=installment_date,
+                    prev='',
+                    reading='',
+                    usage='',
+                    bill=fee.amount,
+                    amount_due=amount_due,
+                    payment=payment,
+                    paytranid='',
+                    bpb='',
+                    ppb='',
+                    bal=0,
+                    month=monthnames[installment_month - 1],
+                    year=installment_year,
+                    status=status
+                ))
+
+                if not is_paid:
+                    addfee_balance += fee.amount
+
+    ledger_table.sort(key=lambda x: (x.year, monthnames.index(x.month)))
+
+    # Extract unpaid Billing entries
+    unpaid_billing = [
+        entry for entry in ledger_table
+        if entry.transType == "Billing" and entry.status != "Paid"
+    ]
+
+    # Extract unpaid Additional Fee entries
+    unpaid_additional_fees = [
+        entry for entry in ledger_table
+        if entry.transType == "Additional Fee" and entry.status != "Paid"
+    ]
+
+    # Combine into one list for the modal
+    unpaid_list = unpaid_billing + unpaid_additional_fees
 
     context = {
         'disp': disp,
-        'month': calendar.month_name[datetime.today().month-1],
+        'month': calendar.month_name[datetime.today().month],
         'date_today': datetime.today().strftime('%B %d, %Y - %I:%M %p'),
-        'u': u,
-        'table': table,
+        'u': consumer,
+        'table': ledger_table,
         'year': year,
         'usage': usage,
-        'transid': transid,
-        'contype': connectionType,
-        'pre': pre,
-        'cur': cur,
-        'pen': pen,
-        'bal': bal,
-        'bill': bill,
+        'transid': tran.transactionid if transactions else '',
+        'bal': 0,
+        'bill': tran.bill if transactions else 0,
         'user': request.user,
         'prevmonth': calendar.month_name[(datetime.today().month - 2) % 12 + 1],
-        'ispaid': ispaid,
-        'is_issues': is_issues,
-        'up': unpaid,
-        'tu': total_unpaid_amount
+        'ispaid': False,
+        'is_issues': get_is_seen_issues(request),
+        'up': [],
+        'billbalance': billbalance,
+        'addfee_balance': addfee_balance,
+        'total_balance': billbalance + addfee_balance,
+        'unpaid_list': unpaid_list,
+
     }
+
     return render(request, 'ledger.html', context)
 
+@login_required
+def process_bill_selection(request, consumer_id):
+    if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_transactions')
+        # Fetch transactions or fees based on the IDs
+        billing = Transactions.objects.filter(transactionid__in=selected_ids)
+        fees = AdditionalFees.objects.filter(feeid__in=selected_ids)
+
+        # Do something like prepare a summary or proceed to payment page
+        return render(request, 'receipt_preview.html', {
+            'consumer': ConsumerInfo.objects.get(pk=consumer_id),
+            'billing': billing,
+            'fees': fees,
+            'date_today': datetime.today().strftime('%B %d, %Y - %I:%M %p'),
+        })
 
 
 
@@ -1886,7 +2005,7 @@ def addfee_paymentmethod(request, id):
 
         addfee.save()
 
-        cons = get_object_or_404(ConsumerInfo, consumer_id = addfee.consumer_id)
+        #cons = get_object_or_404(ConsumerInfo, consumer_id = addfee.consumer_id)
         # add something that
 
         return redirect('additionalfeeslist', consumer_id=addfee.consumer_id.consumer_id)

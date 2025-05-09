@@ -80,5 +80,7 @@ urlpatterns = [
     path('consumer/<int:consumer_id>/fees/', views.additionalfeeslist, name='additionalfeeslist'),
     path('payfee/<int:id>/', views.addfee_paymentmethod, name='addfee_paymentmethod'),
     path('additionalfees/<int:fee_id>/transactions/', views.addfeepayment_history, name='payment_history'),
+    path('consumer/<str:consumer_id>/getbill/', views.process_bill_selection, name='process_bill_selection')
+
 ]
 

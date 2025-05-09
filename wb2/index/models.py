@@ -253,14 +253,14 @@ class AdditionalFeesPayment(models.Model):
     remarks = models.CharField(max_length=100)
     date_added = models.DateField(auto_now_add=True)
 
+    from datetime import datetime
+
     def save(self, *args, **kwargs):
-        # Set addfeepayID if not set
         if not self.addfeepayID:
-            # Concatenate feeid, months, and month_counter from the related AdditionalFees instance
-            self.addfeepayID = f"{self.additional_fee.feeid}-{self.additional_fee.months}-{self.additional_fee.month_counter}"
-        
-        # Call the original save method to actually save the instance
-        super(AdditionalFeesPayment, self).save(*args, **kwargs)
+            now_str = datetime.now().strftime("%Y%m%d%H%M%S")
+            self.addfeepayID = f"{self.additional_fee.feeid}-{self.additional_fee.month_counter}-{now_str}"
+        super().save(*args, **kwargs)
+
 
 class SystemInfo(models.Model):
     current_year = models.IntegerField(default=datetime.now().year)
