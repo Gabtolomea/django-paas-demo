@@ -195,18 +195,19 @@ Account Ledger
             Get a Copy
         </button>
 
-        <form id="displayselection" method="GET" class="d-flex float-end me-3">
-            <label class="me-2">Show</label>
-            <select name="show" class="form-select" onchange="this.form.submit()">
+        <form id="displayselection" method="GET" class="d-flex align-items-center float-end me-3">
+            <label for="showSelect" class="me-2 mb-0">Show</label>
+            <select id="showSelect" name="show" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
                 <option value="" {% if disp == "" %}selected{% endif %}>All</option>
                 <option value="Billing" {% if disp == "Billing" %}selected{% endif %}>Billing</option>
-                <option value="Additional Fees" {% if disp == "Additional Fees" %}selected{% endif %}>Additional Fees
-                </option>
-                <option value="Payment" {% if disp == "Payment" %}selected{% endif %}>Payment</option>
-                <option value="Penalty" {% if disp == "Penalty" %}selected{% endif %}>Penalty</option>
-                <option value="Discount" {% if disp == "Discount" %}selected{% endif %}>Discount</option>
+                <option value="Additional Fee" {% if disp == "Additional Fee" %}selected{% endif %}>Additional Fees</option>
+                <!--
+                        <option value="Payment" {% if disp == "Payment" %}selected{% endif %}>Payment</option>
+                        <option value="Penalty" {% if disp == "Penalty" %}selected{% endif %}>Penalty</option>
+                        <option value="Discount" {% if disp == "Discount" %}selected{% endif %}>Discount</option>
+                        -->
             </select>
-        </form>
+        </form>        
     </div>
 </div>
 
@@ -371,6 +372,7 @@ Account Ledger
         doc.text(420, y += 30, "ACCOUNT LEDGER");
 
         // Construct table data
+        // It's red but it works
         const table = [
                     {% for t in table reversed %}
             ["{{ t.transid }}", "{{ t.transType }}", "{{ t.month|slice:": 3" }}-{{ t.year }}", "{{ t.prev }}", "{{ t.reading }}", "{{ t.usage }}", "{{ t.bill|floatformat:2 }}", "{{ t.payment|floatformat:2 }}", "{{ t.ppb }}", "{{ t.status }}"],

@@ -521,6 +521,7 @@ def ledgerb(request, id):
 def ledger(request, id):
     disp = request.GET.get('show', '')
     user = request.user
+    usage = 0
 
     if not (user.is_teller or user.is_supervisor):
         return redirect('bills_list')
@@ -624,16 +625,17 @@ def ledger(request, id):
         
         
     #additional fees display
-    installments = AdditionalFees.objects.filter(consumer_id=id)
+    # Only add additional fees if disp is empty or explicitly set to "Additional Fee"
+    if disp in ["", "Additional Fee"]:
+        installments = AdditionalFees.objects.filter(consumer_id=id)
 
-    for fee in installments:
+        for fee in installments:
             start_date = fee.date_added.replace(day=1)  # First of the month
             for i in range(fee.months):
                 installment_date = start_date + relativedelta(months=i)
                 installment_month = installment_date.month
                 installment_year = installment_date.year
 
-                # Check if this installment month has been paid (based on month_counter)
                 is_paid = i < fee.month_counter
                 status = "Paid" if is_paid else "Unpaid"
                 payment = fee.amount if is_paid else ''
