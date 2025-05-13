@@ -47,9 +47,18 @@ Monthly Billing Report
     .table thead th {
         position: sticky;
         top: 0;
-        background-color: #343a40;
+        background-color: #005F73;
         color: white;
     }
+
+    .table td:first-child, .table th:first-child {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+    }
+
 
     .table-scrolls {
         max-height: 500px;
@@ -114,9 +123,9 @@ Monthly Billing Report
     <!-- Scrollable section with only data rows -->
     <div class="table-responsive table-scrolls">
         <table class="table table-bordered text-center table-hover table-sm mb-0">
-            <thead class="table-dark">
+            <thead>
                 <tr>
-                    <th>Consumer Names</th>
+                    <th class="text-start" style="max-width: 200px;">Consumer Names</th>
                     {% for month in months_list %}
                     <th>{{ month }}</th>
                     {% endfor %}
@@ -125,16 +134,18 @@ Monthly Billing Report
             <tbody>
                 {% for row in table_data %}
                 <tr>
-                    <td>{{ row.0 }}</td>
+                    <td class="text-start"
+                        style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ row.0 }}
+                    </td>
                     {% for value in row|slice:"1:" %}
                     <td>{{ value }}</td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
             </tbody>
-
+            
             <tfoot>
-                
                     <tr class="fw-bold table-primary">
                         {% for value in total_row %}
                         <td>{{ value }}</td>

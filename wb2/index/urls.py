@@ -16,7 +16,8 @@ urlpatterns = [
     path('bills_list/ledger/payment_history/<id>/<int:year>', views.payment_history,name='payment_history'),
     path('editpayment/<id>/', views.editpayment,name='editpayment'),
     path('undodelete', views.undodelete,name='undodelete'),
-    path('payment/<id>/', views.payment, name='payment'),
+    path('payment/<int:id>/', views.payment, name='payment'),
+
     path('monthlypayment/', views.monthlypayment, name='monthlypayment'),
     path('meterreading', views.meterreading,name='meterreading'),
     path('meterreading/bulkreading', views.bulkreading,name='bulkreading'),
@@ -80,7 +81,7 @@ urlpatterns = [
     path('consumer/<int:consumer_id>/fees/', views.additionalfeeslist, name='additionalfeeslist'),
     path('payfee/<int:id>/', views.addfee_paymentmethod, name='addfee_paymentmethod'),
     path('additionalfees/<int:fee_id>/transactions/', views.addfeepayment_history, name='payment_history'),
-    path('consumer/<str:consumer_id>/getbill/', views.process_bill_selection, name='process_bill_selection')
+    #path('consumer/<str:consumer_id>/getbill/', views.process_bill_selection, name='process_bill_selection')
 
 ]
 

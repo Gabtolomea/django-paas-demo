@@ -158,32 +158,94 @@ Account Ledger
 
 <!-- Payment Modal -->
 <div class="modal fade" id="payment" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form action="{% url 'payment' u.consumer_id %}" method="post">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form action="{% url 'payment' u.consumer_id %}" method="post">
+            <div class="modal-content">
                 {% csrf_token %}
                 <div class="modal-header">
-                    <h5 class="modal-title">Payment</h5>
+                    <h5 class="modal-title">Select Transactions to Pay</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="id_amount">Amount</label>
-                        <input type="number" name="amount" min="1" id="id_amount" class="form-control" required>
-                        <label for="id_or_num">OR Number</label>
-                        <input type="text" name="or_num" id="id_or_num" class="form-control" required>
-                        <label for="id_dis_code">Discount Code</label>
-                        <input type="text" name="dis_code" id="id_dis_code" class="form-control">
+                    <div class="d-flex flex-column align-items-center mb-4">
+                        <div class="mb-2 w-75">
+                            <label for="id_or_num" class="form-label mb-1" style="font-size: 14px;">O.R. Number</label>
+                            <input type="text" name="or_num" id="id_or_num" class="form-control text-center"
+                                style="font-size: 14px;" required>
+                        </div>
+                        <div class="mb-2 w-75">
+                            <label for="id_dis_code" class="form-label mb-1" style="font-size: 14px;">Discount Code
+                                (optional)</label>
+                            <input type="text" name="dis_code" id="id_dis_code" class="form-control text-center"
+                                style="font-size: 14px;">
+                        </div>
+                    </div>
+
+                    <label class="form-label">Select Unpaid Transactions</label>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th></th>
+                                    <th>Transaction ID</th>
+                                    <th>Type</th>
+                                    <th>Month-Year</th>
+                                    <th>Amount Due</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in unpaid_list %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="trans-checkbox" data-amount="{{ item.amount_due }}" name="selected_trans"
+                                            value="{{ item.transid }}|{{ item.transType }}">
+                                    </td>
+                                    <td>{{ item.transid }}</td>
+                                    <td>{{ item.transType }}</td>
+                                    <td>{{ item.month }} - {{ item.year }}</td>
+                                    <td>&#8369; {{ item.amount_due|floatformat:2|intcomma }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No unpaid transactions.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-end mt-2">
+                        <strong>Total Selected Amount: &#8369; <span id="totalAmount">0.00</span></strong>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Pay Selected</button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("#payment form");
+        if (!form) {
+            console.error("❌ Form not found inside modal!");
+            return;
+        }
+
+        form.addEventListener("submit", function (e) {
+            const selectedCheckboxes = form.querySelectorAll("input[name='selected_trans[]']:checked");
+            const selectedValues = Array.from(selectedCheckboxes).map(cb => cb.value);
+            console.log("🧾 JS Selected values before submission:", selectedValues);
+        });
+    });
+</script>
+
+
 
 <!-- Filter + Get Copy Button -->
 <div class="row w-100 m-auto pt-2">
@@ -197,7 +259,8 @@ Account Ledger
 
         <form id="displayselection" method="GET" class="d-flex align-items-center float-end me-3">
             <label for="showSelect" class="me-2 mb-0">Show</label>
-            <select id="showSelect" name="show" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+            <select id="showSelect" name="show" class="form-select" style="width: auto; min-width: 150px;"
+                onchange="this.form.submit()">
                 <option value="" {% if disp == "" %}selected{% endif %}>All</option>
                 <option value="Billing" {% if disp == "Billing" %}selected{% endif %}>Billing</option>
                 <option value="Additional Fee" {% if disp == "Additional Fee" %}selected{% endif %}>Additional Fees</option>
@@ -206,7 +269,8 @@ Account Ledger
                         <option value="Penalty" {% if disp == "Penalty" %}selected{% endif %}>Penalty</option>
                         <option value="Discount" {% if disp == "Discount" %}selected{% endif %}>Discount</option>
                         -->
-            </select>
+            </select> 
+        
         </form>        
     </div>
 </div>
@@ -232,7 +296,7 @@ Account Ledger
                         <th>Amount Due</th>
                         <th>Payment</th>
                         <th>Payment Transaction ID</th>
-                        <th>Balance</th>
+                        <!--<th>Balance</th>-->
                         <th>Processed By</th>
                         <th>Status</th>
                     </tr>
@@ -282,7 +346,7 @@ Account Ledger
                             {% endif %}
                         </td>
                         <td>{{t.paytranid}}</td>
-                        <td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+                        <!--<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>-->
                         <td>{{t.ppb}}</td>
                         <td class="text-center">{{ t.status }}</td>
                     </tr>
@@ -409,6 +473,26 @@ Account Ledger
     }
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.trans-checkbox');
+        const totalDisplay = document.getElementById('totalAmount');
+
+        function updateTotal() {
+            let total = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    total += parseFloat(cb.dataset.amount);
+                }
+            });
+            totalDisplay.textContent = Number(total.toFixed(2)).toLocaleString(undefined, { minimumFractionDigits: 2 });
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateTotal));
+    });
+</script>
+
+    
 
 
 
