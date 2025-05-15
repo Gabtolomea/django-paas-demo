@@ -182,6 +182,17 @@ def bills_list(request):
     except EmptyPage:
         bills_list = paginator.page(paginator.num_pages)
 
+    # After bills_list is paginated
+    for consumer in bills_list:
+        bill = Transactions.objects.filter(
+            acctID_id=consumer.consumer_id, 
+            is_billpaid=False, 
+            transType='Billing', 
+            is_issue=False
+        ).aggregate(total=Sum('bill'))['total'] or 0
+        consumer.unpaid_bill = bill  # Attach custom attribute
+
+
     is_issues = get_is_seen_issues(request)
     context = {
         'search': search,
@@ -1932,11 +1943,16 @@ def additionalfeeslist(request, consumer_id):
     # Get the current year or set a default if needed
     current_year = datetime.now().year  
 
+    total_unpaid_bill = 0
+    bill = Transactions.objects.filter(acctID_id=consumer_id, is_billpaid=False, transType='Billing', is_issue=False)
+    total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
+
     context = {
         'u': u, 
         'additional_fees': additional_fees,
         'has_additional_fees': has_additional_fees,
         'year': current_year, # Add 'year' so it works in URLs
+        'total_unpaid_bill': total_unpaid_bill,
         'total': total_unpaid_amount,
     }
     return render(request, 'additionalfeeslist.html', context)
@@ -3434,9 +3450,10 @@ def monthly_summary (request, id, year):
 
         # gbaguia 08162024
         # if bill.is_billpaid:
-        # let us check if a payment has been maid
+        # let us check if a payment has been made
         payid = 0
         total_amount_paid = 0
+        total_unpaid_bill = 0
 
         if bill.is_billpaid:
             try:
@@ -3460,8 +3477,9 @@ def monthly_summary (request, id, year):
             except ObjectDoesNotExist:
                 total_amount_paid = 0
                 payid = 0 #zel added 26/11/2024
-        
-        
+        else: #added by Bandajon K. 15/05/2025
+            bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
+            total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
 
         #gbaguia 09112024
         #a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
@@ -3476,6 +3494,7 @@ def monthly_summary (request, id, year):
         'table': table,
         'u': consumer,
         'year': year,
+        'total_unpaid_bill': total_unpaid_bill,
         'years': years,
         'is_issues': is_issues
     }
@@ -3705,8 +3724,13 @@ def payment_history (request, id, year):
 
     is_issues = get_is_seen_issues(request)
 
+    total_unpaid_bill = 0
+    bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
+    total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
+
     context = {
         'u' : consumer,
+        'total_unpaid_bill': total_unpaid_bill,
         'alltrans' : alltran,
         'years'    : years,
         'year'     : year,

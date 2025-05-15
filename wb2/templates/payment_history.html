@@ -328,7 +328,7 @@ Payment History
                     <!-- from u.rateid to u.contypeid.contype  19/11/2024 Enjambre -->
                     <td class="table-light text-center">{{u.meternumber}}</td>
                     <td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
-                    <td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}</td>
+                    <td class="table-light text-center">&#8369; {{total_unpaid_bill|floatformat:2|intcomma}}</td>
                 </tr>
             </tbody>
         </table>
