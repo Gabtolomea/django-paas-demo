@@ -85,95 +85,154 @@ Revenue Report
 		</div>
 	</div>
 
-	<div style="background-color: white;" class="mt-4">
-		<div class="col-12 text-center pt-4">
-			<h5>Total Monthly Collection for The Year of {{cur_year}}: &#8369; {{col|floatformat:2|intcomma}}</h5>
-		</div>
-
-		
-		<canvas id="myChart" class="p-3" width="800" height="150"></canvas>
-		<script>
-			var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-			y = ['{{rev_col.jan}}', '{{rev_col.feb}}', '{{rev_col.mar}}', '{{rev_col.apr}}', '{{rev_col.may}}', '{{rev_col.jun}}', '{{rev_col.jul}}', '{{rev_col.aug}}', '{{rev_col.sept}}', '{{rev_col.oct}}', '{{rev_col.nov}}', '{{rev_col.dec}}'];
-			var yValues = []
-			for (var i = 0; i < y.length; i++) {
-				if (y[i] <= 0) {
-					yValues.push(null)
-				} else {
-					yValues.push(y[i])
-				}
-			}
-
-			new Chart("myChart", {
-				type: "line",
-				data: {
-					labels: xValues,
-					datasets: [{
-						label: "Total Collection",
-						fill: false,
-						backgroundColor: ['#FD2F02'],
-						borderColor: ['#FD2F02'],
-						tension: 0.1,
-						data: yValues
-					}]
-				},
-				options: {
-					title: {
-						display: true,
-						text: "Monthly Total Collection"
-
-					}
-				}
-
-			});
-		</script>
+	<!-- TOTAL COLLECTION -->
+<div style="background-color: white;" class="mt-4">
+	<div class="col-12 text-center pt-4">
+		<h5>Total Monthly Collection for The Year of {{cur_year}}: &#8369; {{col|floatformat:2|intcomma}}</h5>
 	</div>
 
-	<div style="background-color: white;" class="mt-4 text-center mb-5">
-		<div class="col-12 pt-4">
-			<h5 >Total Monthly Collectables for The Year of {{cur_year}}: &#8369; {{rec|floatformat:2|intcomma}}</h5>
+	<canvas id="myChart" class="p-3" width="800" height="150"></canvas>
+	<script>
+		var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		var y = ['{{rev_col.jan}}', '{{rev_col.feb}}', '{{rev_col.mar}}', '{{rev_col.apr}}', '{{rev_col.may}}', '{{rev_col.jun}}', '{{rev_col.jul}}', '{{rev_col.aug}}', '{{rev_col.sept}}', '{{rev_col.oct}}', '{{rev_col.nov}}', '{{rev_col.dec}}'];
+		var yValues = [];
+		for (var i = 0; i < y.length; i++) {
+			yValues.push(y[i] > 0 ? y[i] : null);
+		}
 
-		</div>
-		<canvas id="receivable" class="p-3" width="800" height="150"></canvas>
-
-
-		<script>
-			var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-			var y = ['{{rev_rec.jan}}', '{{rev_rec.feb}}', '{{rev_rec.mar}}', '{{rev_rec.apr}}', '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}', '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}'];
-			var yValues = []
-			for (var i = 0; i < y.length; i++) {
-				if (y[i] <= 0) {
-					yValues.push(null)
-				} else {
-					yValues.push(y[i])
-				}
-
-			}
-
-			new Chart("receivable", {
-				type: "line",
-				data: {
-					labels: xValues,
-					datasets: [{
-						label: "Total Collictables",
-						fill: false,
-						backgroundColor: ['#FD2F02'],
-						borderColor: ['#FD2F02'],
-						tension: 0.1,
-						data: yValues,
-					}]
-				},
-				options: {
-					legend: { display: false },
-					title: {
-						display: true,
-						text: "Monthly Total Receivable"
-					}
+		new Chart("myChart", {
+			type: "line",
+			data: {
+				labels: xValues,
+				datasets: [{
+					label: "Total Collection",
+					fill: false,
+					backgroundColor: ['#FD2F02'],
+					borderColor: ['#FD2F02'],
+					tension: 0.1,
+					data: yValues
+				}]
+			},
+			options: {
+				title: {
+					display: true,
+					text: "Monthly Total Collection"
 				}
 			}
+		});
+	</script>
+</div>
 
-			);
-		</script>
+<!-- TOTAL RECEIVABLE -->
+<div style="background-color: white;" class="mt-4 text-center">
+	<div class="col-12 pt-4">
+		<h5>Total Monthly Collectables for The Year of {{cur_year}}: &#8369; {{rec|floatformat:2|intcomma}}</h5>
+	</div>
+	<canvas id="receivable" class="p-3" width="800" height="150"></canvas>
+
+	<script>
+		var y = ['{{rev_rec.jan}}', '{{rev_rec.feb}}', '{{rev_rec.mar}}', '{{rev_rec.apr}}', '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}', '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}'];
+		var yValues = [];
+		for (var i = 0; i < y.length; i++) {
+			yValues.push(y[i] > 0 ? y[i] : null);
+		}
+
+		new Chart("receivable", {
+			type: "line",
+			data: {
+				labels: xValues,
+				datasets: [{
+					label: "Total Collectables",
+					fill: false,
+					backgroundColor: ['#FD2F02'],
+					borderColor: ['#FD2F02'],
+					tension: 0.1,
+					data: yValues
+				}]
+			},
+			options: {
+				legend: { display: false },
+				title: {
+					display: true,
+					text: "Monthly Total Receivable"
+				}
+			}
+		});
+	</script>
+</div>
+
+<!-- ADDITIONAL FEES COLLECTION 
+<div style="background-color: white;" class="mt-4 text-center">
+	<div class="col-12 pt-4">
+		<h5>Total Additional Fees Collection for {{cur_year}}: &#8369; {{add_col|floatformat:2|intcomma}}</h5>
+	</div>
+	<canvas id="addCollection" class="p-3" width="800" height="150"></canvas>
+
+	<script>
+		var add_col_y = ['{{rev_add_col.jan}}', '{{rev_add_col.feb}}', '{{rev_add_col.mar}}', '{{rev_add_col.apr}}', '{{rev_add_col.may}}', '{{rev_add_col.jun}}', '{{rev_add_col.jul}}', '{{rev_add_col.aug}}', '{{rev_add_col.sept}}', '{{rev_add_col.oct}}', '{{rev_add_col.nov}}', '{{rev_add_col.dec}}'];
+		var add_col_values = [];
+		for (var i = 0; i < add_col_y.length; i++) {
+			add_col_values.push(add_col_y[i] > 0 ? add_col_y[i] : null);
+		}
+
+		new Chart("addCollection", {
+			type: "line",
+			data: {
+				labels: xValues,
+				datasets: [{
+					label: "Additional Fees Collection",
+					fill: false,
+					backgroundColor: ['#28a745'],
+					borderColor: ['#28a745'],
+					tension: 0.1,
+					data: add_col_values
+				}]
+			},
+			options: {
+				title: {
+					display: true,
+					text: "Monthly Additional Fees Collection"
+				}
+			}
+		});
+	</script>
+</div>-->
+
+<!-- ADDITIONAL FEES COLLECTABLES -->
+<div style="background-color: white;" class="mt-4 text-center mb-5">
+	<!--<div class="col-12 pt-4">
+		<h5>Total Additional Fees Collectables for {{cur_year}}: &#8369; {{add_rec|floatformat:2|intcomma}}</h5>
+	</div>
+	<canvas id="addReceivable" class="p-3" width="800" height="150"></canvas>
+
+	<script>
+		var add_rec_y = ['{{rev_add.jan}}', '{{rev_add.feb}}', '{{rev_add.mar}}', '{{rev_add.apr}}', '{{rev_add.may}}', '{{rev_add.jun}}', '{{rev_add.jul}}', '{{rev_add.aug}}', '{{rev_add.sept}}', '{{rev_add.oct}}', '{{rev_add.nov}}', '{{rev_add.dec}}'];
+		var add_rec_values = [];
+		for (var i = 0; i < add_rec_y.length; i++) {
+			add_rec_values.push(add_rec_y[i] > 0 ? add_rec_y[i] : null);
+		}
+
+		new Chart("addReceivable", {
+			type: "line",
+			data: {
+				labels: xValues,
+				datasets: [{
+					label: "Additional Fees Collectables",
+					fill: false,
+					backgroundColor: ['#28a745'],
+					borderColor: ['#28a745'],
+					tension: 0.1,
+					data: add_rec_values
+				}]
+			},
+			options: {
+				title: {
+					display: true,
+					text: "Monthly Additional Fees Receivable"
+				}
+			}
+		});
+	</script> -->
 	
 
 

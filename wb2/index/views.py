@@ -3487,8 +3487,9 @@ def monthly_summary (request, id, year):
         table.append(a)
 
 
-    
     is_issues = get_is_seen_issues(request)
+    
+    total_balance_due = total_due
 
     context = {
         'table': table,
@@ -3496,7 +3497,8 @@ def monthly_summary (request, id, year):
         'year': year,
         'total_unpaid_bill': total_unpaid_bill,
         'years': years,
-        'is_issues': is_issues
+        'is_issues': is_issues,
+        'total_balance_due': total_balance_due
     }
     return render(request, 'conmon_summary.html', context)
 
