@@ -3477,10 +3477,13 @@ def monthly_summary (request, id, year):
             except ObjectDoesNotExist:
                 total_amount_paid = 0
                 payid = 0 #zel added 26/11/2024
-        else: #added by Bandajon K. 15/05/2025
-            bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
-            total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
-
+                
+        try:
+           bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
+           total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
+        except:
+            pass
+        
         #gbaguia 09112024
         #a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
         a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transtype) 

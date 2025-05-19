@@ -143,7 +143,7 @@ Account Ledger
                     <td class="table-light text-center">{{ u.current_reading }}</td>
                     <td class="table-light text-center">&#8369; {{ u.excess|floatformat:2|intcomma }}</td>
                     <td class="table-light text-center">
-                        &#8369; {{ total_balance|floatformat:2|intcomma }}
+                        &#8369; {{ billbalance|floatformat:2|intcomma }}
                         <button type="button" class="btn btn-primary ms-2" onclick="print()">Get Bill</button>
                         {% if not ispaid %}
                         <button title="Payment" class="btn btn-success" data-bs-toggle="modal"
