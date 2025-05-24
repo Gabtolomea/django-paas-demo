@@ -76,6 +76,10 @@ Account Ledger
         background-color: #aaebee !important;
     }
 
+    .row-reset {
+        background-color: #ffb3c1 !important;
+    }
+
 
     .row-default {
         background-color: #ffffff;
@@ -314,6 +318,9 @@ Account Ledger
                         {% endif %}
                         {% if t.transType == 'Additional Fee' %}
                             row-addfee
+                        {% endif %}
+                        {% if t.transType == 'Reset Meter' %}
+                            row-reset
                         {% endif %}"
                         data-link="form-{{t.transid}}">
                         <form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">

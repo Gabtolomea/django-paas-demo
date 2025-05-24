@@ -47,7 +47,8 @@ import calendar
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from django.utils.timezone import now
- 
+
+
 
 
 
@@ -124,7 +125,6 @@ def signin(request):
         else:
             messages.error(request, "Invalid Username or Password")
     return render(request, 'login.html')
-
 
 
 @login_required(login_url='login')
@@ -585,6 +585,33 @@ def ledger(request, id):
         #prev_month = 12 if current_month == 1 else current_month - 1
         #prev_year = current_year - 1 if current_month == 1 else current_year
 
+        #Try Reset Meter
+        reset = None
+        try:
+            reset = Transactions.objects.get(month=current_month, year=current_year, acctID=consumer.consumer_id, transType="Reset Meter", is_issue=False)
+        except Transactions.DoesNotExist:
+            reset = None
+
+        if reset:
+            ledger_table.append(LedgerEntry(
+                transType="Reset Meter",
+                transid=reset.transactionid,
+                date=tran.date,
+                prev=0,
+                reading=0,
+                usage=0,
+                bill=0,
+                amount_due=0,
+                payment=0,
+                paytranid='',
+                bpb=reset.processedBy,
+                ppb=reset.processedBy,
+                bal=0,
+                month=monthnames[reset.month - 1] if reset.month else '',
+                year=reset.year if reset.year else '',
+                status='Reset'
+            ))
+        
         prev_tran = Transactions.objects.filter(
             acctID=id,
             transType='Billing'
@@ -593,7 +620,10 @@ def ledger(request, id):
             Q(year=current_year, month__lt=current_month)
         ).order_by('-year', '-month', '-date').first()
 
-        prev_reading = prev_tran.meterReading if prev_tran else 0
+        if reset:
+            prev_reading = 0
+        else:
+            prev_reading = prev_tran.meterReading if prev_tran else 0
 
         cur_reading = tran.meterReading
         usage = cur_reading - prev_reading
@@ -675,6 +705,8 @@ def ledger(request, id):
 
                 if not is_paid:
                     addfee_balance += fee.amount
+
+    
 
     ledger_table.sort(key=lambda x: (x.year, monthnames.index(x.month)))
 
@@ -4454,7 +4486,6 @@ def delinquent_accounts(request):
         'selected_barangay': barangay_filter,
     }
     return render(request, 'delinquents.html', context)
-
 
     
 def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
