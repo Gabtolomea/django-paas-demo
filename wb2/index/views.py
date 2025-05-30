@@ -586,17 +586,20 @@ def ledger(request, id):
         #prev_year = current_year - 1 if current_month == 1 else current_year
 
         #Try Reset Meter
-        reset = None
-        try:
-            reset = Transactions.objects.get(month=current_month, year=current_year, acctID=consumer.consumer_id, transType="Reset Meter", is_issue=False)
-        except Transactions.DoesNotExist:
-            reset = None
+        resets = None
+        resets = Transactions.objects.filter(
+            month=current_month,
+            year=current_year,
+            acctID=consumer.consumer_id,
+            transType="Reset Meter",
+            is_issue=False
+        )
 
-        if reset:
+        for reset in resets:
             ledger_table.append(LedgerEntry(
                 transType="Reset Meter",
                 transid=reset.transactionid,
-                date=tran.date,
+                date=reset.date,
                 prev=0,
                 reading=0,
                 usage=0,
@@ -620,7 +623,7 @@ def ledger(request, id):
             Q(year=current_year, month__lt=current_month)
         ).order_by('-year', '-month', '-date').first()
 
-        if reset:
+        if resets:
             prev_reading = 0
         else:
             prev_reading = prev_tran.meterReading if prev_tran else 0
@@ -646,6 +649,9 @@ def ledger(request, id):
                 ppb = payment_tran.processedBy
         else:       
             billbalance= billbalance + tran.bill
+
+        if bill == 0:
+            status = 'Paid'
 
         ledger_table.append(LedgerEntry(
             transType="Billing",
