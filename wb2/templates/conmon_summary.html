@@ -272,7 +272,7 @@ Monthly Summary
                     <thead class="wb_thead">
                         <tr>
                             <th style="min-width: 100px;">Month</th>
-                            <th style="min-width: 100px;">Bill Type</th><!-- added changes 28/10/2024    -->
+                            <!-- <th style="min-width: 100px;">Bill Type</th>added changes 28/10/2024    -->
                             <th style="min-width: 100px;">Reading</th>
                             <th style="min-width: 100px;">CU.M Used</th><!-- changed from usage to CU.M Used 28/10/2024    -->
                             <th style="min-width: 100px;">Amount Due</th> <!-- changed from current due to amount due 28/10/2024    -->
@@ -288,7 +288,7 @@ Monthly Summary
                         {% for t in table reversed %}
                         <tr>
                             <td class="text-center">{{t.month}}</td>
-                            <td class="text-center">{{t.transType}}</td><!-- added changes unfinished 28/10/2024    -->
+                            <!-- <td class="text-center">{{t.transType}}</td>added changes unfinished 28/10/2024    -->
                             <td class="text-center">{{t.reading}}</td>
                             <td class="text-center">{{t.usage}}</td>
                             <td class="text-center">{% if t.total_bill %} &#8369; {{t.total_bill|floatformat:2|intcomma}} {% endif %}</td> 
