@@ -1910,8 +1910,8 @@ def payment(request, id):
                     acctID=consumer,
                     transType="Received Amount",
                     date=today,
-                    year=year,
-                    month=month,
+                    year=tran.year,
+                    month=tran.month,
                     processedBy=request.user.username,
                     or_number=or_num,
                     receivedamt=pay_amount
@@ -1928,7 +1928,7 @@ def payment(request, id):
                     payment = AdditionalFeesPayment(
                         additional_fee=addfee,
                         amount=addfee.amount,
-                        remarks="Paid through Pay in Ledger",
+                        remarks="Paid through Pay in Ledger -" + str(or_num),
                         processedBy=request.user.username  
                     )
                     payment.save()
@@ -3802,8 +3802,9 @@ def mark_unpaid(request, transaction_id):
 
     # Delete Payment Transactions
     payment_deleted_count, _ = Transactions.objects.filter(
-        transactionid=transaction_id, transType="Payment",month=month, year=year
+        transType="Payment",month=month, year=year
     ).delete()
+    #remove transaction ID since the value is associated to Received Amount... K
 
     if payment_deleted_count == 0:
         messages.warning(request, "No Payment transaction found.")
