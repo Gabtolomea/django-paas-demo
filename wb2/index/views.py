@@ -3456,7 +3456,10 @@ def monthly_summary (request, id, year):
             years.append(i.year)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
-
+        
+    total_due = 0
+    total_amount_paid = 0
+    total_unpaid_bill = 0
     for i in range(1, 13):
         month = calendar.month_name[i]
         transtype = "Billing"
@@ -3490,8 +3493,7 @@ def monthly_summary (request, id, year):
         # if bill.is_billpaid:
         # let us check if a payment has been made
         payid = 0
-        total_amount_paid = 0
-        total_unpaid_bill = 0
+        
 
         if bill.is_billpaid:
             try:
