@@ -1,6 +1,6 @@
 {% extends 'dashboard.html' %}
 {% load static %}
-{% load humanize %}
+{% load humanize %} {# This is good for intcomma #}
 {% block title %}
 Delinquent Accounts
 {% endblock title %}
@@ -14,7 +14,6 @@ Delinquent Accounts
             max-width: 100%;
             margin-top: 20px;
         }
-
 
         /* New button2 styles applied */
         .button2 {
@@ -49,7 +48,6 @@ Delinquent Accounts
             transition: all 0.1s;
         }
 
-
         .table {
             background-color: white;
             overflow: hidden;
@@ -61,7 +59,7 @@ Delinquent Accounts
             background-color: #09525f !important;
             color: white !important;
         }
-       
+        
         td {
             text-align: center;
         }
@@ -76,14 +74,11 @@ Delinquent Accounts
     </style>
 {% endblock style %}
 
-
     {% block script %}
     {% endblock script %}
     {% block delinquent_accounts %}
 
-
 <div class="container">
-    <!-- Barangay Filter -->
     <div class="mb-3">
         <label for="barangay" class="form-label">Barangay:</label>
         <select id="barangay" class="form-select">
@@ -102,10 +97,9 @@ Delinquent Accounts
             <option value="Poblacion" {% if selected_barangay == "Poblacion" %}selected{% endif %}>Poblacion</option>
             <option value="Salamanca" {% if selected_barangay == "Salamanca" %}selected{% endif %}>Salamanca</option>
             <option value="San Roque" {% if selected_barangay == "San Roque" %}selected{% endif %}>San Roque</option>
-            <!--<option value="Others..." {% if selected_barangay == "Others..." %}selected{% endif %}>Others...</option>-->
-        </select>
+            </select>
     </div>
-   
+    
     <script>
         document.getElementById("barangay").addEventListener("change", function() {
             const selectedBarangay = this.value;
@@ -113,92 +107,78 @@ Delinquent Accounts
         });
     </script>
 
-
-    <!-- Navigation Buttons -->
     <div class="d-flex gap-3 mb-4">
         <button class="btn button2">Delinquent Accounts</button>
         <a href="{% url 'delinquent_months' %}">
             <button type="button" class="btn button2">Delinquent Months</button>
         </a>
-       
     </div>
 
-
-
-
-    <!-- Title -->
     <h2 class="text-center mb-4">Delinquent Accounts</h2>
 
-
-    <!-- Table -->
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Account ID</th>
                     <th>Name</th>
+                    {# It's often helpful to display the Home Address if it's a filter option #}
+                    <th>Home Address</th>
                     <th>Total Delinquent Amount</th>
                     <th>No. of Unpaid Months</th>
                 </tr>
             </thead>
-           
+            
             <tbody>
                 {% for consumer in page_obj %}
                 <tr>
-                    <td>{{ consumer.0 }}</td>
-                    <td>{{ consumer.2 }}, {{ consumer.1 }}</td>  {# Lastname, Firstname #}
-                    <td>₱{{ consumer.5|intcomma }}</td>  {# Total delinquent amount #}
-                    <td>{{ consumer.4 }}</td>  {# No. of unpaid months #}
+                    {# Accessing attributes directly from the consumer object #}
+                    <td>{{ consumer.consumer_id }}</td>
+                    {# Concatenate first and last name #}
+                    <td>{{ consumer.lastname }}, {{ consumer.firstname }}</td> 
+                    <td>{{ consumer.homeaddress }}</td> {# Displaying home address #}
+                    {# Use floatformat:2 for currency and intcomma for thousands separator #}
+                    <td>₱{{ consumer.total_delinquent|floatformat:2|intcomma }}</td> 
+                    <td>{{ consumer.delinquent_months }}</td> 
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4">No delinquent accounts found.</td>
+                    <td colspan="5">No delinquent accounts found.</td> {# Adjusted colspan to match new column count #}
                 </tr>
                 {% endfor %}
             </tbody>
-           
-           
-           
         </table>
     </div>
 
-
-    <!-- Pagination -->
-<nav>
-    <ul class="pagination justify-content-center">
-        {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page=1&barangay={{ selected_barangay }}">First</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&barangay={{ selected_barangay }}">Previous</a>
-            </li>
-        {% endif %}
-
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <li class="page-item active"><a class="page-link" href="?page={{ num }}&barangay={{ selected_barangay }}">{{ num }}</a></li>
-            {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}&barangay={{ selected_barangay }}">{{ num }}</a></li>
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&barangay={{ selected_barangay }}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&barangay={{ selected_barangay }}">Previous</a>
+                </li>
             {% endif %}
-        {% endfor %}
 
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><a class="page-link" href="?page={{ num }}&barangay={{ selected_barangay }}">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}&barangay={{ selected_barangay }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
 
-        {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}&barangay={{ selected_barangay }}">Next</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&barangay={{ selected_barangay }}">Last</a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
-
-
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&barangay={{ selected_barangay }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&barangay={{ selected_barangay }}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 
-
 {% endblock delinquent_accounts %}
-
