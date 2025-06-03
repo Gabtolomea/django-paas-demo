@@ -8,7 +8,8 @@ import string
 import math
 from datetime import datetime
 from .dataporter import *
-import mysql.connector
+#import mysql.connector
+import MySQLdb
 import os
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -589,14 +590,23 @@ def fix_billing_errors():
 
 def dump_database():
     
-    cnx = mysql.connector.connect(
+    '''cnx = mysql.connector.connect(
         user='root',
         password='jazfer',
         host='localhost',
         port=3307,
         database='wb2',
         charset='latin1'
+    )''' #Changed by Bandajon k., 
+    cnx = MySQLdb.connect(
+        user='root',
+        passwd='jazfer',
+        host='localhost',
+        port=3307,
+        db='wb2',
+        charset='latin1'
     )
+
 
     cursor = cnx.cursor()
 
