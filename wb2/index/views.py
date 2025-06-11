@@ -37,7 +37,7 @@ from .models import Transactions
 from collections import Counter
 from django.urls import reverse
 from django.shortcuts import redirect
-from django.db.models import Sum , Q
+from django.db.models import Sum , Q, Count
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models.functions import ExtractMonth, ExtractYear
 from django.shortcuts import render, redirect
@@ -47,6 +47,7 @@ import calendar
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from django.utils.timezone import now
+
 
 
 
@@ -3456,10 +3457,7 @@ def monthly_summary (request, id, year):
             years.append(i.year)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
-        
-    total_due = 0
-    total_amount_paid = 0
-    total_unpaid_bill = 0
+
     for i in range(1, 13):
         month = calendar.month_name[i]
         transtype = "Billing"
@@ -3493,7 +3491,8 @@ def monthly_summary (request, id, year):
         # if bill.is_billpaid:
         # let us check if a payment has been made
         payid = 0
-        
+        total_amount_paid = 0
+        total_unpaid_bill = 0
 
         if bill.is_billpaid:
             try:
@@ -4462,31 +4461,34 @@ def calculate_month_bounds(year):
 def delinquent_accounts(request):
     barangay_filter = request.GET.get('barangay', '')
 
-    with connection.cursor() as cursor:
-        query = """
-            SELECT c.consumer_id, c.firstname, c.lastname, c.homeaddress, 
-                   COUNT(t.acctID_id) AS delinquent_months,
-                   SUM(t.bill) AS total_delinquent
-            FROM index_transactions t
-            JOIN index_consumerinfo c ON t.acctID_id = c.consumer_id
-            WHERE t.is_billpaid = 0
-        """
-        params = []
+    # Start with all ConsumerInfo objects
+    consumers_queryset = ConsumerInfo.objects.all()
 
-        if barangay_filter and barangay_filter != "All":
-            query += " AND c.homeaddress = %s"
-            params.append(barangay_filter)
+    # Apply barangay filter if present and not "All"
+    if barangay_filter and barangay_filter != "All":
+        consumers_queryset = consumers_queryset.filter(homeaddress=barangay_filter)
 
-        query += """
-            GROUP BY c.consumer_id, c.firstname, c.lastname, c.homeaddress
-            HAVING delinquent_months >= 2
-            ORDER BY delinquent_months DESC;
-        """
+    # Annotate consumers with delinquent_months and total_delinquent
+    # *** CORRECTED: Use 'transactions' instead of 'transaction_set' ***
+    delinquent_consumers = consumers_queryset.annotate(
+        # Count the number of unpaid 'Billing' transactions
+        delinquent_months=Count(
+            'transactions', # Changed from 'transaction_set'
+            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing') # Changed from 'transaction_set__'
+        ),
+        # Sum the 'bill' amount for unpaid 'Billing' transactions
+        total_delinquent=Sum(
+            'transactions__bill', # Changed from 'transaction_set__'
+            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing') # Changed from 'transaction_set__'
+        )
+    ).filter(
+        # Apply the conditions for a consumer to be considered delinquent
+        delinquent_months__gte=2,  # At least 2 delinquent months
+        total_delinquent__gt=0    # Total delinquent amount must be greater than 0
+    ).order_by('-delinquent_months') # Order by most delinquent months first
 
-        cursor.execute(query, params)
-        delinquent_accounts = cursor.fetchall()
-
-    paginator = Paginator(delinquent_accounts, 10)
+    # Pagination
+    paginator = Paginator(delinquent_consumers, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -4495,6 +4497,7 @@ def delinquent_accounts(request):
         'selected_barangay': barangay_filter,
     }
     return render(request, 'delinquents.html', context)
+
 
     
 def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
