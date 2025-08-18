@@ -1,25 +1,35 @@
 <!-- buttons -->
 <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top: 10px; margin-bottom: 30px;">
-    <div style="white-space: nowrap;">
-        <a href="{% url 'ledger' u.consumer_id %}" style="display: inline-block; margin-right: 5px;">
-            <button type="button" class="btn button2">Ledger</button>
+    <div style="white-space: nowrap; position: relative; z-index: 1;">
+        <!-- Ledger -->
+        <a href="{% url 'ledger' u.consumer_id %}" class="btn button2" style="margin-right: 5px; position: relative; z-index: 10;">
+            Ledger
         </a>
-        <a href="{% url 'monthly_summary' u.consumer_id year %}" style="display: inline-block; margin-right: 5px;">
-            <button type="button" class="btn button2">Outstanding Balances</button>
+
+        <!-- Outstanding Balances -->
+        <a href="{% url 'monthly_summary' u.consumer_id year %}" class="btn button2" style="margin-right: 5px; position: relative; z-index: 10;">
+            Outstanding Balances
         </a>
-        <a href="{% url 'payment_history' u.consumer_id year %}" style="display: inline-block; margin-right: 5px;">
-            <button type="button" class="btn button2">Payment History</button>
+
+        <!-- Payment History -->
+        <a href="{% url 'payment_history' u.consumer_id year %}" class="btn button2" style="margin-right: 5px; position: relative; z-index: 10;">
+            Payment History
         </a>
-        <span style="display: inline-block; margin-right: 5px;">
+
+        <span style="display: inline-block; margin-right: 5px; position: relative; z-index: 10;">
             <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment">
                 Additional Fees
             </button>
         </span>
-        <a href="{% url 'additionalfeeslist' u.consumer_id %}" style="display: inline-block; margin-right: 5px;">
-            <button type="button" class="btn button2">List of Additional Fees</button>
-        </a>
+
+        <span style="display: inline-block; margin-right: 5px; position: relative; z-index: 10;">
+            <a href="{% url 'additionalfeeslist' u.consumer_id %}" class="btn button2" role="button">
+                List of Additional Fees
+            </a>
+        </span>
     </div>
 </div>
+
 
 <!-- Installment Fee Modal -->
 <div class="modal fade" id="installment" tabindex="-1" role="dialog" aria-labelledby="installment" aria-hidden="true">

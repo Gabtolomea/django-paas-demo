@@ -47,7 +47,7 @@ import calendar
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from django.utils.timezone import now
-
+from django.db.models import Count, Sum
 
 
 
@@ -4499,7 +4499,7 @@ def delinquent_accounts(request):
     return render(request, 'delinquents.html', context)
 
 
-    
+
 def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
     # Get user selection from dropdown, defaulting to 10
     num_to_display = int(request.GET.get('num_to_display', 10))
