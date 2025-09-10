@@ -53,7 +53,6 @@ from django.db.models import Count, Sum
 
 
 
-
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -4856,7 +4855,6 @@ def delinquent_accounts(request):
         'selected_barangay': barangay_filter,
     }
     return render(request, 'delinquents.html', context)
-
 
 
 def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
