@@ -3748,11 +3748,55 @@ def makepayment(conid, consumer, month, year, user, or_num, con_b_rec):
     con_b_rec.save()
     
 
-def payment_history (request, id, year):
-    
+# def payment_history (request, id, year):  
+   
+#     years = []
+   
+#     consumer = ConsumerInfo.objects.get(consumer_id = id)
+#     yer = Transactions.objects.filter(acctID_id=id, transType='Received Amount', is_issue=False)
+#     alltran = Transactions.objects.filter(acctID_id=id, transType='Received Amount', year=year, is_issue=False)
+
+
+
+
+#     for i in yer:
+#         if i.year not in years:
+#             years.append(i.year)
+#     if datetime.today().year not in years:
+#         years.append(datetime.today().year)
+#     if int(year) in years:
+#         years.remove(int(year))
+
+
+
+
+#     is_issues = get_is_seen_issues(request)
+
+
+#     total_unpaid_bill = 0
+#     bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
+#     total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
+
+
+#     context = {
+#         'u' : consumer,
+#         'total_unpaid_bill': total_unpaid_bill,
+#         'alltrans' : alltran,
+#         'years'    : years,
+#         'year'     : year,
+#         'is_issues' : is_issues
+       
+#     }
+
+
+#     return render(request,'payment_history.html', context)
+
+
+def payment_history(request, id, year):
     years = []
-    
-    consumer = ConsumerInfo.objects.get(consumer_id = id)
+
+
+    consumer = ConsumerInfo.objects.get(consumer_id=id)
     yer = Transactions.objects.filter(acctID_id=id, transType='Received Amount', is_issue=False)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Received Amount', year=year, is_issue=False)
 
@@ -3760,29 +3804,48 @@ def payment_history (request, id, year):
     for i in yer:
         if i.year not in years:
             years.append(i.year)
+
+
+    # Always include current year
     if datetime.today().year not in years:
         years.append(datetime.today().year)
-    if int(year) in years:
-        years.remove(int(year))
+    # if int(year) in years:  removed 8/19/2025
+    #     years.remove(int(year))
+
+
+
+
+    # Sort years descending (newest first) added 8/19/2025
+    years = sorted(years, reverse=True)
 
 
     is_issues = get_is_seen_issues(request)
+   
+    #total_unpaid_bill = 0  removed 8/19/2025
+    #bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
+    #total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
 
-    total_unpaid_bill = 0
-    bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
-    total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
+
+
+
+    total_unpaid_bill = Transactions.objects.filter(
+        acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False
+    ).aggregate(total=Sum('bill'))['total'] or 0
+
 
     context = {
-        'u' : consumer,
+        'u': consumer,
         'total_unpaid_bill': total_unpaid_bill,
-        'alltrans' : alltran,
-        'years'    : years,
-        'year'     : year,
-        'is_issues' : is_issues
-        
+        'alltrans': alltran,
+        'years': years,
+        'year': int(year),   # make sure year is int
+        'is_issues': is_issues
     }
 
-    return render(request,'payment_history.html', context)
+
+    return render(request, 'payment_history.html', context)
+
+
 
 def mark_unpaid(request, transaction_id):
     # Get the Payment Transaction
@@ -3956,7 +4019,7 @@ def consumption(request, year):
 
 
 def exemptiont(request):
-    
+   
     exempt_cons = ConsumerInfo.objects.filter(excep_accnt=True)
     context = {
     'cons':exempt_cons,
@@ -3964,7 +4027,9 @@ def exemptiont(request):
     }
     return render(request, 'exemption.html', context)
 
+
 def addexemption(request, id):
+
 
     try:    
         # Retrieve the ConsumerInfo object
@@ -3972,16 +4037,24 @@ def addexemption(request, id):
     except ConsumerInfo.DoesNotExist:
         return HttpResponse("ConsumerInfo not found.", status=404)
 
+
     # Toggle the value of excep_accnt
     consumer_info.excep_accnt = not consumer_info.excep_accnt
+
 
     # Save the updated object
     consumer_info.save()
     exempt_accounts(consumer_info)
     get_bal_exempt(consumer_info.consumer_id)
 
+
     # Redirect to a different URL or render a template as needed
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+
+
 
 
 
