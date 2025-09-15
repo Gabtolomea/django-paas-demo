@@ -10,215 +10,213 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login </title>
-    <link rel="stylesheet" type="text/css" href="{% static 'login.css'%}" />
+    <title>System Login</title>
     <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: linear-gradient(white, #0093b7);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+        }
+
+
+        .login-card {
+            width: 100%;
+            max-width: 520px;   /* ⬅️ increased from 460px */
+            background: linear-gradient(135deg, #0093B7, #006c85);
+            color: #fff;
+            border-radius: 24px; /* ⬅️ slightly more rounded */
+            padding: 60px 50px;  /* ⬅️ more padding inside */
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+            text-align: center;
+            animation: fadeInUp 0.8s ease;
+        }
 
 
 
 
+        .login-card h4,
+        .login-card h6,
+        .login-card .forgot-link {
+            color: #fff; /* keep text visible on dark card */
+        }
 
 
-</head>
-<style>
-    html {
-        height: auto;
-        min-height: 100%;
-    }
 
 
-    .message.op-0 {
-        opacity: 0;
-        transition: opacity 1s;
-    }
-
-
-    .button2 {
-        background-color: #006c85;
-        color: white;
-        padding: 8px 30px;
-        border: none;
-        border-radius: 15px;
-        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease 0.3s;
-       
-    }
-
-
-    .btn.button2:hover {
-        background: #006c85;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
-        transition: all ease-in 0.5s;
-    }
-
-
-    .btn.button2:focus {
-        background: #006c85;
-        color: #ffffff;
-        border-radius: 30px;
-        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
-        transition: all 0.1s;
-    }
-
-
-    @media (max-width: 350px) {
-        h4 {
+        .form-control {
+            border-radius: 12px;
+            border: 1px solid #bbb;
+            padding: 14px 18px;
             font-size: 16px;
+            transition: 0.3s ease;
         }
-    }
 
 
-    @media (min-width: 351px) {
-        h4 {
-            font-size: 32px;
+        .form-control:focus {
+            border-color: #0093B7;
+            box-shadow: 0 0 10px rgba(0, 147, 183, 0.35);
         }
-    }
 
 
-    @media (max-width: 350px) {
-        h5 {
-            font-size: 10px;
+        .input-group-text {
+            border-radius: 0 12px 12px 0;
+            background: #f4f6f8;
+            border: 1px solid #bbb;
         }
-    }
 
 
-    @media (min-width: 351px) {
-        h5 {
-            font-size: 20px;
+        /* Button */
+        .btn-login {
+            background: linear-gradient(135deg, #00C6E0, #00A6C2); /* lighter teal than card */
+            color: #fff;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 25px;
+            width: 80%;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
         }
-    }
 
 
-    @media only screen and (max-width: 350px) {
-        .btn {
-            width: 100;
+        .btn-login:hover {
+            background: linear-gradient(135deg, #00D2F0, #0093B7);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
         }
-    }
 
 
-    @media (max-width: 575px) {
-        button.btn {
-            font-size: 11px !important;
+
+
+
+
+        .btn-login:active {
+            transform: scale(0.96);
         }
-    }
 
 
-    @media (max-width: 350px) {
-        ::placeholder {
-            font-size: 10px;
+        .forgot-link {
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #006c85;
+            text-decoration: none;
+            transition: 0.3s;
         }
-    }
 
 
-    @media (min-width: 351px) {
-        ::placeholder {
-            font-size: 15px;
+        .forgot-link:hover {
+            color: #13afd6ff;
+            text-decoration: underline;
         }
-    }
-</style>
+
+
+        .message {
+            transition: opacity 0.8s ease, transform 0.5s ease;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+
+        .message.op-0 {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
 
 
 <body>
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
-        <div class="container">
+        <div class="login-card">
+            <img src="{% static 'images/logo.png' %}" alt="System Logo" style="width:60px; margin-bottom:15px;">
+            <h4>System Login</h4>
+            <h6 style="margin-bottom:20px;">Please enter your credentials</h6>
 
 
-            <div class="wrapper shadow"
-                style=" margin: 10% auto !important; border-radius: 40px;  max-width: 400px; padding: 40px 0; background: #63CDD7;">
-                <div class="log-in" style="padding-right: 15px">
-                    <center>
-                        <h4 style="color:white">Login</h4>
-                        <h5 style="color:white">Enter User Credentials </h5>
-                    </center>
-                </div>
-                <center>
-                    <div class="form-group m-2 w-75">
-                        <input type="username" name="username"  class="form-control"
-                            placeholder="User ID">
-                    </div>
-
-
-                    <div class="form-group m-2 w-75">
-                        <div class="input-group">
-                            <input class="form-control" type="password" id="id_password" name="password" placeholder="Password" >
-                            <div class="input-group-text" style="cursor: pointer;user-select: none;" onclick="showhide('id_password')">
-                                <img style="width: 20px;" id="id_password_eye" src="{% static '/images/eye-off.svg' %}">
-
-
-                            </div>
-                        </div>
-
-
-                        <div class="button-container" style="margin-top: 20px;">
-                            <button class="btn button2">
-                                <img style="width: 15%;"
-                                src="{% static '/images/login_FILL1_wght700_GRAD0_opsz48.svg' %}" />
-                                    <span style="padding: 10px; font-family: Arial;">Sign In</span></i></button>
-                        </div>
-                    </div>            
-                    <div class="FP ">
-                        <a href="{% url 'forgetpassword' %}" style="color: #0093B7; font-size: 15px;  margin-right: 78px;">Forgot
-                            Password?</a>
-                    </div>
-
-
-                    {% for message in messages %}
-                    <div id="logout"
-                        class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible"
-                        style="margin-left: 70px; padding-left: 50px; position: absolute; border-radius: 10px; bottom: 400px;">
-                        <strong>{{message.tags|title}}!</strong> {{message}}
-                        <a href="#" class="close" data-dismiss="alert"
-                            style="color: var(--bs-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}); text-decoration: none;"
-                            aria-label="close">&times;</a>
-                    </div>
-                    {% endfor %}
-                </center>
+            <div class="form-group mb-3">
+                <input type="username" name="username" class="form-control" placeholder="User ID">
             </div>
+
+
+            <div class="form-group mb-3">
+                <div class="input-group">
+                    <input class="form-control" type="password" id="id_password" name="password" placeholder="Password">
+                    <div class="input-group-text" style="cursor: pointer;" onclick="showhide('id_password')">
+                        <img style="width: 20px;" id="id_password_eye" src="{% static '/images/eye-off.svg' %}">
+                    </div>
+                </div>
+            </div>
+
+
+            <button class="btn btn-login mt-2">
+                <img style="width: 18px; margin-right: 8px;" src="{% static '/images/login_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                Sign In
+            </button>
+
+
+            <a href="{% url 'forgetpassword' %}" class="forgot-link">Forgot Password?</a>
+
+
+            {% for message in messages %}
+            <div id="logout"
+                class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} mt-3">
+                <strong>{{message.tags|title}}!</strong> {{message}}
+                <a href="#" class="close" data-dismiss="alert" style="text-decoration:none;">&times;</a>
+            </div>
+            {% endfor %}
         </div>
     </form>
-    <script src="{% static 'jquery/jquery.js' %}"></script>
-    <script src="{% static 'popper.min.js' %}"></script>
 
 
-</body>
-<script>
-    var logout = document.getElementById('logout');
-    setTimeout(function closeModal() {
-        logout.classList.add("op-0")
-    }, 3000)
-    setTimeout(function dispnone() {
-        logout.style.display = "none"
-    }, 4000)
-</script>
-<script>
-    function showhide(id) {
-        pass = document.getElementById(id)
-        eye = document.getElementById(id + "_eye")
-        console.log(pass);
-        if (pass.type === "text") {
-            pass.type = 'password'
-            eye.src = "{% static '/images/eye-off.svg' %}"
-
-
-        } else {
-            pass.type = 'text'
-            eye.src = "{% static '/images/eye-on.svg' %}"
-
-
+    <script>
+        var logout = document.getElementById('logout');
+        if (logout) {
+            setTimeout(function () {
+                logout.classList.add("op-0");
+            }, 3000);
+            setTimeout(function () {
+                logout.style.display = "none";
+            }, 4000);
         }
-        cons
-    }
-</script>
 
 
+        function showhide(id) {
+            let pass = document.getElementById(id);
+            let eye = document.getElementById(id + "_eye");
+            if (pass.type === "text") {
+                pass.type = 'password';
+                eye.src = "{% static '/images/eye-off.svg' %}";
+            } else {
+                pass.type = 'text';
+                eye.src = "{% static '/images/eye-on.svg' %}";
+            }
+        }
+    </script>
+</body>
 </html>
-
-
-
-
 
 
 

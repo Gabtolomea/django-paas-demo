@@ -5,8 +5,6 @@
 <html lang="en">
 
 
-
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,166 +20,172 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
 
+    <!-- ✅ Background Style Added -->
+    <style>
+       body {
+            /* Example: gradient aqua to white */
+            background: linear-gradient(135deg, #020505ff, #470e0eff);
+            margin: 0;
+            padding: 0;
+           }
+
+
+
+
+        .menu_header a {
+            color: white;
+            margin: 0 5%;
+            text-decoration: none;
+            font-size: 18px;
+            position: relative;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+
+        .menu_header a:hover {
+            color: #ffdd57;
+            text-shadow: 0 0 8px rgba(255, 221, 87, 0.8);
+            transform: translateY(-3px);
+        }
+
+
+        .menu_header a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ffdd57, #ff6f61);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+
+
+        .menu_header a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+
+        .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0093B7;
+            margin-right: 10px;
+            color: white;
+            font-size: 18px;
+        }
+
+
+        .btn-landing {
+            display: inline-block;
+            background: linear-gradient(135deg, #00C6E0, #00A6C2);
+            color: #111111ff;
+            padding: 14px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+
+
+        .btn-landing:hover {
+            background: linear-gradient(135deg, #00D2F0, #0093B7);
+            color: #272626ff;
+            transform: translateY(-2px);
+           box-shadow: 0 0 12px #f8f8f4ff,
+                0 0 24px #ffffff,
+                0 0 36px rgba(255, 255, 255, 0.8);
+           text-shadow: 0 0 6px #ffffff,
+                 0 0 12px #ffffff,
+                 0 0 18px #ffffff;
+}
+        .btn-landing:active {
+            transform: scale(0.96);
+
+
+                }
+            #About img {
+            max-height: 350px;
+            transition: all 0.4s ease-in-out;
+            border-radius: 20px;
+        }
+
+
+        /* Pure glow on hover */
+        #About img {
+            max-height: 350px;
+            border-radius: 20px;
+           
+            filter: brightness(1.15);
+            transition: all 0.4s ease-in-out;
+        }
+
+
+
+
+       
+
+
+    </style>
 </head>
+
+
 <body data-spy="scroll" data-target=".menu_header" data-offset="50">
     <header class="header_nav" style="position:sticky; top: 0; z-index: 1000;">
         <nav class="p-0 navbar navbar-expand-lg navbar-light bg-light">
             <div class="row w-100 m-auto" style="background-color:#0093B7;">
-               
-                <!-- Mobile Button -->
                 <div class="menu_button_header col-lg-5 col-md-12 col-sm-12 col-2 m-auto p-0 text-center" style="display:none">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation" style="background-color: #fff;">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
+                        aria-label="Toggle navigation" style="background-color: #fff;">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
 
 
-                <!-- Water Billing Title (Centered) -->
                 <div class="w-100 d-flex justify-content-center align-items-center"
                     style="background-color: #0093B7; color: white; padding: 30px 0; text-align: center;">
- 
-                <!-- Left Side (Water Billing Title) -->
-                {% comment %} <div class="water_billing_mobile_header col-lg-5 col-md-12 col-sm-12 col-10 ml-2 text-center"
-                     style="color: white; background-color: #0093B7; padding: 25px 0;"> {% endcomment %}
-
-
                     <h1 style="font-weight: bold; font-size: 36px; margin: 0; text-shadow: 0px 3px 5px rgba(0,0,0,0.3);">
                         <i class="fa-solid fa-droplet" style="margin-right: 8px;"></i>
                         Water Billing Station Version 2.0
                     </h1>
-                   
-                    {% comment %} <h3 style="font-weight: 600; margin: 5px 0 0; font-size: 20px; text-shadow: 0px 2px 4px rgba(0,0,0,0.25);">
-                        version 2.0
-                    </h3> {% endcomment %}
                 </div>
-
-
-
-
-                {% comment %} <!-- Right Side (Contacts) -->
-                <div class="contacts_header col-lg-7 col-md-6 col-sm-6 col-6 p-0" style="background-color: #0093B7;">
-                    <div class="contacts_header col-lg-12 col-md-12 col-sm-12 col-12 row w-100 m-auto"
-                         style="background:#165665; color:white; padding: 15px; text-align: center; border-radius: 0 0 0 30px; font-size: 20px; font-weight: 700;">
-                       
-                        <div class="col-lg-4 col-md-4 col-sm-4 text-center">
-                            <i style="padding: 0 5px;" class="fa-sharp fa-solid fa-location-dot mr-2"></i>
-                            Lgu-Ginatilan
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 text-center">
-                            <i style="padding: 0 5px;" class="fa-solid fa-phone"></i>
-                            09001122334
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 text-center" style="white-space: nowrap;">
-                            <i style="padding: 0 5px;" class="fa-solid fa-envelope ml-2"></i>
-                            waterbilling@gmail.com
-                        </div>
-                    </div>
-                </div> {% endcomment %}
             </div>
         </nav>
     </header>
 
 
-
-
-
-
-
-
-        </nav>
-<!-- Original Navigation -->
-<nav class="row w-100 m-auto" ; style="background-color: #165665;">
-    <div class="menu_header col-lg-12 text-center" style="padding: 30px; font-weight: 800;">
-        <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Home', this)">Home</a>
-        <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('About', this)">About</a>
-        <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Services', this)">Services</a>
-        <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Contacts', this)">Contacts</a>
-    </div>
-</nav>
-
-
-
-
-<style>
-   .menu_header a {
-    color: white;
-    margin: 0 5%;
-    text-decoration: none;
-    font-size: 18px;
-    position: relative;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-
-/* Glow + slight lift on hover */
-.menu_header a:hover {
-    color: #ffdd57; /* gold-ish glow */
-    text-shadow: 0 0 8px rgba(255, 221, 87, 0.8);
-    transform: translateY(-3px);
-}
-
-
-/* Sliding background highlight */
-.menu_header a::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #ffdd57, #ff6f61);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.4s ease;
-}
-
-
-.menu_header a:hover::before {
-    transform: scaleX(1);
-    transform-origin: left;
-}
-
-
-.icon-circle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #0093B7;
-    margin-right: 10px;
-    color: white;
-    font-size: 18px;
-}
-
-
-</style>
-        </nav>
-    </header>
-
-
+    <nav class="row w-100 m-auto" style="background-color: #165665;">
+        <div class="menu_header col-lg-12 text-center" style="padding: 30px; font-weight: 800;">
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Home', this)">Home</a>
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('About', this)">About</a>
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Services', this)">Services</a>
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Contacts', this)">Contacts</a>
+        </div>
+    </nav>
 
 
     <!-- HOME -->
-    <section class="page-section" id="Home">
+    <section class="page-section" id="Home"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
         <div class="row w-100 m-auto ">
             <div class="main_contain col-lg-8 col-md-12 col-sm-12 col-12">
                 <div class="container text-center" style="height: 692px; display: flex; justify-content:center; align-items: center;">
                     <div class="wrapper">
-                        {% comment %} <p style="font-size: 400%; font-weight: bold;">WATER BILLING</p>
-                        <p style="color: #0093B7; font-size: 400%; font-weight: bold;">STATION</p> {% endcomment %}
-                        <h4 style="color:black; font-size: 45px; ">"Water is life, and Clean water means Health"</h4>
+                        <h4 style="color:black; font-size: 45px;">"Water is life, and Clean water means Health"</h4>
                         <h4 style="color: black; font-size: 30px;">-Audrey Hepburn</h4>
-
-
-
-
                         <div class="button_login" style="margin-top: 50px;">
-                            <a href="{% url 'login' %}">
-                                <button type="button" class="btn btn-primary" style="font-size: 20px; background-color: #045163; border: 0; border-radius: 25px; ">
-                                    System User's Login
-                                </button>
+                            <a href="{% url 'login' %}" class="btn-landing">
+                                System User's Login
                             </a>
                         </div>
                     </div>
@@ -189,7 +193,8 @@
             </div>
             <div class="screen_size_md_none col-lg-4">
                 <div class="w-100 h-50">
-                    <img class="img-fluid" src="{% static 'img/mobile.svg.svg'%}" style="max-height: 200px; width: 75%; float:right;">
+                    <img class="img-fluid" src="{% static 'img/mobile.svg.svg'%}"
+                        style="max-height: 200px; width: 75%; float:right;">
                 </div>
                 <div class="w-100 h-50">
                     <img class="img-fluid" src="{% static 'img/system.svg.svg'%}" style="max-height: 200px; float:left;">
@@ -199,86 +204,20 @@
     </section>
 
 
-
-
     <!-- ABOUT -->
-<section class="page-section" id="About">
-    <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
-        <!-- IMAGE -->
-        <div class="screen_size_md_none col-lg-6 text-end">
-            <img class="img-fluid" src="{% static 'img/about.svg.svg' %}" style="max-height: 350px;">
-        </div>
-      <!-- TEXT -->
-<div class="col-lg-6 col-md-12 col-sm-12 col-12 text-center">
-    <h2 style="color: #0093B7; font-weight: 800; font-size: 50px;">
-        ABOUT OUR WATER BILLING STATION
-    </h2>
-    <p style="font-size: 20px; padding-top: 25px; font-weight: 700; text-align: center;">
-        An automated system called the Water Billing System was built around paying water.<br>
-        This system handles invoicing and client bill payment.<br>
-        It monitors all of the customer's data to determine if payments were made on time or not.
-    </p>
-</div>
-
-
-
-
-</section>
-
-
-
-
-<!-- SERVICES -->
-<section class="page-section" id="Services">
-    <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
-        <!-- TEXT -->
-        <div class="col-lg-6 col-md-12 col-sm-12 col-12 text-center">
-            <h2 style="color: #0093B7; font-weight: 800;font-size: 50px">SERVICES</h2>
-            <div style="text-align: left; padding: 20px; font-size: 18px; margin-left: 200px;">
-                <h4>1. A Self-Service Portal</h4>
-                <p>- Offers customers faster service</p>
-                <h4>2. Personalized Customer Experiences</h4>
-                <p>- Provides customized experiences for every account holder</p>
-                <h4>3. Advanced Metering</h4>
-                <p>- Ability to remotely measure consumer usage</p>
+    <section class="page-section" id="About"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+        <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
+            <div class="screen_size_md_none col-lg-6 text-end">
+                <img class="img-fluid" src="{% static 'img/about.svg.svg' %}" style="max-height: 350px;">
             </div>
-        </div>
-        <!-- IMAGE -->
-        <div class="screen_size_md_none col-lg-6 text-start">
-            <img class="img-fluid" src="{% static 'img/services.svg.svg' %}" style="max-height: 350px;">
-        </div>
-    </div>
-</section>
-
-
-
-
-<!-- CONTACTS -->
-<section class="page-section" id="Contacts">
-    <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
-        <!-- TEXT -->
-        <div class="col-lg-6 col-md-12 text-center" style="padding: 50px;">
-            <h2 style="color: #0093B7; font-weight: 800; font-size: 50px;">CONTACT US</h2>
-
-
-            <div class="mt-4 text-start contact-info" style="max-width: 400px; margin: 0 auto;">
-                <p>
-                    <span class="icon-circle">
-                        <i class="fa-solid fa-house"></i>
-                    </span>
-                    Poblacion, Ginatilan, Cebu
-                </p>
-                <p>
-                    <span class="icon-circle">
-                        <i class="fa-solid fa-phone"></i>
-                    </span>
-                    09001122334
-                </p>
-                <p>
-                    <span class="icon-circle">
-                        <i class="fa-solid fa-envelope"></i>
-                    </span>
-                    waterbilling@gmail.com
+            <div class="col-lg-6 col-md-12 col-sm-12 col-12 text-center">
+                <h2 style="color: #026f8aff; font-weight: 800; font-size: 50px;">
+                    ABOUT OUR WATER BILLING STATION
+                </h2>
+                <p style="font-size: 20px; padding-top: 25px; font-weight: 700; text-align: center;">
+                    An automated system called the Water Billing System was built around paying water.<br>
+                    This system handles invoicing and client bill payment.<br>
+                    It monitors all of the customer's data to determine if payments were made on time or not.
                 </p>
             </div>
 
@@ -286,32 +225,53 @@
             <h4 style="margin-top: 50px;">“Water is the driving force of all nature”</h4>
             <h5>- Leonardo da Vinci</h5>
         </div>
+    </section>
 
 
-
-
-        <!-- IMAGE -->
-        <div class="screen_size_md_none col-lg-6 text-start">
-            <img class="img-fluid w-50" src="{% static 'img/mobile2.svg.svg' %}" style="max-height: 720px;">
+    <!-- SERVICES -->
+    <section class="page-section" id="Services"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+        <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-12 text-center">
+                <h2 style="color: #026f8aff; font-weight: 800;font-size: 50px">SERVICES</h2>
+                <div style="text-align: left; padding: 20px; font-size: 18px; margin-left: 200px;">
+                    <h4>1. A Self-Service Portal</h4>
+                    <p>- Offers customers faster service</p>
+                    <h4>2. Personalized Customer Experiences</h4>
+                    <p>- Provides customized experiences for every account holder</p>
+                    <h4>3. Advanced Metering</h4>
+                    <p>- Ability to remotely measure consumer usage</p>
+                </div>
+            </div>
+            <div class="screen_size_md_none col-lg-6 text-start">
+                <img class="img-fluid" src="{% static 'img/services.svg.svg' %}" style="max-height: 350px;">
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
+    <!-- CONTACTS -->
+    <section class="page-section" id="Contacts"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+        <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
+            <div class="col-lg-6 col-md-12 text-center" style="padding: 50px;">
+                <h2 style="color: #026f8aff; font-weight: 800; font-size: 50px;">CONTACT US</h2>
+                <div class="mt-4 text-start contact-info" style="max-width: 400px; margin: 0 auto;">
+                    <p><span class="icon-circle"><i class="fa-solid fa-house"></i></span>Poblacion, Ginatilan, Cebu</p>
+                    <p><span class="icon-circle"><i class="fa-solid fa-phone"></i></span>09001122334</p>
+                    <p><span class="icon-circle"><i class="fa-solid fa-envelope"></i></span>waterbilling@gmail.com</p>
+                </div>
+                <h4 style="margin-top: 50px;">“Water is the driving force of all nature”</h4>
+                <h5>- Leonardo da Vinci</h5>
+            </div>
+            <div class="screen_size_md_none col-lg-6 text-start">
+                <img class="img-fluid w-50" src="{% static 'img/mobile2.svg.svg' %}" style="max-height: 720px;">
+            </div>
+        </div>
+    </section>
 
 
-
-
-   <!-- FOOTER -->
-<footer class="footer text-center p-4 mt-6" style="background-color: #045163; padding: 40px; color: white; ">
-    <div>© 2025 Water Billing Station</div>
-</footer>
-
-
-
-
-
-
+    <footer class="footer text-center p-4 mt-6" style="background-color: #045163; padding: 40px; color: white;">
+        <div>© 2025 Water Billing Station</div>
+    </footer>
 
 
     <!-- SCRIPTS -->
@@ -320,38 +280,13 @@
     <script src="{% static 'bootstrap.min.js' %}"></script>
     <script>
         function showSection(sectionId, element) {
-            // Hide all sections
-            document.querySelectorAll('.page-section').forEach(sec => {
-                sec.style.display = "none";
-            });
-
-
-
-
-            // Show selected section
+            document.querySelectorAll('.page-section').forEach(sec => sec.style.display = "none");
             document.getElementById(sectionId).style.display = "block";
-
-
-
-
-            // Reset all links
-            document.querySelectorAll('.nav_link').forEach(link => {
-                link.classList.remove("active");
-            });
-
-
-
-
-            // Highlight the clicked one
-            if (element) {
-                element.classList.add("active");
-            }
+            document.querySelectorAll('.nav_link').forEach(link => link.classList.remove("active"));
+            if (element) element.classList.add("active");
         }
 
 
-
-
-        // Show Home first when page loads
         document.addEventListener("DOMContentLoaded", function () {
             const firstLink = document.querySelector(".nav_link");
             showSection("Home", firstLink);
@@ -359,22 +294,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

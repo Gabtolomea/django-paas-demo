@@ -3,12 +3,18 @@
 {% load humanize %}
 
 
+
+
 {% block title %}
-Revenue Report
+Monthly Bill Collections
 {% endblock title %}
 
 
+
+
 {% block style %}
+
+
 
 
 <style>
@@ -24,6 +30,7 @@ Revenue Report
         margin-bottom: 30px;
     }
 
+
     .btn.button2:hover {
         background: var(--main-color);
         color: #ffffff;
@@ -32,6 +39,7 @@ Revenue Report
         transition: all ease-in 0.5s;
     }
 
+
     .btn.button2:focus {
         background: var(--main-color);
         color: #ffffff;
@@ -39,6 +47,7 @@ Revenue Report
         box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
         transition: all 0.1s;
     }
+
 
     .form-select {
         width: 13%;
@@ -49,10 +58,12 @@ Revenue Report
         transition: 0.3s all ease-in-out;
     }
 
+
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
     }
+
 
     .button2 {
         background-color: var(--main-color);
@@ -64,6 +75,7 @@ Revenue Report
         transition: all ease 0.3s;
     }
 
+
     .btn.button2:hover {
         background: var(--main-color);
         color: #ffffff;
@@ -71,6 +83,7 @@ Revenue Report
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
+
 
     .btn.button2:focus {
         background: var(--main-color);
@@ -80,7 +93,9 @@ Revenue Report
         transition: all 0.1s;
     }
 
+
     /* ============================================================================================= */
+
 
     /* Colors for the transactions types */
     .table-orange {
@@ -88,20 +103,24 @@ Revenue Report
         color: black;
     }
 
+
     .table-red {
         background-color: #ff7272;
         color: white;
     }
+
 
     .table-blue {
         background-color: #a9d8ff;
         color: black;
     }
 
+
     .table-yellow {
         background-color: #fffaa9;
         color: black;
     }
+
 
     .table-lightblue {
         background-color: #a9e6ff;
@@ -110,7 +129,9 @@ Revenue Report
 </style>
 {% endblock style %}
 
+
 {% block monthly_collections %}
+
 
 {% include 'reportstabs.html' %}
 <script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
@@ -121,31 +142,43 @@ Revenue Report
 
 
 
-<div class="" id="">
-    <h1 class="mb-3 text-center">Monthly Bill Collections</h1>
-    <div class="form-group">
-        <form method="GET" action="{% url 'monthly_collections' cur_year %}">
-            <label for="year">Select Year</label>
-            <select id="year" name="fyear" class="form-control" onchange="this.form.submit()">
-                <option value="">-- Select Year --</option>
+
+
+
+<div id="">
+    <h1 class="mb-3 text-center" style="margin-top: 3rem;">Monthly Bill Collections</h1>
+   
+    <form method="GET" action="{% url 'monthly_collections' cur_year %}">
+        <div class="mb-4 d-flex flex-column align-items-center" style="width: 200px;">
+            <label for="year" style="font-size: 18px; text-align: left; width: 100%;">Select Year:</label>
+                 <select id="year" name="fyear" class="form-control text-left"
+                    style="height: 40px; font-size: 16px;"
+                    onchange="this.form.submit()">
                 {% for year in years %}
-                <option value="{{ year }}" {% if year == cur_year %}selected{% endif %}>{{ year }}</option>
+                    <option value="{{ year }}" {% if year == cur_year %}selected{% endif %}>{{ year }}</option>
                 {% endfor %}
             </select>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
+
+
+
+
     <div class="container-fluid p-0">
         <div class="table-responsive">
             <div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
                 <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
                     width="100%">
-                    <thead class="wb_thead" style="position: sticky; top: 0;">
-                        <tr>
-                            <th style="min-width: 100px;">Month</th>
-                            <th style="min-width: 100px;">Amount Collected</th>
-                            <th style="min-width: 100px;">Number of Transactions</th>
-                        </tr>
-                    </thead>
+                   <thead class="wb_thead" style="position: sticky; top: 0; background-color: #006c85; color: white;">
+    <tr>
+        <th style="width: 33.33%; padding: 20px;">Month</th>
+        <th style="width: 33.33%; padding: 20px;">Amount Collected</th>
+        <th style="width: 33.33%; padding: 20px;">Number of Transactions</th>
+    </tr>
+</thead>
+
+
                     <tbody class="wb_tbody text-center"> <!-- Center-align all table data -->
                         {% for t in table reversed %}
                         <tr>
@@ -162,6 +195,8 @@ Revenue Report
     </div>
 </div>
 </div>
+
+
 
 
 {% endblock monthly_collections %}

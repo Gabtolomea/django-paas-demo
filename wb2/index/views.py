@@ -53,7 +53,6 @@ from django.db.models import Count, Sum
 
 
 
-
 def porter(request):
     porter_in()
     porter_out(sorted_tables)
@@ -862,9 +861,10 @@ def undodelete(request):
         con.save()
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
+
 @login_required(login_url='login')
 def meterreading(request):
-    
+   
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -876,6 +876,7 @@ def meterreading(request):
     months = []
     years = []
 
+
     class monthname():
         def __init__(self, name, num):
             self.name = name
@@ -884,22 +885,37 @@ def meterreading(request):
         month = calendar.month_name[i]
         months.append(monthname(month, i))
 
+
     pages = int(request.GET.get('p', 10))
 
+
     user = request.user
+
 
     search = request.GET.get("search", "")
     page = request.GET.get('page')
     isnum = search.isnumeric()
     if search:
         if isnum:
-            meterred = ConsumerInfo.objects.filter(Q(meternumber=search) | Q(consumer_id__icontains=search), deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+            meterred = ConsumerInfo.objects.filter(
+                Q(meternumber=search) | Q(consumer_id__icontains=search),
+                deleteflag=0, disconnectionflag=0
+            ).order_by('lastname', 'firstname', 'middlename')
         else:
-            meterred = ConsumerInfo.objects.filter(Q(firstname__icontains=search) | Q(middlename__icontains=search) | Q(lastname__icontains=search)| Q(homeaddress__icontains=search), deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')
+            meterred = ConsumerInfo.objects.filter(
+                Q(firstname__icontains=search) |
+                Q(middlename__icontains=search) |
+                Q(lastname__icontains=search) |
+                Q(homeaddress__icontains=search),
+                deleteflag=0, disconnectionflag=0
+            ).order_by('lastname', 'firstname', 'middlename')
     else:
-        meterred = ConsumerInfo.objects.filter(deleteflag=0, disconnectionflag=0).order_by('lastname', 'firstname', 'middlename')   
-    
+        meterred = ConsumerInfo.objects.filter(
+            deleteflag=0, disconnectionflag=0
+        ).order_by('lastname', 'firstname', 'middlename')  
+   
     count = meterred.count()
+
 
     my = BarangayRecord.objects.all()
     for i in my:
@@ -907,36 +923,45 @@ def meterreading(request):
             years.append(i.year)
     if datetime.today().year not in years:
         years.append(datetime.today().year)
+
+
+    # 🔽 sort years in descending order
+    years = sorted(years, reverse=True)
+
+
     if pages == 0:
         paginate_by = request.GET.get('paginate_by', count)
     else:
         paginate_by = request.GET.get('paginate_by', pages)
     page = request.GET.get('page')
 
+
     paginator = Paginator(meterred, paginate_by)
     try:
         m = paginator.page(page)
 
+
     except PageNotAnInteger:
         m = paginator.page(1)
+
 
     except EmptyPage:
         m = paginator.page(paginator.num_pages)
 
+
     is_issues = get_is_seen_issues(request)
     context = {
-        'search':search,
-        'last':range(paginator.num_pages - 3, paginator.num_pages),
-        'five':range(1,6),
+        'search': search,
+        'last': range(paginator.num_pages - 3, paginator.num_pages),
+        'five': range(1, 6),
         'paginate_by': paginate_by,
         'meterred': m,
         'user': user,
-        'count':count,
+        'count': count,
         'year': datetime.today().year,
         'months': months,
         'years': years,
-        'is_issues' : is_issues 
-        
+        'is_issues': is_issues
     }
     return render(request, 'meterreading.html', context)
 
@@ -1074,28 +1099,25 @@ def inputreading(request, id, year):
                 m = meterreaderclass(transid, month, i, '', lastreading, '', '', '', False)
             table.append(m)
 
-    #Now don't get confused, that above was for the display in html. That doesn't have anything to do with the process. HAHAHAHA
-
-    #Penalty. . . now. Yeah. Just penalty if none then none if there is then retrieve it and punish those irresponsible consumers.        
+       
     if consumer.penaltycode is None:
         con_penalty = Penalty.objects.get(penaltycode='P001')
     else:
         con_penalty = Penalty.objects.get(penaltycode=consumer.penaltycode)
 
-    cummulative = get_cummulative(id) #cummulative. What does it mean  though? But here it uses only ID. Id of the consumer. What for? Haven't found any variable that has the same value.
-    #Now, i understand, this gets the value of the cummulative of that specific consumer. This is used to calculate penalty . Since there is no penalty, it doesn't have any effect.
-    interest = 0 #noh, i don't no
+    cummulative = get_cummulative(id) 
+    interest = 0 
     usage = 0
 
-    #And now, the most exciting part. The process...
+  
     if request.method == "POST":
-        #creation for barangay report or record or retrieve if existing.
+       
         try:
             con_b_rec = BarangayRecord.objects.get(barangaycode_id=consumer.installation_address_id, year=year)
         except ObjectDoesNotExist:
             con_b_rec = create_brec(consumer.installation_address_id, year)
         
-        #this for the monthly barangay record . . yeah
+        
         for i in range(12):
             if request.POST.get('reading-'+calendar.month_name[i+1]):
                 d = i+1
@@ -1103,8 +1125,7 @@ def inputreading(request, id, year):
                 break
         bill = 0
 
-        #now if an  account  is exempted or the excep_accnt flag is on then pass through here
-        # if excempted
+      
         if consumer.excep_accnt:
             try:
                 #
@@ -1163,22 +1184,21 @@ def inputreading(request, id, year):
                 consumer.current_reading = r 
                 tran.save()
                 consumer.save()
-        # not excempted
+         
         else:
             if consumer.penaltycounter >= con_penalty.penalty_after and con_penalty.penalty_rate != 0:
                 xy = con_penalty.penalty_rate * cummulative
                 interest = xy/100
             
-            # transaction exists
+          
                 
             try:
-                #print(year)
+                 
                 billtran = Transactions.objects.get(acctID=consumer.consumer_id, transType='Billing', year=year, month=d)
                 print(billtran)
                 lastreading = billtran.prevReading
                 print(f"Transaction Exists: {lastreading}")
-
-                # finding next billing
+ 
                 mm = d+1
                 has_next = False
                 for y in years_forward:
@@ -1196,7 +1216,7 @@ def inputreading(request, id, year):
                         break
                     mm = 1
                 
-                # finding previous billing
+               
                 if has_next:
                     mm = d-1
                     has_prev = False
@@ -1223,16 +1243,14 @@ def inputreading(request, id, year):
                 rate = ConsumerType.objects.get(contypeid=billtran.contypeid)
                 dif = billtran.bill
                 
-                #kbandajon 09262024
-                #addition of new rates
+                 
                 year = billtran.year
                 month = billtran.month
                 usage = billtran.usage
                 #bill_computer = BillComputer()
                 billtran.bill = bill_compute(year, month, usage, rate)
                 bill = billtran.bill
-                #kbandajon 09262024
-                #addition of new rates
+                 
 
 
                 billtran.processedBy = str(request.user)
@@ -1273,9 +1291,9 @@ def inputreading(request, id, year):
                 duplicates = Transactions.objects.filter(acctID=consumer.consumer_id, transType='Billing', year=year, month=d).order_by('-transactionid')
                 duplicates[0].delete()
                 
-            # transaction does not exist
+             
             except ObjectDoesNotExist:
-                # finding next billing
+                
                 fm = d+1
                 has_next = False
                 for y in years_forward:
@@ -1316,8 +1334,7 @@ def inputreading(request, id, year):
                 #bc = BillComputer()
                 #billtran.bill = bill_computer.bill_compute(year, month, usage, rate)
                 billtran.bill = bill_compute(year,month, usage, rate)
-                bill = billtran.bill
-                #added by K. Bandajon 09_23_2024 - 21-09_2024
+                bill = billtran.bill 
 
                 billtran.payment = 0
                 billtran.processedBy = request.user
@@ -3057,6 +3074,7 @@ def bulkreading(request):
             return template
     months = []
     years = []
+    
     class monthname():
         def __init__(self, name, num):
             self.name = name
@@ -3069,10 +3087,16 @@ def bulkreading(request):
     for i in my:
         if i.year not in years:
             years.append(i.year)
-    if datetime.today().year not in years:
-        years.append(datetime.today().year)
-    if years[0] < years[len(years)-1]:
-        years.reverse()
+            if datetime.today().year not in years:
+                years.append(datetime.today().year)
+            if years[0] < years[len(years)-1]:
+                years.reverse()
+    
+    my = BarangayRecord.objects.all().values_list("year", flat=True)
+    unique_years = {int(y) for y in my if y is not None}
+    unique_years.add(datetime.today().year)
+    years = sorted(unique_years, reverse=True)
+
     class new_con():
         def __init__(self, con, prev, cur):
             self.con = con
@@ -3356,6 +3380,7 @@ def bulkreading(request):
         context = {
             'bulky':True,
             'search':search,
+            'years':years,
             'year':year,
             'month':mname,
             'years':years,
@@ -3427,12 +3452,136 @@ def userprof(request):
     }
     return render(request, 'userprof.html', context)
 
-def monthly_summary (request, id, year):
+# def monthly_summary (request, id, year):
+#     table = []
+#     years = []
+#     class montly_sum():
+#         #def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, payid):
+#         def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transType):
+#             self.month = month
+#             self.monthval = monthval
+#             self.reading = reading
+#             self.reading_date = reading_date
+#             self.usage = usage
+#             self.total_bill = total_bill
+#             self.prev_bal = prev_bal
+#             self.additional_fees = additional_fees
+#             self.total_due = total_due
+#             self.total_amount_paid = total_amount_paid
+#             self.payid = payid
+#             self.transType = transType  
+#             self.penalty = penalty
+            
+
+#     consumer = ConsumerInfo.objects.get(consumer_id=id)
+#     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', is_issue=False)
+    
+
+#     for i in alltran:
+#         if i.year not in years:
+#             years.append(i.year)
+#     if datetime.today().year not in years:
+#         years.append(datetime.today().year)
+
+#     for i in range(1, 13):
+#         month = calendar.month_name[i]
+#         transtype = "Billing"
+#         try:
+#             bill = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=i, is_issue=False)
+#             transtype = bill.transType
+            
+#         except ObjectDoesNotExist:
+#             #gbaguia 09112024 Added total_amount_paid container
+#             # a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0)
+#             a = montly_sum(month, i, 0, '', 0, 0, 0, 0, 0, 0, 0, transtype)
+#             table.append(a)
+#             continue
+#         usage = bill.usage
+#         reading = bill.meterReading
+#         reading_date = bill.date
+#         total_bill = bill.bill
+#         prev_bal = 0
+#         additional_fees = 0  # zel added 26/11/2024
+#         try:
+#             add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
+#             additional_fees = add_fee.bill
+#             #addfee_transType = add_fee.transType #zel 26/11/2024
+#         except ObjectDoesNotExist:
+#             pass #zel added 26/11/2024
+            
+#         total_due = total_bill + consumer.current_bal + additional_fees 
+        
+
+#         # gbaguia 08162024
+#         # if bill.is_billpaid:
+#         # let us check if a payment has been made
+#         payid = 0
+#         total_amount_paid = 0
+#         total_unpaid_bill = 0
+
+#         if bill.is_billpaid:
+#             try:
+#                 payments = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
+#                 try:
+#                     payment = payments[0]
+#                     try:
+#                         add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
+#                         for p in payments:
+#                             if p.payment == add_fee.bill:
+#                                 payment = p
+#                                 break
+#                     except ObjectDoesNotExist:
+#                         pass
+
+#                     payid = payment.transactionid
+#                     total_amount_paid = payment.payment
+#                 except IndexError:
+#                     total_amount_paid = 0
+#                     payid = 0
+#             except ObjectDoesNotExist:
+#                 total_amount_paid = 0
+#                 payid = 0 #zel added 26/11/2024
+                
+#         try:
+#            bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
+#            total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
+#         except:
+#             pass
+        
+#         #gbaguia 09112024
+#         #a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
+#         a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transtype) 
+#         table.append(a)
+
+
+#     is_issues = get_is_seen_issues(request)
+    
+#     total_balance_due = total_due
+
+#     context = {
+#         'table': table,
+#         'u': consumer,
+#         'year': year,
+#         'total_unpaid_bill': total_unpaid_bill,
+#         'years': years,
+#         'is_issues': is_issues,
+#         'total_balance_due': total_balance_due
+#     }
+#     return render(request, 'conmon_summary.html', context)
+
+from django.db.models import Sum
+from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime, date
+import calendar
+
+def monthly_summary(request, id, year):
     table = []
     years = []
+
     class montly_sum():
-        #def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, payid):
-        def __init__(self, month, monthval, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transType):
+        def __init__(self, month, monthval, reading, reading_date, usage,
+                     total_bill, prev_bal, additional_fees, total_due,
+                     total_amount_paid, payid, transType):
             self.month = month
             self.monthval = monthval
             self.reading = reading
@@ -3445,13 +3594,10 @@ def monthly_summary (request, id, year):
             self.total_amount_paid = total_amount_paid
             self.payid = payid
             self.transType = transType  
-            self.penalty = penalty
-            
 
     consumer = ConsumerInfo.objects.get(consumer_id=id)
     alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', is_issue=False)
     
-
     for i in alltran:
         if i.year not in years:
             years.append(i.year)
@@ -3462,51 +3608,65 @@ def monthly_summary (request, id, year):
         month = calendar.month_name[i]
         transtype = "Billing"
         try:
-            bill = Transactions.objects.get(acctID_id=id, transType='Billing', year=year, month=i, is_issue=False)
+            bill = Transactions.objects.get(
+                acctID_id=id,
+                transType='Billing',
+                year=year,
+                month=i,
+                is_issue=False
+            )
             transtype = bill.transType
-            
         except ObjectDoesNotExist:
-            #gbaguia 09112024 Added total_amount_paid container
-            # a = montly_sum(month, i, 0, '', 0, 0, 0,0, 0, 0)
             a = montly_sum(month, i, 0, '', 0, 0, 0, 0, 0, 0, 0, transtype)
             table.append(a)
             continue
+
         usage = bill.usage
         reading = bill.meterReading
         reading_date = bill.date
         total_bill = bill.bill
         prev_bal = 0
-        additional_fees = 0  # zel added 26/11/2024
-        try:
-            add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
-            additional_fees = add_fee.bill
-            #addfee_transType = add_fee.transType #zel 26/11/2024
-        except ObjectDoesNotExist:
-            pass #zel added 26/11/2024
-            
+
+        # ✅ Fix: multiple Additional Fees handled by summing
+        add_fees = Transactions.objects.filter(
+            acctID_id=id,
+            transType='Additional Fees',
+            year=year,
+            month=i,
+            is_issue=False
+        )
+        additional_fees = add_fees.aggregate(total=Sum('bill'))['total'] or 0
+
         total_due = total_bill + consumer.current_bal + additional_fees 
         
-
-        # gbaguia 08162024
-        # if bill.is_billpaid:
-        # let us check if a payment has been made
         payid = 0
         total_amount_paid = 0
         total_unpaid_bill = 0
 
         if bill.is_billpaid:
             try:
-                payments = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, month=i, is_issue=False)
+                payments = Transactions.objects.filter(
+                    acctID_id=id,
+                    transType='Payment',
+                    year=year,
+                    month=i,
+                    is_issue=False
+                )
                 try:
                     payment = payments[0]
-                    try:
-                        add_fee = Transactions.objects.get(acctID_id=id, transType='Additional Fees', year=year, month=i, is_issue=False)
+                    # check if payment matches additional fee
+                    add_fees = Transactions.objects.filter(
+                        acctID_id=id,
+                        transType='Additional Fees',
+                        year=year,
+                        month=i,
+                        is_issue=False
+                    )
+                    if add_fees.exists():
                         for p in payments:
-                            if p.payment == add_fee.bill:
+                            if p.payment == add_fees.first().bill:
                                 payment = p
                                 break
-                    except ObjectDoesNotExist:
-                        pass
 
                     payid = payment.transactionid
                     total_amount_paid = payment.payment
@@ -3515,19 +3675,23 @@ def monthly_summary (request, id, year):
                     payid = 0
             except ObjectDoesNotExist:
                 total_amount_paid = 0
-                payid = 0 #zel added 26/11/2024
+                payid = 0
                 
         try:
-           bill = Transactions.objects.filter(acctID_id=id, is_billpaid=False, transType='Billing', is_issue=False)
-           total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
+            bill = Transactions.objects.filter(
+                acctID_id=id,
+                is_billpaid=False,
+                transType='Billing',
+                is_issue=False
+            )
+            total_unpaid_bill = bill.aggregate(total=Sum('bill'))['total'] or 0
         except:
             pass
         
-        #gbaguia 09112024
-        #a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees,total_due, payid)
-        a = montly_sum(month, i, reading, reading_date, usage, total_bill, prev_bal, additional_fees, total_due, total_amount_paid, payid, transtype) 
+        a = montly_sum(month, i, reading, reading_date, usage, total_bill,
+                       prev_bal, additional_fees, total_due, total_amount_paid,
+                       payid, transtype) 
         table.append(a)
-
 
     is_issues = get_is_seen_issues(request)
     
@@ -3543,7 +3707,6 @@ def monthly_summary (request, id, year):
         'total_balance_due': total_balance_due
     }
     return render(request, 'conmon_summary.html', context)
-
 
 
 
@@ -4327,12 +4490,15 @@ def month_name_to_int(month_name):
 def record_list(request):
     print("===== Entering record_list view =====")
 
+
     selected_year = request.GET.get('fyear', datetime.today().year)
     selected_brgy = request.GET.get('fbar', 1)
     selected_month = request.GET.get('fmonth', 'January')
     page = request.GET.get('page')
 
+
     print(f"Received GET params -> Year: {selected_year}, Barangay: {selected_brgy}, Month: {selected_month}, Page: {page}")
+
 
     try:
         selected_year = int(selected_year)
@@ -4341,14 +4507,17 @@ def record_list(request):
         print("Invalid year or barangay received")
         return render(request, 'recordList.html', {'error': 'Invalid year or barangay selected'})
 
+
     def month_name_to_int(month_name):
         try:
             return list(calendar.month_name).index(month_name)
         except ValueError:
             return 1  # Default to January if invalid
 
+
     month_number = month_name_to_int(selected_month)
     print(f"Converted month name '{selected_month}' to month number {month_number}")
+
 
     class RecordListClass:
         def __init__(self, consumer_id, meternumber, name, paid_amount, date_paid, transtype, transID):
@@ -4360,13 +4529,30 @@ def record_list(request):
             self.transtype = transtype
             self.transID = transID
 
-    # Fetch distinct years
-    years = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('year', flat=True).distinct()
-    years = list(set(years))
-    if datetime.today().year not in years:
-        years.append(datetime.today().year)
 
-    print(f"Available years: {years}")
+    # Fetch distinct years -- removed 8/22/2025
+    # years = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('year', flat=True).distinct()
+    # years = list(set(years))
+    # if datetime.today().year not in years:
+    #     years.append(datetime.today().year)
+
+
+    # print(f"Available years: {years}")
+   
+    # Fetch distinct years (ensure descending order)
+    years = Transactions.objects.filter(
+        transType='Received Amount', is_issue=False
+    ).values_list('year', flat=True).distinct()
+
+
+    years = sorted(set(years), reverse=True)  # ✅ sort descending
+
+
+    if datetime.today().year not in years:
+        years.insert(0, datetime.today().year)  # ensure current year is first
+
+
+
 
     # Fetch distinct months
     months = Transactions.objects.filter(transType='Received Amount', is_issue=False).values_list('month', flat=True).distinct()
@@ -4374,18 +4560,23 @@ def record_list(request):
     month_names = [calendar.month_name[month] for month in months]
     print(f"Available months: {month_names}")
 
+
     # Fetch Barangays
     bars = Barangays.objects.all()
     print(f"Total Barangays found: {bars.count()}")
 
+
     # Fetch ConsumerInfo records based on Barangay filter
     reclist = []
 
+
     barangay = Barangays.objects.get(id=selected_brgy)
+
 
     try:
         conlistofBarangay = ConsumerInfo.objects.filter(installation_address=selected_brgy)
         print(f"Found {conlistofBarangay.count()} consumers for Barangay {selected_brgy}")
+
 
         for consumer in conlistofBarangay:
             meternumber = consumer.meternumber
@@ -4393,12 +4584,15 @@ def record_list(request):
             fname = consumer.firstname
             lname = consumer.lastname if hasattr(consumer, 'lastname') else ""
 
+
             name = f"{lname} {fname}".strip()  
             print(f"Processing consumer: {consumer_id}, Name: {name}, Meter: {meternumber}")
+
 
             rec = Transactions.objects.filter(
                 year=selected_year, acctID=consumer_id, month=month_number, transType="Received Amount"
             ).first()
+
 
             if rec:
                 print(f"Transaction found for {consumer_id} -> Amount: {rec.receivedamt}, Date: {rec.date}, ID: {rec.transactionid}")
@@ -4406,10 +4600,13 @@ def record_list(request):
             else:
                 print(f"No transaction found for {consumer_id}")
 
+
     except Exception as e:
         print(f"Error processing transactions: {str(e)}")
 
+
     print(f"Total records collected: {len(reclist)}")
+
 
     # Pagination
     paginate_bypages = int(request.GET.get('p', 10))  # Default to 10 if not provided
@@ -4418,9 +4615,12 @@ def record_list(request):
     except ValueError:
         paginate_by = 10  # Default to 10 if conversion fails
 
+
     print(f"Paginate by: {paginate_by}")
 
+
     paginator = Paginator(reclist, paginate_by)
+
 
     try:
         page = int(page) if page else 1  # Convert page to integer
@@ -4435,7 +4635,9 @@ def record_list(request):
         print("Page is empty, showing last page")
         record_list = paginator.page(paginator.num_pages)
 
+
     print("===== Rendering Template =====")
+
 
     context = {
         'last': range(paginator.num_pages - 3, paginator.num_pages),
@@ -4456,10 +4658,93 @@ def record_list(request):
         'is_rl': True,
     }
 
+
     return render(request, 'recordList.html', context)
+
 
 @login_required(login_url='login')
 def monthly_collections(request, year=None):
+    if year is None:  # Use the current year if no year is provided
+        year = datetime.today().year
+    else:
+        year = int(year)  # Convert to integer
+
+
+    selected_year = int(request.GET.get('fyear', year))  # Allow selection from GET
+
+
+    class MonthlyCollection:
+        def __init__(self, month, collection, transTotal):
+            self.month_col = calendar.month_name[month]  # Convert month number to name
+            self.all_payments = collection
+            self.number_of_transactions = transTotal
+
+
+    # Fetch distinct years
+    years = Transactions.objects.filter(
+        transType='Received Amount', is_issue=False
+    ).dates('date', 'year').values_list('year', flat=True)
+
+
+    # years = list(set(years))  # removed 8/22/2025
+    # if datetime.today().year not in years:
+    #     years.append(datetime.today().year)
+   
+    # Fetch distinct years
+    years = Transactions.objects.filter(
+        transType='Received Amount', is_issue=False
+    ).dates('date', 'year').values_list('year', flat=True)
+    years = list(set(years))  # Ensure uniqueness
+    # Add current year if missing
+    if datetime.today().year not in years:
+        years.append(datetime.today().year)
+    # Sort years in descending order
+    years = sorted(years, reverse=True)
+
+
+
+
+    # Fetch distinct months
+    months = Transactions.objects.filter(
+        transType='Received Amount', is_issue=False,
+        date__year=selected_year  # Filter months based on selected year
+    ).dates('date', 'month').values_list('month', flat=True)
+
+
+    months = sorted(set(months))
+
+
+    table = []  # List to store data for the table
+
+
+    for month in months:
+        monthly_trans = Transactions.objects.filter(
+            transType='Received Amount',
+            date__year=selected_year,
+            date__month=month
+        ).aggregate(total_amount=Sum('receivedamt'))
+
+
+        num_of_trans = Transactions.objects.filter(
+            transType='Received Amount',
+            date__year=selected_year,
+            date__month=month
+        ).count()
+
+
+        amount_col = monthly_trans['total_amount'] or 0
+        table.append(MonthlyCollection(month, amount_col, num_of_trans))
+
+
+    context = {
+        'table': table,
+        'years': years,
+        'is_mc': True,
+        'cur_year': selected_year,
+    }
+
+
+    return render(request, 'monthly_collection.html', context)
     if year is None:  # Use the current year if no year is provided
         year = datetime.today().year
     else:
@@ -4570,7 +4855,6 @@ def delinquent_accounts(request):
         'selected_barangay': barangay_filter,
     }
     return render(request, 'delinquents.html', context)
-
 
 
 def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
