@@ -600,10 +600,10 @@ def dump_database():
         charset='latin1'
     )''' #Changed by Bandajon k., 
     cnx = MySQLdb.connect(
-        user='root',
-        passwd='jazfer',
+        user='wbilling',
+        passwd=@-@JazfeR123',
         host='localhost',
-        port=3307,
+        port=3306,
         db='wb2',
         charset='latin1'
     )
