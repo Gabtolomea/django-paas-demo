@@ -1,9 +1,7 @@
-
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from datetime import date
-
 
 from .models import *
 
@@ -16,14 +14,25 @@ class SystemUserForm(UserCreationForm):
     #     ("3", "Engineer's Office"),
     #     ("4", "Mayor's Office"),
     # )
-    password1 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
-    password2 = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
+    password1 = forms.Field(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
+    password2 = forms.Field(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=True)
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'maxlength':'13', 'minlength':'11'}))
+
+    mobilenum = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'pattern': '[0-9]{11}',
+            'title': 'Mobile number must be exactly 11 digits',
+            'placeholder': 'e.g. 09123456789',
+            'inputmode': 'numeric'
+        }),
+        required=True
+    )
+
     # authorizedapprover = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group m-0'}), choices=CHOICES)
     class Meta:
         model = SystemUsers
@@ -44,48 +53,63 @@ class SystemUserForm(UserCreationForm):
             'mobilenum',
             # 'authorizedapprover',
         )
+
+    def clean_mobilenum(self):
+        mobilenum = self.cleaned_data['mobilenum']
+        if not mobilenum.isdigit():
+            raise forms.ValidationError("Invalid mobile number.")
+        if len(mobilenum) != 11:  # ✅ fixed to 11 instead of 12
+            raise forms.ValidationError("Mobile number must be exactly 11 digits.")
+        if not mobilenum.startswith("09"):  # ✅ ensure PH format
+            raise forms.ValidationError("Mobile number must start with '09'.")
+        return mobilenum
+
+
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
+    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     profilepic = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+
     class Meta:
         model = SystemUsers
         fields = ('first_name', 'mid_name',
                   'last_name', 'email', 'profilepic')
 
+
 class sysup(ModelForm):
-    CHOICES =(
+    CHOICES = (
         ("0", "Approver for Inbound Application"),
         ("1", "Non Approver"),
         ("2", "Supervisor"),
         ("3", "Engineer's Office"),
         ("4", "Mayor's Office"),
     )
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=True)
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=True)
-    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=True)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    mid_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     # password = forms.Field(widget = forms.PasswordInput(attrs={'class': 'form-control'}))
     class Meta:
         model = SystemUsers
-        fields =(
-        'first_name',
-        'last_name',
-        'email',
-        'username',
-        'is_admin',
-        'is_teller',
-        'is_supervisor',
-        'is_manager',
-        'is_reader',
-        'mid_name',
-        'mobilenum',
-        'profilepic',)
+        fields = (
+            'first_name',
+            'last_name',
+            'email',
+            'username',
+            'is_admin',
+            'is_teller',
+            'is_supervisor',
+            'is_manager',
+            'is_reader',
+            'mid_name',
+            'mobilenum',
+            'profilepic',
+        )
 
 
 class ConsumerForm(ModelForm):
@@ -95,20 +119,31 @@ class ConsumerForm(ModelForm):
     )
 
     firstname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    middlename = forms.CharField(widget = forms.TextInput(attrs={'class': 'form-control'}),required=False)
+    middlename = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     lastname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    mobilenum = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'09XXXXXXXXX','onkeypress':'return onlyNumberKey(event)', 'maxlength':'11'}),required=False)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}),required=False)
+    mobilenum = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': '09XXXXXXXXX',
+            'onkeypress': 'return onlyNumberKey(event)',
+            'maxlength': '11'
+        }),
+        required=False
+    )
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=False)
     sex = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}), choices=CHOICES)
-    sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
+    sitio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     homeaddress = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     meternumber = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min': 0}))
-    installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Barangays.objects.all())
-    contypeid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=ConsumerType.objects.all())
-    penaltycode = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),queryset=Penalty.objects.all(),required=False)
-    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),required=False)
-        
+    initialmeterreading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
+    installation_address = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),
+                                                  queryset=Barangays.objects.all())
+    contypeid = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),
+                                       queryset=ConsumerType.objects.all())
+    penaltycode = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-select input-group'}),
+                                         queryset=Penalty.objects.all(), required=False)
+    birthdate = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), required=False)
+
     class Meta():
         model = ConsumerInfo
         fields = (
@@ -128,11 +163,13 @@ class ConsumerForm(ModelForm):
             'sitio',
             'penaltycode',
         )
+
+
 class addPenalty(ModelForm):
-    penalty_info = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
-    penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    penalty_after = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
-    daysappliedafter = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    penalty_info = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    penalty_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
+    penalty_after = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
+    daysappliedafter = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
 
     class Meta():
         model = Penalty
@@ -141,32 +178,32 @@ class addPenalty(ModelForm):
             'penalty_rate',
             'penalty_after',
             'daysappliedafter'
-         )
-
+        )
 
 
 class addDiscount(ModelForm):
-    discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','min':0}))
+    discount_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
 
     class Meta():
         model = Discount
         fields = (
-             'discount_rate',
+            'discount_rate',
         )
 
-class ConscumertypecreationForm (ModelForm):
-    contype = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
-    minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
-    #maxReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0})) #added by Kathrina Bandajon 19_09_24
-    minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
-    rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0}))
+
+class ConscumertypecreationForm(ModelForm):
+    contype = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    minReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
+    # maxReading = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'min':0})) #added by Kathrina Bandajon 19_09_24
+    minReadingCharge = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
+    rateAfterMin = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}))
 
     class Meta():
         model = ConsumerType
         fields = (
             'contype',
             'minReading',
-            #'maxReading', #added by Kathrina Bandajon
+            # 'maxReading', #added by Kathrina Bandajon
             'minReadingCharge',
             'rateAfterMin'
         )

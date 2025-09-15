@@ -8,7 +8,8 @@ import string
 import math
 from datetime import datetime
 from .dataporter import *
-import mysql.connector
+#import mysql.connector
+import MySQLdb
 import os
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -16,6 +17,7 @@ from google.oauth2 import service_account
 from django.db.models import F
 from django.db import transaction
 from django.db.models import F, Q
+import calendar
 
 def n_int(var):
     if var is None:
@@ -599,7 +601,7 @@ def dump_database():
     )''' #Changed by Bandajon k., 
     cnx = MySQLdb.connect(
         user='wbilling',
-        passwd=@-@JazfeR123',
+        passwd='@-@JazfeR123',
         host='localhost',
         port=3306,
         db='wb2',
@@ -750,13 +752,49 @@ def get_bal_exempt(id):
     user.save()
 
 
+
+
 def exempt_accounts(consumer):
+    class monthname():
+        def __init__(self, name, num):
+            self.name = name
+            self.num = num
+
+
+    months =[]
+    for i in range(1, 13):
+        m = calendar.month_name[i]
+        months.append(monthname(m, i))
+       
     bills = Transactions.objects.filter(acctID=consumer, transType='Billing')
     for b in bills:
-        con_b_rec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{b.year}")
-        con_b_rec.__dict__[f"total_due_{months[b.month - 1]}"] -= b.bill
-        con_b_rec.save()
-        b.bill = 0
+        try:
+            # Get the month name from your custom object
+            month_name = months[b.month - 1].name
+           
+            # Construct the dynamic field name
+            field_name = f"total_due_{month_name}"
+           
+            con_b_rec = BarangayRecord.objects.get(barangayrec_id=f"{consumer.installation_address.id}-{b.year}")
+           
+            # Use getattr to safely retrieve the value, defaulting to 0 if not found
+            current_value = getattr(con_b_rec, field_name, 0)
+           
+            # Calculate the new value
+            new_value = current_value - b.bill
+           
+            # Use setattr to safely set the new value on the object
+            setattr(con_b_rec, field_name, new_value)
+           
+            con_b_rec.save()
+            b.bill = 0
+           
+        except BarangayRecord.DoesNotExist:
+            # Handle the case where the record for the barangay and year doesn't exist.
+            # You may want to create it here or log the issue.
+            pass
+
+
     Transactions.objects.bulk_update(bills, ['bill'])
 
     

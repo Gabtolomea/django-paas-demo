@@ -9,10 +9,9 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Select Year</label>
-                        <select name="fyear" id="year" class="form-control" required>
-                            <option value=""></option>
+                        <select class="form-select" name="fyear" id="fyear">
                             {% for y in years %}
-                            <option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>
+                                <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
                             {% endfor %}
                         </select>
                     </div>

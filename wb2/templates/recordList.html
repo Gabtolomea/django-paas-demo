@@ -1,7 +1,9 @@
 {% extends 'dashboard.html' %}
 {% load static %}
 
+
 {% block title %}Record List{% endblock title %}
+
 
 {% block style %}
 <link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
@@ -10,12 +12,70 @@
         text-align: center;
     }
 
+
     .pagination .page-item.active .page-link {
         background-color: #007bff;
         border-color: #007bff;
     }
+
+
+    h1.record-title {
+        margin-top: 30px;   /* space above title */
+        margin-bottom: 25px; /* space below title */
+    }
+
+
+    .table-responsive {
+        margin-bottom: 40px; /* space below the table */
+    }
+   
+
+
+
+
+    /* Make filter form inputs + button aligned */
+    .filter-form select,
+    .filter-form button {
+        height: 40px;
+        width: 250px;
+    }
+
+    .button2 {
+    background-color: var(--main-color);
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%),
+                inset 0px 5px 7px 0 rgb(255 255 255 / 52%),
+                0px 6px 6px 0 rgb(0 0 0 / 19%);
+    transition: all ease 0.3s;
+    width: 30px;
+
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39),
+                    inset 0px 5px 7px 0 #e6ecebd8,
+                    0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274),
+                    inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+
 </style>
 {% endblock style %}
+
 
 {% block script %}
 <script src="{% static 'jquery/jquery.js' %}"></script>
@@ -24,6 +84,7 @@
         $('#rows-per-page').change(function () {
             this.form.submit();
         });
+
 
         $(".clickable-row").click(function () {
             window.location = $(this).data("href");
@@ -40,106 +101,91 @@
 <script src="{% static 'html2pdf.bundle.min.js' %}"></script>
 <script src="{% static 'jspdf.plugin.autotable.js' %}"></script>
 
+
 <div id="record_list">
-    <h1 class="mb-3 text-center">Record List</h1>
+    <!-- ✅ Fixed title (typo removed) -->
+    <h1 class="record-title text-center "> Record List</h1>
 
+
+    <!-- ✅ Filter Form -->
+    <form method="get" class="d-flex justify-content-center mb-4 gap-2 filter-form flex-wrap">
+        <select id="year" name="fyear" class="form-select" required>
+            <option value="">-- Select Year --</option>
+            {% for year in years %}
+            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+
+
+        <select id="month" name="fmonth" class="form-select" required>
+            <option value="">-- Select Month --</option>
+            {% for month_name in month_names %}
+            <option value="{{ month_name }}" {% if month_name == selected_month %}selected{% endif %}>
+                {{ month_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+
+        <select id="barangay" name="fbar" class="form-select" required>
+            <option value="">-- Select Barangay --</option>
+            {% for bar in bars %}
+            <option value="{{ bar.id }}" {% if bar.id == selected_brgy %}selected{% endif %}>{{ bar }}</option>
+            {% endfor %}
+        </select>
+
+        {% comment %} <button type="submit" class="btn btn-primary">Filter Records</button> {% endcomment %}
+        <button type="submit" class="btn button2">Filter Records</button>
+
+    </form>
+
+
+    <!-- ✅ Records Info -->
     <div class="text-center mb-3">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
-            Filter Records
-        </button>
-    </div>
-
-    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document"> <!-- Added modal-dialog-centered -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Filter Records</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-                </div>
-                <form method="get">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="year">Select Year</label>
-                            <select id="year" name="fyear" class="form-control">
-                                <option value="">-- Select Year --</option>
-                                {% for year in years %}
-                                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="month">Select Month</label>
-                            <select id="month" name="fmonth" class="form-control">
-                                <option value="">-- Select Month --</option>
-                                {% for month_name in month_names %}
-                                <option value="{{ month_name }}" {% if month_name == selected_month %}selected{% endif %}>
-                                    {{ month_name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="barangay">Select Barangay</label>
-                            <select id="barangay" name="fbar" class="form-control">
-                                <option value="">-- Select Barangay --</option>
-                                {% for bar in bars %}
-                                <option value="{{ bar.id }}" {% if bar.id == selected_brgy %}selected{% endif %}>{{ bar }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <h5>
+            Displaying records for <strong>{{ barangay }}</strong><br>
+            <span class="text-muted">Month: {{ selected_month }} | Year: {{ selected_year }}</span>
+        </h5>
     </div>
 
 
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="table-responsive">
-                <h4 class="text-center">"Displaying records for Barangay {{ barangay }} for the month of {{ selected_month }} in the year {{ selected_year }}"</h4>
-                <table id="recordTable" class="table table-bordered table-hover table-striped" cellspacing="0" width="100%">
-                    <thead class="wb_thead">
-                        <tr>
-                            <th style="min-width: 100px;">Account ID</th>
-                            <th style="min-width: 100px;">Meter Number</th>
-                            <th style="min-width: 150px;">Name</th>
-                            <th style="min-width: 100px;">Paid Amount</th>
-                            <th style="min-width: 120px;">Date Paid</th>
-                            <th style="min-width: 150px;">Transaction ID</th>
-                        </tr>
-                    </thead>
-                    <tbody class="wb_tbody">
-                        {% if record_list %}
-                        {% for rec in record_list %}
-                        <tr class="clickable-row" style="cursor: pointer;" data-href="{% url 'ledger' rec.consumer_id %}">
-                            <td class="text-center">{{ rec.consumer_id }}</td>
-                            <td class="text-center">{{ rec.meternumber }}</td>
-                            <td>{{ rec.name }}</td>
-                            <td class="text-center">&#8369; {{ rec.paid_amount|floatformat:2 }}</td>
-                            <td class="text-center">{{ rec.date_paid }}</td>
-                            <td class="text-center">{{ rec.transID }}</td>
-                        </tr>
-                        {% endfor %}
-                        {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center">No records found.</td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <!-- ✅ Records Table -->
+    <div class="table-responsive">
+        <table id="recordTable" class="table table-bordered table-hover table-striped align-middle text-center">
+            <thead class="wb_thead">
+                <tr>
+                    <th>Account ID</th>
+                    <th>Meter Number</th>
+                    <th>Name</th>
+                    <th>Paid Amount</th>
+                    <th>Date Paid</th>
+                    <th>Transaction ID</th>
+                </tr>
+            </thead>
+            <tbody class="wb_tbody">
+                {% if record_list %}
+                {% for rec in record_list %}
+                <tr class="clickable-row" data-href="{% url 'ledger' rec.consumer_id %}" style="cursor: pointer;">
+                    <td>{{ rec.consumer_id }}</td>
+                    <td>{{ rec.meternumber }}</td>
+                    <td class="text-start ps-3">{{ rec.name }}</td>
+                    <td>₱ {{ rec.paid_amount|floatformat:2 }}</td>
+                    <td>{{ rec.date_paid }}</td>
+                    <td>{{ rec.transID }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No records found.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
     </div>
 
-    <!-- ✅ Fixed Pagination -->
-    <div class="d-flex justify-content-center">
+
+    <!-- ✅ Pagination -->
+    <div class="d-flex justify-content-center mt-3">
         <ul class="pagination">
             {% if record_list.has_previous %}
                 <li class="page-item">
@@ -149,19 +195,19 @@
                     <a class="page-link" href="?page={{ record_list.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
                 </li>
             {% endif %}
-    
+
+
             {% for num in record_list.paginator.page_range %}
-                {% if num == 1 or num == record_list.paginator.num_pages or num >= record_list.number|add:"-2" and num <= record_list.number|add:"2" %} 
+                {% if num == 1 or num == record_list.paginator.num_pages or num >= record_list.number|add:"-2" and num <= record_list.number|add:"2" %}
                     <li class="page-item {% if num == record_list.number %}active{% endif %}">
-                        <a class="page-link"href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
                     </li>
                 {% elif num == record_list.number|add:"-3" or num == record_list.number|add:"3" %}
-                    <li class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
                 {% endif %}
             {% endfor %}
-    
+
+
             {% if record_list.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ record_list.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
@@ -174,6 +220,7 @@
     </div>
 </div>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -183,3 +230,6 @@
     });
 </script>
 {% endblock record_list %}
+
+
+
