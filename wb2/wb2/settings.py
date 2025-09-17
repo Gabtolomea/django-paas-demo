@@ -93,7 +93,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'wb2.wsgi.application'
 
 
-# Database: Do not change!
+# Database: Do not change! This is the credentials of the local server database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
