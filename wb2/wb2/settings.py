@@ -93,7 +93,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'wb2.wsgi.application'
 
 
-# Database
+# Database: Do not change!
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
