@@ -68,7 +68,7 @@ def porter(request):
     #     passAscii = base64.b64decode(i[1])
     #     p = passAscii.decode("ascii")
     #     print(f'username: {i[0]} | password: {p}')
-    return redirect("login")
+    return redirect("landing") #login
 
 
 @unauthenticated_user
@@ -124,10 +124,10 @@ def signin(request):
             return redirect('bills_list')
         else:
             messages.error(request, "Invalid Username or Password")
-    return render(request, 'login.html')
+    return render(request, 'landing.html')
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def bills_list(request):
     # add_additionalFees()
     # del_addfees()
@@ -208,7 +208,7 @@ def bills_list(request):
     return render(request, 'billslist.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def signout(request):
     
     try:
@@ -218,9 +218,9 @@ def signout(request):
         pass
     logout(request)
     messages.success(request, 'Logout successful')
-    return redirect('login')
+    return redirect('landing')
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def user_creation(request):
     
     template = ""
@@ -530,7 +530,7 @@ def ledgerb(request, id):
 
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def ledger(request, id):
     disp = request.GET.get('show', '')
     user = request.user
@@ -817,7 +817,7 @@ def forgetpassword(request):
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             messages.success(request, 'Please verify your account by clicking the link in your email: '+str(u_email))
-            return redirect('login')
+            return redirect('landing')
         else:
             messages.error(request, 'Are you sure that is your email?')
     return render(request, 'forgetpassword.html')
@@ -839,12 +839,12 @@ def resetpassword(request, uidb64, token):
                 user.set_password(pass1)
                 user.save()
                 messages.success(request, 'Password reset successfully')
-                return redirect('login')
+                return redirect('landing')
             else:
                 messages.error(request, 'Passwords do not match')
         else:
             messages.error(request, 'Password reset Failed')
-            redirect('login')
+            redirect('landing')
      
     context = {
         'form': form,
@@ -862,9 +862,8 @@ def undodelete(request):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def meterreading(request):
-   
     template = ""
     LoginSession = request.user
     if LoginSession:
@@ -965,7 +964,7 @@ def meterreading(request):
     }
     return render(request, 'meterreading.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def deletereading(request, id):
     reading = Transactions.objects.get(transactionid = id)
     consumer = ConsumerInfo.objects.get(consumer_id=reading.acctID_id)
@@ -993,7 +992,7 @@ def deletereading(request, id):
     reading.delete()
     return redirect('inputreading', con.consumer_id, date.today().year)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def inputreading(request, id, year):
     table = []
     years = []
@@ -1464,7 +1463,7 @@ def inputreading(request, id, year):
     }
     return render(request, 'input-meter-reading.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def consumer_list(request):
     
     template = ""
@@ -1521,7 +1520,7 @@ def consumer_list(request):
     }
     return render(request, 'conlist.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def consumercreation(request):
     
     template = ""
@@ -1605,7 +1604,7 @@ def consumercreation(request):
     }
     return render(request, 'consumercreation.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def consumerupdate(request, id):
     
     template = ""
@@ -1634,7 +1633,7 @@ def consumerupdate(request, id):
     }
     return render(request, 'consumercreation.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def stopmeter(request, id):
     template = ""
     LoginSession = request.user
@@ -1652,7 +1651,7 @@ def stopmeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=datetime.today().year)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def enablemeter(request, id):
 
     template = ""
@@ -1710,7 +1709,7 @@ def enablemeter(request, id):
         consumer.save()
     return redirect('inputreading', id=id, year=datetime.today().year)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def sysuser(request):
     
     template = ""
@@ -1790,7 +1789,7 @@ def sysuser(request):
     return render(request, 'sysuser.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def user_edit(request, id):
     
     sys = SystemUsers.objects.get(username=id)
@@ -1873,7 +1872,7 @@ def about(request):
 
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def payment(request, id):
     if request.method == 'POST':
         selected_items = request.POST.getlist('selected_trans')
@@ -2318,7 +2317,7 @@ def barangayreport(request, year):
 
 #New Used Barangay Report Water Usage
 #Added by Bandajon K. 25/03/2025
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def barangayreport(request, year):
     if not request.user.is_teller and not request.user.is_supervisor:
         return redirect('bills_list')
@@ -2935,7 +2934,7 @@ def deletediscount(request,id):
 
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def new_consumertype(request):
     
     cont = ConsumerType.objects.all().order_by
@@ -3001,7 +3000,7 @@ def editcontype(request, id):
     return redirect('new_consumertype')
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def penalty(request):
     
     penalty = Penalty.objects.all()
@@ -3399,7 +3398,7 @@ def bulkreading(request):
 
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def viewprof(request):
     user = SystemUsers.objects.get(username=str(request.user))
     role = ""
@@ -3424,7 +3423,7 @@ def viewprof(request):
     }
     return render(request, 'viewprof.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def userprof(request):
     
     user = SystemUsers.objects.get(username=str(request.user))
@@ -4485,7 +4484,7 @@ def month_name_to_int(month_name):
         # Handle invalid month name
         return None
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 #added KDB
 def record_list(request):
     print("===== Entering record_list view =====")
@@ -4662,7 +4661,7 @@ def record_list(request):
     return render(request, 'recordList.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='landing')
 def monthly_collections(request, year=None):
     if year is None:  # Use the current year if no year is provided
         year = datetime.today().year

@@ -18,6 +18,11 @@ Revenue Report
 
 {% block style %}
 <style>
+
+    body {
+        overflow-x: hidden;
+        }
+
     .button2 {
         background-color: var(--main-color);
         color: white;
@@ -141,8 +146,8 @@ Revenue Report
 
 
 
-        <canvas id="myChart" class="p-3" width="800" height="250"></canvas>
-
+        {% comment %} <canvas id="myChart" class="p-3" width="800" height="250"></canvas>
+ {% endcomment %}
 
 
 
@@ -167,13 +172,6 @@ Revenue Report
                             '{{rev_rec.may}}', '{{rev_rec.jun}}', '{{rev_rec.jul}}', '{{rev_rec.aug}}',
                             '{{rev_rec.sept}}', '{{rev_rec.oct}}', '{{rev_rec.nov}}', '{{rev_rec.dec}}']
                             .map(v => v > 0 ? v : null);
-
-
-
-
-           
-       
-
 
 
 
