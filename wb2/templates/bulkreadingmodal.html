@@ -18,7 +18,6 @@
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Select Month</label>
                         <select name="fmonth" id="month" class="form-control" required>
-                            <option value=""></option>
                             {% for m in months %}
                             <option value="{{m.num}}" {% if m.num == monthval %} selected {% endif %}>{{m.name}}</option>
                             {% endfor %}

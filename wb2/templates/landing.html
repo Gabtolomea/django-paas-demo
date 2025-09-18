@@ -1,3 +1,5 @@
+
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -14,8 +16,12 @@
     <link rel="stylesheet" type="text/css" href="{% static 'landing.css'%}" />
 
 
+
+
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+
 
 
     <!-- ✅ Background Style Added -->
@@ -40,11 +46,19 @@
         }
 
 
+
+
         .menu_header a:hover {
             color: #ffdd57;
             text-shadow: 0 0 8px rgba(255, 221, 87, 0.8);
             transform: translateY(-3px);
         }
+
+
+
+
+
+
 
 
         .menu_header a::before {
@@ -61,10 +75,22 @@
         }
 
 
+
+
+
+
+
+
         .menu_header a:hover::before {
             transform: scaleX(1);
             transform-origin: left;
         }
+
+
+
+
+
+
 
 
         .icon-circle {
@@ -79,6 +105,12 @@
             color: white;
             font-size: 18px;
         }
+
+
+
+
+
+
 
 
         .btn-landing {
@@ -96,6 +128,12 @@
         }
 
 
+
+
+
+
+
+
         .btn-landing:hover {
             background: linear-gradient(135deg, #00D2F0, #0093B7);
             color: #272626ff;
@@ -111,12 +149,24 @@
             transform: scale(0.96);
 
 
+
+
+
+
+
+
                 }
             #About img {
             max-height: 350px;
             transition: all 0.4s ease-in-out;
             border-radius: 20px;
         }
+
+
+
+
+
+
 
 
         /* Pure glow on hover */
@@ -126,16 +176,96 @@
            
             filter: brightness(1.15);
             transition: all 0.4s ease-in-out;
-        }
-
-
-
-
+            <style>
        
+         .login-card {
+        width: 100%;
+        max-width: 520px;   /* ⬅️ increased from 460px */
+        background: linear-gradient(135deg, #0093B7, #006c85);
+        color: #fff;
+        border-radius: 24px; /* ⬅️ slightly more rounded */
+        padding: 60px 50px;  /* ⬅️ more padding inside */
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+        text-align: center;
+        animation: fadeInUp 0.8s ease;
+
+
+
+
+        height: 800px;          /* ⬅️ fixed height */
+        display: flex;          /* ⬅️ for vertical alignment */
+        flex-direction: column;
+        justify-content: center; /* center content vertically */
+    }
+
+
+
+
+    .login-card h4,
+    .login-card h6,
+    .login-card .forgot-link {
+        color: #fff; /* keep text visible on dark card */
+    }
+
+
+
+
+    .btn-login {
+        width: 100%;
+        background: #fff;
+        color: #006c85;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: bold;
+        border: none;
+        transition: 0.3s;
+        font-size: 18px;
+    }
+
+
+
+
+    .btn-login:hover {
+        background: #f2f2f2;
+        color: #004b5e;
+    }
+
+
+
+
+    .forgot-link {
+        display: block;
+        margin-top: 15px;
+        font-size: 18px;
+        text-decoration: underline;
+    }
+
+
+
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+
 
 
     </style>
 </head>
+
+
+
+
+
+
 
 
 <body data-spy="scroll" data-target=".menu_header" data-offset="50">
@@ -151,6 +281,12 @@
                 </div>
 
 
+
+
+
+
+
+
                 <div class="w-100 d-flex justify-content-center align-items-center"
                     style="background-color: #0093B7; color: white; padding: 30px 0; text-align: center;">
                     <h1 style="font-weight: bold; font-size: 36px; margin: 0; text-shadow: 0px 3px 5px rgba(0,0,0,0.3);">
@@ -163,6 +299,12 @@
     </header>
 
 
+
+
+
+
+
+
     <nav class="row w-100 m-auto" style="background-color: #165665;">
         <div class="menu_header col-lg-12 text-center" style="padding: 30px; font-weight: 800;">
             <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Home', this)">Home</a>
@@ -173,33 +315,204 @@
     </nav>
 
 
-    <!-- HOME -->
-    <section class="page-section" id="Home"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+
+
+        <!-- HOME -->
+        <section class="page-section" id="Home" style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
         <div class="row w-100 m-auto ">
             <div class="main_contain col-lg-8 col-md-12 col-sm-12 col-12">
-                <div class="container text-center" style="height: 692px; display: flex; justify-content:center; align-items: center;">
-                    <div class="wrapper">
-                        <h4 style="color:black; font-size: 45px;">"Water is life, and Clean water means Health"</h4>
-                        <h4 style="color: black; font-size: 30px;">-Audrey Hepburn</h4>
-                        <div class="button_login" style="margin-top: 50px;">
-                            <a href="{% url 'login' %}" class="btn-landing">
-                                System User's Login
-                            </a>
+            <div class="container text-center" style="min-height: 692px; display: flex; justify-content:center; align-items: center; flex-direction: column;">
+
+
+
+
+                {% comment %} <!-- Quote -->
+                <div class="wrapper mb-5">
+                <h4 style="color:black; font-size: 45px;">"Water is life, and Clean water means Health"</h4>
+                <h4 style="color: black; font-size: 30px;">-Audrey Hepburn</h4>
+                </div> {% endcomment %}
+
+
+
+
+                <!-- ✅ Login Card -->
+                <form action="{% url 'login' %}" method="POST" style="width:100%; max-width: 420px;">
+                {% csrf_token %}
+                <div class="login-card">
+                    <img src="{% static 'images/logo.png' %}" alt="System Logo" style="width:50px; margin-bottom:10px;">
+                    <h4 style="font-weight:bold; font-size: 32px;">System Login</h4>
+                    <p style="margin-bottom:20px; font-size: 18px; margin-bottom:35px;">Please enter your credentials</p>
+
+
+
+
+                    <!-- Username -->
+                    <div class="form-group mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="User ID" required>
+                    </div>
+
+
+
+
+                    <!-- Password with eye toggle -->
+                    {% comment %} <div class="form-group mb-3">
+                    <div class="input-group">
+                        <input class="form-control" type="password" id="id_password" name="password" placeholder="Password" required>
+                        <div class="input-group-text" style="cursor:pointer;" onclick="showhide('id_password')">
+                        <img style="width: 20px;" id="id_password_eye"  src="{% static 'images/eye-off.svg' %}"> 
                         </div>
                     </div>
+                    </div> {% endcomment %}
+
+                     <div class="form-group mb-3 position-relative">
+    <input class="form-control" type="password" id="id_password" name="password" placeholder="Password" required>
+    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" onclick="showhide('id_password')">
+        <img style="width: 20px;" id="id_password_eye" src="{% static 'images/eye-off.svg' %}">
+    </span>
+</div>
+
+<script>
+        function showhide(passwordFieldId) {
+            const passwordInput = document.getElementById(passwordFieldId);
+            const eyeIcon = document.getElementById(passwordFieldId + "_eye");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";  
+                eyeIcon.src = "{% static 'images/eye-on.svg' %}";   // 👈 open eye
+            } else {
+                passwordInput.type = "password";  
+                eyeIcon.src = "{% static 'images/eye-off.svg' %}"; // 👈 closed eye
+            }
+        }
+</script>
+
+
+
+                    <!-- Sign In Button -->
+                    <button type="submit" class="btn btn-login mt-2" style="margin-top: 40px;">
+                    <i class="fa fa-sign-in-alt" style="margin-right:5px;"></i> Sign In
+                    </button>
+
+
+
+
+                    <!-- Forgot Password -->
+                    <a href="{% url 'forgetpassword' %}" class="forgot-link">Forgot Password?</a>
+
+
+
+
+                    <!-- Messages -->
+                    {% for message in messages %}
+                    <div id="logout"
+                    class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} mt-3">
+                    <strong>{{message.tags|title}}!</strong> {{message}}
+                    <a href="#" class="close" data-dismiss="alert" style="text-decoration:none;">&times;</a>
+                    </div>
+                    {% endfor %}
                 </div>
+                </form>
+                <!-- ✅ End Login Card -->
+
+
+
+
             </div>
+            </div>
+
+
+
+
+            <!-- Right side images  -->
             <div class="screen_size_md_none col-lg-4">
-                <div class="w-100 h-50">
-                    <img class="img-fluid" src="{% static 'img/mobile.svg.svg'%}"
-                        style="max-height: 200px; width: 75%; float:right;">
-                </div>
-                <div class="w-100 h-50">
-                    <img class="img-fluid" src="{% static 'img/system.svg.svg'%}" style="max-height: 200px; float:left;">
-                </div>
+            <div class="w-100 h-50">
+                <img class="img-fluid" src="{% static 'img/mobile.svg.svg'%}"
+                style="max-height: 250px; width: 75%; float:right;">
+            </div>
+            <div class="w-100 h-50">
+                <img class="img-fluid" src="{% static 'img/system.svg.svg'%}" style="max-height: 300px; float:left;">
+            </div>
             </div>
         </div>
-    </section>
+        </section>
+
+
+
+
+        <!-- ✅ Styles -->
+        <style>
+        .login-card {
+            background: #007c91;
+            height: 525px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            color: white;
+        }
+
+
+
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+
+
+
+        .btn-login {
+            background: linear-gradient(135deg, #00C6E0, #00A6C2);
+            border: none;
+            border-radius: 30px;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            color: white;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+
+
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #00D2F0, #0093B7);
+            transform: translateY(-2px);
+        }
+
+
+
+
+        .forgot-link {
+            display: block;
+            margin-top: 12px;
+            font-size: 16px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+
+
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+
+
+
+        .alert {
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        </style>
+
+
+
+
 
 
     <!-- ABOUT -->
@@ -218,8 +531,18 @@
                     It monitors all of the customer's data to determine if payments were made on time or not.
                 </p>
             </div>
+
+
+            <h4 style="margin-top: 50px;">“Water is the driving force of all nature”</h4>
+            <h5>- Leonardo da Vinci</h5>
         </div>
     </section>
+
+
+
+
+
+
 
 
     <!-- SERVICES -->
@@ -243,6 +566,12 @@
     </section>
 
 
+
+
+
+
+
+
     <!-- CONTACTS -->
     <section class="page-section" id="Contacts"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
         <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
@@ -263,9 +592,17 @@
     </section>
 
 
+
+
+
+
+
+
     <footer class="footer text-center p-4 mt-6" style="background-color: #045163; padding: 40px; color: white;">
         <div>© 2025 Water Billing Station</div>
     </footer>
+
+
 
 
     <!-- SCRIPTS -->
@@ -279,6 +616,8 @@
             document.querySelectorAll('.nav_link').forEach(link => link.classList.remove("active"));
             if (element) element.classList.add("active");
         }
+
+
 
 
         document.addEventListener("DOMContentLoaded", function () {

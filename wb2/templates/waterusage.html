@@ -114,10 +114,10 @@
 			<thead class="wb_thead">
 				<tr>
 					<th style="background-color: #006c85">Barangay</th>
-					<th style="background-color: #006c85">Total Usage(m³)</th>
-					<th style="background-color: #006c85">Total Due</th>
-					<th style="background-color: #006c85">Total Collection</th>
-					<th style="background-color: #006c85">Total Receivables</th>
+					<th style="background-color: #006c85">Total Usage (m³)</th>
+					<th style="background-color: #006c85">Total Due (₱)</th>
+					<th style="background-color: #006c85">Total Collection (₱)</th>
+					<th style="background-color: #006c85">Total Receivables (₱)</th>
 					<th style="background-color: #006c85">Collection Rate</th>
 				</tr>
 			</thead>
@@ -125,7 +125,7 @@
 				{% for br in br %}
 				<tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_barangay' br.barangaycode cur_year %}">
 					<td>{{br.barangaycode}}</td>
-					<td class="right-align">{{ br.total_usage|floatformat:2|intcomma }} m³</td>
+					<td class="right-align">{{ br.total_usage|floatformat:2|intcomma }}</td>
 					<td class="right-align">{{ br.total_due|floatformat:2|intcomma }}</td>
 					<td class="right-align">{{ br.total_paid|floatformat:2|intcomma }}</td>
 					<td class="right-align">{{ br.total_rec|floatformat:2|intcomma }}</td>
@@ -135,9 +135,9 @@
 				<tr class="soft-aquamarine">
 					<td style="background-color:#006c85; color: white; font-weight: bold;">Total</td>
 					<td class="right-align-with-fw">{{ fr.tu|floatformat:2|intcomma }} m³</td>
-					<td class="right-align-with-fw">{{ fr.td|floatformat:2|intcomma }}</td>
-					<td class="right-align-with-fw">{{ fr.tp|floatformat:2|intcomma }}</td>
-					<td class="right-align-with-fw">{{ fr.tr|floatformat:2|intcomma }}</td>
+					<td class="right-align-with-fw">₱{{ fr.td|floatformat:2|intcomma }}</td>
+					<td class="right-align-with-fw">₱{{ fr.tp|floatformat:2|intcomma }}</td>
+					<td class="right-align-with-fw">₱{{ fr.tr|floatformat:2|intcomma }}</td>
 					<td class="right-align-with-fw">{{ fr.cr|floatformat:2 }}%</td>
 				</tr>
 			</tbody>

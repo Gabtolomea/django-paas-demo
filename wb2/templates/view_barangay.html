@@ -66,9 +66,9 @@ Barangay {{ barangay.barangaycode }} Monthly Usage
         <thead class="wb_thead">
             <tr>
                 <th scope="col" style="background-color: #006c85">Billing Cycle Cutoff Month</th>
-                <th scope="col" style="background-color: #006c85">Total Usage (Cubic Meter)</th>
-                <th scope="col" style="background-color: #006c85">Total Receivable</th>
-                <th scope="col" style="background-color: #006c85">Total Collection</th>
+                <th scope="col" style="background-color: #006c85">Total Usage (m³)</th>
+                <th scope="col" style="background-color: #006c85">Total Receivable (₱)</th>
+                <th scope="col" style="background-color: #006c85">Total Collection (₱)</th>
             </tr>
         </thead>
         <tbody>
@@ -76,8 +76,8 @@ Barangay {{ barangay.barangaycode }} Monthly Usage
             <tr>
                 <td>{{ data.month_name }}</td>
                 <td class="right-align">{{ data.usage|floatformat:1 }}</td>
-                <td class="right-align">&#8369; {{ data.due|floatformat:2|intcomma }}</td>
-                <td class="right-align">&#8369; {{ data.paid|floatformat:2|intcomma }}</td>
+                <td class="right-align">{{ data.due|floatformat:2|intcomma }}</td>
+                <td class="right-align">{{ data.paid|floatformat:2|intcomma }}</td>
             </tr>
             {% endfor %}
         </tbody>

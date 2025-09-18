@@ -98,7 +98,7 @@ Monthly Billing Report
     <!-- Date filter form -->
     <form method="get" class="d-flex flex-wrap align-items-center justify-content-center mb-4">
         <select name="start_month" class="form-select">
-            <option value="">Start Month</option>
+            {% comment %} <option value="">Start Month</option> {% endcomment %}
             {% for number, name in months_n %}
             <option value="{{ number }}" {% if number == start_month %}selected{% endif %}>
                 {{ name }}
@@ -108,7 +108,7 @@ Monthly Billing Report
         <input type="number" name="start_year" class="form-control" placeholder="Start Year" value="{{ start_year }}" />
 
         <select name="end_month" class="form-select">
-            <option value="">End Month</option>
+            {% comment %} <option value="">End Month</option> {% endcomment %}
             {% for number, name in months_n %}
             <option value="{{ number }}" {% if number == end_month %}selected{% endif %}>
                 {{ name }}
