@@ -1,0 +1,206 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+Delinquent Months
+{% endblock title %}
+{% block style %}
+
+
+<!-- Load required scripts -->
+<script src="{% static 'jspdf.min.js' %}"></script>
+<script src="{% static 'jquery.min.js' %}"></script>
+<script src="{% static 'html2pdf.bundle.min.js' %}"></script>
+<script src="{% static 'jspdf.plugin.autotable.js' %}"></script>
+
+
+
+<style>
+    .dataTables_empty {
+        text-align: center;
+    }
+    
+
+    
+
+    .container {
+        max-width: 100%;
+        margin-top: 20px;
+    }
+
+
+
+    .hide {
+        opacity: 0;
+        transition: 0.3s all ease-in-out;
+    }
+
+
+
+
+    .showOnHover:hover .hide {
+        opacity: 1;
+        transition: 0.3s all ease-in-out;
+    }
+
+
+
+
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%),
+                    inset 0px 5px 7px 0 rgb(255 255 255 / 52%),
+                    0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .button2:hover {
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39),
+                    inset 0px 5px 7px 0 #e6ecebd8,
+                    0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+
+
+
+    .table-container {
+        margin-top: 20px;
+        overflow-x: auto;
+    }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+
+
+
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+
+
+
+    th {
+        background-color: #006c85;
+        color: white;
+        font-weight: bold;
+       
+       
+    }
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 0px;
+    }
+   
+
+
+
+    .total {
+        font-weight: bold;
+        color: blue;
+        border: 1px solid black;
+    }
+
+
+
+    .no-data {
+        text-align: center;
+        font-weight: bold;
+        color: red;
+    }
+        .form-select {
+        min-width: 200px; /* wider dropdown */
+    }
+
+</style>
+
+
+{% endblock style %}
+
+    {% block script %}
+    {% endblock script %}
+    {% block delinquent_months%}
+
+
+
+
+
+    <div class="container">
+        <!-- Dropdown for selecting number of delinquent months -->
+        <div class="mb-3">
+            <label for="numToDisplay" class="form-label">Display:</label>
+            <select id="numToDisplay" class="form-select">
+                {% for option in available_options %}
+                    <option value="{{ option }}" {% if option == selected_value %}selected{% endif %}>
+                        {{ option }} Months
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    
+    
+        <!-- Navigation Buttons -->
+        <div class="d-flex gap-3 mb-4">
+            <a href="{% url 'delinquent_accounts' %}">
+                <button type="button" class="btn button2">Delinquent Accounts</button>
+            </a>
+            <a href="{% url 'delinquent_months' %}">
+                <button type="button" class="btn button2">Delinquent Months</button>
+            </a>
+        </div>
+    </div>
+<h1>Delinquent Months (Top {{ selected_value }})</h1>
+{% comment %} <h1>Top Delinquent Months</h1> {% endcomment %}
+<div class="table-container">
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Month - Year</th>
+                <th>Number of Consumers</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if top_delinquent_months %}
+        {% for entry in top_delinquent_months %}
+
+                    <tr>
+                        <td>{{ forloop.counter }}. {{ entry.month_year }}</td>  <!-- Now shows "December 2024" -->
+                        <td>{{ entry.num_delinquent }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="2" class="no-data">No delinquent months found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.getElementById("numToDisplay").addEventListener("change", function() {
+        const selectedValue = this.value;
+        window.location.href = "?num_to_display=" + selectedValue;
+    });
+</script>
+
+
+{% endblock delinquent_months %}
+
+

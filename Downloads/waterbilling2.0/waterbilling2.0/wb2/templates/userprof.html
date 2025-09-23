@@ -1,0 +1,112 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% static "images" as images %}
+
+{% block title %}
+Account Settings
+{% endblock title %}
+
+{% block userprof %}
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+<style>
+	 label {
+        font-size: 20px;
+    }
+    .form-header {
+        margin: 0px 0px 16px;
+        padding: 0px 12px;
+        text-align: center;
+    }
+    .container {
+        color: #212529;
+    }
+    .shadow-wrapper {
+        font-size: 20px;
+        margin-top: 80px;
+        padding: 0px 12px;
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+    }
+	.button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+</style>
+{% endblock style %}
+<form action="{% url 'userprof' %}" enctype="multipart/form-data" method="post">
+	{% csrf_token %}
+	<div class="container">
+		<div class="shadow-wrapper">
+			<div class="form-header">
+				<center><h1>User Edit</h1></center>
+			</div>
+			<div class="row form-group w-100 m-auto">
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="firstname">First Name<span class="text-danger">*</span></label>
+					{{form.first_name}}
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="midname">Middle Name</label>
+					{{form.mid_name}}
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="lastname">Last Name<span class="text-danger">*</span></label>
+					{{form.last_name}}
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="email">Email<span class="text-danger">*</span></label>
+					{{form.email}}
+				</div>
+			</div>
+
+			<div class="row form-group w-100 m-auto">
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<img style ="width: 65%; margin-left: 39px;" src="{{images}}/{{user.profilepic}}" alt="">
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+					<label for="formFile" class="form-label">Change Profile</label>
+					{{form.profilepic}}
+				</div>
+                <div class="row m-auto" style="display: block; text-align: center;">
+
+                    <!-- Exit -->
+                    <a href="{% url 'settings' %}" class="btn button2" style="width: 150px; white-space: nowrap;">
+                        <img style="width: 23px;" src="{% static '/images/cancel_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                        <span style="padding: 10px; font-family: Arial;">Cancel</span>
+                    </a>
+                    <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
+                        <img style="width: 23px;" src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                            <span style="padding: 10px; font-family: Arial;">Submit</span>
+                        
+                    </button>
+                    
+                </div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock userprof %}

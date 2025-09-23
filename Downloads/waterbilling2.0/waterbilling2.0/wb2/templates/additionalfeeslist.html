@@ -1,0 +1,520 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} Additional Fees {% endblock title %}
+
+{% block additionalfeeslist %}
+<!-- External JavaScript Libraries -->
+<script src="{% static 'jspdf.min.js' %}"></script>
+<script src="{% static 'jquery.min.js' %}"></script>
+<script src="{% static 'html2pdf.bundle.min.js' %}"></script>
+<script src="{% static 'jspdf.plugin.autotable.js' %}"></script>
+
+<!-- Custom Styling -->
+<style>
+    h1 {
+        text-align: center;
+    }
+
+    /* Button styling */
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 30px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%),
+            inset 0px 5px 7px 0 rgb(255 255 255 / 52%),
+            0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease 0.3s;
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39),
+            inset 0px 5px 7px 0 #e6ecebd8,
+            0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274),
+            inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+
+    /* Improved table styling */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 18px;
+        /* Bigger font */
+    }
+
+    .styled-table thead {
+        background-color: #005F73;
+        /* Dark header */
+        color: white;
+        text-align: center;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+        /* Center align for consistency */
+    }
+
+    .styled-table tbody tr:nth-child(even) {
+        background-color: #f3f3f3;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #ddd;
+    }
+
+    .table-container {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 90vw;
+        /* Make it bigger */
+        margin: auto;
+    }
+
+    .row-paid {
+        background-color: #9dc7d4 !important;
+    }
+
+    /*Additional Payment Style */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .modal-header {
+        background-color: #005F73;
+        color: #ffffff;
+        border-bottom: none;
+        padding: 1.25rem 1.5rem;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-footer {
+        background-color: #f1f1f1;
+        border-top: none;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        padding: 1rem 1.5rem;
+    }
+
+    .form-label {
+        color: #005F73;
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 0.6rem 0.75rem;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #005F73;
+        box-shadow: 0 0 0 0.15rem rgba(0, 95, 115, 0.25);
+    }
+
+    .form-control[readonly] {
+        background-color: #f5f5f5;
+        color: #333;
+        text-align: center;
+    }
+
+    .form-select {
+        border-radius: 8px;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .btn-success {
+        background-color: #005F73;
+        border-color: #005F73;
+        border-radius: 8px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-success:hover {
+        background-color: #004653;
+        border-color: #004653;
+    }
+
+    .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .action-hover {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    tr:hover .action-hover {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
+<!-- Header Info of Consumer -->
+<div class="container-fluid p-0">
+    <div class="table-responsive">
+        <table id="dtBasicExample2" class="table table-bordered" cellspacing="0" width="100%">
+            <thead class="wb_thead">
+                <tr class="header">
+                    <th scope="col">Account ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Connection Type</th>
+                    <th scope="col">Meter Number</th>
+                    <th scope="col">Excess Payment</th>
+                    <th scope="col">Current Balance</th>
+                </tr>
+            </thead>
+            <tbody class="wb_tbody">
+                <tr class="showOnHover">
+                    <td class="table-light text-center">{{ u.consumer_id }}</td>
+                    <td class="table-light text-center">{{ u.firstname }} {{ u.middlename }} {{ u.lastname }}</td>
+                    <td class="table-light text-center">{{ u.contypeid.contype }}</td>
+                    <td class="table-light text-center">{{ u.meternumber }}</td>
+                    <td class="table-light text-center">&#8369; {{ u.excess|floatformat:2|intcomma }}</td>
+                    <td class="table-light text-center">&#8369; {{ total_unpaid_bill|floatformat:2|intcomma }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+<div>
+    {% include 'billingbuttons.html' %}
+</div>
+<!-- Table Section for Additional Fees -->
+<h1 class="mb-3 text-center">List of Additional Fees</h1>
+<div>
+
+
+    {% if has_additional_fees %}
+    <table class="styled-table mt-3">
+        <thead>
+            <tr>   
+                    <th>Fee ID</th>
+                    <th>Fee Name</th>
+                    <th>Installment Period (Months)</th>
+                    <th>Number of Months Paid</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fee in additional_fees %}
+            {% with fee.month_counter|default:0 as counter %}
+            {% with fee.months|default:0 as total_months %}
+            <tr class="{% if counter >= total_months %}row-paid{% endif %}">
+                <td>{{ fee.feeid}}</td>
+                <td>{{ fee.fee_name }}</td>
+                <td>{{ fee.months }}</td>
+                <td>{{ fee.month_counter }}</td>
+                <td>{{ fee.date_added|date:"F j, Y" }}</td>
+                <td>₱{{ fee.amount|floatformat:2 }}</td>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        {% if fee.months > fee.month_counter %}
+                        <a href="#" class="btn btn-sm btn-primary"
+                            onclick="openPayModal('{{ fee.feeid }}', '{{ fee.amount }}', '{{ fee.months }}', '{{ fee.month_counter }}')">
+                            Pay
+                        </a>
+                        {% else %}
+                        <span class="badge bg-success">Paid</span>
+                        {% endif %}
+                
+                        <div class="action-hover">
+                            <button class="btn btn-sm btn-info" onclick="openPaymentHistoryModal('{{ fee.feeid }}')"
+                                title="View Transactions">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endwith %}
+            {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info mt-3">
+        <p>No additional fees found for this consumer.</p>
+    </div>
+    {% endif %}
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+
+
+
+<div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="payModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'addfee_paymentmethod' 0 %}" id="paymentForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="payModalLabel">Pay Additional Fee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="feeid" id="modalFeeId">
+
+                    <div class="mb-2">
+                        <label for="paymentType" class="form-label">Payment Type</label>
+                        <select class="form-select form-select-sm" id="paymentType" name="payment_type">
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="full">Full</option>
+                        </select>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="instMonths" class="form-label">Installment Period</label>
+                            <input type="text" class="form-control form-control-sm" id="instMonths" readonly>
+                        </div>
+                        <div class="col">
+                            <label for="remMonths" class="form-label">Months Paid</label>
+                            <input type="text" class="form-control form-control-sm" id="remMonths" readonly>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="amountToPay" class="form-label">Amount to Pay</label>
+                        <input type="text" class="form-control form-control-sm" name="amount" id="amountToPay" readonly>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea class="form-control form-control-sm" name="remarks" id="remarks" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success w-100 btn-sm">Confirm Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal for Payment History -->
+<div class="modal fade" id="paymentHistoryModal" tabindex="-1" aria-labelledby="paymentHistoryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentHistoryModalLabel">Additional Fee Payment History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6 id="feeName"></h6>
+                <h6 id="feeTotal"></h6>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Paid Amount</th>
+                            <th>Processed By</th>
+                            <th>Remarks</th>
+                            <th>Date Added</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentHistoryTableBody">
+                        <!-- Payment transactions will be inserted here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+</div>
+
+<script>
+    let baseAmount = 0;
+    let instMonths = 0;
+    let remMonths = 0;
+
+    function openPayModal(feeId, amount, totalMonths, paidMonths) {
+        baseAmount = parseFloat(amount);
+        instMonths = parseInt(totalMonths);
+        remMonths = parseInt(paidMonths);
+
+        document.getElementById('modalFeeId').value = feeId;
+        document.getElementById('instMonths').value = instMonths;
+        document.getElementById('remMonths').value = remMonths;
+        document.getElementById('paymentType').value = "monthly";
+
+        // Set the correct form action with feeId
+        document.getElementById('paymentForm').action = `/payfee/${feeId}/`;
+
+        updateAmountToPay("monthly");
+
+        var modal = new bootstrap.Modal(document.getElementById('payModal'));
+        modal.show();
+    }
+
+    function updateAmountToPay(type) {
+        let amountField = document.getElementById('amountToPay');
+        if (type === 'full') {
+            let remaining = instMonths - remMonths;
+            amountField.value = (remaining * baseAmount).toFixed(2);
+        } else {
+            amountField.value = baseAmount.toFixed(2);
+        }
+    }
+
+    document.getElementById('paymentType').addEventListener('change', function () {
+        updateAmountToPay(this.value);
+    });
+
+    function openPaymentHistoryModal(feeId) {
+            // Set the modal to loading state before requesting data
+            const modalBody = document.getElementById('paymentHistoryTableBody');
+            modalBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+
+            // Fetch the payment history via an AJAX request
+            fetch(`/additionalfees/${feeId}/transactions/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const feeName = data.fee_name;
+                        const feeTotal = data.total_amount 
+                        const payments = data.payments;
+
+                        // Update the modal title
+                        document.getElementById('feeName').innerText = `Payments for Fee: ${feeName}`;
+                        document.getElementById('feeTotal').innerText = `Total Amount: \u20B1${feeTotal}`;
+
+                        // Clear previous table rows
+                        modalBody.innerHTML = '';
+
+                        // Insert the payment transactions into the table
+                        payments.forEach(payment => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                        <td>${payment.addfeepayID}</td>
+                        <td>₱${payment.amount.toFixed(2)}</td>
+                        <td>${payment.processedBy}</td>
+                        <td>${payment.remarks}</td>
+                        <td>${payment.date_added}</td>
+                    `;
+                            modalBody.appendChild(row);
+                        });
+                    } else {
+                        modalBody.innerHTML = '<tr><td colspan="5" class="text-center">No transactions found.</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    modalBody.innerHTML = '<tr><td colspan="5" class="text-center">Error loading data.</td></tr>';
+                });
+
+            // Show the modal
+            const myModal = new bootstrap.Modal(document.getElementById('paymentHistoryModal'));
+            myModal.show();
+        }
+</script>
+
+
+
+{% endblock additionalfeeslist %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Buttons : NOT USED changed by : Bandajon K.-->
+<!--<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top: 10px;">
+        <div class="button-container">
+            <a href="{% url 'ledger' u.consumer_id %}">
+                <button type="button" class="btn button2">Ledger</button>
+            </a>
+            <a href="{% url 'monthly_summary' u.consumer_id year %}">
+                <button type="button" class="btn button2">Outstanding Balances</button>
+            </a>
+            <a href="{% url 'payment_history' u.consumer_id year %}">
+                <button type="button" class="btn button2">Payment History</button>
+            </a>
+            <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment">
+                Additional Fees
+            </button>
+            <a href="{% url 'additionalfeeslist' u.consumer_id %}">
+                <button type="button" class="btn button2 active">List of Additional Fees</button>
+            </a>
+        </div>
+    </div>
+</div>-->

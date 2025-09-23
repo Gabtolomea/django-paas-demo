@@ -1,0 +1,238 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+{% block title %}Record List{% endblock title %}
+
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'DataTables/css/dataTables.bootstrap5.min.css' %}">
+<style>
+    .dataTables_empty {
+        text-align: center;
+    }
+
+
+    .pagination .page-item.active .page-link {
+        background-color: #0b6778;
+        border-color: #0b6778;
+    }
+
+
+    h1.record-title {
+        margin-top: 30px;   /* space above title */
+        margin-bottom: 25px; /* space below title */
+    }
+
+
+    .table-responsive {
+        margin-bottom: 40px; /* space below the table */
+    }
+   
+
+
+
+
+    /* Make filter form inputs + button aligned */
+    .filter-form select {
+        height: 40px;
+        width: 250px;
+    }
+    .filter-form button {
+        height: 40px;
+        width: 200px;
+    }
+
+    .button2 {
+    background-color: var(--main-color);
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%),
+                inset 0px 5px 7px 0 rgb(255 255 255 / 52%),
+                0px 6px 6px 0 rgb(0 0 0 / 19%);
+    transition: all ease 0.3s;
+    width: 30px;
+
+    }
+
+    .btn.button2:hover {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39),
+                    inset 0px 5px 7px 0 #e6ecebd8,
+                    0px 6px 6px 0 rgb(0 0 0 / 19%);
+        transition: all ease-in 0.5s;
+    }
+
+    .btn.button2:focus {
+        background: var(--main-color);
+        color: #ffffff;
+        border-radius: 30px;
+        box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274),
+                    inset 0px -5px 7px 0 #e6ecebd8;
+        transition: all 0.1s;
+    }
+
+</style>
+{% endblock style %}
+
+
+{% block script %}
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#rows-per-page').change(function () {
+            this.form.submit();
+        });
+
+
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+{% endblock script %}
+
+
+{% block record_list %}
+{% include 'reportstabs.html' %}
+<script src="{% static 'jspdf.min.js' %}"></script>
+<script src="{% static 'jquery.min.js' %}"></script>
+<script src="{% static 'html2pdf.bundle.min.js' %}"></script>
+<script src="{% static 'jspdf.plugin.autotable.js' %}"></script>
+
+
+<div id="record_list">
+    <!-- ✅ Fixed title (typo removed) -->
+    <h1 class="record-title text-center "> Record List</h1>
+
+
+    <!-- ✅ Filter Form -->
+    <form method="get" class="d-flex justify-content-center mb-4 gap-2 filter-form flex-wrap">
+        <select id="year" name="fyear" class="form-select" required>
+            {% comment %} <option value="">-- Select Year --</option> {% endcomment %}
+            {% for year in years %}
+            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+
+
+        <select id="month" name="fmonth" class="form-select" required>
+            {% comment %} <option value="">-- Select Month --</option> {% endcomment %}
+            {% for month_name in month_names %}
+            <option value="{{ month_name }}" {% if month_name == selected_month %}selected{% endif %}>
+                {{ month_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+
+        <select id="barangay" name="fbar" class="form-select" required>
+            {% comment %} <option value="">-- Select Barangay --</option> {% endcomment %}
+            {% for bar in bars %}
+            <option value="{{ bar.id }}" {% if bar.id == selected_brgy %}selected{% endif %}>{{ bar }}</option>
+            {% endfor %}
+        </select>
+
+        {% comment %} <button type="submit" class="btn btn-primary">Filter Records</button> {% endcomment %}
+        <button type="submit" class="btn button2">Filter Records</button>
+
+    </form>
+
+
+    <!-- ✅ Records Info -->
+    <div class="text-center mb-3">
+        <h5>
+            Displaying records for <strong>{{ barangay }}</strong><br>
+            <span class="text-muted">Month: {{ selected_month }} | Year: {{ selected_year }}</span>
+        </h5>
+    </div>
+
+
+    <!-- ✅ Records Table -->
+    <div class="table-responsive">
+        <table id="recordTable" class="table table-bordered table-hover table-striped align-middle text-center">
+            <thead class="wb_thead">
+                <tr>
+                    <th>Account ID</th>
+                    <th>Meter Number</th>
+                    <th>Name</th>
+                    <th>Paid Amount</th>
+                    <th>Date Paid</th>
+                    <th>Transaction ID</th>
+                </tr>
+            </thead>
+            <tbody class="wb_tbody">
+                {% if record_list %}
+                {% for rec in record_list %}
+                <tr class="clickable-row" data-href="{% url 'ledger' rec.consumer_id %}" style="cursor: pointer;">
+                    <td>{{ rec.consumer_id }}</td>
+                    <td>{{ rec.meternumber }}</td>
+                    <td class="text-start ps-3">{{ rec.name }}</td>
+                    <td>₱ {{ rec.paid_amount|floatformat:2 }}</td>
+                    <td>{{ rec.date_paid }}</td>
+                    <td>{{ rec.transID }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No records found.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- ✅ Pagination -->
+    <div class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+            {% if record_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ record_list.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                </li>
+            {% endif %}
+
+
+            {% for num in record_list.paginator.page_range %}
+                {% if num == 1 or num == record_list.paginator.num_pages or num >= record_list.number|add:"-2" and num <= record_list.number|add:"2" %}
+                    <li class="page-item {% if num == record_list.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                    </li>
+                {% elif num == record_list.number|add:"-3" or num == record_list.number|add:"3" %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                {% endif %}
+            {% endfor %}
+
+
+            {% if record_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ record_list.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ record_list.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock record_list %}
+
+
+
