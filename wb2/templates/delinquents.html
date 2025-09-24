@@ -14,6 +14,9 @@ Delinquent Accounts
             max-width: 100%;
             margin-top: 20px;
         }
+        
+  
+   
 
         /* New button2 styles applied */
         .button2 {
@@ -53,10 +56,10 @@ Delinquent Accounts
             overflow: hidden;
         }
         th {
-            background-color: #0b6778;
+            background-color: #006c85;
             color: white;
             text-align: center;
-            background-color: #09525f !important;
+            background-color: #006c85 !important;
             color: white !important;
         }
         
@@ -64,11 +67,11 @@ Delinquent Accounts
             text-align: center;
         }
         .pagination .page-link {
-            color: #0b6778;
+            color: #006c85;
         }
         .pagination .active .page-link {
-            background-color: #0b6778;
-            border-color: #0b6778;
+            background-color:  #006c85;
+            border-color:  #006c85;
             color: white;
         }
     </style>
@@ -81,7 +84,7 @@ Delinquent Accounts
 <div class="container">
     <div class="mb-3">
         <label for="barangay" class="form-label">Barangay:</label>
-        <select id="barangay" class="form-select">
+        <select id="barangay" class="form-select" style="width: 13%;">
             <option value="All" {% if selected_barangay == "All" %}selected{% endif %}>All</option>
             <option value="Anao" {% if selected_barangay == "Anao" %}selected{% endif %}>Anao</option>
             <option value="Cagsing" {% if selected_barangay == "Cagsing" %}selected{% endif %}>Cagsing</option>
@@ -114,7 +117,7 @@ Delinquent Accounts
         </a>
     </div>
 
-    <h2 class="text-center mb-4">Delinquent Accounts</h2>
+    <h2 class="text-center mb-4" style=" font-size: 37px;">Delinquent Accounts</h2>
 
     <div class="table-responsive">
         <table class="table table-bordered">

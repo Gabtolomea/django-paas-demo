@@ -238,7 +238,6 @@ class AdditionalFees(models.Model):
     months = models.IntegerField()
     month_counter = models.IntegerField(default=1)
     remainder = models.IntegerField()
-<<<<<<< HEAD
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
     transactions = models.ManyToManyField(Transactions)
@@ -303,7 +302,5 @@ class UnpaidTransaction(models.Model):
 
 #class background_task(models.Model):
 #class transaction_archive(models.Model):
-=======
     transactions = models.ManyToManyField(Transactions)
     date_added = models.DateField(auto_now_add=True)
->>>>>>> LatestChangesFixed
