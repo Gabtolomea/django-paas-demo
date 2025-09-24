@@ -252,9 +252,16 @@ More Reports...
 <div>
     <label for="exampleInputBarangay" style="margin-left: 30px;">Select Year: </label>
     <form id="yearselection" action="">
+<<<<<<< HEAD
+        <select class="form-select" id="selector" onchange="change()">
+            <option value="{{cur_year}}">{{cur_year}}</option>
+            {% for i in years reversed %}
+            <option value="{{i}}">{{i}}</option>
+=======
         <select class="form-select mb-3" id="selector" onchange="change()">
             {% for i in years reversed %}
             <option value="{{i}}" {% if i == cur_year %} selected{% endif %}>{{i}}</option>
+>>>>>>> jazzy
             {% endfor %}
         </select>
     </form>
@@ -268,6 +275,9 @@ More Reports...
         }
     </script>
 </div>
+<<<<<<< HEAD
+<div class="row table-responsive">
+=======
     <div class="p-3">
         <h3 style="text-align: center;">Total Data</h3>
         <div>
@@ -373,6 +383,66 @@ More Reports...
     </div>
 
     <!-- Total Number of Consumers in Consumption Range -->
+>>>>>>> jazzy
+    <div class="p-3">
+        <h3 style="text-align: center;">Total Data</h3>
+        <div>
+            <table class="table table-bordered table-hover table-striped table-sm ">
+                <thead class="wb_thead">
+                    <tr>
+
+                        <th scope="col" style="background-color: #006c85">Data Name</th>
+                        <th scope="col" style="background-color: #006c85">Total Number</th>
+
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    <tr style="cursor: pointer;">
+                        <td>Stop Meters</td>
+                        <td> {{tsm}}</td>
+                    </tr>
+                    <tr>
+                        <td> Number of Consumers </td>
+                        <td>{{consumtots}}</td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="p-3">
+        <h3 style="text-align: center;">Condemn Accounts</h3>
+
+        <div>
+            <table class="table table-bordered table-hover table-striped table-sm ">
+                <thead class="wb_thead">
+                    <tr>
+                        <th scope="col" style="background-color: #006c85">List</th>
+                        <th scope="col" style="background-color: #006c85">Meter Number</th>
+                        <th scope="col" style="background-color: #006c85">Name</th>
+                        <th scope="col" style="background-color: #006c85">Address</th>
+                        <th scope="col" style="background-color: #006c85">Balance</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    {% for i in condemn %}
+                    <tr>
+                        <td>{{ forloop.counter }}.</td>
+                        <td>{{i.meternumber}}</td>
+                        <td>{{i.firstname}}, {{i.lastname}}</td>
+                        <td>{{i.installation_address}}</td>
+                        <td>&#8369; {{i.current_bal|floatformat:2|intcomma}}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
     <div class="p-3">
         <h3 style="text-align: center;">Total Number of Consumers in Consumption Range</h3>
 
@@ -396,6 +466,10 @@ More Reports...
         </div>
     </div>
     <br>
+<<<<<<< HEAD
+
+=======
+>>>>>>> jazzy
     <br>
 
     <!-- Top 10 Consumer Consumption -->
@@ -477,6 +551,10 @@ More Reports...
             <br>
         </div>
     </div>
+<<<<<<< HEAD
+
+=======
+>>>>>>> jazzy
     <br><br>
 
 

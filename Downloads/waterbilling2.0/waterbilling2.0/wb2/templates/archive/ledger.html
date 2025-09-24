@@ -1,0 +1,411 @@
+{% extends 'dashboard.html' %}
+{% load static %} 
+{% block title %}
+Account Ledger
+{% endblock title %}
+{% load humanize %}
+{% block ledger %}
+<script src="{% static 'jspdf.min.js'%}"> </script>
+<script src="{% static 'jquery.min.js'%}"> </script>
+<script src="{% static 'html2pdf.bundle.min.js'%}"> </script>
+<script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
+
+<style>
+	
+	/* .table-scrolls{
+		width: 100%;
+		display: table-caption;
+		height: 500px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	} */
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
+
+	/* ============================================================================================= */
+
+	/* Colors for the transactions types */
+	.table-orange{
+		background-color: #ffd8a9;
+		color: black;
+		}
+
+	.table-red {
+	background-color: #ff7272;
+	color: white;
+	}
+
+	.table-blue {
+	background-color: #a9d8ff;
+	color: black;
+	}
+
+	.table-yellow {
+	background-color: #fffaa9;
+	color: black;
+	}
+
+	.table-lightblue {
+	background-color: #a9e6ff;
+	color: black;
+	}
+
+	.row-bill {
+		background-color: #e5ffd7;
+	}
+
+	.row-addfee {
+		background-color: #b8eef1;
+	}
+
+	.row-default {
+		background-color: #ffffff;
+	}
+
+</style>
+<!-- Header Info of Consumer -->
+<div class="container-fluid p-0">
+	
+    <div id="contextMenu" class="context-menu" style="text-decoration: none;">
+        <div class="context-menu-item" id="customLink"></div>
+    </div>
+	<div class="table-responsive">
+		<table id="dtBasicExample1" class="table table-bordered" cellspacing="0" width="100%">
+			<thead class="wb_thead">
+				<tr class="header">
+					<th scope="col" style="min-width:25px">Account ID</th>
+					<th scope="col" style="min-width:25px">Name</th>
+					<!--changed-->
+					<th scope="col" style="min-width:25px">Connection Type</th>
+					<!--changed-->
+					<th scope="col" style="min-width:25px">Meter Number</th>
+					<th scope="col" style="min-width:25px">Current Reading</th>
+					<th scope="col" style="min-width:25px">Excess Payment</th>
+					<th scope="col" style="min-width:25px">Current Balance</th>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				<tr class="showOnHover">
+					<td class="table-light text-center">{{u.consumer_id}}</td>
+					<td class="table-light text-center">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<!--changed-->
+					<td class="table-light text-center">{{u.contypeid.contype}}</td> <!--from u.rateid to u.contypeid.contype  Enjambre 19/11/2024-->
+					<!--changed-->
+					<td class="table-light text-center">{{u.meternumber}}</td>
+					<td class="table-light text-center">{{u.current_reading}}</td>
+					<td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
+					<td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
+						
+					 	{% if not ispaid %}<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button> {% endif %}
+
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+
+<!-- Payment form/Modal -->
+<div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form action="{% url 'payment' u.consumer_id %}" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="id_amount">Amount</label>
+						<input type="number" name="amount" min="1" id="id_amount" required class="input form-control">
+						<label for="id_or_num">OR Number</label>
+						<input type="text" name="or_num" id="id_or_num" required class="input form-control">
+						<label for="id_dis_code">Discount Code</label>
+						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
+						
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" name="btnform1">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="row w-100 m-auto pt-2">
+
+		{% include 'billingbuttons.html' %}
+		{% include 'billcopy.html' with unpaid=unpaid%}
+	<!-- Sort for Billing, Payment, Penalty, Discount and Get copy buttom -->
+	<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
+		<button type="button" onclick="getpdf()" class="btn button2" style="float:right;">
+			<img style="width: 15px" src="{% static '/images/file_copy_FILL0_wght700_GRAD0_opsz48.svg' %}" />
+			Get a Copy
+		</button>
+
+
+		<form id="displayselection" action="" method="GET">
+			<label class="d-flex" style="float: right; align-items: center;">Show
+				<select id="selector" name="show" class="form-select form-select ms-1 me-3" onchange="this.form.submit()">
+					<option value="" {% if disp == ""%}selected{% endif %}>All</option>
+					<option value="Billing" {% if disp == "Billing"%}selected{% endif %}>Billing</option>
+					<option value="Additional Fees" {% if disp == "Additional Fees"%}selected{% endif %}>Additional Fees</option>
+					<option value="Payment" {% if disp == "Payment"%}selected{% endif %}>Payment</option>
+					<option value="Penalty" {% if disp == "Penalty"%}selected{% endif %}>Penalty</option>
+					<option value="Discount" {% if disp == "Discount"%}selected{% endif %}>Discount</option>
+				</select>
+			</label>
+		</form>
+	</div>
+</div>
+
+<!-- Ledger -->
+	<div class="" id="ledger">
+		<h1 class="mb-3 text-center">Account Ledger</h1>
+		<div class="container-fluid p-0">
+			<div class="table-responsive">
+				<div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
+					<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
+						<thead class="wb_thead"  style="position: sticky; top: 0;">
+							<tr>
+								<th style="min-width: 100px;">Billing Transaction ID</th>
+								<th style="min-width: 100px;">Date</th>
+								<th style="min-width: 100px;">Transaction Type</th>
+								<th style="min-width: 100px;">Bill Month(Month-Year)</th> <!-- from Month-Year to Bill Month(Month-Year) 28/10/2024 Enjambre -->
+								<th style="min-width: 100px;">Previous Reading</th> <!-- from previous to Previous Reading 28/10/2024  -->
+								<th style="min-width: 100px;">Current Reading</th> <!--from Current to Current Reading  28/10/2024  -->
+								<th style="min-width: 110px;">CU.M Used</th> <!--from Usage to CU.M Used  28/10/2024  -->
+								<th style="min-width: 110px;">Bill Amount</th> <!--from Bill to Bill Amount  28/10/2024  -->
+								<th style="min-width: 110px;">Less Excess</th> <!--added changes  14/11/2024  -->
+								<th style="min-width: 110px;">Penalty</th> <!--added changes  28/10/2024  -->
+								<th style="min-width: 110px;">Amount Due</th> <!--added changes  14/11/2024  -->
+								<th style="min-width: 100px;">Payment</th>
+								<th style="min-width: 110px;">Payment Transaction ID</th> <!--added changes  28/10/2024  -->
+								<th style="min-width: 100px;">Balance</th>
+								<!--remove the connection type in this line  28/10/2024  -->
+								<th style="min-width: 100px;">Processed By</th>
+								<th style="min-width: 110px;">Status</th>
+							</tr>
+						</thead>
+						<tbody class="wb_tbody" >
+							{% for t in table reversed %}
+							<tr class="{% if t.reading %}context-menu-target{% else %}no-right-click{% endif %} {{ t.style }} {% if t.ispaid %} row-bill {% endif %} {% if t.ttype == 'Additional Fees' %} row-addfee {% endif %}" data-link="form-{{t.transid}}">
+
+								<form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
+									<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
+									<input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
+									<input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
+								</form>
+								<td>{{t.transid}}</td>
+								<td>{{t.date}}</td>
+								<td>{{t.ttype}}</td>
+								<td>{{t.month | slice:":3"}}-{{t.year}}</td>
+								<td>{{t.prev}}</td>
+								<td>{{t.reading}}</td>
+								<td>{{t.usage}}</td>
+								<td>{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+								<td>{{t.}}</td><!--added changes for less excess unfinished 14/11/2024  -->
+								<td>{{t.}}</td><!--added changes for penalty unfinished 28/10/2024  -->
+								<td>{{t.}}</td><!--added changes for Amount Due unfinished 14/11/2024  -->								
+								<td>
+									{% if t.ispaid and t.payment and not t.ttype == 'Additional Fees'%}
+									&#8369; {{ t.payment|floatformat:2|intcomma }}
+									{% endif %}
+								</td>
+
+								<td>{{t.paytranid}}</td><!--added changes for payment transaction id unfinished 28/10/2024  -->
+								<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+								<!--remove the <td>{{t.rateid}}</td> (connection type) in this line  28/10/2024  -->
+								<td>{{t.pb}}</td>
+								<td style="text-align: center;" class="text-center align-middle">{{ t.ispaid }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+
+
+<!-- Script for PDF Get Copy  and many more... -->
+<script type="text/javascript">
+	const noRightClickElements = document.querySelectorAll('.no-right-click');
+    noRightClickElements.forEach(function(element) {
+      element.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+      });
+    });
+	function submitForm(id) {
+		document.getElementById(id).submit();
+	}
+	const table = document.getElementById("dtBasicExample2");
+	// Get the context menu element
+    const contextMenu = document.getElementById('contextMenu');
+    const customLink = document.getElementById('customLink');
+	let highlightedRow = null;
+    // Show the custom context menu on right-click on .context-menu-target elements
+    const contextMenuTargets = document.querySelectorAll('.context-menu-target');
+    contextMenuTargets.forEach(function(target) {
+		target.addEventListener('contextmenu', function(e) {
+			 // Remove previous highlight
+			table.classList.remove('table-hover')
+			 if (highlightedRow) {
+				highlightedRow.classList.remove('highlight');
+			}
+			
+			highlightedRow = target;
+        	highlightedRow.classList.add('highlight');
+			e.preventDefault();
+        	customLink.innerHTML = `<a class="text-danger fw-bold" onClick="submitForm('${target.dataset.link}')">Report as Issue</a>`;
+			contextMenu.style.display = 'block';
+			contextMenu.style.left = e.pageX + 'px';
+			contextMenu.style.top = e.pageY + 'px';
+		});
+    });
+
+    // Hide the context menu when clicking outside of it
+    document.addEventListener('click', function() {
+		if (highlightedRow) {
+			highlightedRow.classList.remove('highlight');
+			highlightedRow = null;
+			table.classList.add('table-hover')
+		}
+      contextMenu.style.display = 'none';
+    });
+
+	function getpdf() {
+			var doc = new jsPDF('landscape', 'pt', 'legal');
+
+			margins = {
+				top: 150,
+				bottom: 60,
+				left: 40,
+				right: 40,
+				width: 600
+			};
+
+			const numberformat = new Intl.NumberFormat('en-US', {
+				style: 'currency',
+				currency: 'PHP',
+				currencyDisplay: 'code'
+			});
+
+			var y = 20;
+			var x = 40;
+
+			doc.setFont("Courier");
+			doc.setFontType("bold");
+			doc.setLineWidth(10);
+			doc.setFontSize(20);
+			doc.text(420, y = y + 20, "GINATILAN WATER ");
+
+			var y = 60;
+			var x = 40;
+			doc.setFont("Courier");
+			doc.setLineWidth(5);
+			doc.setFontSize(15);
+			doc.text(x, y = y + 10, "Account ID:");
+			doc.text(300, y, "{{u.consumer_id}}")
+			doc.text(x, y = y + 15, "Name:");
+			doc.text(300, y, "{{u.firstname}} {{u.middlename}} {{u.lastname}}");
+			doc.text(x, y = y + 15, "Meter Number:");
+			doc.text(300, y, "{{u.meternumber}}");
+			doc.text(x, y = y + 15, "Balance:");
+			doc.text(300, y, "PHP  {{u.current_bal|floatformat:2|intcomma}}");
+
+			y = y + 70
+			doc.setFont("Courier");
+			doc.setFontType("bold");
+			doc.setLineWidth(10);
+			doc.setFontSize(20);
+			doc.setTextColor(0, 0, 0)
+			doc.text(420, y = y + 30, "ACCOUNT LEDGER");
+
+			var table = [{% for t in table reversed %}]
+		['{{t.transid}}', '{{t.month | slice:":3"}}-{{t.year}}', '{{t.prev}}', '{{t.reading}}', '{{t.usage}}', '{{t.rateid}}', numberformat.format('{{t.bill}}'), numberformat.format('{{t.payment}}'), '{{t.pb}}', '{{t.ornum}}', numberformat.format('{{t.bal}}')], {% endfor %}
+	]
+
+		y = y + 5
+		doc.setLineWidth(2);
+		doc.setFontSize(11);
+		doc.autoTable({
+			head: [['Transaction ID', 'Month-Year', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Connection Type', 'Amount', 'Payment', 'Processed By', 'OR Number', 'Current Balance']],
+			pageBreak: 'auto',
+			body: table,
+			theme: 'striped',
+			startY: y = y + 30,
+			styles: { font: "Courier" },
+			didParseCell: function (data) {
+				if (data.row.index > 0 && data.cell.section === 'body') {
+					const row = table[data.row.index - 1];
+					const payment = parseFloat(row[6].replace(/[^\d.-]/g, ''));
+
+					if (payment == 0) {
+						data.cell.styles.fillColor = [135, 206, 235];
+					} else {
+						
+						data.cell.styles.fillColor = [255, 255, 255];
+					}
+				}
+			}
+		});
+
+		if (y > 600) {
+			doc.addPage()
+			y = 20
+		}
+
+		console.log("testing")
+		doc.save('{{u.firstname}}_{{u.lastname}}_ledger.pdf');
+}
+</script>
+
+
+{% endblock ledger %}

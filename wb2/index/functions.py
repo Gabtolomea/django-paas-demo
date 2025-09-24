@@ -79,8 +79,12 @@ def years(id):
     if datetime.today().year not in years:
         years.append(datetime.today().year)
     return years
+<<<<<<< HEAD
 #original
 '''def last_reading(id, year, mo):
+=======
+def last_reading(id, year, mo):
+>>>>>>> LatestChangesFixed
     try:
         latest_reset = Transactions.objects.filter(acctID=id, transType='Reset Meter').order_by('-year', '-month')[0]
         if latest_reset.year == year and latest_reset.month == mo:
@@ -587,6 +591,14 @@ def fix_billing_errors():
         consumer.current_bal += consumer_bal_delta
         consumer.save()
 
+<<<<<<< HEAD
+# def get_transaction_error():
+#     cons = ConsumerInfo.objects.all()
+#     for c in cons:
+#         trans = Transactions.objects.filter(acctID_id=c.consumer_id, ).order_by('year')
+=======
+
+>>>>>>> jazzy
 
 
 def dump_database():
@@ -671,7 +683,11 @@ def dump_database():
     cursor.close()
     cnx.close()
     
+<<<<<<< HEAD
+    credentials_file = "D:/Users/CTU - GINATILAN/Documents/GitHub/waterbilling2.0/service_key.json"
+=======
     credentials_file = "D:/waterbilling2.0/service_key.json"
+>>>>>>> jazzy
 
     if not os.path.exists(credentials_file):
         print(f"Please save the service account credentials JSON file at the specified path.")
@@ -932,9 +948,13 @@ def add_additionalFees():
                         afbill.bill = addfee.amount
                         
                         afbill.save()
+<<<<<<< HEAD
                         print(f'{afbill.year} {afbill.month} {afbill.bill}')
                         addfee.transactions.add(afbill)
                         addfee.month_counter += 1
+=======
+                        addfee.transactions.add(afbill)
+>>>>>>> LatestChangesFixed
                         addfee.save()
 
                         c.current_bal += addfee.amount
@@ -959,6 +979,7 @@ def add_additionalFees():
                             addfee.save()
                             c.current_bal += addfee.remainder
                             c.save()
+<<<<<<< HEAD
                         # else:
                         #     addfee.delete()
 
@@ -1218,3 +1239,9 @@ def calculate_water_bill_fromOct2024(consumption):
     bill = bill * 0.60
     
     return bill
+=======
+                        else:
+                            addfee.delete()
+                    addfee.month_counter += 1
+                    addfee.save()
+>>>>>>> LatestChangesFixed

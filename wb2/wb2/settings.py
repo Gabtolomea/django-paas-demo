@@ -28,7 +28,12 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = [
+<<<<<<< HEAD
     '*',
+=======
+    '127.0.0.1',
+    '192.168.254.109',
+>>>>>>> LatestChangesFixed
 ]
 
 

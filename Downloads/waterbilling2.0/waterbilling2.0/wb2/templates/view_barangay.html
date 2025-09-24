@@ -1,0 +1,87 @@
+{% extends 'dashboard.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+Barangay {{ barangay.barangaycode }} Monthly Usage
+{% endblock title %}
+
+{% block style %}
+<style>
+    html {
+        background-color: #F2F3F2;
+    }
+
+    table {
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table th,
+    table td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    table th {
+        background-color: #006c85;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .right-align {
+        text-align: right;
+    }
+
+    .button2 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 8px 20px;
+        border: none;
+        border-radius: 15px;
+        transition: all ease 0.3s;
+        margin: 30px 0;
+    }
+
+    .button2:hover {
+        background-color: darkblue;
+    }
+</style>
+{% endblock style %}
+
+{% block view_barangay %}
+<h2 style="text-align: center; font-weight: bold; margin: 30px 0;">
+    Barangay {{ barangay }} Monthly Records
+</h2>
+
+<div class="col-sm-12 col-md-6">
+    <button type="button" class="btn button2" onclick="history.back()">
+        <img style="width: 20px;" src="{% static 'images/arrow_back_FILL1_wght600_GRAD200_opsz48.svg' %}" alt="Back">
+        Return
+    </button>
+</div>
+
+<div class="row table-responsive">
+    <table class="table table-bordered table-hover table-striped table-sm">
+        <thead class="wb_thead">
+            <tr>
+                <th scope="col" style="background-color: #006c85">Billing Cycle Cutoff Month</th>
+                <th scope="col" style="background-color: #006c85">Total Usage (m³)</th>
+                <th scope="col" style="background-color: #006c85">Total Receivable (₱)</th>
+                <th scope="col" style="background-color: #006c85">Total Collection (₱)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in monthly_data %}
+            <tr>
+                <td>{{ data.month_name }}</td>
+                <td class="right-align">{{ data.usage|floatformat:1 }}</td>
+                <td class="right-align">{{ data.due|floatformat:2|intcomma }}</td>
+                <td class="right-align">{{ data.paid|floatformat:2|intcomma }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock view_barangay %}

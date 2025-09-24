@@ -1,0 +1,18 @@
+{% extends 'dashboard.html' %}
+
+{% block get_accts %}
+<!-- get_accts.html -->
+
+{% if cons %}
+    <h1>Search Results</h1>
+    <ul>
+        {% for con in cons %}
+            <li>{{ con.firstname }} - {{ con.lastname }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No results found.</p>
+{% endif %}
+
+
+{% endblock get_accts %}
