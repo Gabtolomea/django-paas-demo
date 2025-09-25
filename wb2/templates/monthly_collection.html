@@ -150,7 +150,7 @@ Monthly Bill Collections
    
     <form method="GET" action="{% url 'monthly_collections' cur_year %}">
     <div class="mb-4 d-flex flex-column align-items-center" style="width: 200px;">
-        <label for="selector" class="form-label w-100" style="font-size: 18px; margin-left: 30px; ">Select Year:</label>
+        <label for="selector" class="form-label w-100" style="font-size: 18px; margin-left: 35px; ">Select Year:</label>
 
         <select id="selector"
                 name="fyear"
@@ -173,15 +173,24 @@ Monthly Bill Collections
     <div class="container-fluid p-0">
         <div class="table-responsive">
             <div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
-                <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
+                {% comment %} <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
                     width="100%">
-                   <thead class="wb_thead" style="position: sticky; top: 0; background-color: #006c85; color: white;">
+                   <thead class="wb_thead" style="position: sticky; top: 0; background-color: #005F73; color: white;">
     <tr>
         <th style="width: 33.33%; padding: 20px;">Month</th>
         <th style="width: 33.33%; padding: 20px;">Amount Collected (₱)</th>
         <th style="width: 33.33%; padding: 20px;">Number of Transactions</th>
     </tr>
-</thead>
+</thead> {% endcomment %}
+
+            <table id="dtBasicExample2" class="table table-bordered table-hover table-striped align-middle text-center">
+                <thead class="wb_thead">
+                    <tr>
+                        <th>Month</th>
+                        <th>Amount Collected (₱)</th>
+                        <th>Number of Transactions</th>
+                    </tr>
+                </thead>
 
 
                     <tbody class="wb_tbody text-center"> <!-- Center-align all table data -->

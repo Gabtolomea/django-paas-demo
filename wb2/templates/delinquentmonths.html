@@ -19,6 +19,7 @@ Delinquent Months
     .dataTables_empty {
         text-align: center;
     }
+    
 
     
 
@@ -74,8 +75,6 @@ Delinquent Months
     }
 
 
-
-
     table {
         width: 100%;
         border-collapse: collapse;
@@ -104,7 +103,7 @@ Delinquent Months
     h1 {
         text-align: center;
         margin-top: 20px;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
    
 
@@ -123,6 +122,10 @@ Delinquent Months
         font-weight: bold;
         color: red;
     }
+        .form-select {
+        min-width: 200px; /* wider dropdown */
+    }
+
 </style>
 
 
@@ -139,11 +142,11 @@ Delinquent Months
     <div class="container">
         <!-- Dropdown for selecting number of delinquent months -->
         <div class="mb-3">
-            <label for="numToDisplay" class="form-label">Show Top:</label>
-            <select id="numToDisplay" class="form-select">
+            <label for="numToDisplay" class="form-label"  >Display:</label>
+            <select id="numToDisplay" class="form-select" >
                 {% for option in available_options %}
                     <option value="{{ option }}" {% if option == selected_value %}selected{% endif %}>
-                        {{ option }}
+                        {{ option }} Months
                     </option>
                 {% endfor %}
             </select>
@@ -160,8 +163,10 @@ Delinquent Months
             </a>
         </div>
     </div>
-<h1>Top Delinquent Months</h1>
+<h1 style=" font-size: 37px;">Delinquent Months (Top {{ selected_value }})</h1>
+{% comment %} <h1>Top Delinquent Months</h1> {% endcomment %}
 <div class="table-container">
+    
     <table>
         <thead>
             <tr>
@@ -174,7 +179,7 @@ Delinquent Months
         {% for entry in top_delinquent_months %}
 
                     <tr>
-                        <td>{{ entry.month_year }}</td>  <!-- Now shows "December 2024" -->
+                        <td>{{ forloop.counter }}. {{ entry.month_year }}</td>  <!-- Now shows "December 2024" -->
                         <td>{{ entry.num_delinquent }}</td>
                     </tr>
                 {% endfor %}

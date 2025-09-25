@@ -14,8 +14,8 @@
 
 
     .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
+        background-color: #0b6778;
+        border-color: #0b6778;
     }
 
 
@@ -34,10 +34,13 @@
 
 
     /* Make filter form inputs + button aligned */
-    .filter-form select,
-    .filter-form button {
+    .filter-form select {
         height: 40px;
         width: 250px;
+    }
+    .filter-form button {
+        height: 40px;
+        width: 200px;
     }
 
     .button2 {
@@ -110,7 +113,7 @@
     <!-- ✅ Filter Form -->
     <form method="get" class="d-flex justify-content-center mb-4 gap-2 filter-form flex-wrap">
         <select id="year" name="fyear" class="form-select" required>
-            <option value="">-- Select Year --</option>
+            {% comment %} <option value="">-- Select Year --</option> {% endcomment %}
             {% for year in years %}
             <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
             {% endfor %}
@@ -118,7 +121,7 @@
 
 
         <select id="month" name="fmonth" class="form-select" required>
-            <option value="">-- Select Month --</option>
+            {% comment %} <option value="">-- Select Month --</option> {% endcomment %}
             {% for month_name in month_names %}
             <option value="{{ month_name }}" {% if month_name == selected_month %}selected{% endif %}>
                 {{ month_name }}
@@ -128,7 +131,7 @@
 
 
         <select id="barangay" name="fbar" class="form-select" required>
-            <option value="">-- Select Barangay --</option>
+            {% comment %} <option value="">-- Select Barangay --</option> {% endcomment %}
             {% for bar in bars %}
             <option value="{{ bar.id }}" {% if bar.id == selected_brgy %}selected{% endif %}>{{ bar }}</option>
             {% endfor %}

@@ -15,6 +15,8 @@ from datetime import datetime
 import calendar
 from collections import defaultdict
 
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE # added 9/24/2025
+
 @login_required(login_url='login')
 def monthly_billing_report(request):
     start_month = int(request.GET.get("start_month", 4))
@@ -89,7 +91,53 @@ def monthly_billing_report(request):
         'is_mbr': True,
     })
 
-def generate_excel(months_list, table_data, total_row):
+
+def clean_string(value): #added 9/24/2025
+    if isinstance(value, str):
+        return ILLEGAL_CHARACTERS_RE.sub('', value)
+    return value
+
+# def generate_excel(months_list, table_data, total_row): 
+#     """Generate and return an Excel file."""
+#     wb = openpyxl.Workbook()
+#     ws = wb.active
+#     ws.title = "Billing Report"
+
+#     # Add headers
+#     header = ["Consumer Names"] + months_list
+#     ws.append(header)
+#     for col in range(1, len(header) + 1):
+#         ws.cell(row=1, column=col).font = Font(bold=True)
+
+#     # Add consumer data
+#     for row in table_data:
+#         ws.append([row[0]] + [float(row[i][1:].replace(",", "")) for i in range(1, len(row))])  # Convert ₱ back to number
+
+#     # Add total row
+#     ws.append([total_row[0]] + [float(total_row[i][1:].replace(",", "")) for i in range(1, len(total_row))])
+
+#     # Format as currency in Excel
+#     peso_format = '"₱"#,##0.00'  # Peso format for Excel
+#     for row in ws.iter_rows(min_row=2, min_col=2, max_col=len(months_list) + 1, max_row=ws.max_row):
+#         for cell in row:
+#             cell.number_format = peso_format
+
+#     # Prepare response
+#     response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+#     response["Content-Disposition"] = 'attachment; filename="Billing_Report.xlsx"'
+#     wb.save(response)
+#     return response
+
+
+def parse_currency_to_float(value): # added 9/24/2025
+    try:
+        # Remove peso sign and commas, convert to float
+        return float(value.replace("₱", "").replace(",", ""))
+    except Exception as e:
+        print(f"Error parsing value '{value}': {e}")
+        return 0.0
+
+def generate_excel(months_list, table_data, total_row): #changed 9/24/2025
     """Generate and return an Excel file."""
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -97,31 +145,44 @@ def generate_excel(months_list, table_data, total_row):
 
     # Add headers
     header = ["Consumer Names"] + months_list
-    ws.append(header)
+    ws.append([clean_string(h) for h in header])
     for col in range(1, len(header) + 1):
         ws.cell(row=1, column=col).font = Font(bold=True)
 
-    # Add consumer data
+    # Add consumer data rows
     for row in table_data:
-        ws.append([row[0]] + [float(row[i][1:].replace(",", "")) for i in range(1, len(row))])  # Convert ₱ back to number
+        consumer_name = clean_string(row[0])
+        values = [parse_currency_to_float(cell) for cell in row[1:]]
+        ws.append([consumer_name] + values)
 
     # Add total row
-    ws.append([total_row[0]] + [float(total_row[i][1:].replace(",", "")) for i in range(1, len(total_row))])
+    total_label = clean_string(total_row[0])
+    total_values = [parse_currency_to_float(cell) for cell in total_row[1:]]
+    ws.append([total_label] + total_values)
 
-    # Format as currency in Excel
-    peso_format = '"₱"#,##0.00'  # Peso format for Excel
+    # Format as currency (₱1,000.00)
+    peso_format = '"₱"#,##0.00'
     for row in ws.iter_rows(min_row=2, min_col=2, max_col=len(months_list) + 1, max_row=ws.max_row):
         for cell in row:
             cell.number_format = peso_format
 
-    # Prepare response
+    # Auto-adjust column widths
+    for column_cells in ws.columns:
+        max_length = 0
+        column = column_cells[0].column_letter
+        for cell in column_cells:
+            try:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            except:
+                pass
+        ws.column_dimensions[column].width = max_length + 2
+
+    # Return response
     response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     response["Content-Disposition"] = 'attachment; filename="Billing_Report.xlsx"'
     wb.save(response)
     return response
-
-
-
 
 
 

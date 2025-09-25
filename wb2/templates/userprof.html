@@ -92,11 +92,18 @@ Account Settings
 					{{form.profilepic}}
 				</div>
                 <div class="row m-auto" style="display: block; text-align: center;">
+
+                    <!-- Exit -->
+                    <a href="{% url 'settings' %}" class="btn button2" style="width: 150px; white-space: nowrap;">
+                        <img style="width: 23px;" src="{% static '/images/cancel_FILL1_wght700_GRAD0_opsz48.svg' %}" />
+                        <span style="padding: 10px; font-family: Arial;">Cancel</span>
+                    </a>
                     <button type="submit" class="btn button2" style="width: 150px; white-space: nowrap;">
                         <img style="width: 23px;" src="{% static '/images/how_to_reg_FILL1_wght700_GRAD0_opsz48.svg' %}" />
                             <span style="padding: 10px; font-family: Arial;">Submit</span>
                         
                     </button>
+                    
                 </div>
 			</div>
 		</div>

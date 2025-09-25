@@ -22,15 +22,29 @@ Issues
         box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
         z-index: 2 !important;
     }
+    {% comment %} .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;   /* <- this forces the horizontal scrollbar */
+        -webkit-overflow-scrolling: touch;
+        } {% endcomment %}
+
+
   </style>
-    <h3 style="text-align: center;">Issues</h3>
+    <h3 style="text-align: center; margin-top: 20px; font-size: 40px;">Issues</h3>
     {% include 'search.html' %}
     
-    <div>
+    {% comment %} <div>
         <div class="rounded-top bg-light p-3"></div>
         <table class="table table-hover table-sm rounded-top mb-0" style="user-select: none; cursor: pointer;">
             {% if issue_list %}
-            <thead >
+            <thead > {% endcomment %}
+    <div class="container-fluid p-0">
+    <div class="table-responsive-sm">
+        <div class="col-12 {% if issue_list|length > 10 %}table-scrolls{% endif %}">
+            <table id="dtIssues" class="table table-bordered table-hover table-striped align-middle text-center">
+                {% if issue_list %}
+                <thead class="wb_thead">
                 <tr>
                     <th class="ps-3">Issued By</th>
                     <th>Status</th>
@@ -128,7 +142,7 @@ Issues
                 </script>
             </tbody>
         </table>
-        <div class="rounded-bottom bg-light p-3 z-n1"></div>
+        {% comment %} <div class="rounded-bottom bg-light p-3 z-n1"></div> {% endcomment %}
     </div>
     {# Pagination controls #}
     {% if issue_list.has_other_pages %}
