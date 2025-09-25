@@ -1,0 +1,18 @@
+{
+    "sourceFile": ".history/waterbilling2.0/wb2/auto_backup_20250924103250.py",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1758765508635,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1758765508635,
+            "name": "Commit-0",
+            "content": "import os\nimport datetime\nimport subprocess\nfrom googleapiclient.discovery import build\nfrom googleapiclient.http import MediaFileUpload\nfrom google_auth_oauthlib.flow import InstalledAppFlow\nfrom google.auth.transport.requests import Request\nimport pickle\n\n# # === DATABASE CONFIG ===\n# DB_NAME = \"wb2\"\n# DB_USER = \"root\"\n# DB_PASSWORD = \"jazfer\"\n# DB_HOST = \"localhost\"\n# DB_PORT = \"3307\"\n\n# === LOCAL BACKUP DIRECTORY ===\n# BACKUP_DIR = os.path.join(os.getcwd(), \"backups\")\n# os.makedirs(BACKUP_DIR, exist_ok=True)\nBACKUP_DIR = r\"C:\\db_backups\"\nos.makedirs(BACKUP_DIR, exist_ok=True)\n\n\n# === GOOGLE DRIVE CONFIG ===\nFOLDER_ID = \"1JAOSsaZ0Hbh9lapN2IZzrbguxztCrnzh\"  # Your Drive folder ID\nSCOPES = ['https://www.googleapis.com/auth/drive.file']\n\ndef backup_database():\n    \"\"\"Dump database to a .sql file locally\"\"\"\n    timestamp = datetime.datetime.now().strftime(\"%Y%m%d_%H%M%S\")\n    filename = f\"backup_{timestamp}.sql\"\n    filepath = os.path.join(BACKUP_DIR, filename)\n\n    dump_cmd = [\n    r\"\"\n    # r\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump.exe\",\n    f\"--user={DB_USER}\",\n    f\"--password={DB_PASSWORD}\",\n    f\"--host={DB_HOST}\",\n    f\"--port={DB_PORT}\",\n    # \"--column-statistics=0\",\n    DB_NAME,\n]\n\n\n    with open(filepath, \"w\", encoding=\"utf-8\") as f:\n        subprocess.run(dump_cmd, stdout=f, check=True)\n\n    print(f\"✅ Local backup created: {filepath}\")\n    return filepath\n\ndef authenticate_drive():\n    \"\"\"Authenticate with Google Drive API\"\"\"\n    creds = None\n    if os.path.exists(\"token.pkl\"):\n        with open(\"token.pkl\", \"rb\") as token:\n            creds = pickle.load(token)\n\n    if not creds or not creds.valid:\n        if creds and creds.expired and creds.refresh_token:\n            creds.refresh(Request())\n        else:\n            flow = InstalledAppFlow.from_client_secrets_file(\"credentials.json\", SCOPES)\n            creds = flow.run_local_server(port=0)\n        with open(\"token.pkl\", \"wb\") as token:\n            pickle.dump(creds, token)\n\n    service = build(\"drive\", \"v3\", credentials=creds)\n    return service\n\ndef upload_to_drive(filepath):\n    \"\"\"Upload a file to Google Drive\"\"\"\n    service = authenticate_drive()\n    file_metadata = {\n        \"name\": os.path.basename(filepath),\n        \"parents\": [FOLDER_ID]\n    }\n    media = MediaFileUpload(filepath, resumable=True)\n    file = service.files().create(body=file_metadata, media_body=media, fields=\"id\").execute()\n    print(f\"☁️ Backup uploaded to Drive with ID: {file.get('id')}\")\n\nif __name__ == \"__main__\":\n    sql_file = backup_database()\n    upload_to_drive(sql_file)\n"
+        }
+    ]
+}

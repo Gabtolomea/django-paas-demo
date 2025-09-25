@@ -1,0 +1,629 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="images/png" sizes="16x16">
+    <link rel="stylesheet" type="templates/images" href="wb2/templates/images">
+    <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'landing.css'%}" />
+
+
+
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+
+
+
+    <!-- ✅ Background Style Added -->
+    <style>
+       body {
+            /* Example: gradient aqua to white */
+            background: linear-gradient(135deg, #020505ff, #470e0eff);
+            margin: 0;
+            padding: 0;
+           }
+
+
+
+
+        .menu_header a {
+            color: white;
+            margin: 0 5%;
+            text-decoration: none;
+            font-size: 18px;
+            position: relative;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+
+
+
+        .menu_header a:hover {
+            color: #ffdd57;
+            text-shadow: 0 0 8px rgba(255, 221, 87, 0.8);
+            transform: translateY(-3px);
+        }
+
+
+
+
+
+
+
+
+        .menu_header a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ffdd57, #ff6f61);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+
+
+
+
+
+
+
+
+        .menu_header a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+
+
+
+
+
+
+
+        .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0093B7;
+            margin-right: 10px;
+            color: white;
+            font-size: 18px;
+        }
+
+
+
+
+
+
+
+
+        .btn-landing {
+            display: inline-block;
+            background: linear-gradient(135deg, #00C6E0, #00A6C2);
+            color: #111111ff;
+            padding: 14px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+
+
+
+
+
+
+
+
+        .btn-landing:hover {
+            background: linear-gradient(135deg, #00D2F0, #0093B7);
+            color: #272626ff;
+            transform: translateY(-2px);
+           box-shadow: 0 0 12px #f8f8f4ff,
+                0 0 24px #ffffff,
+                0 0 36px rgba(255, 255, 255, 0.8);
+           text-shadow: 0 0 6px #ffffff,
+                 0 0 12px #ffffff,
+                 0 0 18px #ffffff;
+}
+        .btn-landing:active {
+            transform: scale(0.96);
+
+
+
+
+
+
+
+
+                }
+            #About img {
+            max-height: 350px;
+            transition: all 0.4s ease-in-out;
+            border-radius: 20px;
+        }
+
+
+
+
+
+
+
+
+        /* Pure glow on hover */
+        #About img {
+            max-height: 350px;
+            border-radius: 20px;
+           
+            filter: brightness(1.15);
+            transition: all 0.4s ease-in-out;
+            <style>
+       
+         .login-card {
+        width: 100%;
+        max-width: 520px;   /* ⬅️ increased from 460px */
+        background: linear-gradient(135deg, #0093B7, #006c85);
+        color: #fff;
+        border-radius: 24px; /* ⬅️ slightly more rounded */
+        padding: 60px 50px;  /* ⬅️ more padding inside */
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+        text-align: center;
+        animation: fadeInUp 0.8s ease;
+
+
+
+
+        height: 800px;          /* ⬅️ fixed height */
+        display: flex;          /* ⬅️ for vertical alignment */
+        flex-direction: column;
+        justify-content: center; /* center content vertically */
+    }
+
+
+
+
+    .login-card h4,
+    .login-card h6,
+    .login-card .forgot-link {
+        color: #fff; /* keep text visible on dark card */
+    }
+
+
+
+
+    .btn-login {
+        width: 100%;
+        background: #fff;
+        color: #006c85;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: bold;
+        border: none;
+        transition: 0.3s;
+        font-size: 18px;
+    }
+
+
+
+
+    .btn-login:hover {
+        background: #f2f2f2;
+        color: #004b5e;
+    }
+
+
+
+
+    .forgot-link {
+        display: block;
+        margin-top: 15px;
+        font-size: 18px;
+        text-decoration: underline;
+    }
+
+
+
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+
+
+
+    </style>
+</head>
+
+
+
+
+
+
+
+
+<body data-spy="scroll" data-target=".menu_header" data-offset="50">
+    <header class="header_nav" style="position:sticky; top: 0; z-index: 1000;">
+        <nav class="p-0 navbar navbar-expand-lg navbar-light bg-light">
+            <div class="row w-100 m-auto" style="background-color:#0093B7;">
+                <div class="menu_button_header col-lg-5 col-md-12 col-sm-12 col-2 m-auto p-0 text-center" style="display:none">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
+                        aria-label="Toggle navigation" style="background-color: #fff;">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+
+
+
+
+
+
+
+                <div class="w-100 d-flex justify-content-center align-items-center"
+                    style="background-color: #0093B7; color: white; padding: 30px 0; text-align: center;">
+                    <h1 style="font-weight: bold; font-size: 36px; margin: 0; text-shadow: 0px 3px 5px rgba(0,0,0,0.3);">
+                        <i class="fa-solid fa-droplet" style="margin-right: 8px;"></i>
+                        Water Billing Station Version 2.0
+                    </h1>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+
+
+
+
+
+
+    <nav class="row w-100 m-auto" style="background-color: #165665;">
+        <div class="menu_header col-lg-12 text-center" style="padding: 30px; font-weight: 800;">
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Home', this)">Home</a>
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('About', this)">About</a>
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Services', this)">Services</a>
+            <a class="menu nav_link" href="javascript:void(0)" onclick="showSection('Contacts', this)">Contacts</a>
+        </div>
+    </nav>
+
+
+
+
+        <!-- HOME -->
+        <section class="page-section" id="Home" style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+        <div class="row w-100 m-auto ">
+            <div class="main_contain col-lg-8 col-md-12 col-sm-12 col-12">
+            <div class="container text-center" style="min-height: 692px; display: flex; justify-content:center; align-items: center; flex-direction: column;">
+
+
+
+
+                {% comment %} <!-- Quote -->
+                <div class="wrapper mb-5">
+                <h4 style="color:black; font-size: 45px;">"Water is life, and Clean water means Health"</h4>
+                <h4 style="color: black; font-size: 30px;">-Audrey Hepburn</h4>
+                </div> {% endcomment %}
+
+
+
+
+                <!-- ✅ Login Card -->
+                <form action="{% url 'login' %}" method="POST" style="width:100%; max-width: 420px;">
+                {% csrf_token %}
+                <div class="login-card">
+                    <img src="{% static 'images/logo.png' %}" alt="System Logo" style="width:50px; margin-bottom:10px;">
+                    <h4 style="font-weight:bold; font-size: 32px;">System Login</h4>
+                    <p style="margin-bottom:20px; font-size: 18px; margin-bottom:35px;">Please enter your credentials</p>
+
+
+
+
+                    <!-- Username -->
+                    <div class="form-group mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="User ID" required>
+                    </div>
+
+
+
+
+                    <!-- Password with eye toggle -->
+                    {% comment %} <div class="form-group mb-3">
+                    <div class="input-group">
+                        <input class="form-control" type="password" id="id_password" name="password" placeholder="Password" required>
+                        <div class="input-group-text" style="cursor:pointer;" onclick="showhide('id_password')">
+                        <img style="width: 20px;" id="id_password_eye"  src="{% static 'images/eye-off.svg' %}"> 
+                        </div>
+                    </div>
+                    </div> {% endcomment %}
+
+                     <div class="form-group mb-3 position-relative">
+    <input class="form-control" type="password" id="id_password" name="password" placeholder="Password" required>
+    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" onclick="showhide('id_password')">
+        <img style="width: 20px;" id="id_password_eye" src="{% static 'images/eye-off.svg' %}">
+    </span>
+</div>
+
+<script>
+        function showhide(passwordFieldId) {
+            const passwordInput = document.getElementById(passwordFieldId);
+            const eyeIcon = document.getElementById(passwordFieldId + "_eye");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";  
+                eyeIcon.src = "{% static 'images/eye-on.svg' %}";   // 👈 open eye
+            } else {
+                passwordInput.type = "password";  
+                eyeIcon.src = "{% static 'images/eye-off.svg' %}"; // 👈 closed eye
+            }
+        }
+</script>
+
+
+
+                    <!-- Sign In Button -->
+                    <button type="submit" class="btn btn-login mt-2" style="margin-top: 40px;">
+                    <i class="fa fa-sign-in-alt" style="margin-right:5px;"></i> Sign In
+                    </button>
+
+
+
+
+                    <!-- Forgot Password -->
+                    <a href="{% url 'forgetpassword' %}" class="forgot-link">Forgot Password?</a>
+
+
+
+
+                    <!-- Messages -->
+                    {% for message in messages %}
+                    <div id="logout"
+                    class="message alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} mt-3">
+                    <strong>{{message.tags|title}}!</strong> {{message}}
+                    <a href="#" class="close" data-dismiss="alert" style="text-decoration:none;">&times;</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                </form>
+                <!-- ✅ End Login Card -->
+
+
+
+
+            </div>
+            </div>
+
+
+
+
+            <!-- Right side images  -->
+            <div class="screen_size_md_none col-lg-4">
+            <div class="w-100 h-50">
+                <img class="img-fluid" src="{% static 'img/mobile.svg.svg'%}"
+                style="max-height: 250px; width: 75%; float:right;">
+            </div>
+            <div class="w-100 h-50">
+                <img class="img-fluid" src="{% static 'img/system.svg.svg'%}" style="max-height: 300px; float:left;">
+            </div>
+            </div>
+        </div>
+        </section>
+
+
+
+
+        <!-- ✅ Styles -->
+        <style>
+        .login-card {
+            background: #007c91;
+            height: 525px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            color: white;
+        }
+
+
+
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+
+
+
+        .btn-login {
+            background: linear-gradient(135deg, #00C6E0, #00A6C2);
+            border: none;
+            border-radius: 30px;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            color: white;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+
+
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #00D2F0, #0093B7);
+            transform: translateY(-2px);
+        }
+
+
+
+
+        .forgot-link {
+            display: block;
+            margin-top: 12px;
+            font-size: 16px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+
+
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+
+
+
+        .alert {
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        </style>
+
+
+
+
+
+
+    <!-- ABOUT -->
+    <section class="page-section" id="About"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+        <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
+            <div class="screen_size_md_none col-lg-6 text-end">
+                <img class="img-fluid" src="{% static 'img/about.svg.svg' %}" style="max-height: 350px;">
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 col-12 text-center">
+                <h2 style="color: #026f8aff; font-weight: 800; font-size: 50px;">
+                    ABOUT OUR WATER BILLING STATION
+                </h2>
+                <p style="font-size: 20px; padding-top: 25px; font-weight: 700; text-align: center;">
+                    An automated system called the Water Billing System was built around paying water.<br>
+                    This system handles invoicing and client bill payment.<br>
+                    It monitors all of the customer's data to determine if payments were made on time or not.
+                </p>
+            </div>
+
+
+            <h4 style="margin-top: 50px;">“Water is the driving force of all nature”</h4>
+            <h5>- Leonardo da Vinci</h5>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+    <!-- SERVICES -->
+    <section class="page-section" id="Services"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+        <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-12 text-center">
+                <h2 style="color: #026f8aff; font-weight: 800;font-size: 50px">SERVICES</h2>
+                <div style="text-align: left; padding: 20px; font-size: 18px; margin-left: 200px;">
+                    <h4>1. A Self-Service Portal</h4>
+                    <p>- Offers customers faster service</p>
+                    <h4>2. Personalized Customer Experiences</h4>
+                    <p>- Provides customized experiences for every account holder</p>
+                    <h4>3. Advanced Metering</h4>
+                    <p>- Ability to remotely measure consumer usage</p>
+                </div>
+            </div>
+            <div class="screen_size_md_none col-lg-6 text-start">
+                <img class="img-fluid" src="{% static 'img/services.svg.svg' %}" style="max-height: 350px;">
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+    <!-- CONTACTS -->
+    <section class="page-section" id="Contacts"style="background: linear-gradient(135deg, #fdfdfdff, #0093b7);">
+        <div class="row w-100 m-auto align-items-center" style="min-height: 692px;">
+            <div class="col-lg-6 col-md-12 text-center" style="padding: 50px;">
+                <h2 style="color: #026f8aff; font-weight: 800; font-size: 50px;">CONTACT US</h2>
+                <div class="mt-4 text-start contact-info" style="max-width: 400px; margin: 0 auto;">
+                    <p><span class="icon-circle"><i class="fa-solid fa-house"></i></span>Poblacion, Ginatilan, Cebu</p>
+                    <p><span class="icon-circle"><i class="fa-solid fa-phone"></i></span>09001122334</p>
+                    <p><span class="icon-circle"><i class="fa-solid fa-envelope"></i></span>waterbilling@gmail.com</p>
+                </div>
+                <h4 style="margin-top: 50px;">“Water is the driving force of all nature”</h4>
+                <h5>- Leonardo da Vinci</h5>
+            </div>
+            <div class="screen_size_md_none col-lg-6 text-start">
+                <img class="img-fluid w-50" src="{% static 'img/mobile2.svg.svg' %}" style="max-height: 720px;">
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+    <footer class="footer text-center p-4 mt-6" style="background-color: #045163; padding: 40px; color: white;">
+        <div>© 2025 Water Billing Station</div>
+    </footer>
+
+
+
+
+    <!-- SCRIPTS -->
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap.min.js' %}"></script>
+    <script>
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.style.display = "none");
+            document.getElementById(sectionId).style.display = "block";
+            document.querySelectorAll('.nav_link').forEach(link => link.classList.remove("active"));
+            if (element) element.classList.add("active");
+        }
+
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const firstLink = document.querySelector(".nav_link");
+            showSection("Home", firstLink);
+        });
+    </script>
+</body>
+</html>
