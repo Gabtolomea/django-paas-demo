@@ -602,7 +602,7 @@ def dump_database():
     cnx = MySQLdb.connect(
         user='wbilling',
         passwd='@-@JazfeR123',
-        host='localhost',
+        host='192.168.3.2',
         port=3306,
         db='wb2',
         charset='latin1'
