@@ -102,7 +102,7 @@ DATABASES = {
         'NAME': 'wb2',
         'USER': 'wbilling',
         'PASSWORD': '@-@JazfeR123',
-        'HOST': '192.168.3.2',
+        'HOST': 'localhost',
         'PORT': '3306'
     }
 }
