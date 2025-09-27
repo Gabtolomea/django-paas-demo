@@ -7,11 +7,131 @@ Account Ledger
 {% endblock title %}
 
 {% block ledger %}
+<<<<<<< HEAD
 <!-- Scripts -->
 <script src="{% static 'jquery.min.js' %}"></script>
 <script src="{% static 'jspdf.min.js' %}"></script>
 <script src="{% static 'html2pdf.bundle.min.js' %}"></script>
 <script src="{% static 'jspdf.plugin.autotable.js' %}"></script>
+=======
+<script src="{% static 'jspdf.min.js'%}"> </script>
+<script src="{% static 'jquery.min.js'%}"> </script>
+<script src="{% static 'html2pdf.bundle.min.js'%}"> </script>
+<script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
+
+<style>
+	
+	/* .table-scrolls{
+		width: 100%;
+		display: table-caption;
+		height: 500px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	} */
+	.hide {
+		opacity: 0;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.showOnHover:hover .hide {
+		opacity: 1;
+		transition: 0.3s all ease-in-out;
+	}
+
+	.button2 {
+		background-color: var(--main-color);
+		color: white;
+		padding: 8px 30px;
+		border: none;
+		border-radius: 15px;
+		box-shadow: inset 0px -8px 7px 0 rgb(0 0 0 / 24%), inset 0px 5px 7px 0 rgb(255 255 255 / 52%), 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease 0.3s;
+	}
+
+	.btn.button2:hover {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
+		transition: all ease-in 0.5s;
+	}
+
+	.btn.button2:focus {
+		background: var(--main-color);
+		color: #ffffff;
+		border-radius: 30px;
+		box-shadow: inset 0px 4px 7px 0 rgba(0, 0, 0, 0.274), inset 0px -5px 7px 0 #e6ecebd8;
+		transition: all 0.1s;
+	}
+
+	/* ============================================================================================= */
+
+	/* Colors for the transactions types */
+	.table-orange{
+		background-color: #ffd8a9;
+		color: black;
+		}
+
+	.table-red {
+	background-color: #ff7272;
+	color: white;
+	}
+
+	.table-blue {
+	background-color: #a9d8ff;
+	color: black;
+	}
+
+	.table-yellow {
+	background-color: #fffaa9;
+	color: black;
+	}
+
+	.table-lightblue {
+	background-color: #a9e6ff;
+	color: black;
+	}
+
+	
+</style>
+<!-- Header Info of Consumer -->
+<div class="container-fluid p-0">
+	
+    <div id="contextMenu" class="context-menu" style="text-decoration: none;">
+        <div class="context-menu-item" id="customLink"></div>
+    </div>
+	<div class="table-responsive">
+		<table id="dtBasicExample1" class="table table-bordered" cellspacing="0" width="100%">
+			<thead class="wb_thead">
+				<tr class="header">
+					<th scope="col" style="min-width:25px">Account ID</th>
+					<th scope="col" style="min-width:25px">Name</th>
+					<th scope="col" style="min-width:25px">Meter Number</th>
+					<th scope="col" style="min-width:25px">Current Reading</th>
+					<th scope="col" style="min-width:25px">Excess Payment</th>
+					<th scope="col" style="min-width:25px">Current Balance</th>
+				</tr>
+			</thead>
+			<tbody class="wb_tbody">
+				<tr class="showOnHover">
+					<td class="table-light text-center">{{u.consumer_id}}</td>
+					<td class="table-light text-center">{{u.firstname}} {{u.middlename}} {{u.lastname}}</td>
+					<td class="table-light text-center">{{u.meternumber}}</td>
+					<td class="table-light text-center">{{u.current_reading}}</td>
+					<td class="table-light text-center">&#8369; {{u.excess|floatformat:2|intcomma}}</td>
+					<td class="table-light text-center">&#8369; {{u.current_bal|floatformat:2|intcomma}}
+						<button type="button" class="btn btn-primary" style="float: right; margin-left: 5px;" onclick=print()>Get Bill</button>
+
+					 	{% if not ispaid %}<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button> {% endif %}
+
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+>>>>>>> LatestChangesFixed
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
 
@@ -237,10 +357,67 @@ Account Ledger
     </div>
 </div>
 
+<<<<<<< HEAD
 <script>
         document.addEventListener("DOMContentLoaded", () => {
             const form = document.querySelector("#payment form");
             const warningMessage = document.getElementById("warningMessage");
+=======
+<!-- Ledger -->
+	<div class="" id="ledger">
+		<h1 class="mb-3 text-center">Account Ledger</h1>
+		<div class="container-fluid p-0">
+			<div class="table-responsive">
+				<div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
+					<table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0" width="100%">
+						<thead class="wb_thead"  style="position: sticky; top: 0;">
+							<tr>
+								<th style="min-width: 100px;">Transaction ID</th>
+								<th style="min-width: 100px;">Date</th>
+								<th style="min-width: 100px;">Month-Year</th>
+								<th style="min-width: 100px;">Previous</th>
+								<th style="min-width: 100px;">Current</th>
+								<th style="min-width: 110px;">Usage</th>
+								<th style="min-width: 110px;">Bill</th>
+								<th style="min-width: 100px;">Payment</th>
+								<th style="min-width: 100px;">Balance</th>
+								<th style="min-width: 110px;">Connection Type</th>
+								<th style="min-width: 100px;">Processed By</th>
+								<th style="min-width: 110px;">Status</th>
+							</tr>
+						</thead>
+						<tbody class="wb_tbody" >
+							{% for t in table reversed %}
+							<tr class="{% if t.reading %} context-menu-target {% else %}no-right-click {% endif %} {{t.style}}" data-link="form-{{t.transid}}">
+								<form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
+									<input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
+									<input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
+									<input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
+								</form>
+								<td>{{t.transid}}</td>
+								<td>{{t.date}}</td>
+								<td>{{t.month | slice:":3"}}-{{t.year}}</td>
+								<td>{{t.prev}}</td>
+								<td>{{t.reading}}</td>
+								<td>{{t.usage}}</td>
+								<td>{% if t.bill or t.bill != '' %}&#8369; {% endif %}{{t.bill|floatformat:2|intcomma}}</td>
+								<td>{% if t.payment %}&#8369; {{t.payment|floatformat:2|intcomma}}{% endif %}
+								<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>
+								<td>{{t.rateid}}</td>
+								<td>{{t.pb}}</td>
+								<td style="text-align: center;" class="text-center align-middle">{{ t.ispaid }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+>>>>>>> LatestChangesFixed
 
             if (!form) {
                 console.error("❌ Form not found inside modal!");

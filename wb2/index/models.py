@@ -302,3 +302,5 @@ class UnpaidTransaction(models.Model):
 
 #class background_task(models.Model):
 #class transaction_archive(models.Model):
+    transactions = models.ManyToManyField(Transactions)
+    date_added = models.DateField(auto_now_add=True)

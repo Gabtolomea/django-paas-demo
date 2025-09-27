@@ -591,6 +591,14 @@ def fix_billing_errors():
 
 def dump_database():
     
+    '''cnx = mysql.connector.connect(
+        user='root',
+        password='jazfer',
+        host='localhost',
+        port=3307,
+        database='wb2',
+        charset='latin1'
+    )''' #Changed by Bandajon k., 
     cnx = MySQLdb.connect(
         user='wbilling',
         passwd='@-@JazfeR123',
@@ -599,6 +607,7 @@ def dump_database():
         db='wb2',
         charset='latin1'
     )
+
 
     cursor = cnx.cursor()
 

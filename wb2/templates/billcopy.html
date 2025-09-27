@@ -21,7 +21,7 @@
         line-height: 12px;
         font-family: monospace;
         color: #000;
-        height: 1100px;
+        height: 690px;
     }
 
     .invoice-box table {
@@ -198,46 +198,11 @@
     .border-custom {
         border-color: #000000bd !important;
     }
-
-    .small-table {
-        font-size: 14px !important;
-        table-layout: fixed !important;
-        word-wrap: break-word !important;
-        width: 100% !important;
-    }
-
-    .invoice-box table th,
-    .invoice-box table td {
-        font-size: 14px !important;
-        word-wrap: break-word;
-        white-space: normal;
-    }
-
-    .invoice-box table th:first-child,
-    .invoice-box table td:first-child {
-        width: 40px !important; /* adjust as needed */
-        text-align: center;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-
-    .invoice-box table th:nth-child(4),
-    .invoice-box table td:nth-child(4) {
-        width: 60px !important;  /* or 50px depending on expected max digits */
-        text-align: center;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-
-    .invoice-box table th {
-        text-align: center !important;
-    }
-
 </style>
 
 <!-- Water Billing Layout -->
 <!-- for content to hide in the ledger -->
-<div style="display: none;" class="billing">
+<div  style="display: none;" class="billing">
     <div id="invoice">
         <div class="invoice-box">
             <table cellpadding="0" cellspacing="0">
@@ -263,6 +228,19 @@
                                             <!-- Right Logo Bagong Pilipinas -->
                                             <img src="/static/images/logopilipinas.png" alt="Right Logo" style="height: 65px;">
                                         </div>
+                                <tr>
+                                    <td style="padding-bottom: 0px; padding-left: 44%;">
+                                        <img id="logo" src="{% static 'images/lgulogo.png' %}" alt="LOGO" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;">
+                                        <p class="mun">Water Bill</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; color: #423e3e; padding-top: 0%; !important">
+                                        <h6><i>Municipality of Ginatilan</i></h6>
                                     </td>
                                 </tr>
                             </table>
@@ -280,6 +258,22 @@
                                     <td style="width: 100% !important; padding-left: 10px !important; text-align: right !important;">
                                         <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
                                         <h6><b>Balance:</b> <u class="underThick">PHP {{ total_balance|floatformat:2 }}</u></h6>
+                                    <td style="line-height: 0px;">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="d-flex flex-row-reverse">
+                                                    <div class="col-md-3">
+                                                        <h6><b>Meter Number:</b> <u class="underThick">{{u.meternumber}}</u></h6>
+                                                        <h6><b>Address:</b> <u class="underThick">{{u.installation_address}}</u></h6>
+                                                    </div>
+                                                    <div class="col-md-9 mt-md-0 mt-3">
+                                                        <h6><b>Name:</b> <u class="underThick">{{u.firstname}}
+                                                                {{u.middlename}} {{u.lastname}}</u></h6>
+                                                        <h6><b>Account ID:</b><u class="underThick">{{u.consumer_id}}</u></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -306,12 +300,32 @@
                             <td class="text-center">{{ entry.month }} - {{ entry.year }}</td>
                             <td class="text-center">{{ entry.usage|default:"-" }}</td>
                             <td class="text-center">PHP {{ entry.amount_due|floatformat:2 }}</td>
+                    </tr>
+                </tbody>
+
+                <table class="table table-bordered border-custom">
+                    <thead class="custom-color">
+                        <tr>
+                            <th>No.</th>
+                            <th>Unpaid Month</th>
+                            <th>Usage per Cubic</th>
+                            <th>Charges</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for up in up %}
+                        <tr>
+                            <td class="text-center">{{forloop.counter}}</td>
+                            <td class="text-center">{{up.month}} - {{up.year}}</td>
+                            <td>{{up.usage}}</td>
+                            <td>{{up.amount}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 <div class="d-flex flex-row-reverse" style="padding-right: 5px;">
                     <h6><b>Total:</b> <u class="underThick">PHP {{ total_balance|floatformat:2 }}</u></h6>
+                    <h6><b>Total:</b> <u class="underThick">PHP   {{tu}}</u></h6>
                 </div>
             </table>
             <footer class="footer">Date Issued: {{date_today}}</footer>
@@ -333,7 +347,16 @@
             jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait' }
         };
         html2pdf().from(invoice).set(opt).save();
-    }
+    }       
+
+    var amountElement = document.getElementById("amountFromBackend");
+    var amountValue = parseFloat(amountElement.innerHTML);
+
+    // Format the number with at least 2 decimal places using JavaScript
+    var formattedAmount = amountValue.toFixed(4);
+
+    // Update the HTML with the formatted value
+    amountElement.innerHTML = formattedAmount;
 
     var amountElement = document.getElementById("amountFromBackend");
     var amountValue = parseFloat(amountElement.innerHTML);
