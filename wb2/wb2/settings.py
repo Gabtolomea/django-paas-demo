@@ -104,7 +104,7 @@ DATABASES = {
         'NAME': 'wb2',
         'USER': 'wbilling',
         'PASSWORD': '@-@JazfeR123',
-        'HOST': 'localhost',
+        'HOST': '192.168.3.2',
         'PORT': '3306'
     }
 }
@@ -166,7 +166,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
-MEDIA_URL = 'images/'
+MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
