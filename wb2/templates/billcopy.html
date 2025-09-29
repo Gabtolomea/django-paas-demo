@@ -301,6 +301,7 @@
                             <td class="text-center">{{ entry.usage|default:"-" }}</td>
                             <td class="text-center">PHP {{ entry.amount_due|floatformat:2 }}</td>
                     </tr>
+                    {% endfor %}
                 </tbody>
 
                 <table class="table table-bordered border-custom">
