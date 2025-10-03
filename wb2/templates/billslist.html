@@ -59,7 +59,7 @@ Billing
 								<th style="min-width: 100px;">Meter Number</th>
 								<th style="min-width: 100px;">Name</th>
 								<th style="min-width: 100px;">Address</th>
-								<th style="min-width: 100px;">Total Balance</th>
+								<th style="min-width: 100px;">Total Balance (₱) </th>
 							</tr>
 						</thead>
 						<tbody class="wb_tbody">
@@ -71,7 +71,7 @@ Billing
 								<td style="text-align:center;">{{bill.meternumber}}</td>
 								<td>{{bill.lastname}}, {{bill.firstname}} {{bill.middlename}}</td>
 								<td style="text-align:center;">{{bill.installation_address}}</td>
-								<td class="balance"> &#8369; {{ bill.unpaid_bill|floatformat:2|intcomma }}</td>
+								<td class="balance" style="text-align: right;">  {{ bill.unpaid_bill|floatformat:2|intcomma }}</td>
 							</tr>
 							{% endfor %}
 							{% else %}

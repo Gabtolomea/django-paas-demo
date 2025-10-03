@@ -347,8 +347,8 @@ Usage Report
 					<thead class="wb_thead">
 					<tr>
 						<th scope="col" style="background-color: #006c85">Month</th>
-						<th scope="col" style="background-color: #006c85">Consumptions</th>
-						<th scope="col" style="background-color: #006c85">Bills</th>
+						<th scope="col" style="background-color: #006c85">Consumptions (m³)</th>
+						<th scope="col" style="background-color: #006c85">Bills (₱)</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -356,8 +356,8 @@ Usage Report
 						{% if t.usage%}
 						<tr>
 							<td>{{t.month}}</td>
-							<td>{{t.usage}} &#13221</td>
-							<td>&#8369; {{t.bill|floatformat:2|intcomma}}</td>
+							<td >{{t.usage}} </td> <!-- &#13221 -->
+							<td > {{t.bill|floatformat:2|intcomma}}</td>
 						</tr>
 						{% endif %}
 						{% endfor %}

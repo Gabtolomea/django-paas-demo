@@ -275,12 +275,12 @@ Monthly Summary
                             <!-- <th style="min-width: 100px;">Bill Type</th>added changes 28/10/2024    -->
                             <th style="min-width: 100px;">Reading</th>
                             <th style="min-width: 100px;">CU.M Used</th><!-- changed from usage to CU.M Used 28/10/2024    -->
-                            <th style="min-width: 100px;">Amount Due</th> <!-- changed from current due to amount due 28/10/2024    -->
+                            <th style="min-width: 100px;">Amount Due (₱)</th> <!-- changed from current due to amount due 28/10/2024    -->
                             <!-- <th style="min-width: 100px;">Previous Balance</th>  removed 28/10/2024    -->
                             <!--<th style="min-width: 100px;">Additional Fees</th> removed 28/10/2024 -->
-                            <th style="min-width: 100px;">Penalty</th> <!-- added changes 28/10/2024    -->
+                            <th style="min-width: 100px;">Penalty (₱)</th> <!-- added changes 28/10/2024    -->
                             <!--<th style="min-width: 100px;">Total Balance</th>  -->
-                            <th style="min-width: 110px;">Action</th><!-- changed from Amount Paid to Action  28/10/2024    -->
+                            <th style="min-width: 110px;">Action (₱)</th><!-- changed from Amount Paid to Action  28/10/2024    -->
                         </tr>
                     </thead>
 
@@ -291,16 +291,16 @@ Monthly Summary
                             <!-- <td class="text-center">{{t.transType}}</td>added changes unfinished 28/10/2024    -->
                             <td class="text-center">{{t.reading}}</td>
                             <td class="text-center">{{t.usage}}</td>
-                            <td class="text-center">{% if t.total_bill %} &#8369; {{t.total_bill|floatformat:2|intcomma}} {% endif %}</td> 
+                            <td class="text-center" >{% if t.total_bill %}  {{t.total_bill|floatformat:2|intcomma}} {% endif %}</td> 
                             <!--<td class="text-center">{{t.previous_balance}}</td> removed 28/10/2024 -->
                             <!--<td class="text-center">{{t.additional_fees}}</td> removed 28/10/2024 -->
                             <td class="text-center">{{t.}}</td><!-- added changes unfinished for penalty 28/10/2024    -->
                             <!--<td class="text-center">{{t.total_due}}</td>   -->
-                            <td class="text-center">
+                            <td class="text-center" >
 
                                 {% if t.total_bill  %} 
                                 {% if t.total_amount_paid %}
-                                    &#8369; {{t.total_amount_paid|floatformat:2|intcomma }} <!-- |floatformat:2|intcomma added 14/11/2024 -->
+                                     {{t.total_amount_paid|floatformat:2|intcomma }} <!-- |floatformat:2|intcomma added 14/11/2024 -->
                                 {% else %}
                                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#pay-{{t.monthval}}"> PAY </button> 
                                 {% endif %}

@@ -232,7 +232,7 @@
                     <th>Installment Period (Months)</th>
                     <th>Number of Months Paid</th>
                     <th>Date</th>
-                    <th>Amount</th>
+                    <th>Amount (₱)</th>
                     <th>Action</th>
             </tr>
         </thead>
@@ -246,7 +246,7 @@
                 <td>{{ fee.months }}</td>
                 <td>{{ fee.month_counter }}</td>
                 <td>{{ fee.date_added|date:"F j, Y" }}</td>
-                <td>₱{{ fee.amount|floatformat:2 }}</td>
+                <td>{{ fee.amount|floatformat:2 }}</td>
                 <td>
                     <div class="d-flex align-items-center gap-2">
                         {% if fee.months > fee.month_counter %}
