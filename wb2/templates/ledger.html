@@ -316,11 +316,11 @@ Account Ledger
                         <th>Previous Reading</th>
                         <th>Current Reading</th>
                         <th>CU.M Used</th>
-                        <th>Bill Amount</th>
-                        <th>Less Excess</th>
-                        <th>Penalty</th>
-                        <th>Amount Due</th>
-                        <th>Payment</th>
+                        <th>Bill Amount (₱)</th>
+                        <th>Less Excess (₱)</th>
+                        <th>Penalty (₱)</th>
+                        <th>Amount Due (₱)</th>
+                        <th>Payment (₱)</th>
                         <th>Payment Transaction ID</th>
                         <!--<th>Balance</th>-->
                         <th>Processed By</th>
@@ -358,20 +358,20 @@ Account Ledger
                         <td>{{t.prev}}</td>
                         <td>{{t.reading}}</td>
                         <td>{{t.usage}}</td>
-                        <td>&#8369; {{t.bill|floatformat:2|intcomma}}</td>
-                        <td>&#8369; {{t.excess|default:0|floatformat:2|intcomma}}</td>
-                        <td>&#8369; {{t.penalty|default:0|floatformat:2|intcomma}}</td>
-                        <td>
+                        <td style="text-align: right;"> {{t.bill|floatformat:2|intcomma}}</td>
+                        <td style="text-align: right;"> {{t.excess|default:0|floatformat:2|intcomma}}</td>
+                        <td style="text-align: right;" {{t.penalty|default:0|floatformat:2|intcomma}}</td>
+                        <td style="text-align: right;">
                             {% if t.status == "Unpaid" %}
-                            &#8369; {{t.amount_due|default:0|floatformat:2|intcomma}}
+                                 {{t.amount_due|default:0|floatformat:2|intcomma}}
                             {% endif %}
                             {% if t.status == "NotFullyPaid" %}
-                            &#8369; {{t.amount_due|default:0|floatformat:2|intcomma}}
+                                 {{t.amount_due|default:0|floatformat:2|intcomma}}
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="text-align: right;">
                             {% if t.payment %}
-                            &#8369; {{ t.payment|floatformat:2|intcomma }}
+                                {{ t.payment|floatformat:2|intcomma }}
                             {% endif %}
                         </td>
                         <td>{{t.paytranid}}</td>

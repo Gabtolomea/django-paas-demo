@@ -160,7 +160,7 @@
                     <th>Account ID</th>
                     <th>Meter Number</th>
                     <th>Name</th>
-                    <th>Paid Amount</th>
+                    <th>Paid Amount (₱)</th>
                     <th>Date Paid</th>
                     <th>Transaction ID</th>
                 </tr>
@@ -172,7 +172,7 @@
                     <td>{{ rec.consumer_id }}</td>
                     <td>{{ rec.meternumber }}</td>
                     <td class="text-start ps-3">{{ rec.name }}</td>
-                    <td>₱ {{ rec.paid_amount|floatformat:2 }}</td>
+                    <td style="text-align: right;"> {{ rec.paid_amount|floatformat:2 }}</td>
                     <td>{{ rec.date_paid }}</td>
                     <td>{{ rec.transID }}</td>
                 </tr>

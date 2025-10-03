@@ -81,8 +81,8 @@
 				<th style="width: 20% !important;">Reading</th>
 				<th style="width: 20% !important;">Reading Date</th>
 				<th style="width: 20% !important;">Consumption</th>
-				<th style="width: 20% !important;">Total Bill</th>
-				<th style="width: 20% !important;">Total Amount Paid</th>
+				<th style="width: 20% !important;">Total Bill (₱)</th>
+				<th style="width: 20% !important;">Total Amount Paid (₱)</th>
 
 			</tr>
 		</thead>
@@ -93,8 +93,8 @@
 				<td>{{t.reading}}</td>
 				<td>{{t.reading_date}}</td>
 				<td>{{t.consumption}}</td>
-				<td>&#8369; {{t.total_bill}}</td>
-				<td>&#8369; {{t.total_amount_paid|floatformat:2|intcomma}}</td>
+				<td style="text-align: right;"> {{t.total_bill}}</td>  <!-- &#8369; -->
+				<td style="text-align: right;"> {{t.total_amount_paid|floatformat:2|intcomma}}</td>
 				
 				
 			</tr>
