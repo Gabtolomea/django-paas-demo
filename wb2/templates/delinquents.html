@@ -84,7 +84,7 @@ Delinquent Accounts
 <div class="container">
     <div class="mb-3">
         <label for="barangay" class="form-label">Barangay:</label>
-        <select id="barangay" class="form-select" style="width: 13%;">
+        <select id="barangay" class="form-select" style="width: 22%;">
             <option value="All" {% if selected_barangay == "All" or not selected_barangay %}selected{% endif %}>All</option>
             {% for b in barangay_list %}
                 <option value="{{ b }}" {% if b == selected_barangay %}selected{% endif %}>{{ b }}</option>
