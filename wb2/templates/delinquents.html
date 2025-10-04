@@ -85,22 +85,12 @@ Delinquent Accounts
     <div class="mb-3">
         <label for="barangay" class="form-label">Barangay:</label>
         <select id="barangay" class="form-select" style="width: 13%;">
-            <option value="All" {% if selected_barangay == "All" %}selected{% endif %}>All</option>
-            <option value="Anao" {% if selected_barangay == "Anao" %}selected{% endif %}>Anao</option>
-            <option value="Cagsing" {% if selected_barangay == "Cagsing" %}selected{% endif %}>Cagsing</option>
-            <option value="Calabawan" {% if selected_barangay == "Calabawan" %}selected{% endif %}>Calabawan</option>
-            <option value="Cambagte" {% if selected_barangay == "Cambagte" %}selected{% endif %}>Cambagte</option>
-            <option value="Campisong" {% if selected_barangay == "Campisong" %}selected{% endif %}>Campisong</option>
-            <option value="Cañorong" {% if selected_barangay == "Cañorong" %}selected{% endif %}>Cañorong</option>
-            <option value="Guiwanon" {% if selected_barangay == "Guiwanon" %}selected{% endif %}>Guiwanon</option>
-            <option value="Looc" {% if selected_barangay == "Looc" %}selected{% endif %}>Looc</option>
-            <option value="Malatbo" {% if selected_barangay == "Malatbo" %}selected{% endif %}>Malatbo</option>
-            <option value="Mangaco" {% if selected_barangay == "Mangaco" %}selected{% endif %}>Mangaco</option>
-            <option value="Palanas" {% if selected_barangay == "Palanas" %}selected{% endif %}>Palanas</option>
-            <option value="Poblacion" {% if selected_barangay == "Poblacion" %}selected{% endif %}>Poblacion</option>
-            <option value="Salamanca" {% if selected_barangay == "Salamanca" %}selected{% endif %}>Salamanca</option>
-            <option value="San Roque" {% if selected_barangay == "San Roque" %}selected{% endif %}>San Roque</option>
-            </select>
+            <option value="All" {% if selected_barangay == "All" or not selected_barangay %}selected{% endif %}>All</option>
+            {% for b in barangay_list %}
+                <option value="{{ b }}" {% if b == selected_barangay %}selected{% endif %}>{{ b }}</option>
+            {% endfor %}
+        </select>
+
     </div>
     
     <script>
