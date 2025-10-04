@@ -29,8 +29,54 @@
         </span>
     </div>
 </div>
+<style>
+/*Additional Payment Style */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease-in-out;
+    }
 
+    .modal-header {
+        background-color: #005F73;
+        color: #ffffff;
+        border-bottom: none;
+        padding: 1.25rem 1.5rem;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
 
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-footer {
+        background-color: #ffffff;
+        border-top: 1px solid #ccc;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        padding: 1rem 1.5rem;
+    }
+
+    .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.75) !important; /* lighter, try 0.3 to 0.7 */
+    }
+    
+    .form-label {
+        color: #005F73;
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+    }
+
+    
+</style>
 <!-- Installment Fee Modal -->
 <div class="modal fade" id="installment" tabindex="-1" role="dialog" aria-labelledby="installment" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -111,7 +157,7 @@
 
             let inputNumber = document.createElement('input');
             inputNumber.type = 'number';
-            inputNumber.classList.add('form-control', 'mb-1');
+            inputNumber.classList.add('form-control', 'mb-1', 'fee-amount'); //added fee-amount -10/3/2025
             inputNumber.required = true;
             inputNumber.addEventListener('input', updateTotalAmount);
             numberDiv.appendChild(inputNumber);
@@ -185,7 +231,8 @@
 
     function calculateTotalAmount() {
         let total = 0;
-        let numberInputs = document.querySelectorAll('.additional-fees input[type="number"]');
+        let numberInputs = document.querySelectorAll('.additional-fees input.fee-amount'); //input[type="number"] 10/3/2025
+
         numberInputs.forEach(input => {
             total += Number(parseFloat(input.value) || 0);
         });

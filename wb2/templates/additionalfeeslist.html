@@ -123,11 +123,15 @@
 
     .modal-footer {
         background-color: #f1f1f1;
-        border-top: none;
+        border-top: 1px solid #ccc;
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
         padding: 1rem 1.5rem;
     }
+    .modal-backdrop.show {
+        background-color: rgba(0, 0, 0, 0.95) !important;
+    }
+
 
     .form-label {
         color: #005F73;
@@ -172,8 +176,11 @@
         border-color: #004653;
     }
 
+    
+
     .btn-close {
-        filter: brightness(0) invert(1);
+        filter: none; /* Removes brightness and invert filters */
+        color: black; /* Makes the icon black */
     }
 
     .action-hover {
