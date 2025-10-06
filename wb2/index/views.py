@@ -4838,7 +4838,7 @@ def delinquent_accounts(request): #very detailed barangay names
             filter=Q(transactions__is_billpaid=False, transactions__transType='Billing')
         )
     ).filter(
-        delinquent_months__gte=2,
+        delinquent_months__gte=1,
         total_delinquent__gt=0
     ).order_by('-delinquent_months')
 
