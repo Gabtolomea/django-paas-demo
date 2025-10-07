@@ -3576,7 +3576,10 @@ import calendar
 def monthly_summary(request, id, year):
     table = []
     years = []
-
+    
+    total_due = 0
+    total_unpaid_bill =0
+    
     class montly_sum():
         def __init__(self, month, monthval, reading, reading_date, usage,
                      total_bill, prev_bal, additional_fees, total_due,
@@ -3640,7 +3643,7 @@ def monthly_summary(request, id, year):
         
         payid = 0
         total_amount_paid = 0
-        total_unpaid_bill = 0
+        #total_unpaid_bill = 0
 
         if bill.is_billpaid:
             try:
@@ -3693,8 +3696,8 @@ def monthly_summary(request, id, year):
         table.append(a)
 
     is_issues = get_is_seen_issues(request)
-    
-    total_balance_due = total_due
+     
+    total_balance_due = total_due 
 
     context = {
         'table': table,

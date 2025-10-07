@@ -296,11 +296,15 @@ class UnpaidTransaction(models.Model):
     year = models.IntegerField()
     unpaid_amount = models.FloatField()  # Ensure this field exists
     date_unpaid = models.DateField(default=datetime.today)
+    
+    class Meta:
+        db_table = "index_unpaidtransaction"
+
 
     def __str__(self):
         return f"Unpaid: {self.consumer} - {self.month}/{self.year} - {self.unpaid_amount}"
 
 #class background_task(models.Model):
 #class transaction_archive(models.Model):
-    transactions = models.ManyToManyField(Transactions)
-    date_added = models.DateField(auto_now_add=True)
+    #transactions = models.ManyToManyField(Transactions)
+    #date_added = models.DateField(auto_now_add=True)
