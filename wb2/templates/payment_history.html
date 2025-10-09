@@ -11,12 +11,6 @@ Payment History
 <script src="{% static 'jspdf.plugin.autotable.js'%}"> </script>
 
 
-
-
-
-
-
-
 <style>
     /* .table-scrolls{
         width: 100%;
@@ -26,23 +20,9 @@ Payment History
         overflow-x: hidden;
     } */
 
-
-
-
-
-
-
-
     .dataTables_empty {
         text-align: center;
     }
-
-
-
-
-
-
-
 
     .odd {
         font-size: 1rem;
@@ -50,14 +30,6 @@ Payment History
         line-height: 1.5;
         -webkit-text-size-adjust: 100%;
         -webkit-tap-highlight-color: transparent;
-
-
-
-
-
-
-
-
         caption-side: bottom;
         font-family: Arial;
         border-collapse: separate !important;
@@ -69,36 +41,15 @@ Payment History
         color: #212529;
     }
 
-
-
-
-
-
-
-
     .hide {
         opacity: 0;
         transition: 0.3s all ease-in-out;
     }
 
-
-
-
-
-
-
-
     .showOnHover:hover .hide {
         opacity: 1;
         transition: 0.3s all ease-in-out;
     }
-
-
-
-
-
-
-
 
     .button2 {
         background-color: var(--main-color);
@@ -110,13 +61,6 @@ Payment History
         transition: all ease 0.3s;
     }
 
-
-
-
-
-
-
-
     .btn.button2:hover {
         background: var(--main-color);
         color: #ffffff;
@@ -124,13 +68,6 @@ Payment History
         box-shadow: inset 0px -8px 7px 0 rgba(0, 0, 0, 0.39), inset 0px 5px 7px 0 #e6ecebd8, 0px 6px 6px 0 rgb(0 0 0 / 19%);
         transition: all ease-in 0.5s;
     }
-
-
-
-
-
-
-
 
     .btn.button2:focus {
         background: var(--main-color);
@@ -140,21 +77,7 @@ Payment History
         transition: all 0.1s;
     }
 
-
-
-
-
-
-
-
     /* ============================================================================================= */
-
-
-
-
-
-
-
 
     .invoice-box {
         max-width: 1044px;
@@ -168,59 +91,24 @@ Payment History
         color: #000;
     }
 
-
-
-
-
-
-
-
     .invoice-box table {
         width: 100%;
         line-height: inherit;
         text-align: left;
     }
 
-
-
-
-
-
-
-
     .invoice-box table td {
         padding: 11px;
         vertical-align: top;
     }
 
-
-
-
-
-
-
-
     .invoice-box table tr td:nth-child(2) {
         text-align: right;
     }
 
-
-
-
-
-
-
-
     .invoice-box table tr.top table td {
         padding-bottom: 0px;
     }
-
-
-
-
-
-
-
 
     .invoice-box table tr.top table td.title {
         font-size: 45px;
@@ -228,23 +116,9 @@ Payment History
         color: rgb(0, 0, 0);
     }
 
-
-
-
-
-
-
-
     .invoice-box table tr.information table td {
         padding-top: 0;
     }
-
-
-
-
-
-
-
 
     .invoice-box table tr.heading td {
         background: #eee;
@@ -252,57 +126,22 @@ Payment History
         font-weight: bold;
     }
 
-
-
-
-
-
-
-
     .invoice-box table tr.details td {
         padding-bottom: 0px;
     }
-
-
-
-
-
-
-
 
     .invoice-box table tr.item td {
         border-bottom: 1px solid #eee;
     }
 
-
-
-
-
-
-
-
     .invoice-box table tr.item.last td {
         border-bottom: none;
     }
-
-
-
-
-
-
-
 
     .invoice-box table tr.total td:nth-child(2) {
         border-top: 2px solid #eee;
         font-weight: bold;
     }
-
-
-
-
-
-
-
 
     @media only screen and (max-width: 600px) {
         .invoice-box table tr.top table td {
@@ -311,13 +150,6 @@ Payment History
             text-align: center;
         }
 
-
-
-
-
-
-
-
         .invoice-box table tr.information table td {
             width: 100%;
             display: block;
@@ -325,60 +157,25 @@ Payment History
         }
     }
 
-
-
-
-
-
-
-
     /** RTL **/
     .rtl {
         direction: rtl;
         font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
     }
 
-
-
-
-
-
-
-
     .rtl table {
         text-align: right;
     }
 
-
-
-
-
-
-
-
     .rtl table tr td:nth-child(2) {
         text-align: left;
     }
-
-
-
-
-
-
-
 
     #logo {
         vertical-align: middle;
         border-style: none;
         height: 90px;
     }
-
-
-
-
-
-
-
 
     .total {
         font-weight: bold;
@@ -388,25 +185,11 @@ Payment History
         border-color: black;
     }
 
-
-
-
-
-
-
-
     .mun {
         font-family: monospace;
         font-size: 25px;
         font-weight: bold;
     }
-
-
-
-
-
-
-
 
     .mun-header {
         font-size: 38px;
@@ -414,21 +197,23 @@ Payment History
         font-weight: bold;
     }
 
-
-
-
-
-
-
-
     .st {
         font-size: 21px;
         font-weight: bold;
         font-family: emoji;
     }
+
+    /* Removes arrows for number input fields (for Amount) */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
-
-
 
 
  <!-- script added for unpaid button -Enjambre 3/21/2025-->
@@ -470,30 +255,8 @@ Payment History
 
 
 
-
-
-
-
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -505,30 +268,13 @@ Payment History
 
 
 
-
-
-
-
     <!-- Buttons -->
 
 
 
 
 
-
-
-
     {% include 'billingbuttons.html' %}
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -559,9 +305,6 @@ Payment History
 
 
 
-
-
-
             </form>
             <script>
                 yearselection = document.getElementById("yearselection")
@@ -577,30 +320,7 @@ Payment History
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -685,17 +405,28 @@ Payment History
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                        <div class="modal-body">
+                <div class="form-group">
+                    <label>Amount</label>
+                    <!-- DILI NA MA-EDIT ANG AMOUNT -->
+                    <input type="number" name="amount" value="{{ i.receivedamt }}" 
+                        class="form-control" readonly
+                        style="background-color:#f1f1f1; pointer-events:none;">
+
+                    <label>OR Number</label>
+                    <input type="text" name="or_num" value="{{ i.or_number }}" 
+                        class="form-control" required>
+
+                    <label>Discount Code</label>
+                    <input type="text" name="dis_code" value="{{ i.disc_code }}" 
+                        class="form-control">
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Amount</label>
-                        <input value="{{i.receivedamt}}" name="amount" type="number" class="form-control" required>
-                        <label>OR Number</label>
-                        <input value="{{i.or_number}}" name="or_num" type="" class="form-control" required>
-                        <label>Discount Code</label>
-                        <input value="{{i.disc_code}}" name="dis_code" type="" class="form-control">
-                    </div>
                 </div>
+
+
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" name="btnform2">Update</button>
@@ -850,20 +581,5 @@ Payment History
 
 
 {% endblock payment_history %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

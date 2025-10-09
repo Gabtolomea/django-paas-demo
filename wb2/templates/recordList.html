@@ -13,11 +13,17 @@
     }
 
 
-    .pagination .page-item.active .page-link {
+    {% comment %} .pagination .page-item.active .page-link {
         background-color: #0b6778;
         border-color: #0b6778;
+        color: #ffffff;
     }
 
+    .pagination .page-item .page-link {
+        color: #0b6778;             /* Yellow text */
+        
+    }
+ {% endcomment %}
 
     h1.record-title {
         margin-top: 30px;   /* space above title */
@@ -188,40 +194,87 @@
 
 
     <!-- ✅ Pagination -->
+   <div class="row">
     <div class="d-flex justify-content-center mt-3">
-        <ul class="pagination">
-            {% if record_list.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ record_list.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
-                </li>
-            {% endif %}
-
-
-            {% for num in record_list.paginator.page_range %}
-                {% if num == 1 or num == record_list.paginator.num_pages or num >= record_list.number|add:"-2" and num <= record_list.number|add:"2" %}
-                    <li class="page-item {% if num == record_list.number %}active{% endif %}">
-                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
-                    </li>
-                {% elif num == record_list.number|add:"-3" or num == record_list.number|add:"3" %}
-                    <li class="page-item disabled"><span class="page-link">…</span></li>
+        <div class="dataTables_paginate paging_simple_numbers">
+            <ul style="display: flex; padding-left: 0; list-style: none;">
+                {% if record_list.has_previous %}
+                    <a class="page-links" href="?page={{ record_list.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <li class="paginate_button page-item previous">Previous</li>
+                    </a>
+                {% else %}
+                    <li class="paginate_button disabled page-item previous">Previous</li>
                 {% endif %}
-            {% endfor %}
 
+                {% for num in record_list.paginator.page_range %}
+                    {% if num == record_list.number %}
+                        <a class="page-links" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                            <li class="paginate_button page-item active">{{ num }}</li>
+                        </a>
+                    {% elif num <= 2 or num >= record_list.paginator.num_pages or num >= record_list.number|add:'-2' and num <= record_list.number|add:'2' %}
+                        <a class="page-links" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                            <li class="paginate_button page-item">{{ num }}</li>
+                        </a>
+                    {% elif num == record_list.number|add:'-3' or num == record_list.number|add:'3' %}
+                        <li class="paginate_button disabled page-item">...</li>
+                    {% endif %}
+                {% endfor %}
 
-            {% if record_list.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ record_list.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ record_list.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
-                </li>
-            {% endif %}
-        </ul>
+                {% if record_list.has_next %}
+                    <a class="page-links" href="?page={{ record_list.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <li class="paginate_button page-item next">Next</li>
+                    </a>
+                {% else %}
+                    <li class="paginate_button disabled page-item next">Next</li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </div>
+
+<style>
+    a.page-links {
+        user-select: none;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .paginate_button {
+        cursor: pointer;
+        position: relative;
+        display: block;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        color: var(--main-color);
+        background-color: white;
+        border: 1px solid #dee2e6;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .active > .paginate_button,
+    .paginate_button.active {
+        z-index: 3;
+        color: white !important;
+        background-color: var(--main-color);
+        border-color: #dee2e6;
+    }
+
+    .previous {
+        border-top-left-radius: .375rem;
+        border-bottom-left-radius: .375rem;
+    }
+
+    .next {
+        border-top-right-radius: .375rem;
+        border-bottom-right-radius: .375rem;
+    }
+
+    .disabled {
+        user-select: none;
+        cursor: default;
+        color: #6c757d;
+    }
+</style>
 
 
 <script>
