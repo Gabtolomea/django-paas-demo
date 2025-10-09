@@ -4815,35 +4815,34 @@ def calculate_month_bounds(year):
 
     return month_bounds
 
-
-
-def delinquent_accounts(request): #very detailed barangay names
+def delinquent_accounts(request):
     barangay_filter = request.GET.get('barangay', '')
 
     # Start with all ConsumerInfo objects
     consumers_queryset = ConsumerInfo.objects.all()
-
-    # Get distinct barangays for the dropdown
-    barangay_list = ConsumerInfo.objects.values_list('homeaddress', flat=True).distinct().order_by('homeaddress')
 
     # Apply barangay filter if present and not "All"
     if barangay_filter and barangay_filter != "All":
         consumers_queryset = consumers_queryset.filter(homeaddress=barangay_filter)
 
     # Annotate consumers with delinquent_months and total_delinquent
+    # *** CORRECTED: Use 'transactions' instead of 'transaction_set' ***
     delinquent_consumers = consumers_queryset.annotate(
+        # Count the number of unpaid 'Billing' transactions
         delinquent_months=Count(
-            'transactions',
-            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing')
+            'transactions', # Changed from 'transaction_set'
+            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing') # Changed from 'transaction_set__'
         ),
+        # Sum the 'bill' amount for unpaid 'Billing' transactions
         total_delinquent=Sum(
-            'transactions__bill',
-            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing')
+            'transactions__bill', # Changed from 'transaction_set__'
+            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing') # Changed from 'transaction_set__'
         )
     ).filter(
-        delinquent_months__gte=1,
-        total_delinquent__gt=0
-    ).order_by('-delinquent_months')
+        # Apply the conditions for a consumer to be considered delinquent
+        delinquent_months__gte=1,  # At least 1 delinquent months
+        total_delinquent__gt=0    # Total delinquent amount must be greater than 0
+    ).order_by('-delinquent_months') # Order by most delinquent months first
 
     # Pagination
     paginator = Paginator(delinquent_consumers, 10)
@@ -4853,48 +4852,6 @@ def delinquent_accounts(request): #very detailed barangay names
     context = {
         'page_obj': page_obj,
         'selected_barangay': barangay_filter,
-        'barangay_list': barangay_list,  # ✅ Add this
-    }
-    return render(request, 'delinquents.html', context)
-
-# def delinquent_accounts(request):  detailed barangay names
-    # Get selected barangay from query params
-    barangay_filter = request.GET.get('barangay', 'All')
-
-    # Get all barangays from the Barangays model
-    barangay_list = Barangays.objects.values_list('barangay', flat=True).distinct().order_by('barangay')
-
-    # Start with all consumers
-    consumers_queryset = ConsumerInfo.objects.all()
-
-    # Filter if a specific barangay is selected
-    if barangay_filter != 'All':
-        consumers_queryset = consumers_queryset.filter(homeaddress=barangay_filter)
-
-    # Annotate consumers with delinquency info
-    delinquent_consumers = consumers_queryset.annotate(
-        delinquent_months=Count(
-            'transactions',
-            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing')
-        ),
-        total_delinquent=Sum(
-            'transactions__bill',
-            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing')
-        )
-    ).filter(
-        delinquent_months__gte=2,
-        total_delinquent__gt=0
-    ).order_by('-delinquent_months')
-
-    # Paginate
-    paginator = Paginator(delinquent_consumers, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    context = {
-        'page_obj': page_obj,
-        'selected_barangay': barangay_filter,
-        'barangay_list': barangay_list,  # ✅ Pass to template
     }
     return render(request, 'delinquents.html', context)
 
