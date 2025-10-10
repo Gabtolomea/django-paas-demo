@@ -4823,7 +4823,7 @@ def delinquent_accounts(request):
 
     # Apply barangay filter if present and not "All"
     if barangay_filter and barangay_filter != "All":
-        consumers_queryset = consumers_queryset.filter(homeaddress=barangay_filter)
+        consumers_queryset = consumers_queryset.filter(installation_address__barangay=barangay_filter)
 
     # Annotate consumers with delinquent_months and total_delinquent
     # *** CORRECTED: Use 'transactions' instead of 'transaction_set' ***
@@ -4854,6 +4854,7 @@ def delinquent_accounts(request):
         'selected_barangay': barangay_filter,
     }
     return render(request, 'delinquents.html', context)
+
 
 
 def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
