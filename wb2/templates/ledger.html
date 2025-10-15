@@ -121,11 +121,16 @@ Account Ledger
     .table-hover tbody tr:hover {
         background-color: #e6f7f8;
     }
+
+    .table-scroll-vertical {
+    max-height: 550px; /* Adjust height to show ~10 rows */
+    overflow-y: auto;
+}
 </style>
 
 <!-- Consumer Info Table -->
 <div class="container-fluid p-0">
-    <div class="table-responsive">
+    <div class="table-responsive">  
         <table class="table table-bordered">
             <thead class="wb_thead">
                 <tr class="header">
@@ -301,90 +306,79 @@ Account Ledger
     </div>
 </div>
 
-<!-- Ledger Table -->
 <div id="ledger">
     <h1 class="text-center mb-3">Account Ledger</h1>
+
+    <!-- Horizontal Scroll -->
     <div class="table-responsive container-fluid p-0">
-        <div class="col-12 {% if table|length > 10 %}table-scrolls{% endif %}">
-            <table class="table table-hover table-bordered table-sm table-striped">
-                <thead class="wb_thead" style="position: sticky; top: 0;">
-                    <tr>
-                        <th>Billing Transaction ID</th>
-                        <th>Date</th>
-                        <th>Transaction Type</th>
-                        <th>Bill Month (Month-Year)</th>
-                        <th>Previous Reading</th>
-                        <th>Current Reading</th>
-                        <th>CU.M Used</th>
-                        <th>Bill Amount (₱)</th>
-                        <th>Less Excess (₱)</th>
-                        <th>Penalty (₱)</th>
-                        <th>Amount Due (₱)</th>
-                        <th>Payment (₱)</th>
-                        <th>Payment Transaction ID</th>
-                        <!--<th>Balance</th>-->
-                        <th>Processed By</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody class="wb_tbody">
-                    {% for t in table reversed %}
-                    <tr class="
-                        {% if t.reading %}
-                            context-menu-target
-                        {% else %}
-                            no-right-click
-                        {% endif %}
-                        {% if t.status == 'Paid' %}
-                            row-bill
-                        {% endif %}
-                        {% if t.transType == 'Additional Fee' %}
-                            row-addfee
-                        {% endif %}
-                        {% if t.transType == 'Reset Meter' %}
-                            row-reset
-                        {% endif %}"
-                        data-link="form-{{t.transid}}">
-                        <form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
-                            <input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
-                            <input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
-                        </form>
-                        <td>{{t.transid}}</td>
-                        <td>{{t.date}}</td>
-                        <td>{{t.transType}}</td>
-                        <td>{{t.month|slice:":3"}}-{{t.year}}</td>
-                        <td>{{t.prev}}</td>
-                        <td>{{t.reading}}</td>
-                        <td>{{t.usage}}</td>
-                        <td style="text-align: right;"> {{t.bill|floatformat:2|intcomma}}</td>
-                        <td style="text-align: right;"> {{t.excess|default:0|floatformat:2|intcomma}}</td>
-                        <td style="text-align: right;" {{t.penalty|default:0|floatformat:2|intcomma}}</td>
-                        <td style="text-align: right;">
-                            {% if t.status == "Unpaid" %}
-                                 {{t.amount_due|default:0|floatformat:2|intcomma}}
-                            {% endif %}
-                            {% if t.status == "NotFullyPaid" %}
-                                 {{t.amount_due|default:0|floatformat:2|intcomma}}
-                            {% endif %}
-                        </td>
-                        <td style="text-align: right;">
-                            {% if t.payment %}
-                                {{ t.payment|floatformat:2|intcomma }}
-                            {% endif %}
-                        </td>
-                        <td>{{t.paytranid}}</td>
-                        <!--<td>&#8369; {{t.bal|floatformat:2|intcomma}}</td>-->
-                        <td>{{t.ppb}}</td>
-                        <td class="text-center">{{ t.status }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Vertical Scroll for more than 10 rows -->
+        <div class="col-12">
+            <div class="{% if table|length > 10 %} table-scroll-vertical {% endif %}">
+                <table class="table table-hover table-bordered table-sm table-striped">
+                    <thead class="wb_thead" style="position: sticky; top: 0; background-color: white; z-index: 2;">
+                        <tr>
+                            <th>Billing Transaction ID</th>
+                            <th>Date</th>
+                            <th>Transaction Type</th>
+                            <th>Bill Month (Month-Year)</th>
+                            <th>Previous Reading</th>
+                            <th>Current Reading</th>
+                            <th>CU.M Used</th>
+                            <th>Bill Amount (₱)</th>
+                            <th>Less Excess (₱)</th>
+                            <th>Penalty (₱)</th>
+                            <th>Amount Due (₱)</th>
+                            <th>Payment (₱)</th>
+                            <th>Payment Transaction ID</th>
+                            <th>Processed By</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="wb_tbody">
+                        {% for t in table reversed %}
+                        <tr class="{% if t.reading %}context-menu-target{% else %}no-right-click{% endif %}
+                                   {% if t.status == 'Paid' %}row-bill{% endif %}
+                                   {% if t.transType == 'Additional Fee' %}row-addfee{% endif %}
+                                   {% if t.transType == 'Reset Meter' %}row-reset{% endif %}"
+                            data-link="form-{{t.transid}}">
+                            <form id="form-{{t.transid}}" action="{% url 'add_issue' u.consumer_id t.year %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="reading-{{t.month}}" value="{{t.reading}}">
+                                <input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
+                                <input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
+                            </form>
+                            <td>{{t.transid}}</td>
+                            <td>{{t.date}}</td>
+                            <td>{{t.transType}}</td>
+                            <td>{{t.month|slice:":3"}}-{{t.year}}</td>
+                            <td>{{t.prev}}</td>
+                            <td>{{t.reading}}</td>
+                            <td>{{t.usage}}</td>
+                            <td style="text-align: right;">{{t.bill|floatformat:2|intcomma}}</td>
+                            <td style="text-align: right;">{{t.excess|default:0|floatformat:2|intcomma}}</td>
+                            <td style="text-align: right;">{{t.penalty|default:0|floatformat:2|intcomma}}</td>
+                            <td style="text-align: right;">
+                                {% if t.status == "Unpaid" or t.status == "NotFullyPaid" %}
+                                    {{t.amount_due|default:0|floatformat:2|intcomma}}
+                                {% endif %}
+                            </td>
+                            <td style="text-align: right;">
+                                {% if t.payment %}
+                                    {{ t.payment|floatformat:2|intcomma }}
+                                {% endif %}
+                            </td>
+                            <td>{{t.paytranid}}</td>
+                            <td>{{t.ppb}}</td>
+                            <td class="text-center">{{ t.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
 
 <script type="text/javascript">
     // Disable right-click for specified elements

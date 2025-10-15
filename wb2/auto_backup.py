@@ -37,7 +37,7 @@ def backup_database():
     f"--password={DB_PASSWORD}",
     f"--host={DB_HOST}",
     f"--port={DB_PORT}",
-    # "--column-statistics=0",
+    "--column-statistics=0",
     DB_NAME,
 ]
 
