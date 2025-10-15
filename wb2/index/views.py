@@ -48,6 +48,7 @@ from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from django.utils.timezone import now
 from django.db.models import Count, Sum
+from django.views.decorators.csrf import csrf_protect
 
 
 
@@ -101,6 +102,7 @@ def lp(request):
     # capitalize()
     return render(request, "landing.html")
 
+@csrf_protect
 @unauthenticated_user
 def signin(request):
     if request.method == "POST":
@@ -650,8 +652,12 @@ def ledger(request, id):
         else:       
             billbalance= billbalance + tran.bill
 
-        if bill == 0:
+        # if bill == 0:
+        #     status = 'Unpaid'
+        if tran.is_billpaid:
             status = 'Paid'
+        else:
+            status = 'Unpaid'
 
         ledger_table.append(LedgerEntry(
             transType="Billing",
