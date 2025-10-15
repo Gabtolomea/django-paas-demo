@@ -138,7 +138,7 @@ Delinquent Accounts
                     <td>{{ consumer.lastname }}, {{ consumer.firstname }}</td> 
                     <td>{{ consumer.installation_address }}</td> {# Displaying installation address instead of home address #}
                     {# Use floatformat:2 for currency and intcomma for thousands separator #}
-                    <td>{{ consumer.total_delinquent|floatformat:2|intcomma }}</td> 
+                    <td style="text-align: right;">{{ consumer.total_delinquent|floatformat:2|intcomma }}</td> 
                     <td>{{ consumer.delinquent_months }}</td> 
                 </tr>
                 {% empty %}
