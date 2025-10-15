@@ -4831,7 +4831,7 @@ def delinquent_accounts(request):
         # Count the number of unpaid 'Billing' transactions
         delinquent_months=Count(
             'transactions', # Changed from 'transaction_set'
-            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing') # Changed from 'transaction_set__'
+            filter=Q(transactions__is_billpaid=False, transactions__transType='Billing', transactions__bill__gt=0 ) # Changed from 'transaction_set__'
         ),
         # Sum the 'bill' amount for unpaid 'Billing' transactions
         total_delinquent=Sum(
