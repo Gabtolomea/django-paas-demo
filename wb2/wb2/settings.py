@@ -102,10 +102,10 @@ DATABASES = {
     'default': { 
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wb2',
-        'USER': 'wbilling',
-        'PASSWORD': '@-@JazfeR123',
-        'HOST': '192.168.3.2',
-        'PORT': '3306'
+        'USER': 'root',
+        'PASSWORD': 'jazfer',
+        'HOST': 'localhost',
+        'PORT': '3307'
     }
 }
 

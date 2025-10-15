@@ -8,7 +8,7 @@ import string
 import math
 from datetime import datetime
 from .dataporter import *
-#import mysql.connector
+import mysql.connector
 import MySQLdb
 import os
 from googleapiclient.discovery import build
@@ -591,22 +591,23 @@ def fix_billing_errors():
 
 def dump_database():
     
-    '''cnx = mysql.connector.connect(
+    cnx = mysql.connector.connect(
         user='root',
         password='jazfer',
         host='localhost',
         port=3307,
         database='wb2',
         charset='latin1'
-    )''' #Changed by Bandajon k., 
-    cnx = MySQLdb.connect(
-        user='wbilling',
-        passwd='@-@JazfeR123',
-        host='192.168.3.2',
-        port=3306,
-        db='wb2',
-        charset='latin1'
     )
+    #Changed by Bandajon k., 
+    # cnx = MySQLdb.connect(
+    #     user='wbilling',
+    #     passwd='@-@JazfeR123',
+    #     host='192.168.3.2',
+    #     port=3306,
+    #     db='wb2',
+    #     charset='latin1'
+    # )
 
 
     cursor = cnx.cursor()
