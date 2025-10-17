@@ -322,7 +322,7 @@ Monthly Summary
 
 {% if t.total_amount_paid %}
 {% else %}
-{% if t.total_bill or t.additional_fees %} <!-- from if t.total_bill to  if t.total_bill or t.additional_fees  02/12/2024 Enjambre -->
+{% if t.total_bill %} <!-- from if t.total_bill to  if t.total_bill or t.additional_fees  02/12/2024 Enjambre -->
 <div class="modal fade" id="pay-{{ t.monthval }}" tabindex="-1" role="dialog" aria-labelledby="payment-modal"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -330,25 +330,19 @@ Monthly Summary
             <form action="{% url 'monthlypayment' %}" method="post">
                 {% csrf_token %}
                 <div class="modal-header">
-                    {% if t.additional_fees %}
-                    <h5 class="modal-title">Payment for Additional Fees</h5>
-                    {% else %}
+                
                     <h5 class="modal-title">Payment for Regular Fees</h5> <!--added changes for the additional fee 02/12/2024 -->
-                    {% endif %}
+    
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <!-- Determine which fee to display -->
-                        {% if t.additional_fees %} <!--Added changes --Display additional fees if available 02/12/2024 -->
-                        <label>Amount:</label> 
-                        <span>₱ {{ t.additional_fees|floatformat:2|intcomma }}</span><br>
-                        <input type="hidden" name="payment" value="{{ t.additional_fees }}">
-                        {% else %}<!-- Display total bill if no additional fees are available 02/12/2024-->
+                        
                         <label>Amount:</label>
                         <span>₱ {{ t.total_bill|floatformat:2|intcomma }}</span><br>
                         <input type="hidden" name="payment" value="{{ t.total_bill }}">
-                        {% endif %}
+                        
 
                         <!-- Common hidden inputs -->
                         <input type="hidden" name="conid" value="{{ u.consumer_id }}">

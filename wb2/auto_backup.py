@@ -8,11 +8,11 @@ from google.auth.transport.requests import Request
 import pickle
 
 # === DATABASE CONFIG ===
-DB_NAME = "wb2"
+DB_NAME = "waterbillingv3"
 DB_USER = "root"
 DB_PASSWORD = "jazfer"
 DB_HOST = "localhost"
-DB_PORT = "3307"
+DB_PORT = "3306"
 
 # === LOCAL BACKUP DIRECTORY ===
 # BACKUP_DIR = os.path.join(os.getcwd(), "backups")
@@ -22,7 +22,7 @@ os.makedirs(BACKUP_DIR, exist_ok=True)
 
 
 # === GOOGLE DRIVE CONFIG ===
-FOLDER_ID = "1JAOSsaZ0Hbh9lapN2IZzrbguxztCrnzh"  # Your Drive folder ID
+FOLDER_ID = "1TqL8sn67Tmrat5xZyeAbaqcznlMLQG-N"  # Your Drive folder ID
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 def backup_database():

@@ -595,9 +595,9 @@ def dump_database():
         user='root',
         password='jazfer',
         host='localhost',
-        port=3307,
-        database='wb2',
-        charset='latin1'
+        port=3306,
+        database='waterbillingv3',
+        charset='latin1' 
     )
     #Changed by Bandajon k., 
     # cnx = MySQLdb.connect(

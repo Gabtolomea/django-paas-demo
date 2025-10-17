@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load static %}
 <style>
     /* Water bill theme styles */
@@ -119,6 +120,12 @@
         text-decoration: none;
         border-bottom: 2px solid #000;
     }
+    .small-table td, 
+    .small-table th {
+        font-size: 12px;   /* You can change to 11px or 10px if you want it smaller */
+        padding: 4px;      /* Tightens up spacing a bit */
+    }
+
 </style>
 
 <!-- Water Billing Layout -->
@@ -183,7 +190,7 @@
                         <td class="text-center">{{ entry.transType }}</td>
                         <td class="text-center">{{ entry.month }} - {{ entry.year }}</td>
                         <td class="text-center">{{ entry.usage|default:"-" }}</td>
-                        <td class="text-center">PHP {{ entry.amount_due|floatformat:2 }}</td>
+                        <td class="text-center">PHP {{ entry.amount_due|floatformat:2|intcomma }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -191,7 +198,12 @@
 
             <!-- Total -->
             <div style="text-align:right; margin-top:10px;">
-                <h6><b>Total Balance:</b> <u class="underThick">PHP {{ total_balance|floatformat:2 }}</u></h6>
+                <h6>
+                    <b>Total Balance:</b>
+                    <u class="underThick" style="font-weight: bold; font-size: 18px;">
+                        PHP {{ total_balance|floatformat:2|intcomma }}
+                    </u>
+                </h6>
             </div>
 
             <div class="footer">

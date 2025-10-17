@@ -3863,61 +3863,156 @@ def monthlypayment(request):
         
     return redirect('monthly_summary', id=conid, year=year)
 
-def makepayment(conid, consumer, month, year, user, or_num, con_b_rec):
-    paytran = Transactions()
-    paytran.payment = payment
-    paytran.date = date.today()
-    paytran.acctID = consumer
-    paytran.month = month
-    paytran.year = year
-    paytran.transType = "Payment"
-    #paytran.processedBy = request.user
-    paytran.processedBy = user
-    paytran.save()
-    recT = Transactions()
-    recT.receivedamt = payment
-    recT.date = date.today()
-    recT.acctID = consumer
-    recT.month = month
-    recT.year = year
-    recT.transType = "Received Amount"
-    recT.processedBy = user
-    recT.or_number = or_num
-    recT.save()
+# def makepayment(conid, consumer, month, year, user, or_num, con_b_rec):
+#     paytran = Transactions()
+#     paytran.payment = payment
+#     paytran.date = date.today()
+#     paytran.acctID = consumer
+#     paytran.month = month
+#     paytran.year = year
+#     paytran.transType = "Payment"
+#     #paytran.processedBy = request.user
+#     paytran.processedBy = user
+#     paytran.save()
+#     recT = Transactions()
+#     recT.receivedamt = payment
+#     recT.date = date.today()
+#     recT.acctID = consumer
+#     recT.month = month
+#     recT.year = year
+#     recT.transType = "Received Amount"
+#     recT.processedBy = user
+#     recT.or_number = or_num
+#     recT.save()
+#     try:
+#         billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
+#         billtran.is_billpaid = True
+#         billtran.save()
+#     except ObjectDoesNotExist:
+#         pass
+#     get_balance(consumer.consumer_id)
+#     match month:
+#         case 1:
+#             con_b_rec.total_paid_jan += payment
+#         case 2:
+#             con_b_rec.total_paid_feb += payment
+#         case 3:
+#             con_b_rec.total_paid_mar += payment
+#         case 4:
+#             con_b_rec.total_paid_apr += payment
+#         case 5:
+#             con_b_rec.total_paid_may += payment
+#         case 6:
+#             con_b_rec.total_paid_jun += payment
+#         case 7:
+#             con_b_rec.total_paid_jul += payment
+#         case 8:
+#             con_b_rec.total_paid_aug += payment
+#         case 9:
+#             con_b_rec.total_paid_sept += payment
+#         case 10:
+#             con_b_rec.total_paid_oct += payment
+#         case 11:
+#             con_b_rec.total_paid_nov += payment
+#         case 12:
+#             con_b_rec.total_paid_dec += payment
+#     con_b_rec.save()
+    
+
+def makepayment(conid, consumer, month, year, user, or_num, con_b_rec, payment):
+    """
+    Safely creates a 'Payment' and 'Received Amount' transaction,
+    updates bill as paid, and adjusts monthly paid totals.
+    """
+
+    print(f"🔄 Processing payment for Account ID: {conid}, Month: {month}, Year: {year}")
+
+    # Check for duplicate Payment transaction
+    existing_payment = Transactions.objects.filter(
+        acctID=consumer,
+        month=month,
+        year=year,
+        transType="Payment"
+    ).first()
+
+    if existing_payment:
+        print(f"⚠️ Payment already exists for {consumer} ({month}/{year}), skipping creation.")
+    else:
+        try:
+            paytran = Transactions(
+                payment=payment,
+                date=date.today(),
+                acctID=consumer,
+                month=month,
+                year=year,
+                transType="Payment",
+                processedBy=user,
+                or_number=or_num  # ✅ REQUIRED FIELD
+            )
+            paytran.save()
+            print("✅ 'Payment' transaction saved.")
+        except Exception as e:
+            print(f"❌ Error saving 'Payment' transaction: {e}")
+
+    # Save Received Amount
     try:
-        billtran = Transactions.objects.get(acctID_id = conid, transType = "Billing", month = month, year = year)
+        recT = Transactions(
+            receivedamt=payment,
+            date=date.today(),
+            acctID=consumer,
+            month=month,
+            year=year,
+            transType="Received Amount",
+            processedBy=user,
+            or_number=or_num
+        )
+        recT.save()
+        print("✅ 'Received Amount' transaction saved.")
+    except Exception as e:
+        print(f"❌ Error saving 'Received Amount' transaction: {e}")
+
+    # Try to update the related billing transaction
+    try:
+        billtran = Transactions.objects.get(
+            acctID_id=conid,
+            transType="Billing",
+            month=month,
+            year=year
+        )
         billtran.is_billpaid = True
         billtran.save()
+        print("✅ Bill marked as paid.")
     except ObjectDoesNotExist:
-        pass
-    get_balance(consumer.consumer_id)
-    match month:
-        case 1:
-            con_b_rec.total_paid_jan += payment
-        case 2:
-            con_b_rec.total_paid_feb += payment
-        case 3:
-            con_b_rec.total_paid_mar += payment
-        case 4:
-            con_b_rec.total_paid_apr += payment
-        case 5:
-            con_b_rec.total_paid_may += payment
-        case 6:
-            con_b_rec.total_paid_jun += payment
-        case 7:
-            con_b_rec.total_paid_jul += payment
-        case 8:
-            con_b_rec.total_paid_aug += payment
-        case 9:
-            con_b_rec.total_paid_sept += payment
-        case 10:
-            con_b_rec.total_paid_oct += payment
-        case 11:
-            con_b_rec.total_paid_nov += payment
-        case 12:
-            con_b_rec.total_paid_dec += payment
-    con_b_rec.save()
-    
+        print("⚠️ Billing transaction not found. Skipping bill update.")
+    except Exception as e:
+        print(f"❌ Error updating billing transaction: {e}")
+
+    # Update balance
+    try:
+        get_balance(consumer.consumer_id)
+    except Exception as e:
+        print(f"⚠️ Error updating balance: {e}")
+
+    # Update monthly payment totals
+    try:
+        match month:
+            case 1: con_b_rec.total_paid_jan += payment
+            case 2: con_b_rec.total_paid_feb += payment
+            case 3: con_b_rec.total_paid_mar += payment
+            case 4: con_b_rec.total_paid_apr += payment
+            case 5: con_b_rec.total_paid_may += payment
+            case 6: con_b_rec.total_paid_jun += payment
+            case 7: con_b_rec.total_paid_jul += payment
+            case 8: con_b_rec.total_paid_aug += payment
+            case 9: con_b_rec.total_paid_sept += payment
+            case 10: con_b_rec.total_paid_oct += payment
+            case 11: con_b_rec.total_paid_nov += payment
+            case 12: con_b_rec.total_paid_dec += payment
+        con_b_rec.save()
+        print("✅ Monthly total updated in consumer record.")
+    except Exception as e:
+        print(f"❌ Error updating consumer record: {e}")
+
 
 # def payment_history (request, id, year):  
    
