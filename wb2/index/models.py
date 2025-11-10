@@ -236,7 +236,7 @@ class AdditionalFees(models.Model):
     fee_name = models.CharField(max_length=100)
     amount = models.FloatField()
     months = models.IntegerField()
-    month_counter = models.IntegerField(default=1)
+    month_counter = models.IntegerField(default=0)
     remainder = models.IntegerField()
     month = models.IntegerField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
