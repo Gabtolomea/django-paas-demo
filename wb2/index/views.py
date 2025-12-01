@@ -2598,12 +2598,14 @@ def revenue_report(request, year):
         else:
             return redirect('bills_list')
 
+
     years = []
     my = BarangayRecord.objects.all()
     for i in my:
         if i.year not in years:
             years.append(i.year)
     years.sort()
+
 
     # ------------------- REGULAR BILLING -------------------
     if Transactions.objects.filter(year=year):
@@ -2617,7 +2619,9 @@ def revenue_report(request, year):
             ], start=1)
         }
 
+
         col = sum(rev_col.values())
+
 
         rev_rec = {
             month.lower(): Transactions.objects.filter(
@@ -2629,6 +2633,7 @@ def revenue_report(request, year):
             ], start=1)
         }
 
+
         filt = {k: v for k, v in rev_rec.items() if v >= 0}
         rec = sum(filt.values())
     else:
@@ -2637,20 +2642,39 @@ def revenue_report(request, year):
         col = 0
         rec = 0
 
+
     # ------------------- ADDITIONAL FEES -------------------
     # Total Additional Fees Receivables (Expected)
+    # additional_fees_rec = AdditionalFees.objects.filter(
+    #     transactions__year=year
+    # ).aggregate(total=Sum('amount'))['total'] or 0
+
+
+    # # Total Additional Fees Collection (Paid)
+    # additional_fees_col = Transactions.objects.filter(
+    #     year=year,
+    #     transType='Payment',
+    #     additionalfees__isnull=False
+    # ).aggregate(total=Sum('payment'))['total'] or 0
+
+
+    # is_issues = get_is_seen_issues(request)
+   
     additional_fees_rec = AdditionalFees.objects.filter(
-        transactions__year=year
+        year=year
     ).aggregate(total=Sum('amount'))['total'] or 0
 
+
     # Total Additional Fees Collection (Paid)
-    additional_fees_col = Transactions.objects.filter(
-        year=year,
-        transType='Payment',
-        additionalfees__isnull=False
-    ).aggregate(total=Sum('payment'))['total'] or 0
+    additional_fees_col = AdditionalFeesPayment.objects.filter(
+        additional_fee__year=year
+    ).aggregate(total=Sum('amount'))['total'] or 0
+
 
     is_issues = get_is_seen_issues(request)
+
+
+
 
     context = {
         'my': my,
@@ -2666,7 +2690,6 @@ def revenue_report(request, year):
         'additional_fees_col': additional_fees_col
     }
     return render(request, 'revenue_report.html', context)
-
 
 def deleteconsumer(request):
     template = ""
