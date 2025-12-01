@@ -18,6 +18,7 @@ from django.db.models import F
 from django.db import transaction
 from django.db.models import F, Q
 import calendar
+import ftfy
 
 def n_int(var):
     if var is None:
@@ -36,6 +37,8 @@ def str_int(var):
         return 0
     else:
         return int(var)
+
+# -*- coding: utf-8 -*-
 def camelize():
     cons = ConsumerInfo.objects.all()
     for c in cons:
@@ -43,10 +46,105 @@ def camelize():
         c.lastname = c.lastname.title()
         c.middlename = c.middlename.title()
         c.save()
+
+
+def capitalize():
+    cons = ConsumerInfo.objects.all()
+    for c in cons:
+        c.firstname = c.firstname.upper()
+        c.lastname = c.lastname.upper()
+        c.middlename = c.middlename.upper()
+        c.save()
+
+
+def fix_mojibake_text(text):
+    """
+    Fix corrupted text encoding using ftfy library
+    """
+    if not text:
+        return text
+   
+    try:
+        # ftfy automatically detects and fixes mojibake
+        fixed = ftfy.fix_text(text)
+        return fixed
+    except Exception as e:
+        print(f"Error fixing text: {text} - {e}")
+        return text
+
+
+def enye_cons_proper():
+    """
+    Properly fix encoding issues in consumer info
+    """
+    cons = ConsumerInfo.objects.all()
+    count = 0
+   
+    for c in cons:
+        original_first = c.firstname
+        original_last = c.lastname
+        original_middle = c.middlename
+       
+        # Fix encoding
+        c.firstname = fix_mojibake_text(c.firstname)
+        c.lastname = fix_mojibake_text(c.lastname)
+        c.middlename = fix_mojibake_text(c.middlename)
+       
+        # Only save if something changed
+        if (c.firstname != original_first or
+            c.lastname != original_last or
+            c.middlename != original_middle):
+            c.save()
+            count += 1
+            print(f"Fixed: {original_last} -> {c.lastname}")
+   
+    print(f"Total records fixed: {count}")
+
+
+def enye_bars_proper():
+    """
+    Properly fix encoding issues in barangays
+    """
+    bars = Barangays.objects.all()
+    count = 0
+   
+    for b in bars:
+        original = b.barangay
+        b.barangay = fix_mojibake_text(b.barangay)
+       
+        if b.barangay != original:
+            b.save()
+            count += 1
+            print(f"Fixed: {original} -> {b.barangay}")
+   
+    print(f"Total barangays fixed: {count}")
+
+
+def debug_encoding():
+    """
+    Print the actual bytes to see what's stored
+    """
+    cons = ConsumerInfo.objects.filter(lastname__contains='Cab')[:5]
+   
+    for c in cons:
+        print(f"\n--- Record {c.id} ---")
+        print(f"Lastname: {c.lastname}")
+        print(f"Bytes: {c.lastname.encode('utf-8')}")
+        print(f"Repr: {repr(c.lastname)}")
+       
+        # Try different decodings
+        try:
+            fixed = c.lastname.encode('latin-1').decode('utf-8')
+            print(f"Latin-1->UTF-8: {fixed}")
+        except:
+            print("Latin-1->UTF-8: Failed")
+
+
+# OLD FUNCTIONS (keeping for backward compatibility)
 def enye_cons():
     cons = ConsumerInfo.objects.all()
     for c in cons:
-        chars = ["ã‘","ã±","Ã±"]
+        chars = ["ã'","ã±","Ã±"]
         for char in chars:
             if char in c.firstname:
                 c.firstname = c.firstname.replace(char, "ñ")
@@ -55,10 +153,12 @@ def enye_cons():
             if char in c.middlename:
                 c.middlename = c.middlename.replace(char, "ñ")
             c.save()
+
+
 def enye_bars():
     bars = Barangays.objects.all()
     for b in bars:
-        chars = ["ã‘","ã±","Ã±","ÃƒÂ±","ÃƒÆ’Ã‚Â±"]
+        chars = ["ã'","ã±","Ã±","ÃƒÂ±","ÃƒÆ'Ã‚Â±"]
         for char in chars:
             if char in b.barangay:
                 b.barangay = b.barangay.replace(char, "ñ")
@@ -70,6 +170,7 @@ def capitalize():
         c.lastname = c.lastname.upper()
         c.middlename = c.middlename.upper()
         c.save()
+
 def years(id):
     years = []
     alltrans = Transactions.objects.filter(acctID=id, transType='Billing') | Transactions.objects.filter(acctID=id, transType='Reset Meter')
@@ -591,14 +692,25 @@ def fix_billing_errors():
 
 def dump_database():
     
-    cnx = mysql.connector.connect(
+      #Changed by Bandajon k., 
+    # cnx = MySQLdb.connect(
+    #     user='wbilling',
+    #     passwd='@-@JazfeR123',
+    #     host='192.168.3.2',
+    #     port=3306,
+    #     db='wb2',
+    #     charset='latin1'
+    # )
+    #Changed by Bandajon k., 
+    cnx = MySQLdb.connect(
         user='root',
-        password='jazfer',
+        password='jeizel112903',
         host='localhost',
         port=3306,
-        database='waterbillingv3',
-        charset='latin1' 
+        db='waterbilling',
+        charset='latin1'
     )
+
     #Changed by Bandajon k., 
     # cnx = MySQLdb.connect(
     #     user='wbilling',

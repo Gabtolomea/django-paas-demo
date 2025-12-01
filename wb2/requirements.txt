@@ -39,7 +39,7 @@ typing_extensions==4.13.2
 tzdata==2025.2
 uritemplate==4.1.1
 urllib3==2.4.0
-
+whitenoise==6.9.0
 mysqlclient==2.2.7
 numpy==2.2.6
 openpyxl==3.1.5
@@ -61,3 +61,4 @@ typing_extensions==4.13.2
 tzdata==2025.2
 uritemplate==4.1.1
 urllib3==2.4.0
+ftfy==6.3.1
