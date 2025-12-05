@@ -2645,34 +2645,34 @@ def revenue_report(request, year):
 
     # ------------------- ADDITIONAL FEES -------------------
     # Total Additional Fees Receivables (Expected)
-    # additional_fees_rec = AdditionalFees.objects.filter(
-    #     transactions__year=year
-    # ).aggregate(total=Sum('amount'))['total'] or 0
-
-
-    # # Total Additional Fees Collection (Paid)
-    # additional_fees_col = Transactions.objects.filter(
-    #     year=year,
-    #     transType='Payment',
-    #     additionalfees__isnull=False
-    # ).aggregate(total=Sum('payment'))['total'] or 0
-
-
-    # is_issues = get_is_seen_issues(request)
-   
     additional_fees_rec = AdditionalFees.objects.filter(
-        year=year
+        transactions__year=year
     ).aggregate(total=Sum('amount'))['total'] or 0
 
 
     # Total Additional Fees Collection (Paid)
-    additional_fees_col = AdditionalFeesPayment.objects.filter(
-        additional_fee__year=year
-    ).aggregate(total=Sum('amount'))['total'] or 0
+    additional_fees_col = Transactions.objects.filter(
+        year=year,
+        transType='Payment',
+        additionalfees__isnull=False
+    ).aggregate(total=Sum('payment'))['total'] or 0
 
 
     is_issues = get_is_seen_issues(request)
+    
+    # Use the code below if you use the table index_additionalfeespayment 
+    # additional_fees_rec = AdditionalFees.objects.filter(
+    #     year=year
+    # ).aggregate(total=Sum('amount'))['total'] or 0
 
+
+    # # Total Additional Fees Collection (Paid)
+    # additional_fees_col = AdditionalFeesPayment.objects.filter(
+    #     additional_fee__year=year
+    # ).aggregate(total=Sum('amount'))['total'] or 0
+
+
+    # is_issues = get_is_seen_issues(request)
 
 
 
