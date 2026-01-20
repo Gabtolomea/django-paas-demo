@@ -2828,22 +2828,28 @@ def unsettled_bills(request):
     return render(request, 'unsettled_bill.html', context)
 
 
-def view_unsettled_bills(request, id, year):
-    
+def view_unsettled_bills(request, id, year=None):
     template = ""
     LoginSession = request.user
-    if LoginSession:
-        if LoginSession.is_teller or LoginSession.is_supervisor:
-            template = "view_unsettled_bills.html"
-        else:
-            template = redirect('bills_list')
-            return template
+    if not LoginSession.is_teller and not LoginSession.is_supervisor:
+        return redirect('bills_list')
+    template = "view_unsettled_bills.html"
 
-    years = []
-    table = []
     uv = ConsumerInfo.objects.get(consumer_id=id)
+    alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', is_issue=False)
 
-    class view_utang():
+    # Build list of available years dynamically
+    years = sorted(alltran.values_list('year', flat=True).distinct())
+
+    # If the year from the URL is missing or not in available years, pick latest
+    if year is None or year not in years:
+        year = years[-1] if years else None
+
+    # Filter transactions for this year
+    billing = Transactions.objects.filter(acctID_id=id, transType='Billing', year=year, is_issue=False)
+    payment = Transactions.objects.filter(acctID_id=id, transType='Payment', year=year, is_issue=False)
+
+    class ViewUtang():
         def __init__(self, month, reading, reading_date, usage, total_bill, total_amount_paid):
             self.month = month
             self.reading = reading
@@ -2851,27 +2857,13 @@ def view_unsettled_bills(request, id, year):
             self.consumption = usage
             self.total_bill = total_bill
             self.total_amount_paid = total_amount_paid
-    alltran = Transactions.objects.filter(acctID_id=id, transType='Billing', is_issue=False)
-    billing = Transactions.objects.filter(
-        acctID_id=id, transType='Billing', year=year, is_issue=False)
-    payment = Transactions.objects.filter(
-        acctID_id=id, transType='Payment', year=year, is_issue=False)
-    pcount = len(payment)
-    count = len(billing)
-    j = 0
-    try:
-        if billing[0].date.month == 1:
-          j = 1
-    except IndexError:
-        pass
-    for i in alltran:
-        if i.year not in years:
-            years.append(i.year)
 
-    years.sort()
-    # --------------------------#
+    table = []
     j = 0
     c = 0
+    pcount = len(payment)
+    count = len(billing)
+
     for i in range(1, 13):
         month = calendar.month_name[i]
         usage = 0
@@ -2880,31 +2872,30 @@ def view_unsettled_bills(request, id, year):
         reading_date = ''
         total_amount_paid = 0
 
-        if c < pcount and pcount != 0:
-            if i == payment[c].month:
-                total_amount_paid = payment[c].payment
-                c += 1
-        if j < count and count != 0:
-            if i == billing[j].month:
-                usage = billing[j].usage
-                reading = billing[j].meterReading
-                reading_date = billing[j].date
-                total_bill = billing[j].bill
-                j += 1
-                a = view_utang(month, reading, reading_date, usage,total_bill, total_amount_paid)
-                table.append(a)
-    
+        if c < pcount and pcount != 0 and i == payment[c].month:
+            total_amount_paid = payment[c].payment
+            c += 1
+
+        if j < count and count != 0 and i == billing[j].month:
+            usage = billing[j].usage
+            reading = billing[j].meterReading
+            reading_date = billing[j].date
+            total_bill = billing[j].bill
+            j += 1
+            table.append(ViewUtang(month, reading, reading_date, usage, total_bill, total_amount_paid))
+
     is_issues = get_is_seen_issues(request)
 
     context = {
         'uv': uv,
-        'years': years,
-        'current': year,
-        'table': table, 
-        'is_issues' : is_issues
-        
+        'years': years,        # dynamic year list
+        'current': year,       # selected year (latest if URL invalid)
+        'table': table,
+        'is_issues': is_issues
     }
-    return render(request, 'view_unsettled_bills.html', context)
+
+    return render(request, template, context)
+
 
 
 def discount(request):
@@ -4198,6 +4189,10 @@ def mark_unpaid(request, transaction_id):
 
 
 
+from django.shortcuts import render
+from .models import ConsumerInfo, Transactions, BarangayRecord
+
+
 def consumption(request, year):
     
     cons = ConsumerInfo.objects.all()
@@ -4261,13 +4256,27 @@ def consumption(request, year):
         if i.penaltycounter > 0:
             top_10_del_month.append(delinquent_month(f"{i.firstname} {i.lastname}", i.penaltycounter))
     
-    condemn = ConsumerInfo.objects.filter(deleteflag=True).order_by('-current_bal')
+    condemn = []
+    for c in ConsumerInfo.objects.filter(deleteflag=True):
+        txn_agg = Transactions.objects.filter(acctID_id=c.consumer_id).aggregate(
+            total_billed=Sum('bill'),
+            total_paid=Sum('payment')
+        )
+        total_billed = txn_agg['total_billed'] or 0
+        total_paid = txn_agg['total_paid'] or 0
+        calc_balance = total_billed - total_paid
+        condemn.append({
+            'consumer': c,
+            'calc_balance': calc_balance
+        })
 
-    # find total stopped meters
+    condemn = sorted(condemn, key=lambda x: x['calc_balance'], reverse=True)
+
+    # Total stopped meters
     sm_arr = cons.filter(stopmeterflag=True)
     stopped_meters = sm_arr.count()
-    
-    # Total of Consumers
+
+    # Total consumers
     consumtots = cons.count()
  
 
@@ -4305,6 +4314,7 @@ def consumption(request, year):
         'is_issues' : is_issues
     }
     return render(request,'consumption.html', context)
+
 
 
 def exemptiont(request):

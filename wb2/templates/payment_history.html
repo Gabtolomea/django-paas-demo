@@ -263,7 +263,7 @@ Payment History
 
 
 
-<div class="row w-100 m-auto pt-2">
+<div class="row w-100 pt-2">
 
 
 
@@ -282,7 +282,7 @@ Payment History
 
 
     <!--Year Selection -->
-    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
+    <div class="col-lg-6 col-md-6 col-sm-12 d-flex justify-content-start" style="padding-top :10px;">
         <div class="table-responsive" style="max-height: 700px;">
             <form id="yearselection" action="">
                 {% comment %} <label class="d-flex" style="float: right; align-items: center;">Year
@@ -293,7 +293,7 @@ Payment History
                         {% endfor %}
                     </select>
                 </label> {% endcomment %}
-                <label class="d-flex" style="float: right; align-items: center;">Year
+                <label class="d-flex align-items-center">Year
                     <select style="width: 100px; margin: 0 5px;" class="form-select" id="selector" onchange="change()">
                         {% for i in years %}
                             <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>

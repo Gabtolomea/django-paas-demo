@@ -223,11 +223,11 @@ Monthly Summary
 
 
     <!--Year Selection -->
-    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-top :10px;">
-        <div class="table-responsive" style="max-height: 700px;">
-            <form id="yearselection" action="">
+    <div class ="row w-100 m-auto pt-2"></div>
+    <div class="col-lg-6 col-md-6 col-sm-12" style="display:flex; align-items: center;">
+            <form id="yearselection" action="" class="d-flex align-items-center">
                 <label class="d-flex" style="float: right; align-items: center;">Year
-                        <select style="width: 100px; margin: 0 5px;" class="form-select" id="selector" onchange="change()">
+                        <select style="width: 100px; margin: 0 10px;" class="form-select" id="selector" onchange="change()">
                         {% for i in years reversed %}
                         <option value="{{i}}" {% if i == year %} selected{% endif %}>{{i}}</option>
                         {% endfor %}
@@ -244,8 +244,6 @@ Monthly Summary
                 }
             </script>
     </div>
-
-
 </div>
 
 
@@ -274,7 +272,7 @@ Monthly Summary
                             <th style="min-width: 100px;">Month</th>
                             <!-- <th style="min-width: 100px;">Bill Type</th>added changes 28/10/2024    -->
                             <th style="min-width: 100px;">Reading</th>
-                            <th style="min-width: 100px;">CU.M Used</th><!-- changed from usage to CU.M Used 28/10/2024    -->
+                            <th style="min-width: 100px;">CU.M. Used</th><!-- changed from usage to CU.M Used 28/10/2024    -->
                             <th style="min-width: 100px;">Amount Due (₱)</th> <!-- changed from current due to amount due 28/10/2024    -->
                             <!-- <th style="min-width: 100px;">Previous Balance</th>  removed 28/10/2024    -->
                             <!--<th style="min-width: 100px;">Additional Fees</th> removed 28/10/2024 -->
@@ -300,7 +298,7 @@ Monthly Summary
 
                                 {% if t.total_bill  %} 
                                 {% if t.total_amount_paid %}
-                                     {{t.total_amount_paid|floatformat:2|intcomma }} <!-- |floatformat:2|intcomma added 14/11/2024 -->
+                                     <span class="badge bg-success">Paid</span>
                                 {% else %}
                                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#pay-{{t.monthval}}"> PAY </button> 
                                 {% endif %}
@@ -366,7 +364,65 @@ Monthly Summary
 {% endif %}
 {% endif %}
 {% endfor %}
+<script>
+(function(){
+    function parseCurrency(text){
+        if(!text) return 0;
+        return parseFloat((text + '').replace(/[^0-9.-]+/g,'')) || 0;
+    }
+    function fmt(n){ return n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
+    const table = document.querySelector('#monthly table');
+    if(!table) return;
+
+    // determine column indices by header text (fallback to common defaults)
+    const ths = Array.from(table.querySelectorAll('thead tr th'));
+    let amountIdx = ths.findIndex(th => /amount\s*due/i.test(th.textContent));
+    let penaltyIdx = ths.findIndex(th => /penalty/i.test(th.textContent));
+    let actionIdx = ths.findIndex(th => /action/i.test(th.textContent));
+
+    if(amountIdx === -1) amountIdx = 3;
+    if(penaltyIdx === -1) penaltyIdx = 4;
+    if(actionIdx === -1) actionIdx = 5;
+
+    // Insert "Total" header after Action column
+    const headerRow = table.querySelector('thead tr');
+    const newTh = document.createElement('th');
+    newTh.style.minWidth = '100px';
+    newTh.textContent = 'Total (₱)';
+    const currentThs = headerRow.querySelectorAll('th');
+    if(actionIdx >= 0 && actionIdx < currentThs.length - 1){
+        headerRow.insertBefore(newTh, currentThs[actionIdx + 1]);
+    } else {
+        headerRow.appendChild(newTh);
+    }
+
+    // Walk rows and compute per-row total
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const amtCell = cells[amountIdx];
+        const penCell = cells[penaltyIdx];
+
+        const amount = parseCurrency(amtCell ? amtCell.textContent : '');
+        const penalty = parseCurrency(penCell ? penCell.textContent : '');
+
+        const rowTotal = amount + penalty;
+
+        const td = document.createElement('td');
+        td.className = 'text-center';
+        td.textContent = fmt(rowTotal);
+
+        // insert after action cell
+        const insertPos = Math.min(actionIdx + 1, cells.length);
+        if(insertPos < cells.length){
+            row.insertBefore(td, cells[insertPos]);
+        } else {
+            row.appendChild(td);
+        }
+    });
+})();
+</script>
 
 
 

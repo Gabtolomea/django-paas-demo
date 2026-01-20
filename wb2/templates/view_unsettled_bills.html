@@ -14,6 +14,7 @@
 				<th scope="col" style="min-width: 25px">Meter Number</th>
 				<th scope="col" style="min-width: 25px">Name</th>
 				<th scope="col" style="min-width: 25px">Address</th>
+				<th scope="col" style="min-width: 25px;">Action</th>
 			</tr>
 		</thead>
 		<tbody class="wb_tbody">
@@ -21,40 +22,50 @@
 				<td>{{uv.consumer_id}}</td>
 				<td>{{uv.meternumber}}</td>
 				<td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
-				<td>{{uv.installation_address}} <button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button></td>
-				
+				<td>{{uv.installation_address}}</td>
+				<td style="display: flex; justify-content: center; align-items: center;">
+					<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button></td>
 			</tr>
 		</tbody>
 	</table>
 
 	<!-- Payment form/Modal -->
-<div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<form action="{% url 'payment' uv.consumer_id %}" method="post">
-				{% csrf_token %}
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalCenterTitle">Payment</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="id_amount">Amount</label>
-						<input type="number" name="amount" min="1" id="id_amount" required class="input form-control">
-						<label for="id_or_num">OR Number</label>
-						<input type="text" name="or_num" id="id_or_num" required class="input form-control">
-						<label for="id_dis_code">Discount Code</label>
-						<input type="text" name="dis_code" id="id_dis_code" class="input form-control">
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary" name="btnform1" >Submit</button>
-				</div>
-			</form>
-		</div>
-	</div>
+<div class="modal fade" id="payment" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title">Payment Verification</h5>
+                <!-- X button REMOVED -->
+            </div>
+
+            <div class="modal-body text-center">
+
+                <p class="text-muted">
+                    You will be redirected to your billing ledger to review and complete your payment.
+                </p>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <!-- THEME-MATCHED PAY BUTTON -->
+                <a href="{% url 'ledger' uv.consumer_id %}"
+                   class="btn btn-success px-4">
+                    Continue to Billing
+                </a>
+            </div>
+
+        </div>
+    </div>
 </div>
+
+
+
 
 	<label for="years" style="font-size: 18px; font-weight: normal;">Select Year:</label>
     <form id="yearselection" action="">

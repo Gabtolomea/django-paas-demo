@@ -703,11 +703,11 @@ def dump_database():
     # )
     #Changed by Bandajon k., 
     cnx = MySQLdb.connect(
-        user='root',
-        password='jeizel112903',
-        host='localhost',
+        user='wbilling',
+        password='@-@JazfeR123',
+        host='192.168.0.167',
         port=3306,
-        db='waterbilling',
+        db='wb2',
         charset='latin1'
     )
 

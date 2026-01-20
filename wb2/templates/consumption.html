@@ -1,4 +1,3 @@
-
 {% extends 'dashboard.html' %}
 {% load humanize %}
 {% load static %}
@@ -6,9 +5,9 @@
 More Reports...
 {% endblock title %}
 {% block script %}
+<script src="{% static 'DataTables/js/jquery3.5.1.js' %}"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
-<script src="static/DataTables/js/jquery3.5.1.js"></script>
 <!-- Bootstrap 5 JS (popper.js is required) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
@@ -379,6 +378,7 @@ More Reports...
                         <th scope="col" style="background-color: #006c85">Name</th>
                         <th scope="col" style="background-color: #006c85">Address</th>
                         <th scope="col" style="background-color: #006c85">Balance (&#8369;)</th>
+                        <th scope="col" style="background-color: #006c85">Action</th>
                     </tr>
                 </thead>
                 <tbody class="tbody">
@@ -391,25 +391,29 @@ More Reports...
                             });
                         });
                     </script>
-                    <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' i.consumer_id cur_year %}">
-                        <td>{{ forloop.counter }}.</td>
-                        <td>{{i.meternumber}}</td>
-                        <td>{{i.firstname}} {{i.lastname}}</td>
-                        <td>{{i.installation_address}}</td>
-                        <td style="text-align: right;">{{i.current_bal|floatformat:2|intcomma}}
-                        {% if i.current_bal == 0 %}
-                        <form action="{%url 'undodelete' %}" method="post" style="float: right;" >
+                    <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'view_unsettled_bills' i.consumer.consumer_id cur_year %}">
+                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ i.consumer.meternumber }}</td>
+                    <td>{{ i.consumer.firstname }} {{ i.consumer.lastname }}</td>
+                    <td>{{ i.consumer.installation_address }}</td>
+                    <td style="text-align: right;">
+                        {{ i.calc_balance|floatformat:2|intcomma }}
+                    </td>
+                    <td style="text-align: center;">
+                    {% if i.calc_balance == 0 %}
+                        <form action="{% url 'undodelete' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="id" value="{{i.consumer_id}}">
-                            <button class="btn btn-success btn-sm rounded-0" type="submit"
-                                data-placement="top" title="Amend Account">
-                                <img style="width:22px;" src="{% static '/svgs/amend.svg' %}" />
+                            <input type="hidden" name="id" value="{{ i.consumer.consumer_id }}">
+                            <button class="btn btn-success btn-sm rounded-0" type="submit" title="Reactivate Account" style="height: 24px; width: 24px; ">
+                                <img style="width:22px; transform: translate(-8px, -3px);" src="{% static '/svgs/amend.svg' %}" />
                             </button>
-                       
                         </form>
-                        {% endif %}
-                        </td>
-                       
+                    {% else %}
+                        &mdash; <!-- Placeholder when no action is needed -->
+                    {% endif %}
+                 </td>
+
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -558,4 +562,3 @@ More Reports...
         }
     </script>
     {% endblock consumption%}
-

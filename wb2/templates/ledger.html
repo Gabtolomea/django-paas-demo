@@ -462,7 +462,7 @@ Account Ledger
         // It's red but it works
         const table = [
                     {% for t in table reversed %}
-            ["{{ t.transid }}", "{{ t.transType }}", "{{ t.month|slice:": 3" }}-{{ t.year }}", "{{ t.prev }}", "{{ t.reading }}", "{{ t.usage }}", "{{ t.bill|floatformat:2 }}", "{{ t.payment|floatformat:2 }}", "{{ t.ppb }}", "{{ t.status }}"],
+            ["{{ t.transid }}", "{{ t.transType }}", "{{ t.month|slice:":3" }}-{{ t.year }}", "{{ t.prev }}", "{{ t.reading }}", "{{ t.usage }}", "{{ t.bill|floatformat:2 }}", "{{ t.payment|floatformat:2 }}", "{{ t.ppb }}", "{{ t.status }}"],
                 {% endfor %}
         ];
 

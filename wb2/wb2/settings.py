@@ -102,10 +102,10 @@ WSGI_APPLICATION = 'wb2.wsgi.application'
 DATABASES = {
     'default': { 
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'waterbillingv3',
-        'USER': 'root',
-        'PASSWORD': 'jazfer',
-        'HOST': 'localhost',
+        'NAME': 'wb2',
+        'USER': 'wbilling',
+        'PASSWORD': '@-@JazfeR123',
+        'HOST': '192.168.0.167',
         'PORT': '3306'
     }
 }
