@@ -106,6 +106,7 @@ Account Ledger
         background-color: #006778; /* Teal */
         color: white;
         font-weight: bold;
+        text-align: center;
     }
 
     /* Alternating row colors */
@@ -140,7 +141,8 @@ Account Ledger
                     <th>Meter Number</th>
                     <th>Current Reading</th>
                     <th>Excess Payment</th>
-                    <th>Current Balance</th>
+                    <th>Payable</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody class="wb_tbody">
@@ -151,11 +153,11 @@ Account Ledger
                     <td class="table-light text-center">{{ u.meternumber }}</td>
                     <td class="table-light text-center">{{ u.current_reading }}</td>
                     <td class="table-light text-center">&#8369; {{ u.excess|floatformat:2|intcomma }}</td>
+                    <td class="table-light text-center">&#8369; {{ billbalance|floatformat:2|intcomma }}</td>
                     <td class="table-light text-center">
-                        &#8369; {{ billbalance|floatformat:2|intcomma }}
-                        <button type="button" class="btn btn-primary ms-2" onclick="print()">Get Bill</button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="print()">Get Bill</button>
                         {% if not ispaid %}
-                        <button title="Payment" class="btn btn-success" data-bs-toggle="modal"
+                        <button title="Payment" class="btn btn-success btn-sm" data-bs-toggle="modal"
                             data-bs-target="#payment">Pay</button>
                         {% endif %}
                     </td>

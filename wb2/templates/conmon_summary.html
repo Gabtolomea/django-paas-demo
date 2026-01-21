@@ -191,7 +191,7 @@ Monthly Summary
                     <th scope="col" style="min-width:25px">Connection Type</th> <!-- added changes 28/10/2024 enj -->
                     <th scope="col" style="min-width:25px">Meter Number</th>
                     <th scope="col" style="min-width:25px">Excess Payment</th>
-                    <th scope="col" style="min-width:25px">Current Balance</th>
+                    <th scope="col" style="min-width:25px">Payable</th>
                 </tr>
             </thead>
             <tbody class="wb_tbody">
@@ -278,7 +278,7 @@ Monthly Summary
                             <!--<th style="min-width: 100px;">Additional Fees</th> removed 28/10/2024 -->
                             <th style="min-width: 100px;">Penalty (₱)</th> <!-- added changes 28/10/2024    -->
                             <!--<th style="min-width: 100px;">Total Balance</th>  -->
-                            <th style="min-width: 110px;">Action (₱)</th><!-- changed from Amount Paid to Action  28/10/2024    -->
+                            <th style="min-width: 110px;">Action</th><!-- changed from Amount Paid to Action  28/10/2024    -->
                         </tr>
                     </thead>
 
@@ -300,7 +300,7 @@ Monthly Summary
                                 {% if t.total_amount_paid %}
                                      <span class="badge bg-success">Paid</span>
                                 {% else %}
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#pay-{{t.monthval}}"> PAY </button> 
+                                    <button type="button" class="badge bg-success" data-bs-toggle="modal" data-bs-target="#pay-{{t.monthval}}"> PAY </button> 
                                 {% endif %}
                                 {% endif %}
                                 
