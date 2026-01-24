@@ -14,10 +14,10 @@
             Payment History
         </a>
         <span style="display: inline-block; margin-right: 5px; position: relative; z-index: 10;">
-            <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment"> Additional Fees </button>
+            <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment"> Purchase Materials </button>
         </span>
         <span style="display: inline-block; margin-right: 5px; position: relative; z-index: 10;">
-            <a href="{% url 'additionalfeeslist' u.consumer_id %}" class="btn button2" role="button"> List of Additional Fees </a>
+            <a href="{% url 'additionalfeeslist' u.consumer_id %}" class="btn button2" role="button"> List of Purchased Materials </a>
         </span>
     </div>
 </div>
@@ -80,8 +80,8 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Item</th>
-                                    <th>Price (₱)</th>
-                                    <th>Monthly Installment</th>
+                                    <th>Price per Item</th>
+                                    <th>No. of Installment</th>
                                     <th>Monthly Due</th>
                                     <th>Action</th>
                                 </tr>
@@ -181,4 +181,32 @@
     // Initial calculation
     document.querySelectorAll('#fees-table tbody tr').forEach(row => recalcRow(row));
     updateTotal();
+</script>
+
+<script>
+    // Function to reset modal
+    function resetModal() {
+        const tbody = document.querySelector('#fees-table tbody');
+        tbody.innerHTML = `
+            <tr>
+                <td><input type="text" name="item_name[]" class="form-control" placeholder="Item" required></td>
+                <td><input type="number" name="price[]" class="form-control price-input" placeholder="Price" required></td>
+                <td><input type="number" name="monthly_installment[]" class="form-control installment-input" placeholder="Monthly Installment" required></td>
+                <td><input type="number" name="monthly_due[]" class="form-control monthly-due" readonly></td>
+                <td><button type="button" class="btn btn-sm btn-danger remove-row">Remove</button></td>
+            </tr>
+        `;
+        // Reset totals
+        document.getElementById('total-fees').innerText = "0.00";
+        document.getElementById('totalAmount').value = "0.00";
+        document.getElementById('additionalfee_names').value = "";
+
+        // Reattach events to the single row
+        document.querySelectorAll('#fees-table tbody tr').forEach(attachEvents);
+        document.querySelectorAll('#fees-table tbody tr').forEach(row => recalcRow(row));
+    }
+
+    // Listen for modal close event
+    const installmentModal = document.getElementById('installment');
+    installmentModal.addEventListener('hidden.bs.modal', resetModal);
 </script>

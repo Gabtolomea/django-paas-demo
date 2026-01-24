@@ -198,6 +198,25 @@
         display: inline-block;
         padding: 0.375rem 0.75rem;
     }
+
+    /* Make the payment type + amounts row bigger and fonts smaller */
+    .payment-row .form-label {
+        font-size: 0.875rem; /* smaller labels */
+    }
+
+    .payment-row div {
+        font-size: 0.875rem; /* smaller text for amounts */
+    }
+
+    .payment-row .col-md-6 {
+        padding: 0.5rem 1rem; /* make the columns slightly wider */
+    }
+
+    /* Optional: make amounts bold */
+    .payment-row .amount-strong {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
 </style>
 
 <!-- Header Info of Consumer -->
@@ -231,7 +250,7 @@
     {% include 'billingbuttons.html' %}
 </div>
 <!-- Table Section for Additional Fees -->
-<h1 class="mb-3 text-center">List of Additional Fees</h1>
+<h1 class="mb-3 text-center">List of Materials Purchased</h1>
 <div>
 
 
@@ -240,11 +259,11 @@
         <thead>
             <tr>   
                     <th>Fee ID</th>
-                    <th>Fee Name</th>
-                    <th>Installment Period (Months)</th>
+                    <th>Item Name</th>
+                    <th>No. of Installment</th>
                     <th>Number of Months Paid</th>
                     <th>Date</th>
-                    <th>Amount (₱)</th>
+                    <th>Monthly Due</th>
                     <th>Action</th>
             </tr>
         </thead>
@@ -302,42 +321,56 @@
             <form method="POST" action="{% url 'addfee_paymentmethod' 0 %}" id="paymentForm">
                 {% csrf_token %}
                 <div class="modal-header">
-                    <h5 class="modal-title" id="payModalLabel">Pay Additional Fee</h5>
+                    <h5 class="modal-title" id="payModalLabel">Pay Purchased Materials</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" name="feeid" id="modalFeeId">
+                <input type="hidden" name="feeid" id="modalFeeId">
 
-                    <div class="mb-2">
-                        <label for="paymentType" class="form-label">Payment Type</label>
-                        <select class="form-select form-select-sm" id="paymentType" name="payment_type">
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="full">Full</option>
-                        </select>
+                <div class="row mb-2 align-items-center">
+                    <div class="col">
+                        <label for="instMonths" class="form-label">No. of Installment</label>
+                        <input type="text" class="form-control form-control-sm" id="instMonths" readonly>
                     </div>
-
-                    <div class="row mb-2">
-                        <div class="col">
-                            <label for="instMonths" class="form-label">Installment Period</label>
-                            <input type="text" class="form-control form-control-sm" id="instMonths" readonly>
-                        </div>
-                        <div class="col">
-                            <label for="remMonths" class="form-label">Months Paid</label>
-                            <input type="text" class="form-control form-control-sm" id="remMonths" readonly>
-                        </div>
-                    </div>
-
-                    <div class="mb-2">
-                        <label for="amountToPay" class="form-label">Amount to Pay</label>
-                        <input type="text" class="form-control form-control-sm" name="amount" id="amountToPay" readonly>
-                    </div>
-
-                    <div class="mb-2">
-                        <label for="remarks" class="form-label">Remarks</label>
-                        <textarea class="form-control form-control-sm" name="remarks" id="remarks" rows="2"></textarea>
+                    <div class="col">
+                        <label for="remMonths" class="form-label">Months Paid</label>
+                        <input type="text" class="form-control form-control-sm" id="remMonths" readonly>
                     </div>
                 </div>
+
+                <div class="row mb-3 align-items-center payment-row">
+                <!-- Payment type radio buttons -->
+                <div class="col-md-6">
+                    <label class="form-label">Payment Type</label>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" type="radio" name="payment_type" id="monthlyRadio" value="monthly" checked>
+                        <label class="form-check-label" for="monthlyRadio">Pay Monthly Due</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_type" id="fullRadio" value="full">
+                        <label class="form-check-label" for="fullRadio">Pay Remaining Balance</label>
+                    </div>
+                </div>
+
+                    <!-- Display Monthly and Full amounts on the right -->
+                    <div class="col-md-6 text-end d-flex flex-column align-items-end">
+                        <label class="form-label">Amount</label>
+                        <div class="d-flex flex-column align-items-end">
+                            <div><strong class="amount-strong">₱<span id="displayMonthly">0.00</span></strong></div>
+                            <div><strong class="amount-strong">₱<span id="displayFull">0.00</span></strong></div>
+                        </div>
+                    </div>
+
+
+
+                <div class="mb-2">
+                    <label for="remarks" class="form-label">Remarks</label>
+                    <textarea class="form-control form-control-sm" name="remarks" id="remarks" rows="2"></textarea>
+                </div>
+            </div>
+
+
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success w-100 btn-sm">Confirm Payment</button>
@@ -403,7 +436,7 @@
         document.getElementById('modalFeeId').value = feeId;
         document.getElementById('instMonths').value = instMonths;
         document.getElementById('remMonths').value = remMonths;
-        document.getElementById('paymentType').value = "monthly";
+        document.getElementById('monthlyRadio').checked = true;
 
         // Set the correct form action with feeId
         document.getElementById('paymentForm').action = `/payfee/${feeId}/`;
@@ -415,18 +448,22 @@
     }
 
     function updateAmountToPay(type) {
-        let amountField = document.getElementById('amountToPay');
-        if (type === 'full') {
-            let remaining = instMonths - remMonths;
-            amountField.value = (remaining * baseAmount).toFixed(2);
-        } else {
-            amountField.value = baseAmount.toFixed(2);
-        }
-    }
+    const displayMonthly = document.getElementById('displayMonthly');
+    const displayFull = document.getElementById('displayFull');
 
-    document.getElementById('paymentType').addEventListener('change', function () {
-        updateAmountToPay(this.value);
-    });
+    let remaining = instMonths - remMonths;
+    let fullAmount = remaining * baseAmount;
+    
+    displayMonthly.textContent = baseAmount.toFixed(2);
+    displayFull.textContent = fullAmount.toFixed(2);
+}
+
+
+        // Set default radio button to monthly
+    document.getElementById('monthlyRadio').checked = true;
+    updateAmountToPay('monthly');
+
+
 
     function openPaymentHistoryModal(feeId) {
             // Set the modal to loading state before requesting data
