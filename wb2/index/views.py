@@ -4493,44 +4493,45 @@ def issue_details(request, id):
 
 
 def additional_fee(request, id):
-    
     if request.method == "POST":
-        total_amount = float(request.POST.get('totalAmount', 0.00))
-        months = int(request.POST['monthfee'])
-        consumer_id = ConsumerInfo.objects.get(consumer_id=id)
-        fee_names = request.POST['additionalfee_names']
-        addFee = AdditionalFees()
-        addFee.fee_name = fee_names
-        addFee.remainder = total_amount%months
-        addFee.amount = (total_amount-addFee.remainder)/months
-        addFee.months = months
-        addFee.month = date.today().month
-        addFee.year = date.today().year
-        addFee.processedBy = request.user
-        addFee.consumer_id = consumer_id
-        addFee.date_added = date.today()
-        
-        #Starting May 2, 2025, Additional Fee is separated from the Transaction table
-        #Bandajon K, ID: AF252025
-        '''tran = Transactions()
-        tran.acctID = consumer_id
-        tran.date = date.today()
-        tran.month = date.today().month
-        tran.year = date.today().year
-        tran.transType = 'Additional Fees'
-        tran.processedBy = request.user
-        tran.bill = addFee.amount
-        tran.save()'''
+        consumer = get_object_or_404(ConsumerInfo, consumer_id=id)
 
-        addFee.save()
+        item_names = request.POST.getlist('item_name[]')
+        prices = request.POST.getlist('price[]')
+        months_list = request.POST.getlist('monthly_installment[]')
 
-        # addFee.transactions.add(tran)
-        # addFee.save()
-        consumer_id.current_bal += addFee.amount
-        consumer_id.save()
+        # Loop through rows
+        for name, price, months in zip(item_names, prices, months_list):
+            name = name.strip()
+            if not name:
+                continue  # skip empty rows
 
+            price = float(price)
+            months = int(months)
+            remainder = price % months
+            amount_per_month = (price - remainder) / months
+
+            addFee = AdditionalFees(
+                consumer_id=consumer,
+                fee_name=name,
+                remainder=remainder,
+                amount=amount_per_month,
+                months=months,
+                month=date.today().month,
+                year=date.today().year,
+                processedBy=request.user.username,
+                date_added=date.today()
+            )
+            addFee.save()
+
+            # Update consumer balance for EACH fee
+            consumer.current_bal += amount_per_month
+
+        # Save the updated consumer balance once after the loop
+        consumer.save()
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def submit_comment(request, id):
     hotissue = Issues.objects.get(issueid=id)
