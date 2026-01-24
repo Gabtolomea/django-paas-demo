@@ -124,8 +124,8 @@ Delinquent Accounts
                     <th>Name</th>
                     {# It's often helpful to display the Home Address if it's a filter option #}
                     <th>Barangay</th>
-                    <th>Total Delinquent Amount (₱)</th>
-                    <th>No. of Unpaid Months</th>
+                    <th>Delinquent Months</th>
+                    <th>Payable (₱)</th>
                 </tr>
             </thead>
             
@@ -137,9 +137,9 @@ Delinquent Accounts
                     {# Concatenate first and last name #}
                     <td>{{ consumer.lastname }}, {{ consumer.firstname }}</td> 
                     <td>{{ consumer.installation_address }}</td> {# Displaying installation address instead of home address #}
-                    {# Use floatformat:2 for currency and intcomma for thousands separator #}
-                    <td style="text-align: right;">{{ consumer.total_delinquent|floatformat:2|intcomma }}</td> 
                     <td>{{ consumer.delinquent_months }}</td> 
+                    {# Use floatformat:2 for currency and intcomma for thousands separator #}
+                    <td style="text-align: center;">{{ consumer.total_delinquent|floatformat:2|intcomma }}</td> 
                 </tr>
                 {% empty %}
                 <tr>

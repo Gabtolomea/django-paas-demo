@@ -4093,6 +4093,8 @@ def consumption(request, year):
     top_10 = []
     top_10_del_amount = []
     top_10_del_month = []
+    
+
     class delinquent_amount:
         def __init__(self, name, balance) -> None:
             self.name = name
@@ -4105,6 +4107,11 @@ def consumption(request, year):
         def __init__(self, name, usage) -> None:
             self.name = name
             self.usage = usage
+
+            # For Total Receivable per month-year
+    month_year_totals = {}  # dictionary to store totals
+
+
     for i in cons:
         try:
             bill = Transactions.objects.filter(acctID_id=i.consumer_id, year=year, transType="Billing", is_issue=False,).order_by('-transactionid')[0]
@@ -4116,8 +4123,15 @@ def consumption(request, year):
                     break
             else:
                 count_ranges['>50'] += 1 
+
+            month_year_key = f"{bill.month}-{bill.year}"  # e.g., "12-2024"
+            if month_year_key not in month_year_totals:
+                month_year_totals[month_year_key] = 0
+            month_year_totals[month_year_key] += bill.current_bal
+
         except IndexError:
             pass
+        
     bill_len = sum(count_ranges.values())
     count_ranges['<=5']+=(cons_len-bill_len)
     top10 = sorted(latest_bills, key=lambda c: c.usage, reverse=True)[:10]

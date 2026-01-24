@@ -167,27 +167,28 @@ Delinquent Months
     </div>
 <h1 style=" font-size: 37px;">Delinquent Months (Top {{ selected_value }})</h1>
 {% comment %} <h1>Top Delinquent Months</h1> {% endcomment %}
-<div class="table-container">
+<div class="table-container" >
     
     <table>
         <thead>
             <tr>
                 <th>Month - Year</th>
-                <th>Number of Consumers</th>
+                <th style="text-align: center;">Number of Consumers</th>
+                <th style="text-align: center;">Total Receivable </th>
             </tr>
         </thead>
         <tbody>
             {% if top_delinquent_months %}
-        {% for entry in top_delinquent_months %}
-
-                    <tr>
-                        <td>{{ forloop.counter }}. {{ entry.month_year }}</td>  <!-- Now shows "December 2024" -->
-                        <td>{{ entry.num_delinquent }}</td>
-                    </tr>
+                {% for entry in top_delinquent_months %}
+                <tr>
+                    <td>{{ forloop.counter }}. {{ entry.month_year }}</td>
+                    <td style="text-align: center;">{{ entry.num_delinquent }}</td>
+                    <td style="text-align: center;">₱{{ entry.total_unpaid_amount|floatformat:2|intcomma }}</td>
+                </tr>
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="2" class="no-data">No delinquent months found.</td>
+                    <td colspan="3" class="no-data">No delinquent months found.</td>
                 </tr>
             {% endif %}
         </tbody>

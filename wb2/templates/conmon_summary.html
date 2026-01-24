@@ -248,74 +248,7 @@ Monthly Summary
 
 
 <!-- Monthly View -->
-<div id="monthly">
-    <div class="">
-        <form></form><!-- changed from Monthly Summary to Outstanding Balances 28/10/2024 Enjambre -->
-        
-        <div class="d-flex flex-column align-items-center mb-2">
-            <h1 class="text-center mb-3">Outstanding Balances</h1>
-            <!--<h4 class="mb-2 text-center">(List of Bills)</h4>   -->
-            <!--<div class="border rounded p-2 text-center" style="width: 220px; background-color: #f8f9fa;">
-                <strong>Total Balance:</strong><br>
-                <span class="text-success">
-                    &#8369; {{ total_balance_due|floatformat:2|intcomma }} -->
-                </span>
-            </div>
-        </div>
-
-        <div class="container-fluid p-0">
-            <div class="table-responsive">
-                <table id="dtBasicExample2" class="table table-hover table-bordered table-sm" cellspacing="0"
-                    width="100%">
-                    <thead class="wb_thead">
-                        <tr>
-                            <th style="min-width: 100px;">Month</th>
-                            <!-- <th style="min-width: 100px;">Bill Type</th>added changes 28/10/2024    -->
-                            <th style="min-width: 100px;">Reading</th>
-                            <th style="min-width: 100px;">CU.M. Used</th><!-- changed from usage to CU.M Used 28/10/2024    -->
-                            <th style="min-width: 100px;">Amount Due (₱)</th> <!-- changed from current due to amount due 28/10/2024    -->
-                            <!-- <th style="min-width: 100px;">Previous Balance</th>  removed 28/10/2024    -->
-                            <!--<th style="min-width: 100px;">Additional Fees</th> removed 28/10/2024 -->
-                            <th style="min-width: 100px;">Penalty (₱)</th> <!-- added changes 28/10/2024    -->
-                            <!--<th style="min-width: 100px;">Total Balance</th>  -->
-                            <th style="min-width: 110px;">Action</th><!-- changed from Amount Paid to Action  28/10/2024    -->
-                        </tr>
-                    </thead>
-
-                    <tbody class="wb_tbody">
-                        {% for t in table reversed %}
-                        <tr>
-                            <td class="text-center">{{t.month}}</td>
-                            <!-- <td class="text-center">{{t.transType}}</td>added changes unfinished 28/10/2024    -->
-                            <td class="text-center">{{t.reading}}</td>
-                            <td class="text-center">{{t.usage}}</td>
-                            <td class="text-center" >{% if t.total_bill %}  {{t.total_bill|floatformat:2|intcomma}} {% endif %}</td> 
-                            <!--<td class="text-center">{{t.previous_balance}}</td> removed 28/10/2024 -->
-                            <!--<td class="text-center">{{t.additional_fees}}</td> removed 28/10/2024 -->
-                            <td class="text-center">{{t.}}</td><!-- added changes unfinished for penalty 28/10/2024    -->
-                            <!--<td class="text-center">{{t.total_due}}</td>   -->
-                            <td class="text-center" >
-
-                                {% if t.total_bill  %} 
-                                {% if t.total_amount_paid %}
-                                     <span class="badge bg-success">Paid</span>
-                                {% else %}
-                                    <button type="button" class="badge bg-success" data-bs-toggle="modal" data-bs-target="#pay-{{t.monthval}}"> PAY </button> 
-                                {% endif %}
-                                {% endif %}
-                                
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        </form>
-    </div>
-</div>
-
+ 
 {% for t in table %}
 
 {% if t.total_amount_paid %}
@@ -364,65 +297,185 @@ Monthly Summary
 {% endif %}
 {% endif %}
 {% endfor %}
-<script>
-(function(){
-    function parseCurrency(text){
-        if(!text) return 0;
-        return parseFloat((text + '').replace(/[^0-9.-]+/g,'')) || 0;
-    }
-    function fmt(n){ return n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
+<!-- Monthly View -->
+<div id="monthly">
+    <div>
 
+        <div class="d-flex flex-column align-items-center mb-2">
+            <h1 class="text-center mb-3">Outstanding Balances</h1>
+        </div>
+
+        <div class="container-fluid p-0">
+            <div class="table-responsive">
+
+                <table id="dtBasicExample2"
+                       class="table table-hover table-bordered table-sm"
+                       cellspacing="0"
+                       width="100%">
+                    <thead class="wb_thead">
+                        <tr>
+                            <th style="min-width:100px;">Month</th>
+                            <th style="min-width:100px;">Reading</th>
+                            <th style="min-width:100px;">CU.M. Used</th>
+                            <th style="min-width:100px;">Amount Due (₱)</th>
+                            <th style="min-width:100px;">Penalty (₱)</th>
+                            <th style="min-width:110px;">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="wb_tbody">
+                        {% for t in table reversed %}
+                        <tr>
+                            <td class="text-center">{{ t.month }}</td>
+                            <td class="text-center">{{ t.reading }}</td>
+                            <td class="text-center">{{ t.usage }}</td>
+                            <td class="text-center">
+                                {% if t.total_bill %}
+                                    {{ t.total_bill|floatformat:2|intcomma }} {%else%} 0.00
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {{ t.penalty|default:"0.00"|floatformat:2 }}
+                            </td>
+                            <td class="text-center">
+                                {% if t.total_bill %}
+                                    {% if t.total_amount_paid %}
+                                        <span class="badge bg-success">Paid</span>
+                                    {% else %}
+                                        <button type="button"
+                                                class="badge bg-success"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#pay-{{ t.monthval }}">
+                                            PAY
+                                        </button>
+                                    {% endif %}{%else%} --
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- SORT TOTAL COLUMN WITH DUAL ARROWS -->
+<script>
+(function() {
     const table = document.querySelector('#monthly table');
     if(!table) return;
 
-    // determine column indices by header text (fallback to common defaults)
+    // Utility functions
+    function parseCurrency(text) {
+        if (!text) return 0;
+        return parseFloat((text + '').replace(/[^0-9.-]+/g, '')) || 0;
+    }
+    function fmt(n) {
+        return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Month order map for chronological sorting
+    const monthOrder = {
+        'January': 1, 'February': 2, 'March': 3, 'April': 4,
+        'May': 5, 'June': 6, 'July': 7, 'August': 8,
+        'September': 9, 'October': 10, 'November': 11, 'December': 12
+    };
+
+    // Determine column indices
     const ths = Array.from(table.querySelectorAll('thead tr th'));
+    let monthIdx = ths.findIndex(th => /month/i.test(th.textContent));
     let amountIdx = ths.findIndex(th => /amount\s*due/i.test(th.textContent));
     let penaltyIdx = ths.findIndex(th => /penalty/i.test(th.textContent));
     let actionIdx = ths.findIndex(th => /action/i.test(th.textContent));
 
+    if(monthIdx === -1) monthIdx = 0;
     if(amountIdx === -1) amountIdx = 3;
     if(penaltyIdx === -1) penaltyIdx = 4;
     if(actionIdx === -1) actionIdx = 5;
 
-    // Insert "Total" header after Action column
+    // Insert Total (₱) header
     const headerRow = table.querySelector('thead tr');
-    const newTh = document.createElement('th');
-    newTh.style.minWidth = '100px';
-    newTh.textContent = 'Total (₱)';
-    const currentThs = headerRow.querySelectorAll('th');
-    if(actionIdx >= 0 && actionIdx < currentThs.length - 1){
-        headerRow.insertBefore(newTh, currentThs[actionIdx + 1]);
-    } else {
-        headerRow.appendChild(newTh);
-    }
+    const totalIdx = actionIdx;
 
-    // Walk rows and compute per-row total
-    const rows = table.querySelectorAll('tbody tr');
+    const totalTh = document.createElement('th');
+    totalTh.style.minWidth = '120px';
+    totalTh.style.cursor = 'pointer';
+    totalTh.innerHTML = `
+        Total (₱) <span class="sortIcon"><span style="color:black">↑</span><span style="color:#ccc">↓</span></span>
+    `;
+    headerRow.insertBefore(totalTh, headerRow.querySelectorAll('th')[totalIdx] || null);
+
+    // Compute totals for each row
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
-        const amtCell = cells[amountIdx];
-        const penCell = cells[penaltyIdx];
-
-        const amount = parseCurrency(amtCell ? amtCell.textContent : '');
-        const penalty = parseCurrency(penCell ? penCell.textContent : '');
-
-        const rowTotal = amount + penalty;
+        const amount = parseCurrency(cells[amountIdx]?.textContent);
+        const penalty = parseCurrency(cells[penaltyIdx]?.textContent);
+        const total = amount + penalty;
 
         const td = document.createElement('td');
         td.className = 'text-center';
-        td.textContent = fmt(rowTotal);
+        td.textContent = fmt(total);
 
-        // insert after action cell
-        const insertPos = Math.min(actionIdx + 1, cells.length);
-        if(insertPos < cells.length){
-            row.insertBefore(td, cells[insertPos]);
-        } else {
-            row.appendChild(td);
-        }
+        row.insertBefore(td, cells[totalIdx] || null);
     });
+
+    const tbody = table.querySelector('tbody');
+
+    // ---- Sorting Function ----
+    function addSort(thIndex, headerTh, isNumeric=false, customSort=null) {
+        let ascending = true;
+        const icon = headerTh.querySelector('.sortIcon');
+
+        headerTh.addEventListener('click', () => {
+            ascending = !ascending;
+
+            const sortedRows = rows.slice().sort((a, b) => {
+                let aVal = a.cells[thIndex].textContent.trim();
+                let bVal = b.cells[thIndex].textContent.trim();
+
+                if(customSort) {
+                    aVal = customSort(aVal);
+                    bVal = customSort(bVal);
+                } else if(isNumeric) {
+                    aVal = parseCurrency(aVal);
+                    bVal = parseCurrency(bVal);
+                } else {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+
+                if(aVal < bVal) return ascending ? -1 : 1;
+                if(aVal > bVal) return ascending ? 1 : -1;
+                return 0;
+            });
+
+            // Update arrows
+            if(ascending) {
+                icon.innerHTML = `<span style="color:black">↑</span><span style="color:#ccc">↓</span>`;
+            } else {
+                icon.innerHTML = `<span style="color:#ccc">↑</span><span style="color:black">↓</span>`;
+            }
+
+            tbody.innerHTML = '';
+            sortedRows.forEach(r => tbody.appendChild(r));
+        });
+    }
+
+    // Add dual-arrow span to Month header
+    const monthTh = ths[monthIdx];
+    monthTh.style.cursor = 'pointer';
+    monthTh.innerHTML += ` <span class="sortIcon"><span style="color:black">↑</span><span style="color:#ccc">↓</span></span>`;
+
+    // Activate sorting
+    addSort(totalIdx, totalTh, true); // Total numeric sorting
+    addSort(monthIdx, monthTh, false, val => monthOrder[val] || 0); // Month chronological sorting
 })();
 </script>
+
 
 
 

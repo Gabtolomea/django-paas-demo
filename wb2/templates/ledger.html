@@ -308,6 +308,18 @@ Account Ledger
     </div>
 </div>
 
+<!-- For searching -->
+<div class="col-lg-3 col-md-4 col-sm-12 pt-2 float-end">
+    <div class="input-group" style="max-width: 370px; transform:translate(12px, 5px)">
+        <span class="input-group-text" id="search-addon" style="padding: 0 8px;">
+            <img style="width: 23px;" src="{% static 'search_FILL1_wght700_GRAD200_opsz48.svg' %}" />
+        </span>
+        <input type="text" id="searchTransId" class="form-control" placeholder="Search Transaction ID..." 
+               style="min-width: 200px; flex: 1;">
+    </div>
+</div>
+
+
 <div id="ledger">
     <h1 class="text-center mb-3">Account Ledger</h1>
 
@@ -515,6 +527,28 @@ Account Ledger
 
         checkboxes.forEach(cb => cb.addEventListener('change', updateTotal));
     });
+</script>
+
+
+<!-- For searching  -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBox = document.getElementById('searchTransId');
+    const ledgerTable = document.querySelector('#ledger table tbody');
+
+    searchBox.addEventListener('input', function() {
+        const filter = searchBox.value.toLowerCase();
+
+        ledgerTable.querySelectorAll('tr').forEach(row => {
+            const transId = row.cells[0].textContent.toLowerCase();
+            if (transId.includes(filter)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
 </script>
 
     

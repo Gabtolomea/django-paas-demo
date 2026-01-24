@@ -4991,20 +4991,20 @@ def delinquent_accounts(request):
 
 
 
-def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/2025
+def delinquent_months(request): 
     # Get user selection from dropdown, defaulting to 10
     num_to_display = int(request.GET.get('num_to_display', 10))
 
     # Filter only billing transactions that are unpaid
     unpaid_bills = Transactions.objects.filter(
         is_billpaid=False, transType='billing'
-    ).values_list('month', 'year')  # Get both month and year
+    ).values_list('month', 'year', 'acctID')  # include acctID to calculate total
 
     # Count occurrences of each (month, year) combination
-    delinquent_counts = Counter(unpaid_bills)
+    month_year_counts = Counter((month, year) for month, year, _ in unpaid_bills)
 
     # If there are no unpaid bills, avoid errors
-    if not delinquent_counts:
+    if not month_year_counts:
         context = {
             'top_delinquent_months': [],
             'available_options': [10],  # Default dropdown options
@@ -5012,21 +5012,28 @@ def delinquent_months(request): # added for Delinquent Months ---Enjambre 02/11/
         }
         return render(request, 'delinquentmonths.html', context)
 
-    # Sort and get the unique number of delinquent months
-    total_delinquent_months = len(delinquent_counts)
+    # Prepare list with num_delinquent (your existing ranking logic)
+    sorted_months = month_year_counts.most_common(num_to_display)  # ranked by number of consumers
 
-    # Define dropdown options dynamically based on available data
-    available_options = list(range(10, total_delinquent_months + 1, 10))
-    if total_delinquent_months not in available_options:
-        available_options.append(total_delinquent_months)  # Include exact number of months
+    top_delinquent_months = []
+    for (month, year), count in sorted_months:
+        # Calculate total unpaid amount for this month-year
+        total_unpaid = Transactions.objects.filter(
+            is_billpaid=False, transType='billing', month=month, year=year
+        ).aggregate(total=Sum(F('acctID__current_bal')))['total'] or 0
 
-    # Convert month numbers to names and format as "Month Year"
-    top_delinquent_months = [
-        {'month_year': f"{calendar.month_name[month]} {year}", 'num_delinquent': count}
-        for (month, year), count in delinquent_counts.most_common(num_to_display)
-    ]
+        top_delinquent_months.append({
+            'month_year': f"{calendar.month_name[month]} {year}",
+            'num_delinquent': count,
+            'total_unpaid_amount': total_unpaid
+        })
 
-    # Pass data to template
+    # Define dropdown options dynamically
+    total_months = len(month_year_counts)
+    available_options = list(range(10, max(10, total_months)+1, 5))
+    if total_months not in available_options:
+        available_options.append(total_months)
+
     context = {
         'top_delinquent_months': top_delinquent_months,
         'available_options': available_options,
