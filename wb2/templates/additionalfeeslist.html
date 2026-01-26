@@ -183,17 +183,6 @@
         color: black; /* Makes the icon black */
     }
 
-    .action-hover {
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-
-    tr:hover .action-hover {
-        visibility: visible;
-        opacity: 1;
-    }
-
     .badge {
         display: inline-block;
         padding: 0.375rem 0.75rem;
@@ -289,12 +278,11 @@
                         <span class="badge bg-success" style="padding: 0.375rem 0.75rem; display: inline-block;">Paid</span>
                         {% endif %}
                 
-                        <div class="action-hover">
-                            <button class="btn btn-sm btn-info" onclick="openPaymentHistoryModal('{{ fee.feeid }}')"
-                                title="View Transactions">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </div>
+                        <!-- MODIFIED: Removed action-hover class to make button always visible -->
+                        <button class="btn btn-sm btn-info" onclick="openPaymentHistoryModal('{{ fee.feeid }}')"
+                            title="View Transactions">
+                            <i class="bi bi-eye"></i>
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -361,8 +349,7 @@
                             <div><strong class="amount-strong">₱<span id="displayFull">0.00</span></strong></div>
                         </div>
                     </div>
-
-
+                </div>
 
                 <div class="mb-2">
                     <label for="remarks" class="form-label">Remarks</label>
@@ -515,53 +502,3 @@
 
 
 {% endblock additionalfeeslist %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Buttons : NOT USED changed by : Bandajon K.-->
-<!--<div class="col-lg-6 col-md-6 col-sm-12" style="padding-top: 10px;">
-        <div class="button-container">
-            <a href="{% url 'ledger' u.consumer_id %}">
-                <button type="button" class="btn button2">Ledger</button>
-            </a>
-            <a href="{% url 'monthly_summary' u.consumer_id year %}">
-                <button type="button" class="btn button2">Outstanding Balances</button>
-            </a>
-            <a href="{% url 'payment_history' u.consumer_id year %}">
-                <button type="button" class="btn button2">Payment History</button>
-            </a>
-            <button type="button" class="btn button2" data-bs-toggle="modal" data-bs-target="#installment">
-                Additional Fees
-            </button>
-            <a href="{% url 'additionalfeeslist' u.consumer_id %}">
-                <button type="button" class="btn button2 active">List of Additional Fees</button>
-            </a>
-        </div>
-    </div>
-</div>-->
