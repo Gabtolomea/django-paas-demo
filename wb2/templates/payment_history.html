@@ -286,7 +286,7 @@ Payment History
             <form id="yearselection" action="" class="d-flex align-items-center">
                 <label class="d-flex" style="float: right; align-items: center;">Year
                         <select style="width: 100px; margin: 0 10px;" class="form-select" id="selector" onchange="change()">
-                        {% for i in years reversed %}
+                        {% for i in years %}
                         <option value="{{i}}" {% if i == year %} selected{% endif %}>{{i}}</option>
                         {% endfor %}
                     </select>

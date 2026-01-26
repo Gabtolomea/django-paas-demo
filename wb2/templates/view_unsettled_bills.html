@@ -24,48 +24,11 @@
 				<td>{{uv.lastname}} {{uv.firstname}} {{uv.middlename}}</td>
 				<td>{{uv.installation_address}}</td>
 				<td style="display: flex; justify-content: center; align-items: center;">
-					<button title="Payment" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#payment" style="float: right;">Pay</button></td>
+					<a href="{% url 'ledger' uv.consumer_id %}" class="btn btn-success" style="float: right;">Pay</a>
+				</td>
 			</tr>
 		</tbody>
 	</table>
-
-	<!-- Payment form/Modal -->
-<div class="modal fade" id="payment" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header justify-content-center">
-                <h5 class="modal-title">Payment Verification</h5>
-                <!-- X button REMOVED -->
-            </div>
-
-            <div class="modal-body text-center">
-
-                <p class="text-muted">
-                    You will be redirected to your billing ledger to review and complete your payment.
-                </p>
-            </div>
-
-            <div class="modal-footer justify-content-center">
-                <button type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                    Cancel
-                </button>
-
-                <!-- THEME-MATCHED PAY BUTTON -->
-                <a href="{% url 'ledger' uv.consumer_id %}"
-                   class="btn btn-success px-4">
-                    Continue to Billing
-                </a>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
 
 	<label for="years" style="font-size: 18px; font-weight: normal;">Select Year:</label>
     <form id="yearselection" action="">
@@ -75,7 +38,6 @@
             {% endfor %}
         </select>
     </form>
-
 
     <script>
         const yearselection = document.getElementById("yearselection");
@@ -113,4 +75,4 @@
 		</tbody>
 	</table>
 </div>
-	{% endblock view_unsettled_bills %}
+{% endblock view_unsettled_bills %}

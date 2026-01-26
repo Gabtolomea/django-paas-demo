@@ -80,7 +80,6 @@ Account Ledger
         background-color: #ffc6d0 !important;
     }
 
-
     .row-default {
         background-color: #ffffff;
     }
@@ -124,9 +123,22 @@ Account Ledger
     }
 
     .table-scroll-vertical {
-    max-height: 550px; /* Adjust height to show ~10 rows */
-    overflow-y: auto;
-}
+        max-height: 550px; /* Adjust height to show ~10 rows */
+        overflow-y: auto;
+    }
+
+    /* Clickable Transaction ID styling */
+    .clickable-trans-id {
+        cursor: pointer;
+        color: #0066cc;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+
+    .clickable-trans-id:hover {
+        background-color: #e6f7f8 !important;
+        color: #004080;
+    }
 </style>
 
 <!-- Consumer Info Table -->
@@ -244,41 +256,122 @@ Account Ledger
     </div>
 </div>
 
+<!-- Transaction Details Modal -->
+<div class="modal fade" id="transactionDetailsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Transaction Details - <span id="modalTransId"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th class="bg-light" style="width: 40%;">Billing Transaction ID</th>
+                                <td id="detailTransId"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Date</th>
+                                <td id="detailDate"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Transaction Type</th>
+                                <td id="detailTransType"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Bill Month (Month-Year)</th>
+                                <td id="detailBillMonth"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Previous Reading</th>
+                                <td id="detailPrevReading"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Current Reading</th>
+                                <td id="detailCurrReading"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">CU.M Used</th>
+                                <td id="detailUsage"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Bill Amount (₱)</th>
+                                <td id="detailBillAmount"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Less Excess (₱)</th>
+                                <td id="detailExcess"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Penalty (₱)</th>
+                                <td id="detailPenalty"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Amount Due (₱)</th>
+                                <td id="detailAmountDue"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Payment (₱)</th>
+                                <td id="detailPayment"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Payment Transaction ID</th>
+                                <td id="detailPayTransId"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Processed By</th>
+                                <td id="detailProcessedBy"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Status</th>
+                                <td id="detailStatus"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.querySelector("#payment form");
-            const warningMessage = document.getElementById("warningMessage");
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("#payment form");
+        const warningMessage = document.getElementById("warningMessage");
 
-            if (!form) {
-                console.error("❌ Form not found inside modal!");
-                return;
+        if (!form) {
+            console.error("❌ Form not found inside modal!");
+            return;
+        }
+
+        form.addEventListener("submit", function (e) {
+            const selectedCheckboxes = form.querySelectorAll("input[name='selected_trans']:checked");
+
+            if (selectedCheckboxes.length === 0) {
+                e.preventDefault();
+                warningMessage.classList.remove("d-none");
+            } else {
+                warningMessage.classList.add("d-none");
+                const selectedValues = Array.from(selectedCheckboxes).map(cb => cb.value);
+                console.log("🧾 JS Selected values before submission:", selectedValues);
             }
+        });
 
-            form.addEventListener("submit", function (e) {
-                const selectedCheckboxes = form.querySelectorAll("input[name='selected_trans']:checked");
-
-                if (selectedCheckboxes.length === 0) {
-                    e.preventDefault();
-                    warningMessage.classList.remove("d-none");
-                } else {
+        // Optional: Hide warning when checkbox is changed
+        form.querySelectorAll("input[name='selected_trans']").forEach(cb => {
+            cb.addEventListener("change", () => {
+                if (form.querySelectorAll("input[name='selected_trans']:checked").length > 0) {
                     warningMessage.classList.add("d-none");
-                    const selectedValues = Array.from(selectedCheckboxes).map(cb => cb.value);
-                    console.log("🧾 JS Selected values before submission:", selectedValues);
                 }
             });
-
-            // Optional: Hide warning when checkbox is changed
-            form.querySelectorAll("input[name='selected_trans']").forEach(cb => {
-                cb.addEventListener("change", () => {
-                    if (form.querySelectorAll("input[name='selected_trans']:checked").length > 0) {
-                        warningMessage.classList.add("d-none");
-                    }
-                });
-            });
         });
+    });
 </script>
-
-
 
 <!-- Filter + Get Copy Button -->
 <div class="row w-100 m-auto pt-2">
@@ -297,13 +390,7 @@ Account Ledger
                 <option value="" {% if disp == "" %}selected{% endif %}>All</option>
                 <option value="Billing" {% if disp == "Billing" %}selected{% endif %}>Billing</option>
                 <option value="Additional Fee" {% if disp == "Additional Fee" %}selected{% endif %}>Additional Fees</option>
-                <!--
-                        <option value="Payment" {% if disp == "Payment" %}selected{% endif %}>Payment</option>
-                        <option value="Penalty" {% if disp == "Penalty" %}selected{% endif %}>Penalty</option>
-                        <option value="Discount" {% if disp == "Discount" %}selected{% endif %}>Discount</option>
-                        -->
             </select> 
-        
         </form>        
     </div>
 </div>
@@ -318,7 +405,6 @@ Account Ledger
                style="min-width: 200px; flex: 1;">
     </div>
 </div>
-
 
 <div id="ledger">
     <h1 class="text-center mb-3">Account Ledger</h1>
@@ -335,16 +421,16 @@ Account Ledger
                             <th>Date</th>
                             <th>Transaction Type</th>
                             <th>Bill Month (Month-Year)</th>
-                            <th>Previous Reading</th>
                             <th>Current Reading</th>
-                            <th>CU.M Used</th>
-                            <th>Bill Amount (₱)</th>
-                            <th>Less Excess (₱)</th>
-                            <th>Penalty (₱)</th>
+                            <th class="hide-column">Previous Reading</th>
+                            <th class="hide-column">CU.M Used</th>
+                            <th class="hide-column">Bill Amount (₱)</th>
+                            <th class="hide-column">Less Excess (₱)</th>
+                            <th class="hide-column">Penalty (₱)</th>
                             <th>Amount Due (₱)</th>
-                            <th>Payment (₱)</th>
-                            <th>Payment Transaction ID</th>
-                            <th>Processed By</th>
+                            <th class="hide-column">Payment (₱)</th>
+                            <th class="hide-column">Payment Transaction ID</th>
+                            <th class="hide-column">Processed By</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -361,29 +447,29 @@ Account Ledger
                                 <input type="hidden" name="prev-{{t.month}}" value="{{t.prev}}">
                                 <input type="hidden" name="type-{{t.month}}" value="Sudden Jump">
                             </form>
-                            <td>{{t.transid}}</td>
+                            <td class="clickable-trans-id" title="Click for more details">{{t.transid}}</td>
                             <td>{{t.date}}</td>
                             <td>{{t.transType}}</td>
                             <td>{{t.month|slice:":3"}}-{{t.year}}</td>
-                            <td>{{t.prev}}</td>
                             <td>{{t.reading}}</td>
-                            <td>{{t.usage}}</td>
-                            <td style="text-align: right;">{{t.bill|floatformat:2|intcomma}}</td>
-                            <td style="text-align: right;">{{t.excess|default:0|floatformat:2|intcomma}}</td>
-                            <td style="text-align: right;">{{t.penalty|default:0|floatformat:2|intcomma}}</td>
-                            <td style="text-align: right;">
+                            <td class="hide-column">{{t.prev}}</td>
+                            <td class="hide-column">{{t.usage}}</td>
+                            <td class="hide-column" style="text-align: right;">{{t.bill|floatformat:2|intcomma}}</td>
+                            <td class="hide-column" style="text-align: right;">{{t.excess|default:0|floatformat:2|intcomma}}</td>
+                            <td class="hide-column" style="text-align: right;">{{t.penalty|default:0|floatformat:2|intcomma}}</td>
+                            <td>
                                 {% if t.status == "Unpaid" or t.status == "NotFullyPaid" %}
                                     {{t.amount_due|default:0|floatformat:2|intcomma}}
                                 {% endif %}
                             </td>
-                            <td style="text-align: right;">
+                            <td class="hide-column" style="text-align: right;">
                                 {% if t.payment %}
                                     {{ t.payment|floatformat:2|intcomma }}
                                 {% endif %}
                             </td>
-                            <td>{{t.paytranid}}</td>
-                            <td>{{t.ppb}}</td>
-                            <td class="text-center">{{ t.status }}</td>
+                            <td class="hide-column">{{t.paytranid}}</td>
+                            <td class="hide-column">{{t.ppb}}</td>
+                            <td class="text-align left">{{ t.status }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -392,7 +478,6 @@ Account Ledger
         </div>
     </div>
 </div>
-
 
 <script type="text/javascript">
     // Disable right-click for specified elements
@@ -473,16 +558,15 @@ Account Ledger
         doc.text(420, y += 30, "ACCOUNT LEDGER");
 
         // Construct table data
-        // It's red but it works
         const table = [
-                    {% for t in table reversed %}
+            {% for t in table reversed %}
             ["{{ t.transid }}", "{{ t.transType }}", "{{ t.month|slice:":3" }}-{{ t.year }}", "{{ t.prev }}", "{{ t.reading }}", "{{ t.usage }}", "{{ t.bill|floatformat:2 }}", "{{ t.payment|floatformat:2 }}", "{{ t.ppb }}", "{{ t.status }}"],
-                {% endfor %}
+            {% endfor %}
         ];
 
-    y += 5;
-    doc.setFontSize(11);
-    doc.autoTable({
+        y += 5;
+        doc.setFontSize(11);
+        doc.autoTable({
             head: [['Transaction ID', 'Type', 'Month-Year', 'Previous', 'Current Reading', 'Cubic Meter Used', 'Amount', 'Payment', 'Processed By', 'Status']],
             body: table,
             startY: y + 30,
@@ -503,10 +587,9 @@ Account Ledger
                     }
                 }
             }
-    });
+        });
 
-
-    doc.save(`{{ u.firstname }}_{{ u.lastname }}_ledger.pdf`);
+        doc.save(`{{ u.firstname }}_{{ u.lastname }}_ledger.pdf`);
     }
 </script>
 
@@ -529,7 +612,6 @@ Account Ledger
     });
 </script>
 
-
 <!-- For searching  -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -551,8 +633,50 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!-- Hide columns CSS -->
+<style>
+    .hide-column {
+        display: none;
+    }
+</style>
+
+<!-- Transaction Details Modal Handler -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event to all transaction ID cells with the clickable class
+    const transIdCells = document.querySelectorAll('.clickable-trans-id');
     
-
-
+    transIdCells.forEach(cell => {
+        cell.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent any parent click events
+            
+            const row = this.closest('tr');
+            const cells = row.querySelectorAll('td');
+            
+            // Populate modal with row data (accounting for hidden columns)
+            document.getElementById('modalTransId').textContent = cells[0].textContent;
+            document.getElementById('detailTransId').textContent = cells[0].textContent;
+            document.getElementById('detailDate').textContent = cells[1].textContent;
+            document.getElementById('detailTransType').textContent = cells[2].textContent;
+            document.getElementById('detailBillMonth').textContent = cells[3].textContent;
+            document.getElementById('detailCurrReading').textContent = cells[4].textContent;
+            document.getElementById('detailPrevReading').textContent = cells[5].textContent;
+            document.getElementById('detailUsage').textContent = cells[6].textContent;
+            document.getElementById('detailBillAmount').textContent = cells[7].textContent;
+            document.getElementById('detailExcess').textContent = cells[8].textContent;
+            document.getElementById('detailPenalty').textContent = cells[9].textContent;
+            document.getElementById('detailAmountDue').textContent = cells[10].textContent || 'N/A';
+            document.getElementById('detailPayment').textContent = cells[11].textContent || 'N/A';
+            document.getElementById('detailPayTransId').textContent = cells[12].textContent || 'N/A';
+            document.getElementById('detailProcessedBy').textContent = cells[13].textContent || 'N/A';
+            document.getElementById('detailStatus').textContent = cells[14].textContent;
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('transactionDetailsModal'));
+            modal.show();
+        });
+    });
+});
+</script>
 
 {% endblock ledger %}
