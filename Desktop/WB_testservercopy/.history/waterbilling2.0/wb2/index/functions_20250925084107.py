@@ -1228,3 +1228,31 @@ def calculate_water_bill_fromOct2024(consumption):
     bill = bill * 0.60
     
     return bill
+
+
+
+def calculate_water_bill_with_discount(consumption, discount):
+    bill = 0.0
+    
+    for rate_info in rate_ranges:
+        if consumption <= 0:
+            break
+        
+        # Calculate the cubic meters for the current range
+        range_cubic_meters = min(consumption, rate_info["max_cubic_meters"])
+        
+        # Add to the bill
+        bill += range_cubic_meters * rate_info["rate"]
+        
+        # Subtract the calculated cubic meters from the total consumption
+        consumption -= range_cubic_meters
+    
+    # Handle any excess consumption beyond the defined ranges
+    if consumption > 0:
+        bill += consumption * rate_ranges[-1]["rate"]  # Use the rate of the last range
+    
+    # gbaguia 12/45/2024
+    # 60% adjustment/discounted rate
+    bill = bill * discount
+    
+    return bill
