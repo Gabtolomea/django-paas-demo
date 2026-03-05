@@ -19,6 +19,9 @@ from django.db import transaction
 from django.db.models import F, Q
 import calendar
 import ftfy
+from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
+from index.models import ConsumerInfo, AdditionalFees, Transactions
 
 def n_int(var):
     if var is None:
@@ -704,7 +707,7 @@ def dump_database():
     #Changed by Bandajon k., 
     cnx = MySQLdb.connect(
         user='root',
-        password='jeizel112903',
+        password='1234',
         host='127.0.0.1',
         port=3306,
         db='waterbillingv3',
@@ -1024,66 +1027,79 @@ def pay_saall():
             except ObjectDoesNotExist:
                 pass
 
+from datetime import datetime
+
 def add_additionalFees():
+    """
+    Auto-increment Additional Fees only if a payment exists.
+    Uses the real current date.
+    """
+    today = datetime.today()
+
     consumers = ConsumerInfo.objects.all()
+    
     for c in consumers:
         try:
             addfees = AdditionalFees.objects.filter(consumer_id=c.consumer_id)
         except ObjectDoesNotExist:
-            pass
-        else:
-            try:
-                last_af = Transactions.objects.filter(acctID_id=c.consumer_id, transType='Additional Fees').order_by('-year', '-month')[0]
-            except IndexError:
-                pass
+            continue
+
+        for addfee in addfees:
+            # Only process if there is at least one payment for this fee
+            if not addfee.payments.exists():
+                continue
+            
+            # Get last transaction for this additional fee
+            last_af_qs = addfee.transactions.order_by('-year', '-month')
+            last_af = last_af_qs.first() if last_af_qs.exists() else None
+            
+            # Determine month and year for new transaction
+            if last_af:
+                month = last_af.month + 1
+                year = last_af.year
+                if month == 13:
+                    month = 1
+                    year += 1
             else:
-                for addfee in addfees:
-                    # new add fee bill
-                    if addfee.month_counter < addfee.months:
-                        afbill = Transactions()
-                        afbill.acctID = c
-                        afbill.transType = "Additional Fees"
-                        afbill.date = datetime.today()
-                        afbill.month = last_af.month + 1
-                        afbill.year = last_af.year
-                        if afbill.month == 13:
-                            afbill.month = 1
-                            afbill.year = last_af.year + 1
-                        
-                        afbill.processedBy = 'System'
-                        afbill.bill = addfee.amount
-                        
-                        afbill.save()
-                        print(f'{afbill.year} {afbill.month} {afbill.bill}')
-                        addfee.transactions.add(afbill)
-                        addfee.month_counter += 1
-                        addfee.save()
+                month = today.month
+                year = today.year
 
-                        c.current_bal += addfee.amount
-                        c.save()
+            # Only increment if month_counter < total months
+            if addfee.month_counter < addfee.months:
+                afbill = Transactions()
+                afbill.acctID = c
+                afbill.transType = "Additional Fees"
+                afbill.date = today
+                afbill.month = month
+                afbill.year = year
+                afbill.processedBy = 'System'
+                afbill.bill = addfee.amount
+                afbill.save()
 
-                    else:
-                        if addfee.remainder:
-                            afbill = Transactions()
-                            afbill.acctID = c
-                            afbill.transType = "Additional Fees"
-                            afbill.date = datetime.today()
-                            afbill.month = last_af.month + 1
-                            afbill.year = last_af.year
-                            if afbill.month == 13:
-                                afbill.month = 1
-                                afbill.year = last_af.year + 1
-                            
-                            afbill.processedBy = 'System'
-                            afbill.bill = addfee.remainder
-                            afbill.save()
-                            addfee.transactions.add(afbill)
-                            addfee.save()
-                            c.current_bal += addfee.remainder
-                            c.save()
-                        # else:
-                        #     addfee.delete()
+                addfee.transactions.add(afbill)
+                addfee.month_counter += 1
+                addfee.save()
 
+                c.current_bal += addfee.amount
+                c.save()
+
+            # Handle remainder if months finished
+            elif addfee.remainder:
+                afbill = Transactions()
+                afbill.acctID = c
+                afbill.transType = "Additional Fees"
+                afbill.date = today
+                afbill.month = month
+                afbill.year = year
+                afbill.processedBy = 'System'
+                afbill.bill = addfee.remainder
+                afbill.save()
+
+                addfee.transactions.add(afbill)
+                addfee.save()
+
+                c.current_bal += addfee.remainder
+                c.save()
 
 
 def unexcempt_account(meternumber):
