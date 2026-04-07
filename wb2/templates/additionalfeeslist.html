@@ -131,6 +131,7 @@
     .modal-backdrop.show {
         background-color: rgba(0, 0, 0, 0.95) !important;
     }
+    
 
 
     .form-label {
@@ -270,17 +271,23 @@
                 <td>
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         {% if fee.months > fee.month_counter %}
-                        <a href="#" class="btn btn-sm btn-primary" style="height: 25px;  width: 52px; padding: 4x 12px; font-size: 14px; line-height: 1.2; font-weight: bold;"
+                        <a href="#" class="btn btn-sm btn-primary"
                             onclick="openPayModal('{{ fee.feeid }}', '{{ fee.amount }}', '{{ fee.months }}', '{{ fee.month_counter }}')">
                             Pay
                         </a>
                         {% else %}
-                        <span class="badge bg-success" style="padding: 0.375rem 0.75rem; display: inline-block;">Paid</span>
+                        <span class="badge bg-success">Paid</span>
                         {% endif %}
-                
-                        <!-- MODIFIED: Removed action-hover class to make button always visible -->
-                        <button class="btn btn-sm btn-info" onclick="openPaymentHistoryModal('{{ fee.feeid }}')"
-                            title="View Transactions">
+
+                        <!-- ✅ EDIT BUTTON (NEW) -->
+                        <button type="button" class="btn btn-sm btn-primary"
+                            onclick="openEditModal('{{ fee.feeid }}', '{{ fee.month_counter }}', '{{ fee.months }}')">
+                            Edit
+                        </button>
+
+                        <!-- VIEW BUTTON (UNCHANGED) -->
+                        <button class="btn btn-sm btn-info"
+                            onclick="openPaymentHistoryModal('{{ fee.feeid }}')">
                             <i class="bi bi-eye"></i>
                         </button>
                     </div>
@@ -361,6 +368,39 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success w-100 btn-sm">Confirm Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ================= EDIT MODAL ================= -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" id="editForm">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Months Paid</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="feeid" id="editFeeId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Months Paid</label>
+                        <input type="number" class="form-control" name="month_counter" id="editMonthCounter" min="0" step="1" required>
+                    </div>
+
+                    <small id="maxMonthsInfo" class="text-muted"></small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success w-100">Save Changes</button>
                 </div>
             </form>
         </div>
@@ -450,6 +490,23 @@
     document.getElementById('monthlyRadio').checked = true;
     updateAmountToPay('monthly');
 
+function openEditModal(feeId, monthCounter, totalMonths) {
+    const input = document.getElementById('editMonthCounter');
+
+    document.getElementById('editFeeId').value = feeId;
+    input.value = monthCounter;
+
+    // ✅ THIS LINE CONTROLS THE MAX LIMIT
+    input.max = totalMonths;
+
+    document.getElementById('maxMonthsInfo').textContent =
+        `Max allowed: ${totalMonths}`;
+
+    document.getElementById('editForm').action = `/edit-month-counter/${feeId}/`;
+
+    var modal = new bootstrap.Modal(document.getElementById('editModal'));
+    modal.show();
+}
 
 
     function openPaymentHistoryModal(feeId) {
@@ -497,6 +554,38 @@
             const myModal = new bootstrap.Modal(document.getElementById('paymentHistoryModal'));
             myModal.show();
         }
+        
+
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('editMonthCounter');
+
+    // 🔒 Prevent manual typing beyond max
+    input.addEventListener('input', function () {
+        let max = parseInt(this.max);
+        let value = parseInt(this.value);
+
+        if (value > max) {
+            this.value = max;
+        }
+    });
+
+    // 🔒 Prevent spinner (▲) from going above max
+    input.addEventListener('keydown', function (e) {
+        let max = parseInt(this.max);
+        let value = parseInt(this.value);
+
+        // Arrow Up key
+        if (e.key === 'ArrowUp' && value >= max) {
+            e.preventDefault();
+        }
+
+        // Arrow Down (optional safety)
+        if (e.key === 'ArrowDown' && value <= 0) {
+            e.preventDefault();
+        }
+    });
+});
+
 </script>
 
 

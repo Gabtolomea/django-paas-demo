@@ -23,6 +23,10 @@ from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from index.models import ConsumerInfo, AdditionalFees, Transactions
 
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+from .models import AdditionalFees
+
 def n_int(var):
     if var is None:
         return 0
@@ -1027,7 +1031,6 @@ def pay_saall():
             except ObjectDoesNotExist:
                 pass
 
-from datetime import datetime
 
 def add_additionalFees():
     """
@@ -1089,7 +1092,7 @@ def add_additionalFees():
                 afbill.acctID = c
                 afbill.transType = "Additional Fees"
                 afbill.date = today
-                afbill.month = month
+                afbill.month = month    
                 afbill.year = year
                 afbill.processedBy = 'System'
                 afbill.bill = addfee.remainder
@@ -1390,3 +1393,26 @@ def calculate_water_bill_with_discount(consumption, discount):
     bill = bill * discount
     
     return bill
+
+
+
+
+
+
+
+def edit_month_counter(request, feeid):
+    fee = get_object_or_404(AdditionalFees, feeid=feeid)
+
+    if request.method == "POST":
+        new_value = int(request.POST.get("month_counter"))
+
+        if new_value < 0 or new_value > fee.months:
+            messages.error(request, "Invalid number of months.")
+            return redirect('additionalfeeslist', consumer_id=fee.consumer_id.consumer_id)
+
+        fee.month_counter = new_value
+        fee.save()
+
+        messages.success(request, "Month counter updated successfully.")
+
+    return redirect('additionalfeeslist', consumer_id=fee.consumer_id.consumer_id)
