@@ -709,14 +709,22 @@ def dump_database():
     #     charset='latin1'
     # )
     #Changed by Bandajon k., 
+    # cnx = MySQLdb.connect(
+    #     user='root',
+    #     password='localhost',
+    #     host='localhost',
+    #     port=3306,
+    #     db='waterbillingv3',
+    #     charset='latin1'
+    # )
     cnx = MySQLdb.connect(
-        user='root',
-        password='1234',
-        host='127.0.0.1',
-        port=3306,
-        db='waterbillingv3',
-        charset='latin1'
-    )
+    user=os.environ.get('DB_USER', 'root'),
+    password=os.environ.get('DB_PASSWORD', ''),
+    host=os.environ.get('DB_HOST', 'localhost'),
+    port=int(os.environ.get('DB_PORT', '3306')),
+    db=os.environ.get('DB_NAME', 'waterbillingv3'),
+    charset='latin1'
+)
 
     #Changed by Bandajon k., 
     # cnx = MySQLdb.connect(

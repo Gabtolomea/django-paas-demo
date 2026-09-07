@@ -99,16 +99,30 @@ WSGI_APPLICATION = 'wb2.wsgi.application'
 # Database: Do not change! This is the credentials of the local server database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': { 
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'waterbillingv3',
+#         'USER': 'root',
+#         'PASSWORD': 'localhost',
+#         'HOST': 'localhost',
+#         'PORT': '3306'
+#     }
+# }
+
 DATABASES = {
-    'default': { 
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'waterbillingv3',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1',
-        'PORT': '3306'
+        'NAME': os.environ.get('DB_NAME', 'waterbillingv3'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
+
+
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
