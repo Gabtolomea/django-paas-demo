@@ -2,9 +2,9 @@ name: Django CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main","janice" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main","janice" ]
 
 jobs:
   build:
@@ -29,5 +29,6 @@ jobs:
     - name: Run Tests
       run: |
         ls
-        cd wb2
+        cd wb2  
         python manage.py test
+
