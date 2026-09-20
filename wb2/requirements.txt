@@ -62,3 +62,4 @@ tzdata==2025.2
 uritemplate==4.1.1
 urllib3==2.4.0
 ftfy==6.3.1
+crispy-bootstrap4==2024.1
