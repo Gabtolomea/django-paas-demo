@@ -193,7 +193,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 mimetypes.add_type("image/svg+xml", ".svg", True)
 mimetypes.add_type("image/svg+xml", ".svgz", True)
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://django-paas-demo-production.up.railway.app',
+]
 
 
 
